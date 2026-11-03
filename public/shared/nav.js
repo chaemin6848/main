@@ -221,7 +221,7 @@
   /* ---------- 공통 메뉴 ---------- */
   var NAMES = {
     "/japanese/": ["단어 한 장", "단어 한 장（韓国語のみ）", "단어 한 장 (Korean only)"],
-    "/korean/": ["단어 한 장 일본어판", "단어 한 장（韓国語単語クイズ）", "단어 한 장 (Korean quiz, Japanese UI)"],
+    "/korean/": ["単語一枚", "単語一枚（韓国語単語クイズ）", "単語一枚 (Korean quiz, Japanese UI)"],
     "/alarm/": ["일유알리미", "日留アラーム", "Japan Admissions Tracker"],
     "/politics/": ["나가타초 노트", "나가타초 노트（韓国語のみ）", "나가타초 노트 (Korean only)"],
     "/jeildang/": ["제1당", "第一党", "First Party"]

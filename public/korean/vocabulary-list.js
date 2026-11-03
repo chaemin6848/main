@@ -1,4 +1,4 @@
-/* 단어 한 장 일본어판 단어 사전 — 한국어 표제어 + 일본어 뜻 (/japanese/vocabulary-list.js를 뒤집은 것) */
+/* 単語一枚 단어 사전 — 한국어 표제어 + 일본어 뜻 (/japanese/vocabulary-list.js를 뒤집은 것) */
 const words = (window.JLPT_VOCABULARY || []).filter(KO.hasKorean);
 const state = { level: "all", query: "", lesson: 0, savedLevel: "" };
 const pageSize = 20;

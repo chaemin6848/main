@@ -1,4 +1,4 @@
-/* 단어 한 장 일본어판 — 일본어 단어를 보고 한국어로 답하는 퀴즈 (/japanese/app.js의 방향을 뒤집은 것) */
+/* 単語一枚 — 일본어 단어를 보고 한국어로 답하는 퀴즈 (/japanese/app.js의 방향을 뒤집은 것) */
 const state = { words: (window.JLPT_VOCABULARY || []).filter(KO.hasKorean), level: "N5", current: null, seen: new Set(), score: 0, revealed: false };
 const $ = (id) => document.getElementById(id);
 const els = { buttons: document.querySelectorAll(".level-btn"), badge: $("level-badge"), count: $("word-count"), word: $("meaning"), reading: $("reading"), gloss: $("english-gloss"), form: $("answer-form"), answer: $("answer"), check: $("check-button"), feedback: $("feedback"), reveal: $("answer-reveal"), save: $("save-word-button"), hint: $("hint-button"), next: $("next-button"), score: $("score") };

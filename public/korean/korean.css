@@ -1,4 +1,4 @@
-/* 단어 한 장 일본어판 — /japanese/style.css 위에 덧붙이는 차이만 */
+/* 単語一枚 — /japanese/style.css 위에 덧붙이는 차이만 */
 body { font-family:"Noto Sans JP","Noto Sans KR",sans-serif; }
 [lang="ko"] { font-family:"Noto Sans KR","Noto Sans JP",sans-serif; }
 .brand .brand-mark { font-family:"Noto Sans KR",sans-serif; }

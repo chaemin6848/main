@@ -13,7 +13,7 @@ function el(tag, props = {}, text = "") { const node = document.createElement(ta
 function matches(word) {
   const query = state.query.trim().toLocaleLowerCase();
   const levelMatch = state.level === "all" || (state.level === "saved" ? savedWordKeys.has(KO.wordKey(word)) : word.level === state.level);
-  return levelMatch && (!query || [word.korean, word.word, word.reading, word.english, word.example, word.exampleKorean].some((value) => (value || "").toLocaleLowerCase().includes(query)));
+  return levelMatch && (!query || [word.korean, word.word, word.reading, word.english].some((value) => (value || "").toLocaleLowerCase().includes(query)));
 }
 function createWordRow(word) {
   const row = el("li");
@@ -31,11 +31,6 @@ function createWordRow(word) {
   const meaning = el("span", { className: "list-meaning", lang: "ja" }, word.reading && word.reading !== word.word ? `${word.word}（${word.reading}）` : word.word);
   meaning.append(el("small", {}, word.english || ""));
   row.append(checkbox, wordBlock, meaning);
-  if (word.example && word.exampleKorean) {
-    const example = el("div", { className: "list-example" });
-    example.append(el("p", { lang: "ko" }, word.exampleKorean), el("p", { lang: "ja" }, word.example));
-    row.append(example);
-  }
   row.classList.toggle("is-checked", checkbox.checked);
   return row;
 }

@@ -9,3 +9,4 @@ body { font-family:"Noto Sans JP","Noto Sans KR",sans-serif; }
 .other-meanings { display:block; margin-top:4px; color:var(--muted); font-size:13px; line-height:1.5; }
 .list-word { font-family:"Noto Sans KR",sans-serif; }
 .list-meaning { font-family:"Noto Sans JP",sans-serif; }
+.answer-reveal { grid-template-columns:1fr; }

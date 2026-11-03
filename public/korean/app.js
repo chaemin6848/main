@@ -46,11 +46,6 @@ function displayAnswer() {
   const others = KO.meanings(word.korean).slice(1);
   if (others.length) answer.append(el("span", { className: "other-meanings", lang: "ko" }, `ほかに · ${others.join(", ")}`));
   els.reveal.append(answer);
-  if (word.example && word.exampleKorean) {
-    const example = el("div", { className: "example" });
-    example.append(el("span", { className: "reveal-label" }, "例文"), el("p", { lang: "ko" }, word.exampleKorean), el("p", { lang: "ja" }, word.example));
-    els.reveal.append(example);
-  }
   els.reveal.hidden = false;
 }
 function updateSaveButton() {

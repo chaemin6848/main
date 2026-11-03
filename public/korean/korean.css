@@ -1,0 +1,11 @@
+/* 단어 한 장 일본어판 — /japanese/style.css 위에 덧붙이는 차이만 */
+body { font-family:"Noto Sans JP","Noto Sans KR",sans-serif; }
+[lang="ko"] { font-family:"Noto Sans KR","Noto Sans JP",sans-serif; }
+.brand .brand-mark { font-family:"Noto Sans KR",sans-serif; }
+#meaning { font-family:"Noto Sans JP",sans-serif; font-weight:700; }
+.ja-reading { min-height:19px; margin:8px 0 0; color:var(--muted); font-size:15px; }
+#answer { font-family:"Noto Sans KR","Noto Sans JP",sans-serif; }
+#japanese-word { font-family:"Noto Sans KR",sans-serif; }
+.other-meanings { display:block; margin-top:4px; color:var(--muted); font-size:13px; line-height:1.5; }
+.list-word { font-family:"Noto Sans KR",sans-serif; }
+.list-meaning { font-family:"Noto Sans JP",sans-serif; }

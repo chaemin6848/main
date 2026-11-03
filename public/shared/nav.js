@@ -221,6 +221,7 @@
   /* ---------- 공통 메뉴 ---------- */
   var NAMES = {
     "/japanese/": ["단어 한 장", "단어 한 장（韓国語のみ）", "단어 한 장 (Korean only)"],
+    "/korean/": ["단어 한 장 일본어판", "단어 한 장（韓国語単語クイズ）", "단어 한 장 (Korean quiz, Japanese UI)"],
     "/alarm/": ["일유알리미", "日留アラーム", "Japan Admissions Tracker"],
     "/politics/": ["나가타초 노트", "나가타초 노트（韓国語のみ）", "나가타초 노트 (Korean only)"],
     "/jeildang/": ["제1당", "第一党", "First Party"]
@@ -229,6 +230,7 @@
   // langs: 그 도구가 지원하는 언어. 고른 언어를 지원하지 않는 도구는 메뉴에서 뺀다 (지금 보고 있는 도구는 남긴다)
   var TOOLS = [
     { path: "/japanese/", glyph: "あ", accent: "#dfff70", langs: ["ko"] },
+    { path: "/korean/", glyph: "가", accent: "#dfff70", langs: ["ja"] },
     { path: "/alarm/", glyph: "留", accent: "#9fd8ff", langs: ["ko", "en"] },
     { path: "/politics/", glyph: "政", accent: "#ffb4a2", langs: ["ko"] },
     { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] }

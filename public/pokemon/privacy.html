@@ -169,11 +169,14 @@ const BACK={ko:"← 도감 도우미로 돌아가기",ja:"← 図鑑ヘルパー
 const TITLE={ko:"개인정보처리방침 · FRLG 관동도감 도우미",ja:"プライバシーポリシー · FRLG カントー図鑑ヘルパー",en:"Privacy Policy · FRLG Kanto Dex Helper"};
 function pick(){
   const h=location.hash.slice(1);if(["ko","ja","en"].includes(h))return h;
+  if(window.ND)return ND.lang;
   try{const s=JSON.parse(localStorage.getItem("frlg-dex-helper-v1")||"null");if(s&&["ko","ja","en"].includes(s.lang))return s.lang}catch(e){}
   const n=(navigator.language||"").toLowerCase();return n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":"en";
 }
 function show(){
   const l=pick();
+  // 공통 메뉴 언어와 맞춘다: #ja 같은 링크로 바꾸면 사이트 언어도 바꾼다
+  if(window.ND&&ND.lang!==l){if(location.hash.slice(1)===l){ND.setLang(l);return}}
   document.documentElement.lang=l;document.title=TITLE[l];document.getElementById("back").textContent=BACK[l];
   document.querySelectorAll("article").forEach(a=>a.hidden=a.dataset.l!==l);
   document.querySelectorAll(".seg a").forEach(a=>a.setAttribute("aria-current",a.dataset.l===l));

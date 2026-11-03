@@ -465,6 +465,8 @@ function fromCookie(){
 }
 if(!S||!S.fr){S=(consent==="yes"&&fromCookie())||fresh()}
 if(!LANGS.includes(S.lang))S.lang=detectLang();
+// 언어는 사이트 공통 메뉴(/shared/nav.js)의 선택을 따른다
+if(window.ND&&LANGS.includes(ND.lang))S.lang=ND.lang;
 delete S.hideSup;
 const save=()=>{
   lsSet(KEY,JSON.stringify(S));
@@ -632,7 +634,7 @@ let supHidden=false; // 닫아도 새로 들어오면 다시 보여요
 document.addEventListener("click",e=>{
   const pl=e.target.closest(".pill");
   if(pl){const v=pl.dataset.v,n=pl.dataset.n;if(S[v][n])delete S[v][n];else S[v][n]=1;save();render();return}
-  const lb=e.target.closest("#langSeg button");if(lb){S.lang=lb.dataset.l;save();applyLang();render();return}
+  const lb=e.target.closest("#langSeg button");if(lb){S.lang=lb.dataset.l;save();if(window.ND&&ND.lang!==S.lang){ND.setLang(S.lang);return}applyLang();render();return}
   const sb=e.target.closest("#saveSeg button");if(sb){S.save=sb.dataset.v;save();render();return}
   if(e.target.id==="tabPlan"){S.tab="plan";save();render();return}
   if(e.target.id==="tabDex"){S.tab="dex";save();render();return}

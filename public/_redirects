@@ -7,3 +7,13 @@
 /pokemon   /pokemon/   301
 /game      /jeildang/  301
 /game/*    /jeildang/:splat  301
+
+# 개인정보처리방침은 /privacy.html 하나로 합쳤다 (예전 도구별 주소)
+/japanese/privacy.html  /privacy?lang=ko  301
+/japanese/privacy       /privacy?lang=ko  301
+/korean/privacy.html    /privacy?lang=ja  301
+/korean/privacy         /privacy?lang=ja  301
+/politics/privacy.html  /privacy?lang=ko  301
+/politics/privacy       /privacy?lang=ko  301
+/pokemon/privacy.html   /privacy  301
+/pokemon/privacy        /privacy  301

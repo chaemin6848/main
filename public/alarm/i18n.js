@@ -3,6 +3,7 @@
 (function () {
   var EN = {
     /* head */
+    "개인정보처리방침": "Privacy policy",
     "일유알리미 | 2027년 4월 입학 일본 대학 유학생전형 일정": "Japan Admissions Tracker | April 2027 international student admission dates",
     "구제국대학, 소케이, MARCH, 칸칸도리츠 등 일본 대학 사비유학생전형의 출원·면접·합격발표 일정을 정리했습니다. 지망 학부만 골라 캘린더로 볼 수 있어요.": "Application, interview and result dates for privately financed international student admissions at Japan's former imperial universities, Waseda/Keio, MARCH, Kan-Kan-Do-Ritsu and more. Pick your target faculties and view them on a calendar.",
     "일유알리미 | 일본 대학 유학생전형 일정": "Japan Admissions Tracker | International student admission dates",

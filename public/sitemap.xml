@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://nihongodic.com/</loc></url>
+  <url><loc>https://nihongodic.com/privacy</loc></url>
   <url><loc>https://nihongodic.com/japanese/</loc></url>
   <url><loc>https://nihongodic.com/japanese/vocabulary-list</loc></url>
-  <url><loc>https://nihongodic.com/japanese/privacy</loc></url>
   <url><loc>https://nihongodic.com/korean/</loc></url>
   <url><loc>https://nihongodic.com/korean/vocabulary-list</loc></url>
-  <url><loc>https://nihongodic.com/korean/privacy</loc></url>
   <url><loc>https://nihongodic.com/alarm/</loc></url>
   <url><loc>https://nihongodic.com/politics/</loc></url>
-  <url><loc>https://nihongodic.com/politics/privacy</loc></url>
   <url><loc>https://nihongodic.com/jeildang/</loc></url>
   <url><loc>https://nihongodic.com/pokemon/</loc></url>
-  <url><loc>https://nihongodic.com/pokemon/privacy</loc></url>
 </urlset>

@@ -2940,6 +2940,10 @@ ND.add({
 "：決裁タブの「党の情報を変更」で、党名・党首名・スローガン・色・路線をすぐに変えられます。路線は四半期に1回だけで、変えると信頼 −5。",
 ": Use \"Edit party info\" on the Decisions tab to change your party's name, leader, slogan, colour and line right away. The line can change once per quarter, at a cost of trust −5."
 ],
+"개인정보처리방침": [
+"プライバシーポリシー",
+"Privacy policy"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

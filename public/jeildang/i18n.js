@@ -2928,9 +2928,9 @@ ND.add({
 "党の情報を変更しました。",
 "Party info updated."
 ],
-": 회원 누구나 개정안을 내고, 회원 과반이 찬성하면 바로 바뀝니다. 이름·대표 당·수반 후보와 가입·제명 결정 방식(대표가 결정 / 회원 과반 찬성), 표결 구속(연맹 합의 법안만 / 모든 안건에서 대표 당과 같은 표), 정원, 탈퇴 벌점을 정합니다.": [
-"：加盟党なら誰でも改正案を出せ、加盟党の過半数が賛成するとすぐに変わります。名前・代表党・首班候補、加入・除名の決め方（代表が決定 / 加盟党の過半数）、党議拘束（連盟合意法案のみ / 全議案で代表党と同じ票）、定員、脱退ペナルティを決めます。",
-": Any member can propose an amendment; it takes effect as soon as a majority of members agree. Covers the name, leader party and candidate, how admissions and expulsions are decided (leader / member majority), the voting bind (league bills only / every vote follows the leader), capacity and the leave penalty."
+": 회원 누구나 개정안을 내고, 회원 과반이 찬성하면 바로 바뀝니다. 이름·대표 당·수반 후보와 가입·제명 결정 방식(대표가 결정 / 회원 과반 찬성), 표결 구속(연맹 합의 법안만 / 모든 안건에서 대표 당과 같은 표), 정원, 탈퇴 벌점, 대통령을 뽑는 나라에서는 대선 후보(연맹 단일 후보 / 각자 출마)를 정합니다.": [
+"：加盟党なら誰でも改正案を出せ、加盟党の過半数が賛成するとすぐに変わります。名前・代表党・首班候補、加入・除名の決め方（代表が決定 / 加盟党の過半数）、党議拘束（連盟合意法案のみ / 全議案で代表党と同じ票）、定員、脱退ペナルティ、大統領を選ぶ国では大統領候補（連盟統一候補 / 各党が個別に出馬）を決めます。",
+": Any member can propose an amendment; it takes effect as soon as a majority of members agree. Covers the name, leader party and candidate, how admissions and expulsions are decided (leader / member majority), the voting bind (league bills only / every vote follows the leader), capacity, the leave penalty and, in countries that elect a president, the presidential candidate (joint / run separately)."
 ],
 "당 정보": [
 "党の情報",
@@ -2943,6 +2943,34 @@ ND.add({
 "개인정보처리방침": [
 "プライバシーポリシー",
 "Privacy policy"
+],
+"대선 후보 각자 출마": [
+"大統領候補は各党が個別に出馬",
+"each member runs its own presidential candidate"
+],
+"대선 후보 연맹 단일화": [
+"大統領候補を連盟で一本化",
+"joint presidential candidate"
+],
+"우리 당이 연맹 단일 후보라 각자 출마에 반대합니다.": [
+"自党が連盟の統一候補なので、個別出馬には反対です。",
+"We're the league's joint candidate, so we oppose running separately."
+],
+"우리 당도 따로 대선에 나갈 만합니다.": [
+"自党も単独で大統領選に出る力があります。",
+"We're strong enough to run our own candidate."
+],
+"연맹 단일 후보": [
+"連盟統一候補",
+"Joint candidate"
+],
+"각자 출마": [
+"各党が個別に出馬",
+"Run separately"
+],
+"대선 후보": [
+"大統領候補",
+"Presidential candidate"
 ],
 "단독 내각": [
 "単独内閣",
@@ -3097,6 +3125,7 @@ ND.pat([
 [/^대통령\ 당선:\ (.*?)$/,"大統領当選：$1","President elected: $1"],
 [/^연맹\ 이름\ 「(.*?)」$/,"連盟名「$1」","Federation name “$1”"],
 [/^「(.*?)」\ 가입\ 신청$/,"「$1」への加盟申請","request to join “$1”"],
+[/^·\ 대선\ 후보\ (.*?)$/,"· 大統領候補 $1","· Presidential candidate: $1"],
 [/^의석\ 배치:\ (.*?)$/,"議席配置：$1","Seat map: $1"],
 [/^AI\ 정당\ (.*?)곳$/,"AI政党 $1党","$1 AI parties"],
 [/^총선까지\ (.*?)분기$/,"総選挙まで$1四半期","$1 quarters to the election"],
@@ -3131,6 +3160,7 @@ ND.pat([
 [/^(.*?)\ (.*?)분기:\ (.*?)점$/,"$1 第$2四半期：$3点","$1 Q$2: $3 pts"],
 [/^(.*?)\ 시작:\ (.*?)%$/,"$1 開始：$2%","$1 start: $2%"],
 [/^(.*?)\ (.*?)분기:\ (.*?)%$/,"$1 第$2四半期：$3%","$1 Q$2: $3%"],
+[/^대선\ 후보\ (.*?)$/,"大統領候補 $1","Presidential candidate: $1"],
 [/^지역구\ (.*?)석$/,"選挙区$1議席","$1 district seats"],
 [/^(.*?)\ \/\ (.*?)분기$/,"$1 / $2四半期","Q$1 / $2"],
 [/^멀티\ 방\ (.*?)$/,"マルチルーム $1","Room $1"],

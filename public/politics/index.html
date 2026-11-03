@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>나가타초 노트</title>
+<meta name="description" content="다카이치 내각 언론사별 지지율, 중·참의원 의석, 일본 정치 개요와 칼럼·뉴스">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c211d'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E政%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="/shared/nav.js"></script>
+<div class="wrap">
+<div class="topbar">
+  <div class="account" id="account"></div>
+</div>
+  <header class="mast">
+    <h1><small>永田町ノート · 일본 정치 정리</small>나가타초 노트</h1>
+    <div class="mast-right">
+      <div class="meta">다카이치 내각 <b>출범 1년</b> · 데이터 기준 <b class="num">2026.10.30</b></div>
+    </div>
+  </header>
+
+  <div class="front">
+    <!-- 왼쪽: 칼럼 · 뉴스 -->
+    <div class="main">
+      <section aria-labelledby="h-news">
+        <div class="sec-head">
+          <h2 id="h-news">칼럼 · 뉴스<span class="jp">コラム・ニュース</span></h2>
+          <div class="tabs" role="group" aria-label="글 종류">
+            <button type="button" data-f="all" aria-pressed="true">전체</button>
+            <button type="button" data-f="column" aria-pressed="false">칼럼</button>
+            <button type="button" data-f="news" aria-pressed="false">뉴스</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="banner" id="setup-banner" hidden>Firebase 설정 전입니다. <code>firebase-config.js</code>에 프로젝트 값을 넣으면 로그인과 게시판이 작동합니다. (설정방법.md 참고)</div>
+          <div class="feed" id="feed"><p class="empty">글을 불러오는 중입니다.</p></div>
+          <p class="gate" id="gate">글을 올리려면 <a href="login.html">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.</p>
+          <details class="write" id="write" hidden>
+            <summary>글 올리기</summary>
+            <p class="note" id="f-note">올린 글은 관리자가 승인한 뒤 게시됩니다.</p>
+            <form class="post" id="post" novalidate>
+              <label for="f-type">종류<select id="f-type"><option value="news">뉴스</option><option value="column">칼럼</option></select></label>
+              <label for="f-date">날짜<input id="f-date" type="date"></label>
+              <label class="full" for="f-title">제목<input id="f-title" maxlength="120" required placeholder="예: 내각 지지율 42.4%로 최저"></label>
+              <label class="full" for="f-sum">본문 / 요약<textarea id="f-sum" maxlength="4000" placeholder="뉴스는 2~3문장 요약, 칼럼은 본문"></textarea></label>
+              <label for="f-src">출처 / 글쓴이<input id="f-src" maxlength="40" placeholder="時事通信"></label>
+              <label for="f-url">링크(선택)<input id="f-url" type="url" placeholder="https://"></label>
+              <button type="submit" id="f-btn">승인 요청</button>
+              <div class="status" id="f-status" role="status"></div>
+            </form>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <!-- 오른쪽: 지표 · 개요 -->
+    <aside class="side" aria-label="지표와 개요">
+      <details class="fold" data-key="approval" data-lab="h-approval">
+        <summary class="sec-head">
+          <h2 id="h-approval">내각 지지율<span class="jp">内閣支持率</span></h2>
+          <p>언론사별 월간 조사 (%)</p>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="panel">
+          <div class="chart-box"><canvas id="approval" aria-label="언론사별 다카이치 내각 지지율 추이 꺾은선 그래프" role="img"></canvas></div>
+          <div class="latest" id="latest"></div>
+          <p class="note">카드를 누르면 선을 켜고 끕니다. 조사 방식이 회사마다 달라 회사끼리 비교보다 각 선의 흐름을 보세요. 한 달에 두 번 조사하면 마지막 값. 마이니치 10월은 미반영.</p>
+        </div>
+      </details>
+
+      <details class="fold" data-key="seats" data-lab="h-seats">
+        <summary class="sec-head">
+          <h2 id="h-seats">국회 의석<span class="jp">会派別議席</span></h2>
+          <p>오른쪽 끝이 여당</p>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="panel">
+          <div class="house">
+            <h3>중의원<span class="jp">衆議院</span></h3>
+            <div class="sub">정수 465 · 과반 233 · 정당 기준 · 2026.10</div>
+            <svg class="hemi" id="hemi-lower" viewBox="0 0 400 214" role="img" aria-label="중의원 의석 반원 도표"></svg>
+            <div class="bloc" id="bloc-lower"></div>
+            <ul class="legend" id="leg-lower"></ul>
+          </div>
+          <div class="house">
+            <h3>참의원<span class="jp">参議院</span></h3>
+            <div class="sub">정수 248 · 과반 125 · 정당 기준 · 2026.10</div>
+            <svg class="hemi" id="hemi-upper" viewBox="0 0 400 214" role="img" aria-label="참의원 의석 반원 도표"></svg>
+            <div class="bloc" id="bloc-upper"></div>
+            <ul class="legend" id="leg-upper"></ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="fold" data-key="overview" data-lab="h-ov">
+        <summary class="sec-head">
+          <h2 id="h-ov">일본 정치 개요<span class="jp">政治の基本</span></h2>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="panel ov">
+          <article>
+            <h3>정치 체제</h3>
+            <dl class="facts">
+              <dt>정부</dt><dd>의원내각제. 국회가 총리를 지명</dd>
+              <dt>국회</dt><dd>중의원 465(소선거구 289 + 비례 176), 참의원 248</dd>
+              <dt>임기</dt><dd>중의원 4년(해산 있음), 참의원 6년(3년마다 절반 선출)</dd>
+              <dt>재가결</dt><dd>참의원 부결 법안도 중의원 3분의 2로 성립</dd>
+            </dl>
+          </article>
+          <article>
+            <h3>현 정권</h3>
+            <dl class="facts">
+              <dt>총리</dt><dd>다카이치 사나에(高市早苗), 첫 여성 총리</dd>
+              <dt>연립</dt><dd>자민당 + 일본유신회 (공명당은 2025.10 이탈)</dd>
+              <dt>제1야당</dt><dd>국민민주당 (양원 53석). 중도개혁연합은 2026.9 해산, 입헌계는 민주개혁회로, 공명계는 공명당으로</dd>
+              <dt>약점</dt><dd>참의원 여당 120석, 과반에 5석 부족</dd>
+            </dl>
+          </article>
+          <article>
+            <h3>최근 1년</h3>
+            <ul class="tl">
+              <li><span class="when">25.10.21</span>내각 출범, 지지율 60~70%대</li>
+              <li><span class="when">26.02.08</span>조기 총선, 자민 316석 전후 최다</li>
+              <li><span class="when">26.07</span>8개사 모두 지지율 최저치</li>
+              <li><span class="when">26.09.17</span>내각 개편, 반등 3%p 안팎</li>
+              <li><span class="when">26.09</span>중도개혁연합 해산, 야당 다시 분열</li>
+              <li class="now"><span class="when">26.10.14</span>야나 농림수산상 사임, 지지율 최저 경신</li>
+            </ul>
+          </article>
+          <article>
+            <h3>주요 쟁점</h3>
+            <ul>
+              <li>식료품 소비세 1% 인하(2년 한시)와 재정</li>
+              <li>물가·에너지 대책, 중동 정세</li>
+              <li>정치자금 미기재 의원의 각료 기용</li>
+              <li>황실전범 개정, 부수도(副首都) 구상</li>
+              <li>다음 참의원 선거: 2028년 7월</li>
+            </ul>
+          </article>
+        </div>
+      </details>
+    </aside>
+  </div>
+
+  <footer>
+    지지율 출처: KSI 政策ニュース 월간 정리(2025.11~2026.7), nippon.com 월간 정리, 교도·지지·FNN·아사히·마이니치 보도(2026.8~10). 의석: 2026년 10월 기준 정당별 의석(나무위키 ‘일본 국회’ 정리). 중의원 회파로는 공명·민주개혁회 통일회파 ‘중도’가 47석으로 야권 최대.
+    <ul>
+      <li><a href="https://www.policynews.jp/polls" target="_blank" rel="noopener">KSI 政策ニュース 世論調査</a></li>
+      <li><a href="https://www.nippon.com/ja/japan-data/h30028/" target="_blank" rel="noopener">nippon.com 9月報道8社調査</a></li>
+      <li><a href="https://www.jiji.com/jc/article?k=2026101500705&g=pol" target="_blank" rel="noopener">時事通信 10月世論調査</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/2026_Japanese_general_election" target="_blank" rel="noopener">2026 Japanese general election</a></li>
+    </ul>
+    <p style="margin:10px 0 0"><a href="privacy.html">개인정보처리방침</a></p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------- 지지율 ---------- */
+const months = ["25.10","25.11","25.12","26.1","26.2","26.3","26.4","26.5","26.6","26.7","26.8","26.9","26.10"];
+const outlets = [
+  {name:"요미우리", c:"--o1", v:[71,72,73,69,73,71,66,64,69,57,56,59,57]},
+  {name:"아사히",   c:"--o2", v:[68,69,68,67,63,61,64,60,60,53,53,51,50]},
+  {name:"마이니치", c:"--o3", v:[65,65,67,57,61,58,53,50,51,41,41,45,null]},
+  {name:"닛케이",   c:"--o4", v:[74,75,75,67,69,72,69,66,68,58,62,62,62]},
+  {name:"산케이",   c:"--o5", v:[75.4,75.2,75.9,70.8,72.0,67.1,70.2,68.0,65.3,61.6,62.5,61.6,62.6]},
+  {name:"교도",     c:"--o6", v:[64.4,69.9,67.5,63.6,67.3,64.1,63.8,61.3,55.8,53.7,50.2,53.4,49.1]},
+  {name:"NHK",      c:"--o7", v:[null,66,64,62,65,59,61,61,60,58,53,52.8,50.8]},
+  {name:"지지통신", c:"--o8", v:[null,63.8,59.9,61.0,63.8,59.3,59.1,59.4,54.3,49.0,48.4,44.1,42.4]},
+];
+let chart=null;
+const hidden = new Set();
+function lastIdx(a){for(let i=a.length-1;i>=0;i--) if(a[i]!=null) return i; return -1;}
+function buildChart(){
+  const el=document.getElementById("approval");
+  if(!window.Chart){el.parentElement.innerHTML='<p class="note">그래프 라이브러리를 불러오지 못했습니다. 아래 최신 수치를 참고하세요.</p>';return;}
+  const muted=css("--muted"), line=css("--line");
+  if(chart) chart.destroy();
+  chart=new Chart(el,{type:"line",
+    data:{labels:months,datasets:outlets.map((o,i)=>({label:o.name,data:o.v,borderColor:css(o.c),backgroundColor:css(o.c),
+      borderWidth:1.8,pointRadius:(ctx)=>ctx.dataIndex===lastIdx(o.v)?3.5:0,pointHoverRadius:4,tension:.25,spanGaps:true,hidden:hidden.has(i)}))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{itemSort:(a,b)=>b.parsed.y-a.parsed.y,callbacks:{title:t=>"20"+t[0].label.replace(".","년 ")+"월",label:c=>` ${c.dataset.label} ${c.parsed.y}%`}}},
+      scales:{y:{min:35,max:80,ticks:{color:muted,stepSize:10,callback:v=>v+"%",font:{family:"IBM Plex Mono",size:11}},grid:{color:line}},
+        x:{ticks:{color:muted,font:{family:"IBM Plex Mono",size:11},maxRotation:0,autoSkip:true,maxTicksLimit:7},grid:{display:false}}}}});
+}
+function buildLatest(){
+  const box=document.getElementById("latest"); box.textContent="";
+  outlets.forEach((o,i)=>{
+    const li=lastIdx(o.v); let pj=li-1; while(pj>=0&&o.v[pj]==null) pj--;
+    const cur=o.v[li], prev=pj>=0?o.v[pj]:null, d=prev==null?null:Math.round((cur-prev)*10)/10;
+    const b=document.createElement("button"); b.type="button"; b.setAttribute("aria-pressed",hidden.has(i)?"false":"true");
+    b.title=`${o.name} · 20${months[li].replace(".","년 ")}월 조사`;
+    b.innerHTML=`<span class="who"><i style="background:var(${o.c})"></i></span><span class="v num"></span><span class="d num"></span>`;
+    b.querySelector(".who").append(o.name+(li<months.length-1?` (${months[li].split(".")[1]}월)`:""));
+    b.querySelector(".v").textContent=cur+"%";
+    const de=b.querySelector(".d");
+    if(d==null){de.textContent="—";de.className="d num flat";}
+    else{de.textContent=(d>0?"▲":d<0?"▼":"–")+Math.abs(d)+"p";de.className="d num "+(d>0?"up":d<0?"down":"flat");}
+    b.addEventListener("click",()=>{hidden.has(i)?hidden.delete(i):hidden.add(i);b.setAttribute("aria-pressed",hidden.has(i)?"false":"true");
+      if(chart){chart.setDatasetVisibility(i,!hidden.has(i));chart.update();}});
+    box.append(b);
+  });
+}
+
+/* ---------- 의석 반원도 ---------- */
+const lower=[ // 왼쪽(야당) → 오른쪽(여당), 정당 기준
+  {n:"일본공산당",c:"--p-jcp",s:4},{n:"생명의당",c:"--p-inochi",s:1},{n:"민주개혁회",c:"--p-minkai",s:10},
+  {n:"중도개혁연합",c:"--p-cra",s:1},{n:"공명당",c:"--p-komei",s:28},{n:"국민민주당",c:"--p-dpp",s:28},
+  {n:"팀 미라이",c:"--p-mirai",s:11},{n:"참정당",c:"--p-sansei",s:15},
+  {n:"무소속",c:"--p-ind",s:15},{n:"공석",c:"--p-vac",s:1},
+  {n:"일본유신회",c:"--p-ishin",s:36,gov:1},{n:"자유민주당",c:"--p-ldp",s:315,gov:1}];
+const upper=[
+  {n:"일본공산당",c:"--p-jcp",s:7},{n:"사회민주당",c:"--p-sdp",s:2},{n:"생명의당",c:"--p-inochi",s:4},
+  {n:"입헌민주당",c:"--p-cdp",s:39},{n:"공명당",c:"--p-komei",s:21},{n:"국민민주당",c:"--p-dpp",s:25},
+  {n:"팀 미라이",c:"--p-mirai",s:1},{n:"참정당",c:"--p-sansei",s:15},{n:"일본보수당",c:"--p-hoshu",s:2},
+  {n:"무소속",c:"--p-ind",s:11},{n:"공석",c:"--p-vac",s:1},
+  {n:"일본유신회",c:"--p-ishin",s:19,gov:1},{n:"자유민주당",c:"--p-ldp",s:101,gov:1}];
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function hemi(svgId,parties,majority){
+  const svg=document.getElementById(svgId); svg.textContent="";
+  const total=parties.reduce((a,p)=>a+p.s,0), cx=200, cy=206, R=194, r0=76;
+  // 줄 수를 정해 줄 간격과 같은 줄 안 좌석 간격이 비슷해지게 한다
+  let rows=3, pitch=0;
+  for(let n=3;n<=24;n++){const gap=(R-r0)/(n-1), arc=Math.PI*n*(R+r0)/2/total, p=Math.min(gap,arc); if(p>pitch){pitch=p;rows=n;}}
+  const radii=[...Array(rows)].map((_,i)=>r0+(R-r0)*i/(rows-1));
+  const sumR=radii.reduce((a,b)=>a+b,0);
+  const counts=radii.map(r=>Math.floor(total*r/sumR));
+  let left=total-counts.reduce((a,b)=>a+b,0);
+  for(let i=rows-1;left>0;i=(i-1+rows)%rows){counts[i]++;left--;}
+  const seats=[];
+  radii.forEach((r,i)=>{const n=counts[i];for(let k=0;k<n;k++){const a=Math.PI*(1-(n===1?.5:k/(n-1)));seats.push({a,r});}});
+  seats.sort((p,q)=>q.a-p.a||p.r-q.r);
+  // 실제 가장 좁은 간격(같은 줄 이웃 좌석 거리)을 재서 점 크기를 정한다
+  let minD=(R-r0)/(rows-1);
+  radii.forEach((r,i)=>{if(counts[i]>1) minD=Math.min(minD,2*r*Math.sin(Math.PI/(counts[i]-1)/2));});
+  const dot=minD*0.4;
+  let idx=0;
+  parties.forEach(p=>{for(let k=0;k<p.s;k++){const s=seats[idx++];
+    svg.append(el("circle",{cx:(cx+s.r*Math.cos(s.a)).toFixed(2),cy:(cy-s.r*Math.sin(s.a)).toFixed(2),r:dot.toFixed(2),fill:`var(${p.c})`}));}});
+  svg.append(el("line",{x1:cx,y1:cy-r0+6,x2:cx,y2:cy-R-6,class:"maj"}));
+  const t=el("text",{x:cx,y:cy-22,"text-anchor":"middle",class:"total"});t.textContent=total;svg.append(t);
+  const cap=el("text",{x:cx,y:cy-4,"text-anchor":"middle",class:"cap"});cap.textContent=`과반 ${majority} · 점선이 절반`;svg.append(cap);
+}
+function legend(id,blocId,parties,majority,extra){
+  const ul=document.getElementById(id); ul.textContent="";
+  [...parties].sort((a,b)=>b.s-a.s).forEach(p=>{const li=document.createElement("li");
+    li.innerHTML=`<i style="background:var(${p.c})"></i><span class="nm"></span><span class="n"></span>`;
+    li.querySelector(".nm").textContent=p.n+(p.gov?" (여)":"");li.querySelector(".n").textContent=p.s;ul.append(li);});
+  const gov=parties.filter(p=>p.gov).reduce((a,p)=>a+p.s,0);
+  const b=document.getElementById(blocId); b.textContent="";
+  const add=t=>{const s=document.createElement("span");s.textContent=t;b.append(s);};
+  add(`여당 ${gov}석`); add(gov>=majority?`과반 +${gov-majority}`:`과반까지 ${majority-gov}석 부족`);
+  if(extra) add(extra(gov));
+}
+function drawAll(){ hemi("hemi-lower",lower,233); hemi("hemi-upper",upper,125); }
+
+document.querySelectorAll("details.fold").forEach(d=>{
+  // 처음 방문하면 지지율만 펼쳐 첫 화면이 비어 보이지 않게 한다
+  let s=null; try{s=localStorage.getItem("fold:"+d.dataset.key);}catch(e){}
+  d.open = s===null ? d.dataset.key==="approval" : s==="1";
+  d.addEventListener("toggle",()=>{
+    try{localStorage.setItem("fold:"+d.dataset.key,d.open?"1":"0");}catch(e){}
+    if(d.open && d.dataset.key==="approval" && chart) requestAnimationFrame(()=>chart.resize());
+  });
+});
+buildLatest(); buildChart(); drawAll();
+legend("leg-lower","bloc-lower",lower,233,g=>g>=310?"3분의 2 확보":"3분의 2 미달");
+legend("leg-upper","bloc-upper",upper,125);
+const mq=matchMedia("(prefers-color-scheme: dark)"); mq.addEventListener?.("change",buildChart);
+new MutationObserver(buildChart).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
+<script type="module">
+import { configured, db, can, today, watchUser, renderAccount } from "./common.js";
+import { collection, query, orderBy, limit, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const feed = document.getElementById("feed");
+const form = document.getElementById("post"), st = document.getElementById("f-status"), btn = document.getElementById("f-btn");
+const gate = document.getElementById("gate"), write = document.getElementById("write"), note = document.getElementById("f-note");
+const accountEl = document.getElementById("account");
+document.getElementById("f-date").value = today();
+
+let me = null, profile = null, docs = [], filter = "all", loaded = false;
+const role = () => (profile && profile.role) || "none";
+
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  filter = b.dataset.f;
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  render();
+}));
+
+function msg(text) { feed.textContent = ""; const p = document.createElement("p"); p.className = "empty"; p.textContent = text; feed.append(p); }
+
+// 방문마다 글 수만큼 읽기 횟수가 쓰이므로 처음에는 30건만 읽고, 더 보기를 누를 때 늘린다
+const FEED_PAGE = 30;
+let feedLimit = FEED_PAGE, stopFeed = null;
+function subscribeFeed() {
+  if (stopFeed) stopFeed();
+  stopFeed = onSnapshot(query(collection(db, "news"), orderBy("date", "desc"), limit(feedLimit)),
+    s => { docs = s.docs; loaded = true; render(); },
+    e => msg("글을 불러오지 못했습니다: " + (e.message || e.code)));
+}
+
+function render() {
+  if (!configured) { msg("Firebase 설정을 마치면 칼럼과 뉴스가 여기에 표시됩니다."); return; }
+  if (!loaded) { msg("글을 불러오는 중입니다."); return; }
+  const list = docs.filter(d => filter === "all" || (d.data().type || "news") === filter);
+  if (!list.length) { msg(filter === "column" ? "아직 칼럼이 없습니다." : "아직 올라온 글이 없습니다."); return; }
+  feed.textContent = "";
+  const editor = can.publish(role());
+  list.forEach(d => {
+    const x = d.data(), isCol = (x.type || "news") === "column";
+    const art = document.createElement("article"); art.className = "item" + (isCol ? " col" : "");
+    const dt = document.createElement("div"); dt.className = "date"; dt.textContent = (x.date || "").replace(/-/g, ".");
+    const body = document.createElement("div");
+    const h = document.createElement("h3");
+    if (x.url && /^https?:\/\//.test(x.url)) { const a = document.createElement("a"); a.href = x.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = x.title || "(제목 없음)"; h.append(a); }
+    else h.textContent = x.title || "(제목 없음)";
+    body.append(h);
+    (x.summary || "").split(/\n{2,}/).filter(Boolean).forEach(par => { const p = document.createElement("p"); p.textContent = par; body.append(p); });
+    const foot = document.createElement("div"); foot.className = "foot";
+    const tag = document.createElement("span"); tag.className = "tag" + (isCol ? " col" : ""); tag.textContent = isCol ? "칼럼" : "뉴스"; foot.append(tag);
+    if (x.source) { const s = document.createElement("span"); s.textContent = (isCol ? "글 · " : "출처 · ") + x.source; foot.append(s); }
+    if (editor) {
+      const del = document.createElement("button"); del.type = "button"; del.className = "del"; del.textContent = "삭제";
+      let armed = false;
+      del.addEventListener("click", async () => {
+        if (!armed) { armed = true; del.textContent = "한 번 더 누르면 삭제"; setTimeout(() => { armed = false; del.textContent = "삭제"; }, 3000); return; }
+        try { await deleteDoc(doc(db, "news", d.id)); } catch (e) { del.textContent = "삭제 권한이 없습니다"; }
+      });
+      const ed = document.createElement("a"); ed.className = "del"; ed.href = "admin.html?edit=" + encodeURIComponent(d.id); ed.textContent = "수정";
+      foot.append(ed);
+      foot.append(del);
+    }
+    body.append(foot); art.append(dt, body); feed.append(art);
+  });
+  if (docs.length === feedLimit) {
+    const more = document.createElement("button"); more.type = "button"; more.className = "btn"; more.textContent = "더 보기";
+    more.addEventListener("click", () => { more.disabled = true; feedLimit += FEED_PAGE; subscribeFeed(); });
+    feed.append(more);
+  }
+}
+
+function updateGate() {
+  const r = role();
+  write.hidden = true; gate.hidden = false;
+  if (!configured) { gate.textContent = "Firebase 설정 후 글을 올릴 수 있습니다."; return; }
+  if (!me) { gate.innerHTML = '글을 올리려면 <a href="login.html">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.'; return; }
+  if (r === "blocked") { gate.textContent = "이 계정은 글을 올릴 수 없습니다. 관리자에게 문의하세요."; return; }
+  if (!can.submit(r)) { gate.textContent = "가입 승인 대기 중입니다. 관리자가 승인하면 글을 올릴 수 있습니다."; return; }
+  gate.hidden = true; write.hidden = false;
+  if (can.publish(r)) { btn.textContent = "바로 게재"; note.textContent = "편집자·관리자가 올린 글은 바로 게재됩니다. 회원이 보낸 글은 관리자 페이지에서 승인하세요."; }
+  else { btn.textContent = "승인 요청"; note.textContent = "올린 글은 관리자가 승인하면 이 페이지에 게시됩니다."; }
+}
+
+if (!configured) {
+  document.getElementById("setup-banner").hidden = false;
+  renderAccount(accountEl, null, null); render(); updateGate();
+} else {
+  subscribeFeed();
+  watchUser((u, p) => { me = u; profile = p; renderAccount(accountEl, u, p); updateGate(); render(); });
+}
+
+form.addEventListener("submit", async ev => {
+  ev.preventDefault(); st.className = "status";
+  const title = document.getElementById("f-title").value.trim();
+  if (!title) { st.textContent = "제목을 입력하세요."; st.className = "status err"; return; }
+  const url = document.getElementById("f-url").value.trim();
+  if (url && !/^https?:\/\//.test(url)) { st.textContent = "링크는 https:// 로 시작해야 합니다."; st.className = "status err"; return; }
+  const r = role();
+  if (!me || !can.submit(r)) { st.textContent = "글을 올릴 권한이 없습니다."; st.className = "status err"; return; }
+  btn.disabled = true; st.textContent = "올리는 중…";
+  const rec = {
+    type: document.getElementById("f-type").value, title,
+    summary: document.getElementById("f-sum").value.trim(),
+    source: document.getElementById("f-src").value.trim(), url,
+    date: document.getElementById("f-date").value || today(),
+    authorUid: me.uid, authorName: profile?.name || me.email, createdAt: serverTimestamp(),
+  };
+  try {
+    if (can.publish(r)) await addDoc(collection(db, "news"), rec);
+    else await addDoc(collection(db, "submissions"), { ...rec, status: "pending" });
+    form.reset(); document.getElementById("f-date").value = today();
+    st.textContent = can.publish(r) ? "게재했습니다." : "접수했습니다. 관리자가 승인하면 게시됩니다.";
+  } catch (e) { st.textContent = "올리지 못했습니다. 권한을 확인하세요."; st.className = "status err"; }
+  finally { btn.disabled = false; }
+});
+</script>
+</body>
+</html>

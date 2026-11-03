@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Privacy · FRLG Kanto Dex Helper</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+KR:wght@400;600&family=Noto+Sans+JP:wght@400;600&display=swap">
+<style>
+:root{--bg:#f5f3ef;--surface:#fff;--fg:#26221f;--muted:#776f68;--line:#e4ddd5;--accent:#c8323c;--fill:#fff3b0;--fill-fg:#26221f;
+  --f-display:"DotGothic16","IBM Plex Sans KR",monospace;--f-body:"IBM Plex Sans KR","Noto Sans JP",system-ui,sans-serif}
+html[lang="ja"]{--f-body:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#181614;--surface:#22201d;--fg:#eee8e2;--muted:#a39a92;--line:#38332e;--accent:#ff6b72;--fill:#5a4d14;--fill-fg:#fff3b0;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.7;font-size:15px}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 56px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+a{color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg a{font-size:.8rem;padding:4px 10px;color:var(--muted);text-decoration:none}
+.seg a[aria-current="true"]{background:var(--fg);color:var(--bg)}
+h1{font-family:var(--f-display);font-weight:400;font-size:1.4rem;margin:16px 0 4px;text-wrap:balance}
+.date{color:var(--muted);font-size:.85rem;margin:0 0 20px}
+h2{font-size:1rem;margin:28px 0 6px}
+p,li{max-width:65ch}
+ul{padding-left:1.2em}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.88rem;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--bg)}
+code{font-size:.85em;background:var(--surface);border:1px solid var(--line);padding:0 4px;border-radius:3px}
+.fill{background:var(--fill);color:var(--fill-fg);padding:0 4px;border-radius:3px}
+.small{margin-top:32px;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<script src="/shared/nav.js"></script>
+<div class="wrap">
+<div class="nav">
+  <a href="index.html" id="back">←</a>
+  <nav class="seg" aria-label="Language">
+    <a href="#ko" data-l="ko" lang="ko">한국어</a><a href="#ja" data-l="ja" lang="ja">日本語</a><a href="#en" data-l="en" lang="en">English</a>
+  </nav>
+</div>
+<article data-l="ko" lang="ko">
+<h1>개인정보처리방침</h1>
+<p class="date">시행일 2026년 10월 17일</p>
+
+<p>FRLG 관동도감 도우미(이하 “이 사이트”)는 「개인정보 보호법」에 따라 이용자의 정보를 어떻게 다루는지 아래와 같이 알립니다. 이 사이트는 회원가입이나 로그인이 없고, 이용자가 입력한 체크 기록을 운영자 서버로 보내지 않습니다.</p>
+
+<h2>1. 수집하는 개인정보</h2>
+<p>이 사이트는 이름, 이메일, 연락처 등 개인을 알아볼 수 있는 정보를 수집하지 않습니다. 도감 체크 기록은 이용자 기기 안에만 저장되며 운영자는 그 내용을 볼 수 없습니다.</p>
+
+<h2>2. 기기에 저장하는 정보</h2>
+<div class="tbl"><table>
+<tr><th>이름</th><th>저장 방식</th><th>내용 및 목적</th><th>보관 기간</th></tr>
+<tr><td><code>frlg-dex-helper-v1</code></td><td>브라우저 저장소 (localStorage)</td><td>파이어레드·리프그린 등록 체크, 선택한 세이브·탭·필터. 기능 제공에 꼭 필요한 기본 저장</td><td>이용자가 지울 때까지</td></tr>
+<tr><td><code>frlg-cookie-consent</code></td><td>브라우저 저장소, 동의 시 쿠키</td><td>쿠키 허용·거부 선택 기록</td><td>이용자가 지울 때까지 (쿠키는 1년)</td></tr>
+<tr><td><code>frlg_dex</code></td><td>쿠키 (동의한 경우에만)</td><td>체크 기록의 백업 사본. 브라우저 저장소가 지워졌을 때 복원용</td><td>마지막 저장 후 1년</td></tr>
+</table></div>
+<p>쿠키는 이 사이트 주소에서만 읽히는 퍼스트파티 쿠키이며, 광고·분석·추적 목적의 쿠키는 쓰지 않습니다. 쿠키 내용은 페이지를 불러올 때 이 사이트를 호스팅하는 서버에 함께 전송되지만, 운영자는 이를 저장하거나 이용하지 않습니다.</p>
+
+<h2>3. 쿠키 동의와 철회</h2>
+<ul>
+<li>처음 방문하면 쿠키 저장 여부를 묻습니다. 거부해도 모든 기능을 그대로 쓸 수 있습니다.</li>
+<li>도우미 화면 맨 아래 <b>쿠키 설정</b>에서 언제든 바꿀 수 있습니다. 거부로 바꾸면 <code>frlg_dex</code> 쿠키를 즉시 삭제합니다.</li>
+<li>브라우저 설정의 “인터넷 사용 기록 삭제” 또는 “사이트 데이터 삭제”로 위 정보를 모두 지울 수 있습니다.</li>
+</ul>
+
+<h2>4. 외부 서비스</h2>
+<ul>
+<li><b>Google Fonts</b>: 글꼴을 불러오기 위해 이용자 브라우저가 Google 서버에 접속하며, 이때 IP 주소와 브라우저 정보가 Google에 전달될 수 있습니다. <a href="https://policies.google.com/privacy" rel="noopener">Google 개인정보처리방침</a></li>
+<li><b>호스팅 서비스</b>: 이 사이트는 <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare Pages</a>에서 제공되며, 해당 업체가 보안·운영 목적으로 접속 IP와 접속 시각 등 서버 로그를 남길 수 있습니다. 운영자는 이 로그를 따로 수집하거나 분석하지 않습니다.</li>
+</ul>
+
+<h2>5. 후원</h2>
+<p>후원 버튼을 누르면 외부 후원 사이트로 이동합니다. 결제 정보와 후원자 정보는 그 사이트가 처리하며, 이 사이트는 어떤 정보도 받거나 저장하지 않습니다. 해당 사이트의 개인정보처리방침이 적용됩니다.</p>
+<h2>6. 제3자 제공 및 위탁</h2>
+<p>운영자는 이용자 정보를 수집하지 않으므로 제3자에게 제공하거나 처리를 위탁하는 일이 없습니다.</p>
+
+<h2>7. 이용자의 권리</h2>
+<p>저장된 정보는 모두 이용자 기기에 있으므로, 이용자가 직접 확인·삭제할 수 있습니다. 도우미 화면의 <b>체크 전부 지우기</b>로 체크 기록을, 브라우저 설정으로 저장소와 쿠키 전체를 지울 수 있습니다.</p>
+
+<h2>8. 문의처</h2>
+<p>운영자: 아뜰 (attl)<br>이메일: <a href="mailto:pepcy011@icloud.com">pepcy011@icloud.com</a></p>
+
+<h2>9. 방침 변경</h2>
+<p>이 방침이 바뀌면 이 페이지에 시행일과 함께 공지합니다.</p>
+
+<p class="small">포켓몬 및 관련 명칭의 권리는 Nintendo, Creatures Inc., GAME FREAK inc.에 있습니다. 이 사이트는 비공식 팬 제작 도구입니다.</p>
+</article>
+<article data-l="ja" lang="ja" hidden>
+<h1>プライバシーポリシー</h1>
+<p class="date">施行日 2026年10月17日</p>
+<p>FRLG カントー図鑑ヘルパー（以下「本サイト」）における利用者情報の取り扱いを以下のとおり定めます。本サイトには会員登録やログインがなく、利用者が入力したチェック記録を運営者のサーバーへ送信することはありません。</p>
+<h2>1. 取得する個人情報</h2>
+<p>本サイトは氏名、メールアドレス、連絡先など個人を識別できる情報を取得しません。図鑑のチェック記録は利用者の端末内にのみ保存され、運営者がその内容を見ることはできません。</p>
+<h2>2. 端末に保存する情報</h2>
+<div class="tbl"><table>
+<tr><th>名前</th><th>保存方法</th><th>内容と目的</th><th>保存期間</th></tr>
+<tr><td><code>frlg-dex-helper-v1</code></td><td>ブラウザの保存領域（localStorage）</td><td>ファイアレッド・リーフグリーンの登録チェック、選択中のセーブ・タブ・フィルター・表示言語。機能の提供に必要な基本の保存</td><td>利用者が削除するまで</td></tr>
+<tr><td><code>frlg-cookie-consent</code></td><td>ブラウザの保存領域、同意時はクッキー</td><td>クッキーの許可・拒否の選択</td><td>利用者が削除するまで（クッキーは1年）</td></tr>
+<tr><td><code>frlg_dex</code></td><td>クッキー（同意した場合のみ）</td><td>チェック記録のバックアップ。ブラウザの保存領域が消えたときの復元用</td><td>最後の保存から1年</td></tr>
+</table></div>
+<p>クッキーは本サイトのアドレスでのみ読み取られるファーストパーティクッキーで、広告・分析・追跡目的のクッキーは使用しません。クッキーはページ読み込み時に本サイトをホスティングするサーバーへ送信されますが、運営者はこれを保存・利用しません。</p>
+<h2>3. クッキーの同意と撤回</h2>
+<ul>
+<li>初回訪問時にクッキー保存の可否をお尋ねします。拒否してもすべての機能を利用できます。</li>
+<li>ヘルパー画面下部の<b>クッキー設定</b>からいつでも変更できます。拒否に変更すると <code>frlg_dex</code> クッキーをすぐに削除します。</li>
+<li>ブラウザ設定の「閲覧履歴の削除」や「サイトデータの削除」で上記の情報をすべて消去できます。</li>
+</ul>
+<h2>4. 外部サービス</h2>
+<ul>
+<li><b>Google Fonts</b>：フォントを読み込むため、利用者のブラウザが Google のサーバーに接続し、その際に IP アドレスやブラウザ情報が Google に送信される場合があります。<a href="https://policies.google.com/privacy?hl=ja" rel="noopener">Google プライバシーポリシー</a></li>
+<li><b>ホスティングサービス</b>：本サイトは <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare Pages</a> で提供されており、同事業者がセキュリティ・運用目的で接続元 IP や接続日時などのサーバーログを記録する場合があります。運営者がこのログを独自に取得・分析することはありません。</li>
+</ul>
+<h2>5. 支援</h2>
+<p>支援ボタンを押すと外部の支援サイトに移動します。決済情報や支援者の情報はそのサイトが取り扱い、本サイトが情報を受け取ったり保存したりすることはありません。移動先サイトのプライバシーポリシーが適用されます。</p>
+<h2>6. 第三者提供・委託</h2>
+<p>運営者は利用者情報を取得しないため、第三者への提供や取り扱いの委託は行いません。</p>
+<h2>7. 利用者の権利</h2>
+<p>保存された情報はすべて利用者の端末にあるため、利用者自身で確認・削除できます。ヘルパー画面の<b>チェックをすべて消す</b>でチェック記録を、ブラウザ設定で保存領域とクッキーをすべて消去できます。</p>
+<h2>8. お問い合わせ</h2>
+<p>運営者：アトル（attl）<br>メール：<a href="mailto:pepcy011@icloud.com">pepcy011@icloud.com</a></p>
+<h2>9. 改定</h2>
+<p>本ポリシーを改定する場合は、施行日とともにこのページでお知らせします。</p>
+<p class="small">ポケモンおよび関連名称の権利は Nintendo、Creatures Inc.、GAME FREAK inc. に帰属します。本サイトは非公式のファン制作ツールです。</p>
+</article>
+<article data-l="en" lang="en" hidden>
+<h1>Privacy Policy</h1>
+<p class="date">Effective October 17, 2026</p>
+<p>This policy explains how FRLG Kanto Dex Helper (“this site”) handles information. This site has no accounts or sign-in, and the checks you enter are never sent to the operator's server.</p>
+<h2>1. Personal information we collect</h2>
+<p>None. This site does not collect your name, email address, contact details or anything else that identifies you. Your Pokédex checks are stored only on your device, and the operator cannot see them.</p>
+<h2>2. What is stored on your device</h2>
+<div class="tbl"><table>
+<tr><th>Name</th><th>Where</th><th>What and why</th><th>How long</th></tr>
+<tr><td><code>frlg-dex-helper-v1</code></td><td>Browser storage (localStorage)</td><td>Your FireRed and LeafGreen checks and your selected save, tab, filter and language. Needed for the site to work</td><td>Until you delete it</td></tr>
+<tr><td><code>frlg-cookie-consent</code></td><td>Browser storage; also a cookie if you allow cookies</td><td>Whether you allowed or declined the cookie</td><td>Until you delete it (cookie: 1 year)</td></tr>
+<tr><td><code>frlg_dex</code></td><td>Cookie (only if you allow it)</td><td>A backup copy of your checks, used to restore them if browser storage is cleared</td><td>1 year from the last save</td></tr>
+</table></div>
+<p>These are first-party cookies readable only by this site. No advertising, analytics or tracking cookies are used. Cookies are sent to the server hosting this site when a page loads, but the operator does not store or use them.</p>
+<h2>3. Consent and withdrawal</h2>
+<ul>
+<li>On your first visit you are asked whether to allow the cookie. Every feature works if you decline.</li>
+<li>You can change your choice at any time with <b>Cookie settings</b> at the bottom of the helper. Switching to decline deletes the <code>frlg_dex</code> cookie immediately.</li>
+<li>You can delete all of this data by clearing browsing data or site data in your browser settings.</li>
+</ul>
+<h2>4. Third-party services</h2>
+<ul>
+<li><b>Google Fonts</b>: to load fonts, your browser connects to Google's servers, which may receive your IP address and browser information. <a href="https://policies.google.com/privacy?hl=en" rel="noopener">Google Privacy Policy</a></li>
+<li><b>Hosting</b>: this site is served by <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare Pages</a>, which may keep server logs such as IP addresses and access times for security and operations. The operator does not collect or analyse these logs.</li>
+</ul>
+<h2>5. Tips</h2>
+<p>Tip buttons take you to an external tipping site. Payment and supporter details are handled by that site; this site receives and stores nothing. That site's own privacy policy applies.</p>
+<h2>6. Sharing</h2>
+<p>Because the operator collects no user information, none is shared with or processed by third parties on the operator's behalf.</p>
+<h2>7. Your rights</h2>
+<p>All stored data is on your own device, so you can view and delete it yourself: use <b>Clear all checks</b> in the helper for your checks, or your browser settings for storage and cookies.</p>
+<h2>8. Contact</h2>
+<p>Operator: attl<br>Email: <a href="mailto:pepcy011@icloud.com">pepcy011@icloud.com</a></p>
+<h2>9. Changes</h2>
+<p>If this policy changes, the update will be posted on this page with a new effective date.</p>
+<p class="small">Pokémon and related names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. This site is an unofficial fan-made tool.</p>
+</article>
+</div>
+<script>
+const BACK={ko:"← 도감 도우미로 돌아가기",ja:"← 図鑑ヘルパーに戻る",en:"← Back to the Dex Helper"};
+const TITLE={ko:"개인정보처리방침 · FRLG 관동도감 도우미",ja:"プライバシーポリシー · FRLG カントー図鑑ヘルパー",en:"Privacy Policy · FRLG Kanto Dex Helper"};
+function pick(){
+  const h=location.hash.slice(1);if(["ko","ja","en"].includes(h))return h;
+  try{const s=JSON.parse(localStorage.getItem("frlg-dex-helper-v1")||"null");if(s&&["ko","ja","en"].includes(s.lang))return s.lang}catch(e){}
+  const n=(navigator.language||"").toLowerCase();return n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":"en";
+}
+function show(){
+  const l=pick();
+  document.documentElement.lang=l;document.title=TITLE[l];document.getElementById("back").textContent=BACK[l];
+  document.querySelectorAll("article").forEach(a=>a.hidden=a.dataset.l!==l);
+  document.querySelectorAll(".seg a").forEach(a=>a.setAttribute("aria-current",a.dataset.l===l));
+}
+window.addEventListener("hashchange",show);show();
+</script>
+</body>
+</html>

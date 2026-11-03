@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>로그인 · 나가타초 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="/shared/nav.js"></script>
+<div class="auth-wrap">
+  <header class="mast">
+    <h1><small>永田町ノート · 일본 정치 정리</small><a href="index.html" style="color:inherit;text-decoration:none">나가타초 노트</a></h1>
+  </header>
+
+  <div class="banner" id="setup-banner" hidden>Firebase 설정 전이라 로그인할 수 없습니다. <code>firebase-config.js</code>를 먼저 채워 주세요.</div>
+
+  <div class="panel" id="signed-in" hidden>
+    <p style="margin:0 0 6px"><b id="si-name"></b> 님으로 로그인되어 있습니다.</p>
+    <p class="note" id="si-state" style="margin:0 0 14px"></p>
+    <div class="row-actions">
+      <a class="btn primary" href="index.html">홈으로</a>
+      <a class="btn" href="admin.html" id="si-admin" hidden>관리자 페이지</a>
+      <button class="btn" type="button" id="si-out">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="panel" id="forms">
+    <div class="auth-tabs" role="tablist">
+      <button type="button" role="tab" id="t-login" aria-selected="true" aria-controls="login">로그인</button>
+      <button type="button" role="tab" id="t-signup" aria-selected="false" aria-controls="signup">회원가입</button>
+    </div>
+
+    <form class="stack" id="login" novalidate>
+      <label for="l-email">이메일<input id="l-email" type="email" autocomplete="email" required></label>
+      <label for="l-pw">비밀번호<input id="l-pw" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit" id="l-btn">로그인</button>
+      <button class="linkish" type="button" id="l-reset">비밀번호를 잊었어요</button>
+      <div class="status" id="l-status" role="status"></div>
+    </form>
+
+    <form class="stack" id="signup" novalidate hidden>
+      <label for="s-name">이름(활동명)<input id="s-name" maxlength="30" autocomplete="nickname" required></label>
+      <label for="s-email">이메일<input id="s-email" type="email" autocomplete="email" required></label>
+      <label for="s-pw">비밀번호 (6자 이상)<input id="s-pw" type="password" autocomplete="new-password" required></label>
+      <label for="s-pw2">비밀번호 확인<input id="s-pw2" type="password" autocomplete="new-password" required></label>
+      <p class="note" style="margin:0">이메일과 이름은 회원 식별과 가입 승인에 쓰고 탈퇴 요청 시까지 보관합니다. 저장은 Google Firebase에 맡기며 국외 서버를 이용할 수 있습니다. 동의하지 않으면 가입만 할 수 없고 글 읽기는 그대로 됩니다. 만 14세 미만은 가입할 수 없습니다. <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a></p>
+      <label for="s-agree" style="flex-direction:row;align-items:flex-start;gap:8px;color:var(--ink)"><input id="s-agree" type="checkbox" required style="width:auto;margin-top:3px">개인정보 수집·이용에 동의하며 만 14세 이상입니다. (필수)</label>
+      <button class="btn primary" type="submit" id="s-btn">가입 신청</button>
+      <p class="note" style="margin:0">가입하면 관리자 승인 후에 글을 올릴 수 있습니다. 승인 전에도 사이트는 볼 수 있어요.</p>
+      <div class="status" id="s-status" role="status"></div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { configured, auth, db, ROLES, can, watchUser, logout, authErrorText } from "./common.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const say = (el, t, err) => { el.textContent = t; el.className = "status" + (err ? " err" : ""); };
+let signingUp = false;
+
+function tab(which) {
+  const login = which === "login";
+  $("t-login").setAttribute("aria-selected", login); $("t-signup").setAttribute("aria-selected", !login);
+  $("login").hidden = !login; $("signup").hidden = login;
+}
+$("t-login").addEventListener("click", () => tab("login"));
+$("t-signup").addEventListener("click", () => tab("signup"));
+if (location.hash === "#signup") tab("signup");
+
+if (!configured) {
+  $("setup-banner").hidden = false;
+  document.querySelectorAll("#forms button, #forms input").forEach(e => e.disabled = true);
+} else {
+  watchUser((u, p) => {
+    $("signed-in").hidden = !u; $("forms").hidden = !!u;
+    if (!u) return;
+    // 가입 중 프로필 저장이 실패한 계정은 다음 로그인 때 프로필을 다시 만들어 승인 목록에 올린다
+    if (!p && !signingUp) setDoc(doc(db, "users", u.uid), { email: u.email, name: (u.displayName || u.email).slice(0, 30), role: "pending", createdAt: serverTimestamp() }).catch(() => {});
+    const r = p?.role || "pending";
+    $("si-name").textContent = p?.name || u.displayName || u.email;
+    $("si-state").textContent = "현재 권한: " + (ROLES[r] || r) + (r === "pending" ? " · 관리자가 가입을 승인하면 글을 올릴 수 있습니다." : r === "blocked" ? " · 글을 올릴 수 없는 계정입니다." : "");
+    $("si-admin").hidden = !can.publish(r);
+  });
+  $("si-out").addEventListener("click", () => logout());
+}
+
+$("login").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const email = $("l-email").value.trim(), pw = $("l-pw").value;
+  if (!email || !pw) return say($("l-status"), "이메일과 비밀번호를 입력하세요.", true);
+  $("l-btn").disabled = true; say($("l-status"), "로그인 중…");
+  try { await signInWithEmailAndPassword(auth, email, pw); say($("l-status"), ""); }
+  catch (e) { say($("l-status"), authErrorText(e), true); }
+  finally { $("l-btn").disabled = false; }
+});
+
+$("l-reset").addEventListener("click", async () => {
+  const email = $("l-email").value.trim();
+  if (!email) return say($("l-status"), "위 칸에 이메일을 먼저 입력하세요.", true);
+  try { await sendPasswordResetEmail(auth, email); say($("l-status"), "비밀번호 재설정 메일을 보냈습니다. 메일함을 확인하세요."); }
+  catch (e) { say($("l-status"), authErrorText(e), true); }
+});
+
+$("signup").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const name = $("s-name").value.trim(), email = $("s-email").value.trim(), pw = $("s-pw").value;
+  if (!name) return say($("s-status"), "이름을 입력하세요.", true);
+  if (pw !== $("s-pw2").value) return say($("s-status"), "비밀번호 확인이 일치하지 않습니다.", true);
+  if (!$("s-agree").checked) return say($("s-status"), "개인정보 수집·이용에 동의해야 가입할 수 있습니다.", true);
+  $("s-btn").disabled = true; say($("s-status"), "가입 신청 중…");
+  signingUp = true;
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, "users", cred.user.uid), { email: cred.user.email, name, role: "pending", createdAt: serverTimestamp() });
+    say($("s-status"), "가입 신청이 접수됐습니다. 관리자 승인을 기다려 주세요.");
+  } catch (e) { say($("s-status"), authErrorText(e), true); }
+  finally { signingUp = false; $("s-btn").disabled = false; }
+});
+</script>
+</body>
+</html>

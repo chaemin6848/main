@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>관리자 · 나가타초 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="/shared/nav.js"></script>
+<div class="wrap admin-wrap">
+<div class="topbar">
+  <div class="account" id="account"></div>
+</div>
+  <header class="mast">
+    <h1><small>永田町ノート · 관리자</small><a href="index.html" style="color:inherit;text-decoration:none">나가타초 노트</a></h1>
+  </header>
+
+  <div class="panel" id="guard"><p class="empty" id="guard-msg">확인 중입니다…</p></div>
+
+  <div id="console" hidden>
+    <nav class="admin-tabs" role="tablist" aria-label="관리 메뉴">
+      <button type="button" role="tab" data-tab="signups" data-admin>가입 신청 <span class="cnt" id="c-signups"></span></button>
+      <button type="button" role="tab" data-tab="members" data-admin>회원 · 권한</button>
+      <button type="button" role="tab" data-tab="queue">뉴스 승인 대기 <span class="cnt" id="c-queue"></span></button>
+      <button type="button" role="tab" data-tab="news">게재된 글</button>
+      <button type="button" role="tab" data-tab="write">새 글 게재</button>
+    </nav>
+
+    <!-- 가입 신청 -->
+    <section class="panel" data-pane="signups" hidden>
+      <div class="sec-head"><h2>가입 신청</h2><p>승인하면 '회원'이 되어 글을 승인 요청할 수 있습니다.</p></div>
+      <div class="table-wrap"><table class="grid"><thead><tr><th>이름</th><th>이메일</th><th>신청일</th><th>처리</th></tr></thead><tbody id="t-signups"></tbody></table></div>
+    </section>
+
+    <!-- 회원 · 권한 -->
+    <section class="panel" data-pane="members" hidden>
+      <div class="sec-head"><h2>회원 · 권한</h2><p>회원: 승인 요청 · 편집자: 바로 게재와 글 승인 · 관리자: 회원과 권한 관리</p></div>
+      <div class="toolbar"><input id="m-search" type="search" placeholder="이름이나 이메일로 찾기" aria-label="회원 찾기"></div>
+      <div class="table-wrap"><table class="grid"><thead><tr><th>이름</th><th>이메일</th><th>가입일</th><th>권한</th></tr></thead><tbody id="t-members"></tbody></table></div>
+      <p class="note">자기 자신의 권한은 바꿀 수 없습니다(관리자가 사라지는 것을 막기 위해). 계정 자체 삭제는 Firebase 콘솔 Authentication에서 합니다. 여기서는 '차단'으로 글쓰기를 막을 수 있습니다.</p>
+    </section>
+
+    <!-- 뉴스 승인 대기 -->
+    <section class="panel" data-pane="queue" hidden>
+      <div class="sec-head"><h2>뉴스 승인 대기</h2><p>회원이 보낸 글입니다. 승인하면 홈에 바로 게재됩니다.</p></div>
+      <div id="q-list"></div>
+    </section>
+
+    <!-- 게재된 글 -->
+    <section class="panel" data-pane="news" hidden>
+      <div class="sec-head"><h2>게재된 글</h2><p>최근 150건</p></div>
+      <div class="table-wrap"><table class="grid"><thead><tr><th>날짜</th><th>종류</th><th>제목</th><th>올린 사람</th><th></th></tr></thead><tbody id="t-news"></tbody></table></div>
+    </section>
+
+    <!-- 새 글 -->
+    <section class="panel" data-pane="write" hidden>
+      <div class="sec-head"><h2 id="w-title">새 글 게재</h2><p id="w-desc">여기서 올린 글은 승인 없이 바로 게재됩니다.</p></div>
+      <div class="banner" id="edit-banner" hidden></div>
+      <form class="post" id="post" novalidate>
+        <label for="f-type">종류<select id="f-type"><option value="news">뉴스</option><option value="column">칼럼</option></select></label>
+        <label for="f-date">날짜<input id="f-date" type="date"></label>
+        <label class="full" for="f-title">제목<input id="f-title" maxlength="120" required></label>
+        <label class="full" for="f-sum">본문 / 요약<textarea id="f-sum" maxlength="4000"></textarea></label>
+        <label for="f-src">출처 / 글쓴이<input id="f-src" maxlength="40"></label>
+        <label for="f-url">링크(선택)<input id="f-url" type="url" placeholder="https://"></label>
+        <div class="row-actions full"><button type="submit" id="f-btn">게재</button><button type="button" class="btn" id="f-cancel" hidden>수정 취소</button></div>
+        <div class="status" id="f-status" role="status"></div>
+      </form>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+import { configured, db, ROLES, can, today, fmtDate, watchUser, renderAccount } from "./common.js";
+import { collection, query, where, orderBy, limit, onSnapshot, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, writeBatch }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const td = (text, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = text ?? ""; return c; };
+const button = (label, cls, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn " + (cls || ""); b.textContent = label; b.addEventListener("click", fn); return b; };
+const confirmTwice = (b, label, fn) => { let armed = false; b.addEventListener("click", async () => {
+  if (!armed) { armed = true; b.textContent = "한 번 더 누르면 " + label; setTimeout(() => { armed = false; b.textContent = label; }, 3000); return; }
+  b.disabled = true; try { await fn(); } catch (e) { b.disabled = false; b.textContent = "실패: 권한 확인"; } }); return b; };
+const emptyRow = (tbody, cols, text) => { const tr = document.createElement("tr"); const c = td(text, "muted"); c.colSpan = cols; tr.append(c); tbody.append(tr); };
+
+let me = null, myRole = "none", started = false, members = [], editingId = null;
+
+/* 탭 */
+function showTab(name) {
+  document.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name));
+  document.querySelectorAll("[data-pane]").forEach(p => p.hidden = p.dataset.pane !== name);
+  try { history.replaceState(null, "", "#" + name); } catch (e) {}
+}
+document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* 접근 확인 */
+if (!configured) {
+  $("guard-msg").textContent = "Firebase 설정 전입니다. firebase-config.js를 채운 뒤 다시 열어 주세요.";
+  renderAccount($("account"), null, null);
+} else {
+  watchUser((u, p) => {
+    me = u; myRole = p?.role || "none";
+    renderAccount($("account"), u, p);
+    if (!u) { $("guard").hidden = false; $("console").hidden = true; $("guard-msg").innerHTML = '관리자 페이지입니다. <a href="login.html">로그인</a>해 주세요.'; return; }
+    if (!can.publish(myRole)) { $("guard").hidden = false; $("console").hidden = true; $("guard-msg").textContent = "편집자 또는 관리자만 볼 수 있습니다. 현재 권한: " + (ROLES[myRole] || "없음"); return; }
+    $("guard").hidden = true; $("console").hidden = false;
+    document.querySelectorAll("[data-admin]").forEach(b => b.hidden = !can.admin(myRole));
+    if (!started) { started = true; start(); }
+    const want = location.hash.slice(1);
+    const ok = [...document.querySelectorAll("[data-tab]")].filter(b => !b.hidden).map(b => b.dataset.tab);
+    showTab(ok.includes(want) ? want : ok[0]);
+  });
+}
+
+function start() {
+  if (can.admin(myRole)) {
+    onSnapshot(collection(db, "users"), s => {
+      members = s.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      renderSignups(); renderMembers();
+    }, e => emptyRow($("t-members"), 4, "회원 목록을 불러오지 못했습니다: " + e.code));
+  }
+  onSnapshot(query(collection(db, "submissions"), where("status", "==", "pending")), s => renderQueue(s.docs),
+    e => { $("q-list").textContent = "불러오지 못했습니다: " + e.code; });
+  onSnapshot(query(collection(db, "news"), orderBy("date", "desc"), limit(150)), s => renderNews(s.docs));
+  // 메인 페이지의 '수정'에서 넘어온 경우: admin.html?edit=글ID
+  const editParam = new URLSearchParams(location.search).get("edit");
+  if (editParam) {
+    getDoc(doc(db, "news", editParam)).then(snap => {
+      if (snap.exists()) startEdit(snap.id, snap.data());
+      else { showTab("news"); }
+      try { history.replaceState(null, "", location.pathname + "#write"); } catch (e) {}
+    });
+  }
+}
+
+/* 가입 신청 */
+function renderSignups() {
+  const tb = $("t-signups"); tb.textContent = "";
+  const pend = members.filter(m => m.role === "pending");
+  $("c-signups").textContent = pend.length || "";
+  if (!pend.length) return emptyRow(tb, 4, "새 가입 신청이 없습니다.");
+  pend.forEach(m => {
+    const tr = document.createElement("tr");
+    const act = document.createElement("td"); const box = document.createElement("div"); box.className = "row-actions";
+    box.append(
+      button("승인", "primary", async ev => { ev.target.disabled = true; try { await updateDoc(doc(db, "users", m.id), { role: "member" }); } catch (e) { ev.target.disabled = false; ev.target.textContent = "실패"; } }),
+      confirmTwice(button("거절", "danger"), "거절", () => updateDoc(doc(db, "users", m.id), { role: "blocked" })));
+    act.append(box);
+    tr.append(td(m.name), td(m.email, "muted"), td(fmtDate(m.createdAt), "num"), act); tb.append(tr);
+  });
+}
+
+/* 회원 · 권한 */
+$("m-search").addEventListener("input", () => renderMembers());
+function renderMembers() {
+  const tb = $("t-members"); tb.textContent = "";
+  const q = $("m-search").value.trim().toLowerCase();
+  const list = members.filter(m => !q || (m.name || "").toLowerCase().includes(q) || (m.email || "").toLowerCase().includes(q));
+  if (!list.length) return emptyRow(tb, 4, q ? "찾는 회원이 없습니다." : "회원이 없습니다.");
+  list.forEach(m => {
+    const tr = document.createElement("tr");
+    const cell = document.createElement("td");
+    if (m.id === me.uid) {
+      const b = document.createElement("span"); b.className = "role " + m.role; b.textContent = (ROLES[m.role] || m.role) + " (나)"; cell.append(b);
+    } else {
+      const sel = document.createElement("select"); sel.setAttribute("aria-label", (m.name || m.email) + " 권한");
+      ["pending", "member", "editor", "admin", "blocked"].forEach(r => { const o = document.createElement("option"); o.value = r; o.textContent = ROLES[r]; if (r === m.role) o.selected = true; sel.append(o); });
+      const stx = document.createElement("span"); stx.className = "muted"; stx.style.marginLeft = "8px";
+      sel.addEventListener("change", async () => {
+        sel.disabled = true; stx.textContent = "저장 중…";
+        try { await updateDoc(doc(db, "users", m.id), { role: sel.value }); stx.textContent = "저장됨"; }
+        catch (e) { stx.textContent = "실패: 권한 확인"; sel.value = m.role; }
+        finally { sel.disabled = false; setTimeout(() => stx.textContent = "", 2000); }
+      });
+      cell.append(sel, stx);
+    }
+    tr.append(td(m.name), td(m.email, "muted"), td(fmtDate(m.createdAt), "num"), cell); tb.append(tr);
+  });
+}
+
+/* 뉴스 승인 대기 */
+function renderQueue(qdocs) {
+  const box = $("q-list"); box.textContent = "";
+  const list = qdocs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  $("c-queue").textContent = list.length || "";
+  if (!list.length) { const p = document.createElement("p"); p.className = "empty"; p.textContent = "기다리는 글이 없습니다."; box.append(p); return; }
+  list.forEach(x => {
+    const it = document.createElement("div"); it.className = "q-item";
+    const h = document.createElement("h4"); h.textContent = "[" + ((x.type || "news") === "column" ? "칼럼" : "뉴스") + "] " + (x.title || "(제목 없음)"); it.append(h);
+    if (x.summary) { const p = document.createElement("p"); p.textContent = x.summary; it.append(p); }
+    const m = document.createElement("div"); m.className = "q-meta";
+    m.textContent = [String(x.date || "").replace(/-/g, "."), "보낸 사람 " + (x.authorName || "?"), x.source && ("출처 " + x.source), x.url].filter(Boolean).join(" · "); it.append(m);
+    const act = document.createElement("div"); act.className = "q-act";
+    const ok = button("승인하고 게재", "primary", async () => {
+      ok.disabled = true;
+      try {
+        const batch = writeBatch(db);
+        batch.set(doc(collection(db, "news")), { type: x.type || "news", title: x.title || "", summary: x.summary || "", source: x.source || "", url: x.url || "",
+          date: x.date || today(), authorUid: x.authorUid || "", authorName: x.authorName || "", createdAt: serverTimestamp(), approvedBy: me.uid });
+        batch.update(doc(db, "submissions", x.id), { status: "approved", reviewedBy: me.uid, reviewedAt: serverTimestamp() });
+        await batch.commit();
+      } catch (e) { ok.disabled = false; ok.textContent = "실패: 권한 확인"; }
+    });
+    const no = confirmTwice(button("거절", "danger"), "거절",
+      () => updateDoc(doc(db, "submissions", x.id), { status: "rejected", reviewedBy: me.uid, reviewedAt: serverTimestamp() }));
+    act.append(ok, no); it.append(act); box.append(it);
+  });
+}
+
+/* 게재된 글 */
+function renderNews(ndocs) {
+  const tb = $("t-news"); tb.textContent = "";
+  if (!ndocs.length) return emptyRow(tb, 5, "게재된 글이 없습니다.");
+  ndocs.forEach(d => {
+    const x = d.data(); const tr = document.createElement("tr");
+    const del = document.createElement("td");
+    const box = document.createElement("div"); box.className = "row-actions";
+    box.append(button("수정", "", () => startEdit(d.id, x)),
+      confirmTwice(button("삭제", "danger"), "삭제", () => deleteDoc(doc(db, "news", d.id))));
+    del.append(box);
+    tr.append(td((x.date || "").replace(/-/g, "."), "num"), td((x.type || "news") === "column" ? "칼럼" : "뉴스"), td(x.title), td(x.authorName || "", "muted"), del);
+    tb.append(tr);
+  });
+}
+
+/* 새 글 게재 · 수정 */
+$("f-date").value = today();
+function startEdit(id, x) {
+  editingId = id;
+  $("f-type").value = x.type || "news"; $("f-date").value = x.date || today();
+  $("f-title").value = x.title || ""; $("f-sum").value = x.summary || "";
+  $("f-src").value = x.source || ""; $("f-url").value = x.url || "";
+  $("w-title").textContent = "글 수정"; $("w-desc").textContent = "저장하면 메인 페이지에 바로 반영됩니다.";
+  $("edit-banner").hidden = false; $("edit-banner").textContent = "수정 중: " + (x.title || "(제목 없음)");
+  $("f-btn").textContent = "수정 저장"; $("f-cancel").hidden = false; $("f-status").textContent = "";
+  showTab("write"); $("f-title").focus();
+}
+function endEdit() {
+  editingId = null; $("post").reset(); $("f-date").value = today();
+  $("w-title").textContent = "새 글 게재"; $("w-desc").textContent = "여기서 올린 글은 승인 없이 바로 게재됩니다.";
+  $("edit-banner").hidden = true; $("f-btn").textContent = "게재"; $("f-cancel").hidden = true;
+}
+$("f-cancel").addEventListener("click", () => { endEdit(); $("f-status").textContent = ""; showTab("news"); });
+document.querySelector('[data-tab="write"]').addEventListener("click", () => { if (editingId) return; endEdit(); });
+$("post").addEventListener("submit", async ev => {
+  ev.preventDefault(); const st = $("f-status"); st.className = "status";
+  const title = $("f-title").value.trim(), url = $("f-url").value.trim();
+  if (!title) { st.textContent = "제목을 입력하세요."; st.className = "status err"; return; }
+  if (url && !/^https?:\/\//.test(url)) { st.textContent = "링크는 https:// 로 시작해야 합니다."; st.className = "status err"; return; }
+  $("f-btn").disabled = true; st.textContent = editingId ? "저장 중…" : "게재 중…";
+  if (editingId) {
+    try {
+      await updateDoc(doc(db, "news", editingId), { type: $("f-type").value, title, summary: $("f-sum").value.trim(), source: $("f-src").value.trim(), url,
+        date: $("f-date").value || today(), updatedAt: serverTimestamp(), updatedBy: me.uid });
+      endEdit(); st.textContent = "수정했습니다."; showTab("news");
+    } catch (e) { st.textContent = "저장하지 못했습니다. 글이 지워졌거나 권한이 없습니다."; st.className = "status err"; }
+    finally { $("f-btn").disabled = false; }
+    return;
+  }
+  try {
+    await addDoc(collection(db, "news"), { type: $("f-type").value, title, summary: $("f-sum").value.trim(), source: $("f-src").value.trim(), url,
+      date: $("f-date").value || today(), authorUid: me.uid, authorName: me.displayName || me.email, createdAt: serverTimestamp() });
+    $("post").reset(); $("f-date").value = today(); st.textContent = "게재했습니다.";
+  } catch (e) { st.textContent = "게재하지 못했습니다. 권한을 확인하세요."; st.className = "status err"; }
+  finally { $("f-btn").disabled = false; }
+});
+</script>
+</body>
+</html>

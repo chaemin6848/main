@@ -2720,17 +2720,17 @@ ND.add({
 "条件にお金はかかりません。首班候補と合意法案への賛成の約束は加盟党すべてに、候補の譲歩は両党が同じ連盟にいる間守られます。",
 "Terms cost no money. The candidate and the promise to back joint bills bind every member; stand-downs hold while both parties stay in the same federation."
 ],
-"초대할 수 있는 정당이 없습니다.": [
-"招待できる政党がありません。",
-"No parties available to invite."
+"초대하거나 합병할 상대가 없습니다.": [
+"招待や合併ができる相手がいません。",
+"No parties to invite and no federations to merge with."
 ],
 "연맹을 맺을 수 있는 정당이 없습니다.": [
 "連盟を組める政党がありません。",
 "No parties available to form a federation with."
 ],
-"우리 당이 대표라 다른 당을 초대하고 받은 가입 신청에 답합니다. 회원을 내보내려면 이번 분기 행동에서 '연맹 제명'을 고르세요.": [
-"自党が代表なので、他の党を招待し、届いた加盟申請に答えます。加盟党を外すには、この四半期の行動で「連盟から除名」を選んでください。",
-"We're the head, so we invite parties and answer membership requests. To remove a member, pick \"Expel from federation\" in this quarter's actions."
+"우리 당이 대표라 다른 당을 초대하거나 다른 연맹에 합병을 제안하고, 받은 가입 신청과 합병 제안에 답합니다. 합병하면 제안한 쪽 대표가 새 연맹의 대표가 됩니다. 회원을 내보내려면 이번 분기 행동에서 '연맹 제명'을 고르세요.": [
+"自党が代表なので、他の党を招待したり他の連盟に合併を提案したりし、届いた加盟申請や合併提案に答えます。合併すると提案した側の代表が新しい連盟の代表になります。加盟党を外すには、この四半期の行動で「連盟から除名」を選んでください。",
+"We're the head, so we invite parties, propose mergers with other federations, and answer membership requests and merger offers. After a merger, the proposing head leads the new federation. To remove a member, pick \"Expel from federation\" in this quarter's actions."
 ],
 "나오려면 이번 분기 행동에서 '연맹 탈퇴'를 고르세요.": [
 "抜けるには、この四半期の行動で「連盟から脱退」を選んでください。",
@@ -2744,6 +2744,34 @@ ND.add({
 "で連盟を結成するか、他の連盟に加盟します。1つの連盟に複数の党が入れます。",
 " lets you found a federation or join another one. Several parties can sit in one federation."
 ],
+"연맹끼리 합병은 두 연맹의 대표 당끼리만 제안할 수 있습니다.": [
+"連盟同士の合併は、両連盟の代表党同士でしか提案できません。",
+"Only the two federations' head parties can propose a merger."
+],
+"두 연맹의 노선이 가까워 합칠 만합니다.": [
+"両連盟の路線が近く、合併してもよさそうです。",
+"The two federations' lines are close enough to merge."
+],
+"합병하면 우리 연맹의 수반 후보를 잃습니다.": [
+"合併するとわが連盟の首班候補を失います。",
+"Merging would cost our federation its head-of-government candidate."
+],
+"· 합치면 정원 초과": [
+"· 合併すると定員超過",
+"· would exceed limit"
+],
+"합병할 연맹": [
+"合併する連盟",
+"Federations to merge with"
+],
+"연맹 합병": [
+"連盟の合併",
+"Merge federations"
+],
+"합병 후 연맹 이름": [
+"合併後の連盟名",
+"Name after merger"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -2755,10 +2783,14 @@ ND.add({
 "정원 참": [
 "定員いっぱい",
 "full"
+],
+"합치면 정원 초과": [
+"合併すると定員超過",
+"would exceed limit"
 ]
 });
 ND.pat([
-[/^:\ 연대는\ 1:1이\ 아니라\ 연맹\ 단위로\ 맺습니다\.\ 결재\ 탭의\ 연맹\ 협상에서\ 연맹이\ 없는\ 당끼리\ 새\ 연맹을\ 결성하거나,\ 이미\ 있는\ 연맹의\ 대표\ 당에\ 가입을\ 신청합니다\.\ 대표\ 당은\ 다른\ 당을\ 초대할\ 수\ 있습니다\.\ 한\ 당은\ 한\ 연맹에만\ 들어가고,\ 한\ 연맹에는\ (.*?)개\ 당까지\ 들어갑니다\.\ 회원\ 당은\ 모두\ 서로\ 연대\ 상대가\ 되고,\ 수반\ 후보도\ 연맹에\ 하나입니다\.\ 제안에는\ 수반\ 후보,\ 공동\ 입법\ 과제\(다음\ 분기에\ 연맹\ 합의\ 법안으로\ 올라가고\ 연맹\ 회원은\ 모두\ 찬성으로\ 묶임\),\ 선거\ 협력\(한\ 지역\ 후보\ 양보\),\ 공개\ 지지\(지지하는\ 당\ 신뢰를\ 나눠\ 줌\)를\ 겁니다\.\ 받는\ 쪽이\ 수락하면\ 분기\ 말에\ 성사되고,\ AI는\ 그\ 자리에서\ 답하거나\ 역제안합니다\.\ 나오려면\ '연맹\ 탈퇴'를,\ 대표\ 당은\ '연맹\ 제명'을\ 씁니다\.\ 회원이\ 하나만\ 남으면\ 연맹은\ 해체됩니다\.\ 같은\ 연맹의\ 당을\ 공격하면\ 연맹에서\ 떨어져\ 나가고\ 신뢰가\ 크게\ 떨어집니다\.$/,"：連携は1対1ではなく連盟単位で組みます。決裁タブの連盟交渉で、連盟のない党同士が新しい連盟を結成するか、既存の連盟の代表党に加盟を申請します。代表党は他の党を招待できます。1つの党が入れる連盟は1つだけで、1つの連盟には$1党まで入れます。加盟党はすべて互いの連携相手になり、首班候補も連盟で1つです。提案には首班候補、共同立法課題（次の四半期に連盟合意法案として上程され、加盟党はすべて賛成で縛られる）、選挙協力（1地域の候補を譲る）、公の支持（支持する党に信頼を分け与える）を条件にできます。受け手が承諾すると四半期末に成立し、AIはその場で答えるか逆提案します。抜けるには「連盟から脱退」を、代表党は「連盟から除名」を使います。加盟党が1つだけになると連盟は解散します。同じ連盟の党を攻撃すると連盟から外れ、信頼が大きく下がります。",": Alliances are no longer one-to-one — they work through federations. In the federation talks on the Decisions tab, parties without a federation can found a new one together, or apply to join an existing federation through its head party. The head can also invite other parties. Each party belongs to at most one federation, and a federation holds up to $1 parties. Every member is allied with every other member, and the federation names a single head-of-government candidate. Offers can include that candidate, a joint bill (tabled next quarter as a federation bill every member must back), electoral cooperation (stand down in one region) or a public endorsement (share your trust with the party you back). If accepted, it takes effect at the end of the quarter; AI parties answer on the spot or counter-offer. Use \"Leave federation\" to get out; the head can use \"Expel from federation\". A federation with only one party left dissolves. Attacking a fellow member cuts you loose from the federation and costs a lot of trust."],
+[/^:\ 연대는\ 1:1이\ 아니라\ 연맹\ 단위로\ 맺습니다\.\ 결재\ 탭의\ 연맹\ 협상에서\ 연맹이\ 없는\ 당끼리\ 새\ 연맹을\ 결성하거나,\ 이미\ 있는\ 연맹의\ 대표\ 당에\ 가입을\ 신청합니다\.\ 대표\ 당은\ 다른\ 당을\ 초대하거나,\ 다른\ 연맹의\ 대표\ 당에\ 두\ 연맹의\ 합병을\ 제안할\ 수\ 있습니다\(합친\ 회원이\ 정원\ 안일\ 때,\ 제안한\ 쪽\ 대표가\ 새\ 연맹의\ 대표\)\.\ 한\ 당은\ 한\ 연맹에만\ 들어가고,\ 한\ 연맹에는\ (.*?)개\ 당까지\ 들어갑니다\.\ 회원\ 당은\ 모두\ 서로\ 연대\ 상대가\ 되고,\ 수반\ 후보도\ 연맹에\ 하나입니다\.\ 제안에는\ 수반\ 후보,\ 공동\ 입법\ 과제\(다음\ 분기에\ 연맹\ 합의\ 법안으로\ 올라가고\ 연맹\ 회원은\ 모두\ 찬성으로\ 묶임\),\ 선거\ 협력\(한\ 지역\ 후보\ 양보\),\ 공개\ 지지\(지지하는\ 당\ 신뢰를\ 나눠\ 줌\)를\ 겁니다\.\ 받는\ 쪽이\ 수락하면\ 분기\ 말에\ 성사되고,\ AI는\ 그\ 자리에서\ 답하거나\ 역제안합니다\.\ 나오려면\ '연맹\ 탈퇴'를,\ 대표\ 당은\ '연맹\ 제명'을\ 씁니다\.\ 회원이\ 하나만\ 남으면\ 연맹은\ 해체됩니다\.\ 같은\ 연맹의\ 당을\ 공격하면\ 연맹에서\ 떨어져\ 나가고\ 신뢰가\ 크게\ 떨어집니다\.$/,"：連携は1対1ではなく連盟単位で組みます。決裁タブの連盟交渉で、連盟のない党同士が新しい連盟を結成するか、既存の連盟の代表党に加盟を申請します。代表党は他の党を招待したり、他の連盟の代表党に両連盟の合併を提案したりできます（合わせた加盟党が定員内のとき。提案した側の代表が新しい連盟の代表）。1つの党が入れる連盟は1つだけで、1つの連盟には$1党まで入れます。加盟党はすべて互いの連携相手になり、首班候補も連盟で1つです。提案には首班候補、共同立法課題（次の四半期に連盟合意法案として上程され、加盟党はすべて賛成で縛られる）、選挙協力（1地域の候補を譲る）、公の支持（支持する党に信頼を分け与える）を条件にできます。受け手が承諾すると四半期末に成立し、AIはその場で答えるか逆提案します。抜けるには「連盟から脱退」を、代表党は「連盟から除名」を使います。加盟党が1つだけになると連盟は解散します。同じ連盟の党を攻撃すると連盟から外れ、信頼が大きく下がります。",": Alliances are no longer one-to-one — they work through federations. In the federation talks on the Decisions tab, parties without a federation can found a new one together, or apply to join an existing federation through its head party. The head can also invite other parties, or propose to another federation's head that the two federations merge (if the combined membership fits; the proposing head leads the merged federation). Each party belongs to at most one federation, and a federation holds up to $1 parties. Every member is allied with every other member, and the federation names a single head-of-government candidate. Offers can include that candidate, a joint bill (tabled next quarter as a federation bill every member must back), electoral cooperation (stand down in one region) or a public endorsement (share your trust with the party you back). If accepted, it takes effect at the end of the quarter; AI parties answer on the spot or counter-offer. Use \"Leave federation\" to get out; the head can use \"Expel from federation\". A federation with only one party left dissolves. Attacking a fellow member cuts you loose from the federation and costs a lot of trust."],
 [/^이념\ 실현:\ 누가\ 냈든\ 우리가\ 찬성해\ 법이\ 되면,\ 노선에\ 맞을\ 때\ \+(.*?)\(아주\ 잘\ 맞으면\ \+(.*?)\),\ 노선에\ 어긋날\ 때\ (.*?)\.\ 노선에\ 어긋나는\ 법에\ 반대표를\ 던졌는데\ 통과되면\ 소신\ 점수\ \+(.*?)\.\ 실용중도처럼\ 노선이\ 가운데인\ 당은\ 65%\ 이상\ 찬성으로\ 통과된\ 법에\ 찬성하면\ \+(.*?)\.\ 가점은\ 표결\ 영향력만큼\ 받습니다:\ 의회의\ 10%\ 이상을\ 가진\ 당은\ 그대로,\ 그보다\ 작으면\ 줄어듭니다\(최소\ 30%\)\.$/,"理念の実現：誰が出したかにかかわらず自党が賛成して法になれば、路線に合うとき +$1（とても合うと +$2）、路線に反するとき $3。路線に反する法に反対票を投じたのに通過すると信念点 +$4。実用中道のように路線が真ん中の党は、65%以上の賛成で通過した法に賛成すると +$5。加点は採決影響力の分だけ受け取ります：議会の10%以上を持つ党はそのまま、それより小さいと減ります（最低30%）。","Ideology: whenever a law passes with your vote, whoever filed it, +$1 if it fits your line (+$2 if it fits very well), $3 if it goes against it. Vote against a bill that clashes with your line and it passes anyway: +$4 for conviction. Centrist parties like Pragmatic Centre get +$5 for backing laws that pass with 65%+ support. Bonuses scale with voting weight: full for parties with at least 10% of the chamber, less for smaller ones (minimum 30%)."],
 [/^입법:\ 우리\ 의원\ 법안\ 가결\ \+(.*?)\(부결\ (.*?)\),\ 연립\ 합의\ 법안\ 가결\ 두\ 당\ 각\ \+(.*?),\ 정부\ 법안\ 가결\ 집권당\ \+(.*?)·연립\ 상대\ \+(.*?)\(부결\ 시\ 집권당\ (.*?),\ 반대해서\ 막은\ 야당\ 각\ \+(.*?)\),\ 불신임안\ 가결\ 시\ 발의\ 당\ \+(.*?)\.\ 연립\ 합의\ 법안과\ 연립\ 상대\ 점수는\ 아래\ 표결\ 영향력만큼\ 받습니다\.$/,"立法：自党の議員法案が可決 +$1（否決 $2）、連立合意法案が可決で両党それぞれ +$3、政府法案が可決で政権党 +$4・連立相手 +$5（否決時は政権党 $6、反対して阻止した野党それぞれ +$7）、不信任案が可決で提出党 +$8。連立合意法案と連立相手の点数は下の採決影響力の分だけ受け取ります。","Legislation: your member's bill passes +$1 (fails $2); coalition bill passes, +$3 each for both parties; government bill passes, governing party +$4 and partners +$5 (if it fails: governing party $6, and +$7 for each opposition party that blocked it); no-confidence passes, +$8 for the mover. Coalition-bill and partner points are scaled by voting weight (below)."],
 [/^다른\ 당과\ 새\ 연맹을\ 결성하거나,\ 이미\ 있는\ 연맹의\ 대표\ 당에\ 가입을\ 신청합니다\.\ 한\ 연맹에는\ (.*?)개\ 당까지\ 들어가고,\ 회원\ 당은\ 모두\ 서로\ 연대\ 상대가\ 되며\ (.*?)도\ 연맹에\ 하나입니다\.\ 받는\ 쪽이\ 수락하면\ 분기\ 말에\ 성사되고,\ 그\ 전까지는\ 답을\ 바꿀\ 수\ 있습니다\.$/,"他の党と新しい連盟を結成するか、既存の連盟の代表党に加盟を申請します。1つの連盟には$1党まで入れ、加盟党はすべて互いの連携相手となり、$2も連盟で1つです。受け手が承諾すると四半期末に成立し、それまでは返事を変えられます。","Found a new federation with another party, or apply to join an existing one through its head party. A federation holds up to $1 parties; every member is allied with every other, and the federation has a single $2. Once accepted it takes effect at the end of the quarter; until then the answer can change."],
@@ -2799,8 +2831,11 @@ ND.pat([
 [/^:\ 지역구는\ 지역별\ 1위에\ 표가\ 몰립니다\.(.*?)$/,"：選挙区は地域ごとの1位に票が集まります。$1",": District seats go to the regional front-runner.$1"],
 [/^(.*?)분기째\ 재보궐,\ (.*?)분기째\ 총선이\ 돌아옵니다\.$/,"$1四半期目に補欠選挙、$2四半期目に総選挙が来ます。","By-elections come in Q$1 and the general election in Q$2."],
 [/^(.*?)\ 대통령\ 선거는\ 중간\ 분기\ 말에\ 치릅니다\.$/,"$1 大統領選挙は中間の四半期末に行います。","$1 The presidential election is held at the end of the middle quarter."],
+[/^두\ 연맹을\ 합치면\ 정원\ (.*?)개\ 당을\ 넘습니다\.$/,"両連盟を合わせると定員$1党を超えます。","Merging the two federations would exceed the $1-party limit."],
+[/^「(.*?)」·「(.*?)」\ 합병,\ 새\ 연맹은\ 「(.*?)」입니다\.\ (.*?)$/,"「$1」と「$2」が合併、新しい連盟は「$3」です。$4","“$1” and “$2” merge; the new federation is “$3”. $4"],
 [/^찬성해서\ 가결되면\ 승점\ \+(.*?)\ \(이념\ 실현\)$/,"賛成して可決されると勝ち点 +$1（理念の実現）","Vote yes and it passes: +$1 points (ideology)"],
 [/^「(.*?)」\ 대표\ (.*?)이\ (.*?)을\ 연맹에서\ 제명했습니다\.(.*?)$/,"「$1」の代表党$2が$3を連盟から除名しました。$4","$2, head of “$1”, has expelled $3 from the federation. $4"],
+[/^「(.*?)」·「(.*?)」\ 합병,\ 새\ 연맹은\ 「(.*?)」입니다\.$/,"「$1」と「$2」が合併、新しい連盟は「$3」です。","“$1” and “$2” merge; the new federation is “$3”."],
 [/^(.*?)이\ 동맹\ (.*?)을\ 공격해\ 연대가\ 깨졌습니다\.$/,"$1が同盟相手の$2を攻撃し、連携が壊れました。","$1 attacked its ally $2; the alliance has collapsed."],
 [/^대통령\ 선거에서\ (.*?)\ 후보가\ 당선됐습니다\.$/,"大統領選挙で$1候補が当選しました。","$1's candidate wins the presidential election."],
 [/^(.*?)에서\ (.*?)이\ 우리에게\ 후보를\ 양보했습니다\.$/,"$1で$2が自党に候補を譲りました。","In $1, $2 stood down for us."],
@@ -2853,6 +2888,7 @@ ND.pat([
 [/^대통령\ 선거:\ (.*?)\ 당선$/,"大統領選挙：$1が当選","Presidential election: $1 wins"],
 [/^여론\ (.*?)\ ·\ 가결\ 시\ (.*?)$/,"世論 $1 · 可決時 $2","Opinion $1 · if passed $2"],
 [/^대통령\ 선거\ (.*?)분기\ 말$/,"大統領選挙 $1四半期末","Presidential election end of Q$1"],
+[/^「(.*?)」·「(.*?)」\ 합병\ 제안$/,"「$1」と「$2」の合併提案","merger of “$1” and “$2”"],
 [/^(.*?)\ 발의\ 「(.*?)」\ 가결\.$/,"$1提出の「$2」可決。","$1's \"$2\" passed."],
 [/^(.*?)\ 발의\ 「(.*?)」\ 부결\.$/,"$1提出の「$2」否決。","$1's \"$2\" defeated."],
 [/^지역구\ (.*?)\ ·\ 비례\ (.*?)$/,"選挙区 $1 · 比例 $2","District $1 · PR $2"],
@@ -2905,6 +2941,7 @@ ND.pat([
 [/^→\ (.*?)\ 귓속말$/,"→ $1へ内緒話","→ whisper to $1"],
 [/^입법\ 성공\ (.*?)$/,"立法成功 $1","Laws passed $1"],
 [/^·\ 연맹:\ (.*?)(.*?)$/,"· 連盟：$1$2","· Federation: $1$2"],
+[/^「(.*?)」\ 회원:$/,"「$1」加盟党：","“$1” members:"],
 [/^지역구\ (.*?)석$/,"選挙区$1議席","$1 district seats"],
 [/^(.*?)\ \/\ (.*?)분기$/,"$1 / $2四半期","Q$1 / $2"],
 [/^멀티\ 방\ (.*?)$/,"マルチルーム $1","Room $1"],

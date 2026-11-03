@@ -912,3 +912,60 @@ AI 정당 {0}곳	AI政党 {0}党	{0} AI parties
 아직 결성된 연맹이 없습니다.	まだ結成された連盟はありません。	No federations have been formed yet.
 과반까지	過半数まで	To majority
 {0} 연맹 {1}석	{0}連盟 {1}議席	{0} Federation · {1} seats
+지금 속한 연맹에서 나옵니다. 연맹 규칙의 탈퇴 벌점만큼 우리 신뢰가 깎이고(기본 −5), 남는 회원당 신뢰 +1	いま所属する連盟から抜けます。連盟規則の脱退ペナルティの分だけ自党の信頼が下がり（基本 −5）、残る加盟党は信頼 +1	Leave your current league. Your trust drops by the league's leave penalty (default −5); each remaining member gets trust +1
+고른 회원 당을 내보냅니다. 연맹 규칙에 따라 대표가 정하거나, 회원 과반이 같은 제명을 내야 합니다. 우리 신뢰 −2, 그 당 신뢰 +2	選んだ加盟党を除名します。連盟規則により代表が決めるか、加盟党の過半数が同じ除名を出す必要があります。自党の信頼 −2、その党の信頼 +2	Expel the chosen member. Depending on the league rules, the leader decides or a majority of members must file the same expulsion. Your trust −2, their trust +2
+이름 「{0}」	名前「{0}」	name "{0}"
+대표 {0}	代表 {0}	leader {0}
+수반 후보 {0}	首班候補 {0}	candidate {0}
+가입·제명은 회원 과반 찬성	加入・除名は加盟党の過半数で決定	admission/expulsion by member majority
+가입·제명은 대표가 결정	加入・除名は代表が決定	admission/expulsion decided by the leader
+모든 안건 연맹 당론	全議案で連盟の党議拘束	league whip on every vote
+연맹 합의 법안만 구속	連盟合意法案のみ拘束	bound on league bills only
+정원 {0}개 당	定員{0}党	capacity {0} parties
+탈퇴 벌점 신뢰 −{0}	脱退ペナルティ 信頼 −{0}	leave penalty trust −{0}
+연맹이 없습니다.	連盟がありません。	No league.
+대표 자리를 내줄 수는 없습니다.	代表の座は譲れません。	We won't give up the leadership.
+수반 후보 자리를 내줄 수는 없습니다.	首班候補の座は譲れません。	We won't give up the candidacy.
+연맹 당론에 묶이기에는 노선 차이가 큽니다.	連盟の党議拘束に従うには路線の違いが大きすぎます。	Our lines are too far apart to accept a league whip.
+탈퇴 벌점을 올리는 데 반대합니다.	脱退ペナルティの引き上げには反対です。	We oppose raising the leave penalty.
+받아들일 만합니다.	受け入れられます。	Acceptable.
+「{0}」 규칙 개정: {1}.	「{0}」規則改正：{1}。	"{0}" rules amended: {1}.
+{0}, 당 이름을 「{1}」{2} 바꿨습니다.	{0}、党名を「{1}」に変更しました。	{0} has renamed itself "{1}".
+{0}, 노선을 「{1}」{2} 바꿨습니다. 신뢰 −5.	{0}、路線を「{1}」に変更しました。信頼 −5。	{0} has switched its line to "{1}". Trust −5.
+「{0}」에서 {1} 제명안이 회원 과반을 얻지 못했습니다.	「{0}」で{1}の除名案は加盟党の過半数を得られませんでした。	In "{0}", the motion to expel {1} failed to win a majority of members.
+연맹 당론에 따라 대표 당 {0}과 같은 표를 던집니다.	連盟の党議拘束により、代表党の{0}と同じ票を投じます。	Under the league whip, we vote the same way as the leader, {0}.
+의 {0} → {1} · 연맹 회원 표결	の{0} → {1} · 連盟の加盟党投票	's {0} → {1} · league member vote
+대표가 결정	代表が決定	Leader decides
+회원 과반 찬성	加盟党の過半数	Member majority
+연맹 합의 법안만	連盟合意法案のみ	League bills only
+의 개정안 · 찬성 {0}/{1} (과반 {2})	の改正案 · 賛成 {0}/{1}（過半数 {2}）	's amendment · yes {0}/{1} (majority {2})
+{0}개 당	{0}党	{0} parties
+신뢰 −{0}	信頼 −{0}	trust −{0}
+연맹 규칙	連盟規則	League rules
+가입·제명 {0} · 표결 구속 {1} · 정원 {2}개 당 · 탈퇴 벌점 신뢰 −{3}	加入・除名 {0} · 党議拘束 {1} · 定員{2}党 · 脱退ペナルティ 信頼 −{3}	Admission/expulsion: {0} · Voting bind: {1} · Capacity {2} parties · Leave penalty: trust −{3}
+규칙 고치기	規則を改正する	Amend rules
+대표 당	代表党	Leader party
+가입·제명 결정	加入・除名の決め方	Admission & expulsion
+표결 구속	党議拘束	Voting bind
+정원	定員	Capacity
+탈퇴 벌점	脱退ペナルティ	Leave penalty
+개정안 내기	改正案を出す	Propose amendment
+회원 과반이 찬성하면 바로 바뀝니다. 낸 당은 찬성으로 셉니다. AI 회원은 바로 답합니다.	加盟党の過半数が賛成するとすぐに変わります。提案した党は賛成として数えます。AIの加盟党はすぐに答えます。	Takes effect as soon as a majority of members agree. The proposer counts as a yes. AI members answer right away.
+이번 분기에는 이미 노선을 바꿨습니다.	この四半期はすでに路線を変更しました。	You've already changed your line this quarter.
+노선을 바꾸면 신뢰 −5, 분기에 한 번만 바꿀 수 있습니다. 지금 노선: {0}	路線を変えると信頼 −5、四半期に1回だけ変更できます。現在の路線：{0}	Changing your line costs trust −5 and is allowed once per quarter. Current line: {0}
+당 정보 바꾸기	党の情報を変更	Edit party info
+구호	スローガン	Slogan
+바꾸기	変更	Save changes
+바꾼 내용이 없습니다.	変更した内容がありません。	Nothing changed.
+개정안을 냈습니다. 회원 과반이 찬성하면 바로 바뀝니다.	改正案を出しました。加盟党の過半数が賛成するとすぐに変わります。	Amendment proposed. It takes effect once a majority of members agree.
+당 정보를 바꿨습니다.	党の情報を変更しました。	Party info updated.
+{0} 연맹	{0}連盟	{0} League
+「{0}」 회원:	「{0}」の加盟党：	"{0}" members:
+{0} 시작: {1}점	{0} 開始：{1}点	{0} start: {1} pts
+{0} {1}분기: {2}점	{0} 第{1}四半期：{2}点	{0} Q{1}: {2} pts
+{0} 시작: {1}%	{0} 開始：{1}%	{0} start: {1}%
+{0} {1}분기: {2}%	{0} 第{1}四半期：{2}%	{0} Q{1}: {2}%
+연맹 규칙	連盟規則	League rules
+: 회원 누구나 개정안을 내고, 회원 과반이 찬성하면 바로 바뀝니다. 이름·대표 당·수반 후보와 가입·제명 결정 방식(대표가 결정 / 회원 과반 찬성), 표결 구속(연맹 합의 법안만 / 모든 안건에서 대표 당과 같은 표), 정원, 탈퇴 벌점을 정합니다.	：加盟党なら誰でも改正案を出せ、加盟党の過半数が賛成するとすぐに変わります。名前・代表党・首班候補、加入・除名の決め方（代表が決定 / 加盟党の過半数）、党議拘束（連盟合意法案のみ / 全議案で代表党と同じ票）、定員、脱退ペナルティを決めます。	: Any member can propose an amendment; it takes effect as soon as a majority of members agree. Covers the name, leader party and candidate, how admissions and expulsions are decided (leader / member majority), the voting bind (league bills only / every vote follows the leader), capacity and the leave penalty.
+당 정보	党の情報	Party info
+: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색·노선을 바로 바꿉니다. 노선은 분기에 한 번만, 바꾸면 신뢰 −5.	：決裁タブの「党の情報を変更」で、党名・党首名・スローガン・色・路線をすぐに変えられます。路線は四半期に1回だけで、変えると信頼 −5。	: Use "Edit party info" on the Decisions tab to change your party's name, leader, slogan, colour and line right away. The line can change once per quarter, at a cost of trust −5.

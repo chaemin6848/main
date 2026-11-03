@@ -293,8 +293,8 @@ const E=(function(){
     attack:{label:'네거티브',cost:4,spend:true,need:['target','region'],desc:'상대 그 지역 기반 −5, 상대 신뢰 −3, 우리 신뢰 −3'},
     expose:{label:'의혹 폭로',cost:5,need:['target'],desc:'상대 신뢰가 낮을수록 성공. 실패하면 우리 신뢰 −7'},
     poach:{label:'의원 빼오기',cost:6,need:['target'],desc:'상대 결속이 낮을수록 성공. 성공하면 3~6석 이동'},
-    leaveFed:{label:'연맹 탈퇴',cost:0,need:[],desc:'지금 속한 연맹에서 나옵니다. 우리 신뢰 −5, 남는 회원당 신뢰 +1'},
-    expel:{label:'연맹 제명',cost:0,need:['target'],desc:'연맹 대표만 할 수 있습니다. 고른 회원 당을 내보냅니다. 우리 신뢰 −2, 그 당 신뢰 +2'},
+    leaveFed:{label:'연맹 탈퇴',cost:0,need:[],desc:'지금 속한 연맹에서 나옵니다. 연맹 규칙의 탈퇴 벌점만큼 우리 신뢰가 깎이고(기본 −5), 남는 회원당 신뢰 +1'},
+    expel:{label:'연맹 제명',cost:0,need:['target'],desc:'고른 회원 당을 내보냅니다. 연맹 규칙에 따라 대표가 정하거나, 회원 과반이 같은 제명을 내야 합니다. 우리 신뢰 −2, 그 당 신뢰 +2'},
     propose:{label:'법안 발의',cost:2,need:['title','topic','region'],desc:'다음 분기 본회의에 우리 법안을 올립니다. 한 분기에 한 건만 낼 수 있습니다. 가결되면 신뢰 +2, 그 지역 기반 +3'},
     noConfidence:{label:'내각 불신임안',cost:.3,need:[],desc:'다음 분기에 표결합니다. 가결되면 내각이 물러나고, 부결되면 우리 신뢰 −2'},
   };
@@ -389,6 +389,16 @@ const E=(function(){
     return{eco:ms.reduce((n,p)=>n+p.eco*Math.max(p.seats,1),0)/w,soc:ms.reduce((n,p)=>n+p.soc*Math.max(p.seats,1),0)/w}};
   const fedName=(g,head)=>{const base=`${head.name} 연맹`;let n=base;for(let i=2;(g.feds||[]).some(f=>f.name===n);i++)n=`${base} ${i}`;return n};
   const cleanFedName=s=>String(s||'').replace(/\s+/g,' ').trim().slice(0,14);
+  // 연맹 규칙. admit: 가입·초대·합병·제명을 대표가 정하는지(head) 회원 과반이 정하는지(vote)
+  // bind: 연맹 합의 법안만 찬성으로 묶는지(pact) 모든 안건에서 회원이 대표 당의 표를 따르는지(all)
+  // cap: 정원(2~MAX_FED개 당) · leave: 탈퇴할 때 잃는 신뢰
+  const LEAVE_OPTS=[0,2,5,8,12];
+  const DEF_RULES={admit:'head',bind:'pact',cap:MAX_FED,leave:5};
+  function cleanRules(r){r=r&&typeof r==='object'?r:{};
+    return{admit:r.admit==='vote'?'vote':'head',bind:r.bind==='all'?'all':'pact',
+      cap:Number.isInteger(r.cap)?clamp(r.cap,2,MAX_FED):MAX_FED,leave:LEAVE_OPTS.includes(r.leave)?r.leave:DEF_RULES.leave}}
+  const rulesOf=f=>cleanRules(f&&f.rules);
+  const fedCap=f=>rulesOf(f).cap;
   function syncFeds(g){
     if(!Array.isArray(g.feds))g.feds=[];
     const seen=new Set();
@@ -398,6 +408,7 @@ const E=(function(){
     g.feds=g.feds.filter(f=>f.members.length>=2);
     for(const p of g.parties){const f=g.feds.find(x=>x.members.includes(p.id));p.fed=f?f.id:null}
     for(const f of g.feds){
+      f.rules=cleanRules(f.rules);
       if(!f.members.includes(f.head))f.head=f.members.slice().sort((a,b)=>party(g,b).seats-party(g,a).seats||(a<b?-1:1))[0];
       if(f.lead&&!f.members.includes(f.lead))f.lead=null;
     }
@@ -411,7 +422,7 @@ const E=(function(){
     return g;
   }
   function newFed(g,head,others,lead,name){
-    const f={id:'f'+(g.seq++),name:cleanFedName(name)||fedName(g,head),head:head.id,lead:lead?lead.id:null,members:[head.id,...others.map(p=>p.id)]};
+    const f={id:'f'+(g.seq++),name:cleanFedName(name)||fedName(g,head),head:head.id,lead:lead?lead.id:null,members:[head.id,...others.map(p=>p.id)],rules:{...DEF_RULES}};
     g.feds=(g.feds||[]).concat(f);return f;
   }
   // 예전 저장 형식(1:1 연대, 연대 하나·yieldReg)을 연맹으로 바꾼다. 이어진 연대 상대는 한 연맹으로 묶는다.
@@ -762,12 +773,12 @@ const E=(function(){
       if(ff===tf)return{why:'이미 같은 연맹입니다.'};
       // 연맹끼리 합병: 두 대표 당 사이에서만, 합친 회원이 정원 안일 때
       if(ff.head!==from.id||tf.head!==to.id)return{why:'연맹끼리 합병은 두 연맹의 대표 당끼리만 제안할 수 있습니다.'};
-      if(ff.members.length+tf.members.length>MAX_FED)return{why:`두 연맹을 합치면 정원 ${MAX_FED}개 당을 넘습니다.`};
+      if(ff.members.length+tf.members.length>fedCap(ff))return{why:`두 연맹을 합치면 정원 ${fedCap(ff)}개 당을 넘습니다.`};
       return{kind:'merge',fed:ff,fed2:tf};
     }
     if(!ff&&!tf)return{kind:'found',fed:null};
     const f=ff||tf;
-    if(f.members.length>=MAX_FED)return{why:`「${f.name}」은 정원 ${MAX_FED}개 당이 다 찼습니다.`};
+    if(f.members.length>=fedCap(f))return{why:`「${f.name}」은 정원 ${fedCap(f)}개 당이 다 찼습니다.`};
     if(ff)return ff.head===from.id?{kind:'invite',fed:ff}:{why:'다른 당을 연맹에 들이는 일은 대표 당만 할 수 있습니다.'};
     return tf.head===to.id?{kind:'join',fed:tf}:{why:'가입 신청은 연맹 대표 당에 보내야 합니다.'};
   }
@@ -835,13 +846,13 @@ const E=(function(){
       if(!p.bot||p.fixed||busy(p.id))continue;
       // 연맹이 없는 AI는 결성·가입을, 자리가 남은 연맹의 대표 AI는 초대나 다른 연맹과의 합병을 낸다.
       const f=fedOf(g,p);
-      if(f&&(f.head!==p.id||f.members.length>=MAX_FED))continue;
+      if(f&&(f.head!==p.id||f.members.length>=fedCap(f)))continue;
       if(r()>=.2/(f?f.members.length:1))continue;
       const line=f?fedLine(g,f):p;
       const c=g.parties.filter(o=>o.id!==p.id&&!o.fixed&&!busy(o.id)&&!isAlly(p,o.id)).map(o=>{const of=fedOf(g,o);
-        if(f)return!of?{to:o,kind:'invite',ln:o}:of.head===o.id&&f.members.length+of.members.length<=MAX_FED?{to:o,kind:'merge',ln:fedLine(g,of),fed:of}:null;
+        if(f)return!of?{to:o,kind:'invite',ln:o}:of.head===o.id&&f.members.length+of.members.length<=fedCap(f)?{to:o,kind:'merge',ln:fedLine(g,of),fed:of}:null;
         if(!of)return{to:o,kind:'found',ln:o};
-        return of.head===o.id&&of.members.length<MAX_FED?{to:o,kind:'join',ln:fedLine(g,of),fed:of}:null}).filter(Boolean)
+        return of.head===o.id&&of.members.length<fedCap(of)?{to:o,kind:'join',ln:fedLine(g,of),fed:of}:null}).filter(Boolean)
         .sort((x,y)=>dist(x.ln,line)-dist(y.ln,line)||(x.to.id<y.to.id?-1:1))[0];
       if(!c||dist(c.ln,line)>=1.5)continue;
       const o=c.to,topic=Object.keys(TOPICS).sort((a,b)=>billAlign(TOPICS[b],p)+billAlign(TOPICS[b],o)-billAlign(TOPICS[a],p)-billAlign(TOPICS[a],o)||(a<b?-1:1))[0];
@@ -850,6 +861,105 @@ const E=(function(){
       out.push({id:'b'+(g.seq++),from:p.id,to:o.id,pm,topic,yieldReg:null,yieldBy:null,endorse:null,name:null});
     }
     return out;
+  }
+  // 사람은 협상 문서의 답(replies[key]==='yes'), AI는 판단 함수로 찬반을 낸다.
+  function replyYes(g,p,talk,key,botOk){
+    if(p.bot)return!!botOk();
+    const rep=talk[p.ownerId]&&talk[p.ownerId].replies;return!!(rep&&typeof rep==='object'&&rep[key]==='yes');
+  }
+  // AI 회원이 새로 들어올 당(들)을 받아들일지: 노선이 가까우면 찬성
+  const memberOk=(g,bot,joiners)=>{const w=joiners.reduce((n,x)=>n+Math.max(x.seats,1),0);
+    const ln={eco:joiners.reduce((n,x)=>n+x.eco*Math.max(x.seats,1),0)/w,soc:joiners.reduce((n,x)=>n+x.soc*Math.max(x.seats,1),0)/w};
+    return Math.hypot(bot.eco-ln.eco,bot.soc-ln.soc)<1};
+  // 연맹 f가 이 제안을 받아들이는지. 대표가 정하는 연맹은 대표의 답(headYes), 회원 과반 연맹은 회원 표를 센다.
+  function fedApproves(g,f,d,talk,joiners,headYes){
+    if(rulesOf(f).admit!=='vote')return!!headYes;
+    const key=d.from+':'+d.id;
+    const yes=f.members.filter(id=>{if(id===d.from)return true;if(id===d.to)return!!headYes;const m=party(g,id);return replyYes(g,m,talk,key,()=>memberOk(g,m,joiners))}).length;
+    return yes*2>f.members.length;
+  }
+  // 연맹 규칙 개정안. 회원 누구나 내고, 회원 과반이 찬성하면 바로 바뀐다. 바꿀 수 있는 것: 이름·대표·수반 후보·규칙
+  function cleanAmend(g,from,a){
+    if(!a||typeof a!=='object'||!from)return null;
+    const f=fedById(g,a.fed);if(!f||!f.members.includes(from.id))return null;
+    const R=rulesOf(f),ch={};
+    const nm=cleanFedName(a.name);if(nm&&nm!==f.name)ch.name=nm;
+    if(f.members.includes(a.head)&&a.head!==f.head)ch.head=a.head;
+    if(pactLead(g)&&'lead' in a){const l=a.lead==null||a.lead===''?null:a.lead;if((l===null||f.members.includes(l))&&l!==(f.lead||null))ch.lead=l}
+    if((a.admit==='head'||a.admit==='vote')&&a.admit!==R.admit)ch.admit=a.admit;
+    if((a.bind==='pact'||a.bind==='all')&&a.bind!==R.bind)ch.bind=a.bind;
+    if(Number.isInteger(a.cap)&&a.cap>=Math.max(2,f.members.length)&&a.cap<=MAX_FED&&a.cap!==R.cap)ch.cap=a.cap;
+    if(LEAVE_OPTS.includes(a.leave)&&a.leave!==R.leave)ch.leave=a.leave;
+    return Object.keys(ch).length?{id:String(a.id||'').slice(0,16),from:from.id,fed:f.id,...ch}:null;
+  }
+  const AMEND_FIELDS=['name','head','lead','admit','bind','cap','leave'];
+  function amendText(g,a){
+    const t=[];
+    if(a.name)t.push(`이름 「${a.name}」`);
+    if(a.head)t.push(`대표 ${party(g,a.head).name}`);
+    if('lead' in a)t.push(`수반 후보 ${a.lead?party(g,a.lead).name:'없음'}`);
+    if(a.admit)t.push(a.admit==='vote'?'가입·제명은 회원 과반 찬성':'가입·제명은 대표가 결정');
+    if(a.bind)t.push(a.bind==='all'?'모든 안건 연맹 당론':'연맹 합의 법안만 구속');
+    if(a.cap)t.push(`정원 ${a.cap}개 당`);
+    if(a.leave!=null)t.push(`탈퇴 벌점 신뢰 −${a.leave}`);
+    return t.join(' · ');
+  }
+  // AI 회원의 개정안 찬반
+  function amendView(g,bot,a){
+    const f=fedById(g,a.fed);if(!f)return{ok:false,why:'연맹이 없습니다.'};
+    if(a.head&&f.head===bot.id)return{ok:false,why:'대표 자리를 내줄 수는 없습니다.'};
+    if('lead' in a&&f.lead===bot.id&&a.lead!==bot.id)return{ok:false,why:'수반 후보 자리를 내줄 수는 없습니다.'};
+    if(a.bind==='all'&&f.head!==bot.id){const ln=fedLine(g,f);if(Math.hypot(bot.eco-ln.eco,bot.soc-ln.soc)>.6)return{ok:false,why:'연맹 당론에 묶이기에는 노선 차이가 큽니다.'}}
+    if(a.leave!=null&&a.leave>rulesOf(f).leave&&bot.trust<45)return{ok:false,why:'탈퇴 벌점을 올리는 데 반대합니다.'};
+    return{ok:true,why:'받아들일 만합니다.'};
+  }
+  function amendTally(g,a,talk){
+    const f=fedById(g,a.fed);if(!f)return{yes:0,total:0,need:1};
+    const yes=f.members.filter(id=>{if(id===a.from)return true;const m=party(g,id);return replyYes(g,m,talk||{},'am:'+a.from+':'+a.id,()=>amendView(g,m,a).ok)}).length;
+    return{yes,total:f.members.length,need:Math.floor(f.members.length/2)+1};
+  }
+  function formAmends(g,talk,say){
+    talk=talk||{};g.amendsDone=g.amendsDone||[];let n=0;
+    for(const p of g.parties){
+      const t=!p.bot&&p.ownerId&&talk[p.ownerId];
+      for(const raw of(t&&Array.isArray(t.amends)?t.amends.slice(0,3):[])){
+        if(!raw||raw.round!==g.round)continue;
+        const key=p.id+':'+raw.id;if(g.amendsDone.includes(key))continue;
+        const a=cleanAmend(g,p,raw);if(!a)continue;
+        const T=amendTally(g,a,talk);if(T.yes<T.need)continue;
+        const f=fedById(g,a.fed),old=f.name;
+        if(a.name)f.name=a.name;if(a.head)f.head=a.head;if('lead' in a)f.lead=a.lead;
+        f.rules=cleanRules({...rulesOf(f),...(a.admit?{admit:a.admit}:{}),...(a.bind?{bind:a.bind}:{}),...(a.cap?{cap:a.cap}:{}),...(a.leave!=null?{leave:a.leave}:{})});
+        syncFeds(g);g.amendsDone.push(key);n++;
+        say(`「${old}」 규칙 개정: ${amendText(g,a)}.`,...f.members);
+      }
+    }
+    return n;
+  }
+  // 받침에 맞춘 조사 '로/으로' (ㄹ 받침과 받침 없음은 '로')
+  const ro=w=>{const c=String(w).charCodeAt(String(w).length-1);if(!(c>=0xAC00&&c<=0xD7A3))return'로';const j=(c-0xAC00)%28;return j===0||j===8?'로':'으로'};
+  // 당 정보 바꾸기: 이름·대표·구호·색·노선. 노선은 분기에 한 번, 바꾸면 신뢰 −5.
+  function formEdits(g,talk,say){
+    talk=talk||{};g.editsDone=g.editsDone||[];let n=0;
+    for(const p of g.parties){
+      if(p.bot||p.fixed||!p.ownerId)continue;
+      const e=talk[p.ownerId]&&talk[p.ownerId].edit;
+      if(!e||typeof e!=='object'||e.round!==g.round)continue;
+      const key=p.id+':'+String(e.id||'');if(g.editsDone.includes(key))continue;
+      g.editsDone.push(key);n++;
+      const old=p.name;
+      const nm=String(e.name||'').replace(/\s+/g,' ').trim().slice(0,14);if(nm&&nm!==p.name)p.name=nm;
+      if(typeof e.leader==='string')p.leader=e.leader.trim().slice(0,10);
+      if(typeof e.slogan==='string')p.slogan=e.slogan.trim().slice(0,30);
+      if(Number.isInteger(e.colorIdx)&&e.colorIdx>=0&&e.colorIdx<NCOLORS&&(e.colorIdx!==p.colorIdx||p.color)){p.colorIdx=e.colorIdx;delete p.color}
+      if(p.name!==old)say(`${old}, 당 이름을 「${p.name}」${ro(p.name)} 바꿨습니다.`,p.id);
+      if(own(IDEOLOGIES,e.ideology)&&e.ideology!==p.ideology&&p.lineRound!==g.round){
+        const i=IDEOLOGIES[e.ideology];p.ideology=e.ideology;p.eco=i.eco;p.soc=i.soc;delete p.idea;
+        p.trust=r1(p.trust-5);p.lineRound=g.round;
+        say(`${p.name}, 노선을 「${i.name}」${ro(i.name)} 바꿨습니다. 신뢰 −5.`,p.id);
+      }
+    }
+    return n;
   }
   // 수락된 연맹 제안을 판에 반영한다. 수락하는 순간(applyDeals)과 분기 말(resolveRound) 모두 이 함수를 쓴다.
   // 반영한 제안은 g.dealsDone에 적어 두어 다시 반영하지 않고, 공동 입법 과제는 g.pendingPacts에 모았다가 분기 말에 다음 분기 안건으로 올린다.
@@ -870,8 +980,11 @@ const E=(function(){
       if(g.dealsDone.includes(d.from+':'+d.id))continue;
       const p=party(g,d.from),t=party(g,d.to);
       const k=dealKind(g,p,t);if(!k.kind)continue;
-      const rep=!t.bot&&talk[t.ownerId]&&talk[t.ownerId].replies;
-      const yes=t.bot?dealView(g,t,d).ok:!!(rep&&typeof rep==='object'&&rep[d.from+':'+d.id]==='yes');
+      const tYes=replyYes(g,t,talk,d.from+':'+d.id,()=>dealView(g,t,d).ok);
+      // 연맹 규칙이 '회원 과반'이면 연맹에 새 당이 들어올 때 회원 과반이 찬성해야 한다(대표의 답도 한 표)
+      const yes=k.kind==='found'?tYes:k.kind==='join'?fedApproves(g,k.fed,d,talk,[p],tYes)
+        :k.kind==='invite'?tYes&&fedApproves(g,k.fed,d,talk,[t],true)
+        :fedApproves(g,k.fed,d,talk,k.fed2.members.map(id=>party(g,id)),true)&&fedApproves(g,k.fed2,d,talk,k.fed.members.map(id=>party(g,id)),tYes);
       if(!yes){if(withRefused&&!p.bot)refused.push([p,t]);continue}
       g.dealsDone.push(d.from+':'+d.id);formed++;
       const who=v=>v==='from'?p:v==='to'?t:null;
@@ -901,7 +1014,8 @@ const E=(function(){
     useMap(state);const g=normAllies(clone(state));
     if(g.status!=='playing')return{state,formed:0,news:[]};
     g.dealNews=g.dealNews||[];const news=[];
-    const {formed}=formDeals(g,talk,(text,...who)=>{const n={text,who};news.push(n);g.dealNews.push(n)},false);
+    const say=(text,...who)=>{const n={text,who};news.push(n);g.dealNews.push(n)};
+    const formed=formEdits(g,talk,say)+formAmends(g,talk,say)+formDeals(g,talk,say,false).formed;
     return{state:formed?g:state,formed,news};
   }
   function resolveRound(state,moves,now,talk){
@@ -917,23 +1031,31 @@ const E=(function(){
     const news=(g.dealNews||[]).slice();g.dealNews=[];const say=(text,...who)=>news.push({text,who});
     // 연맹: 탈퇴·제명을 먼저 처리하고, 아직 반영되지 않은 수락된 제안을 큰 쪽부터 반영한다.
     // 수반 후보는 연맹 단위로 하나라 회원 당 모두 그 당에 표를 몰아준다.
+    const expelTried=new Set();
     const leave=p=>{const f=fedOf(g,p);if(!f)return null;f.members=f.members.filter(id=>id!==p.id);const rest=f.members.map(id=>party(g,id));syncFeds(g);return{f,rest,gone:!g.feds.includes(f)}};
     for(const p of g.parties){
       for(const a of plans[p.id].actions){
         if(a.type==='leaveFed'){
-          const x=leave(p);if(!x)continue;p.trust-=5;for(const o of x.rest)o.trust+=1;
+          const pen=rulesOf(fedOf(g,p)).leave;const x=leave(p);if(!x)continue;p.trust-=pen;for(const o of x.rest)o.trust+=1;
           say(`${p.name}, 「${x.f.name}」에서 탈퇴했습니다.${x.gone?' 남은 당이 하나라 연맹은 해체됩니다.':''}`,p.id,...x.rest.map(o=>o.id));
         }else if(a.type==='expel'){
-          const f=fedOf(g,p),o=party(g,a.target);if(!f||f.head!==p.id||!isAlly(p,o.id))continue;
+          const f=fedOf(g,p),o=party(g,a.target);if(!f||!isAlly(p,o.id))continue;
+          if(rulesOf(f).admit==='vote'){
+            // 회원 과반 연맹: 제명 대상을 뺀 회원의 과반이 같은 제명을 내야(AI는 노선·신뢰로 판단) 내보낸다
+            const voters=f.members.filter(id=>id!==o.id);
+            const yes=voters.filter(id=>{const m=party(g,id);return plans[id].actions.some(x=>x.type==='expel'&&x.target===o.id)||(m.bot&&(Math.hypot(m.eco-o.eco,m.soc-o.soc)>.9||o.trust<35))}).length;
+            if(yes*2<=voters.length){if(!expelTried.has(o.id)){expelTried.add(o.id);say(`「${f.name}」에서 ${o.name} 제명안이 회원 과반을 얻지 못했습니다.`,p.id,o.id)}continue}
+          }else if(f.head!==p.id)continue;
           const x=leave(o);p.trust-=2;o.trust+=2;
           say(`「${f.name}」 대표 ${p.name}이 ${o.name}을 연맹에서 제명했습니다.${x.gone?' 남은 당이 하나라 연맹은 해체됩니다.':''}`,p.id,o.id);
         }
       }
     }
     // 아직 반영되지 않은 수락된 제안이 있으면 여기서 마저 반영한다 (보통은 수락하는 순간 applyDeals로 이미 반영된다)
+    formEdits(g,talk,say);formAmends(g,talk,say);
     const {refused}=formDeals(g,talk,say,true);
     for(const[p,t]of refused)if(!isAlly(p,t.id))say(`${t.name}이 ${p.name}의 연맹 제안을 받지 않았습니다.`,p.id,t.id);
-    const pacts=(g.pendingPacts||[]).slice();g.pendingPacts=[];g.dealsDone=[];
+    const pacts=(g.pendingPacts||[]).slice();g.pendingPacts=[];g.dealsDone=[];g.amendsDone=[];g.editsDone=[];
     for(const p of g.parties)if(p.allyLead)plans[p.id].pm=p.allyLead;
     // 본회의 표결
     const bills=[];let fell=false;
@@ -941,7 +1063,15 @@ const E=(function(){
       let yes=0,no=0;const votes={};
       // 연맹 합의 법안은 그 연맹 회원 모두를 찬성으로 묶는다.
       const bound=it.kind==='pact'&&isAlly(party(g,it.by),it.by2)?[it.by,...allies(party(g,it.by))]:[];
-      for(const p of g.parties){votes[p.id]=bound.includes(p.id)?'yes':plans[p.id].votes[it.id];if(votes[p.id]==='yes')yes+=p.seats;else no+=p.seats}
+      // 연맹 규칙이 '모든 안건 연맹 당론'이면 대표가 아닌 회원은 대표 당과 같은 표를 던진다
+      const follow=new Set();
+      for(const p of g.parties){
+        const f=fedOf(g,p);
+        if(bound.includes(p.id))votes[p.id]='yes';
+        else if(f&&rulesOf(f).bind==='all'&&f.head!==p.id&&plans[f.head]){votes[p.id]=bound.includes(f.head)?'yes':plans[f.head].votes[it.id];follow.add(p.id)}
+        else votes[p.id]=plans[p.id].votes[it.id];
+        if(votes[p.id]==='yes')yes+=p.seats;else no+=p.seats;
+      }
       let passed=yes>no,vetoed=false;
       if(passed&&g.system==='presidential'&&it.kind!=='noconf'&&g.pmParty&&votes[g.pmParty]==='no'&&yes<(yes+no)*2/3){
         passed=false;vetoed=true;say(`대통령이 「${it.title}」에 거부권을 행사했습니다. 재의결에 필요한 3분의 2에 못 미쳤습니다.`,g.pmParty);
@@ -972,7 +1102,7 @@ const E=(function(){
       if(it.kind==='pact')say(`연립 합의 법안 「${it.title}」 ${passed?'가결':'부결'}.`,it.by,it.by2);
       for(const p of g.parties){
         const v=votes[p.id]==='yes'?1:-1;const a=billAlign(it,p);
-        if(Math.abs(a)>.2)p.unity+=a*v>0?4:-6;
+        if(Math.abs(a)>.2)p.unity+=a*v>0?4:follow.has(p.id)?-2:-6;
         for(const reg of REGIONS)p.reg[reg.id]+=billAlign(it,reg)*w*v;
         if((passed&&v>0)||(!passed&&v<0))p.trust+=1;
         if(passed&&v>0)for(const k in it.pass)p.reg[k]+=it.pass[k];
@@ -1240,12 +1370,12 @@ const E=(function(){
     if(g.system==='westminster'){const t=g.parties.filter(p=>!p.fixed).sort((a,b)=>b.seats-a.seats)[0];g.pmParty=t.id;g.pmElection=false}
     else if(g.system!=='presidential'){g.pmParty=null;g.pmElection=true}
     g.agenda=[nextGovBill(g)];
-    g.botDeals=botDeals(g,r);g.dealsDone=[];g.pendingPacts=[];
+    g.botDeals=botDeals(g,r);g.dealsDone=[];g.amendsDone=[];g.editsDone=[];g.pendingPacts=[];
     g.dealNews=[];formDeals(g,{},(text,...who)=>g.dealNews.push({text,who}),false);
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,scoreRows,continueGame,PTS,BAL,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 /*ENGINE-END*/
 if(typeof document!=='undefined'){
@@ -1535,6 +1665,8 @@ function rulesHtml(){return`
     <li><b>법안 발의</b>: 이름과 분야를 정해 내면 다음 분기 안건이 됩니다. 한 당은 분기에 한 건만 낼 수 있고, 분기당 2건까지 오르며 여당과 의석 많은 당이 먼저입니다.</li>
     <li><b>행동 3개</b>: 유세, 당원 모집, 인재 영입, 폭로, 의원 빼오기 등을 고릅니다. 유세 같은 행동은 풀뿌리 ×0.1, 소규모 ×0.25, 보통, 대규모 ×3, 총력 ×8로 지출 규모를 정합니다. 효과는 ×0.3, ×0.5, ×1, ×1.7, ×2.8이라 많이 쓸수록 효율이 떨어집니다.</li>
     <li><b>연맹</b>: 연대는 1:1이 아니라 연맹 단위로 맺습니다. 결재 탭의 연맹 협상에서 연맹이 없는 당끼리 새 연맹을 결성하거나, 이미 있는 연맹의 대표 당에 가입을 신청합니다. 대표 당은 다른 당을 초대하거나, 다른 연맹의 대표 당에 두 연맹의 합병을 제안할 수 있습니다(합친 회원이 정원 안일 때, 제안한 쪽 대표가 새 연맹의 대표). 한 당은 한 연맹에만 들어가고, 한 연맹에는 ${E.MAX_FED}개 당까지 들어갑니다. 회원 당은 모두 서로 연대 상대가 되고, 수반 후보도 연맹에 하나입니다. 제안에는 수반 후보, 공동 입법 과제(다음 분기에 연맹 합의 법안으로 올라가고 연맹 회원은 모두 찬성으로 묶임), 선거 협력(한 지역 후보 양보), 공개 지지(지지하는 당 신뢰를 나눠 줌)를 겁니다. 받는 쪽이 수락하는 즉시 성사되고, AI는 그 자리에서 답하거나 역제안합니다. 나오려면 '연맹 탈퇴'를, 대표 당은 '연맹 제명'을 씁니다. 회원이 하나만 남으면 연맹은 해체됩니다. 같은 연맹의 당을 공격하면 연맹에서 떨어져 나가고 신뢰가 크게 떨어집니다.</li>
+    <li><b>연맹 규칙</b>: 회원 누구나 개정안을 내고, 회원 과반이 찬성하면 바로 바뀝니다. 이름·대표 당·수반 후보와 가입·제명 결정 방식(대표가 결정 / 회원 과반 찬성), 표결 구속(연맹 합의 법안만 / 모든 안건에서 대표 당과 같은 표), 정원, 탈퇴 벌점을 정합니다.</li>
+    <li><b>당 정보</b>: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색·노선을 바로 바꿉니다. 노선은 분기에 한 번만, 바꾸면 신뢰 −5.</li>
     <li><b>결속 25 미만</b>이면 의원들이 탈당합니다.</li>
     <li><b>${E.PR?`지역구 ${E.DISTRICT}석 + 비례 ${E.PR}석`:`지역구 ${E.DISTRICT}석`}</b>: 지역구는 지역별 1위에 표가 몰립니다.${E.PR?' 비례는 정당 득표율대로 나눕니다. 득표 3% 미만이면서 지역구 5석 미만이면 비례를 받지 못합니다.':''}</li>
     <li><b>대형정당과 군소정당</b>: 대형정당은 지역구에 강하지만 결속이 빨리 떨어집니다. 군소정당은 비례에 강합니다.${E.TOTAL===400?` 60석까지 1석마다 승점 +${E.PTS.minor/400}을 더 받습니다.`:''}</li>
@@ -1698,7 +1830,11 @@ function onGame(g){
   if(g.status==='playing'&&(!g.agenda||!g.parties[0].kind)){toast('규칙이 바뀌기 전에 시작한 판이라 이어 할 수 없습니다.');goHome();return}
   if(S.screen!=='game'){mountGame();ensureDraft();renderGameAll();maybeElection();return}
   if(prevRound!==g.round||prevStatus!==g.status){ensureDraft();renderGameAll();maybeElection()}
-  else{renderTop();renderWaiting()}
+  else{
+    // 분기 중간 변화(연맹 결성·규칙 개정·당 정보)도 바로 보이게. 입력 중인 칸은 덮어쓰지 않는다
+    const typing=el=>{const a=document.activeElement;return a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&a.closest(el)};
+    renderTop();renderHouse();if(!typing('#deals'))renderDeals();if(!typing('#partyedit'))renderPartyEdit();renderWaiting();
+  }
 }
 
 /* ---------- 대기실 ---------- */
@@ -1910,7 +2046,10 @@ function govHtml(g){
   return`<section class="panel">${head}${presLine}
     <p>${chip(pm)} <b>${esc(pm.leader||pm.name)} 총리</b> <span class="muted">${esc(pm.name)}${al.length?` · 연립 ${al.map(a=>esc(a.name)).join('·')}`:' · 단독 내각'} · 여당 의석 ${pm.seats+al.reduce((n,a)=>n+a.seats,0)}석</span></p></section>`;
 }
-const isBound=(g,me,it)=>it.kind==='pact'&&E.isAlly(E.party(g,it.by),it.by2)&&(it.by===me.id||E.isAlly(me,it.by));
+const isPactBound=(g,me,it)=>it.kind==='pact'&&E.isAlly(E.party(g,it.by),it.by2)&&(it.by===me.id||E.isAlly(me,it.by));
+// 연맹 규칙이 '모든 안건 연맹 당론'이면 대표가 아닌 회원은 대표 당의 표를 따른다
+const followHead=(g,me)=>{const f=E.fedOf(g,me);return f&&E.rulesOf(f).bind==='all'&&f.head!==me.id?E.party(g,f.head):null};
+const isBound=(g,me,it)=>isPactBound(g,me,it)||!!followHead(g,me);
 function agendaHtml(g,me){
   const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'내각 불신임안'};
   return g.agenda.map(it=>{
@@ -1920,7 +2059,8 @@ function agendaHtml(g,me){
       const regs=E.REGIONS.slice().sort((x,y)=>E.billAlign(it,y)-E.billAlign(it,x));
       const passTxt=Object.entries(it.pass).map(([k,v])=>`${E.REG[k].name} ${fmtD(v)}`).join(', ')||'없음';
       let line='';
-      if(me&&isBound(g,me,it))line='연맹 합의 법안이라 우리 당 표는 찬성으로 묶입니다.';
+      if(me&&isPactBound(g,me,it))line='연맹 합의 법안이라 우리 당 표는 찬성으로 묶입니다.';
+      else if(me&&followHead(g,me))line=`연맹 당론에 따라 대표 당 ${esc(followHead(g,me).name)}과 같은 표를 던집니다.`;
       else if(me){const a=E.billAlign(it,me);line=a>.2?'우리 노선은 찬성 쪽입니다. 반대하면 결속 −6.':a<-.2?'우리 노선은 반대 쪽입니다. 찬성하면 결속 −6.':'우리 노선과 크게 부딪히지 않습니다.'}
       if(me){const a=E.billAlign(it,me),k=E.sway(me),r=n=>Math.round(n*k*10)/10;line+=`<br>${a>.25?`찬성해서 가결되면 승점 +${r(E.PTS.ideoHit+(a>.7?E.PTS.ideoStrong:0))} (이념 실현)`:a<-.25?`노선과 어긋나는 법: 찬성해서 가결되면 ${E.PTS.ideoMiss}, 반대했는데 가결되면 +${r(E.PTS.ideoStand)} (소신)`:'가결돼도 이념 점수 변동 없음 (중립)'}`}
       hint=`찬성이 먹히는 곳: <b>${regs.slice(0,2).map(r=>r.name).join(', ')}</b> · 반대가 먹히는 곳: <b>${regs.slice(-2).map(r=>r.name).join(', ')}</b><br>가결되면 찬성 정당 기반 변화: ${passTxt}${line?`<br>${line}`:''}`;
@@ -1944,6 +2084,20 @@ function incomingDeals(g,me){
     const p=g.parties.find(x=>x.ownerId===uid&&!x.bot);if(!p||p.id===me.id)continue;
     for(const d of(S.chat[uid].deals||[]))if(d&&d.round===g.round&&d.to===me.id&&!done.includes(p.id+':'+d.id))out.push({...d,from:p.id});
   }
+  // 우리 연맹이 '회원 과반'으로 정하면, 대표에게 온 가입 신청·합병 제안과 대표가 낸 초대·합병에도 회원으로서 찬반을 낸다
+  const myFed=E.fedOf(g,me);
+  if(myFed&&E.rulesOf(myFed).admit==='vote'){
+    const all=[...(g.botDeals||[]).map(d=>({...d}))];
+    for(const uid in S.chat){const p=g.parties.find(x=>x.ownerId===uid&&!x.bot);if(!p||p.id===me.id)continue;
+      for(const d of(S.chat[uid].deals||[]))if(d&&d.round===g.round)all.push({...d,from:p.id})}
+    for(const d of all){
+      if(d.to===me.id||d.from===me.id||done.includes(d.from+':'+d.id))continue;
+      const from=E.party(g,d.from),to=E.party(g,d.to);if(!from||!to)continue;
+      const k=E.dealKind(g,from,to);
+      const touches=(k.fed&&k.fed.id===myFed.id)||(k.fed2&&k.fed2.id===myFed.id);
+      if(k.kind&&touches)out.push({...d,memberVote:true});
+    }
+  }
   return out;
 }
 function dealTerms(g,d){
@@ -1966,6 +2120,7 @@ async function saveTalk(patch){
   const g=S.game;const cur=myTalk();
   const body={msgs:[],...cur,...patch};
   body.deals=(body.deals||[]).filter(d=>d&&d.round===g.round).slice(0,8);
+  body.amends=(body.amends||[]).filter(a=>a&&a.round===g.round).slice(0,3);
   S.chat[S.me]=body;renderDeals();
   try{await S.store.doc(`games/${S.code}/chat/${S.me}`).set(body)}catch(e){toast('협상 내용을 저장하지 못했습니다.')}
 }
@@ -1990,6 +2145,9 @@ function renderDeals(){
   const inc=incomingDeals(g,me);
   const incHtml=inc.map(d=>{
     const from=E.party(g,d.from);const k=d.from+':'+d.id;const v=replies[k];const kind=E.dealKind(g,from,me);
+    if(d.memberVote){const to=E.party(g,d.to);
+      return`<div class="deal"><div>${chip(from)} <b>${esc(from.name)}</b><span class="small muted">의 ${dealKindLabel(g,from,to)} → ${esc(to.name)} · 연맹 회원 표결</span></div>
+      <div class="small">${dealTerms(g,d)}</div><div class="row"><button class="btn ghost sm" data-a="deal-reply" data-k="${esc(k)}" data-v="yes" aria-pressed="${v==='yes'}">찬성</button><button class="btn ghost sm" data-a="deal-reply" data-k="${esc(k)}" data-v="no" aria-pressed="${v==='no'}">반대</button></div></div>`}
     return`<div class="deal"><div>${chip(from)} <b>${esc(from.name)}</b><span class="small muted">의 ${dealKindLabel(g,from,me)}${from.bot?' · AI':''}</span></div>
       <div class="small">${dealTerms(g,d)}</div>
       ${!kind.kind?`<p class="small muted">${esc(kind.why)}</p>`:`<div class="row"><button class="btn ghost sm" data-a="deal-reply" data-k="${esc(k)}" data-v="yes" aria-pressed="${v==='yes'}">수락</button><button class="btn ghost sm" data-a="deal-reply" data-k="${esc(k)}" data-v="no" aria-pressed="${v==='no'}">거절</button><button class="btn ghost sm" data-a="deal-counter" data-from="${esc(d.from)}" data-terms="${esc(JSON.stringify(termsOf(d)))}">조건 바꿔 역제안</button></div>`}
@@ -2035,9 +2193,63 @@ function renderDeals(){
   box.innerHTML=`<div class="row between"><h2>연맹 협상</h2>${myFed?`<span class="pill"><span>${esc(myFed.name)}</span> ${myFed.members.length}/${E.MAX_FED}</span>`:''}</div>
     ${myFed?`<p class="small">「${esc(myFed.name)}」 회원: ${members} · 합계 ${E.fedSeats(g,myFed)}석</p><p class="small muted">${[me.allyLead?`${leadName(g)}는 ${esc(E.party(g,me.allyLead).name)}입니다.`:'',...ylines].filter(Boolean).map(x=>`<span>${x}</span> `).join('')}<span>${myFed.head===me.id?`우리 당이 대표라 다른 당을 초대하거나 다른 연맹에 합병을 제안하고, 받은 가입 신청과 합병 제안에 답합니다. 합병하면 제안한 쪽 대표가 새 연맹의 대표가 됩니다. 회원을 내보내려면 이번 분기 행동에서 '연맹 제명'을 고르세요.`:`나오려면 이번 분기 행동에서 '연맹 탈퇴'를 고르세요.`}</span></p>`
       :`<p class="small muted">다른 당과 새 연맹을 결성하거나, 이미 있는 연맹의 대표 당에 가입을 신청합니다. 한 연맹에는 ${E.MAX_FED}개 당까지 들어가고, 회원 당은 모두 서로 연대 상대가 되며 ${leadName(g)}도 연맹에 하나입니다. 받는 쪽이 수락하는 즉시 성사됩니다.</p>`}
+    ${myFed?fedRulesHtml(g,me,myFed):''}
     ${incHtml?`<h3>받은 제안</h3>${incHtml}`:''}
     ${outHtml?`<h3>보낸 제안</h3>${outHtml}`:''}
     ${form}`;
+}
+/* ---------- 연맹 규칙 ---------- */
+const ADMIT_NAME={head:'대표가 결정',vote:'회원 과반 찬성'};
+const BIND_NAME={pact:'연맹 합의 법안만',all:'모든 안건 연맹 당론'};
+function allTalk(){return{...S.chat,[S.me]:myTalk()}}
+// 회원이 낸 개정안 (사람만 낸다)
+function fedAmends(g,f){
+  const out=[];
+  for(const uid in allTalk()){const p=g.parties.find(x=>x.ownerId===uid&&!x.bot);if(!p||!f.members.includes(p.id))continue;
+    for(const a of(allTalk()[uid].amends||[])){if(!a||a.round!==g.round||(g.amendsDone||[]).includes(p.id+':'+a.id))continue;
+      const c=E.cleanAmend(g,p,a);if(c&&c.fed===f.id)out.push(c)}}
+  return out;
+}
+function amDraftFor(g,f){
+  const R=E.rulesOf(f);
+  if(!S.amDraft||S.amDraft.fed!==f.id||S.amDraft.round!==g.round)S.amDraft={fed:f.id,round:g.round,name:f.name,head:f.head,lead:f.lead||'',admit:R.admit,bind:R.bind,cap:R.cap,leave:R.leave};
+  return S.amDraft;
+}
+function fedRulesHtml(g,me,f){
+  const R=E.rulesOf(f),talk=allTalk(),replies=myTalk().replies||{};
+  const list=fedAmends(g,f).map(a=>{
+    const p=E.party(g,a.from),T=E.amendTally(g,a,talk),mine=a.from===me.id,k='am:'+a.from+':'+a.id,v=replies[k];
+    return`<div class="deal"><div>${chip(p)} <b>${esc(p.name)}</b><span class="small muted">의 개정안 · 찬성 ${T.yes}/${T.total} (과반 ${T.need})</span></div><div class="small">${esc(E.amendText(g,a))}</div>
+      <div class="row">${mine?`<button class="btn ghost sm" data-a="am-withdraw" data-v="${esc(a.id)}">철회</button>`:`<button class="btn ghost sm" data-a="am-reply" data-k="${esc(k)}" data-v="yes" aria-pressed="${v==='yes'}">찬성</button><button class="btn ghost sm" data-a="am-reply" data-k="${esc(k)}" data-v="no" aria-pressed="${v==='no'}">반대</button>`}</div></div>`}).join('');
+  const d=amDraftFor(g,f),ms=f.members.map(id=>E.party(g,id));
+  const opt=(val,cur,label)=>`<option value="${esc(val)}" ${String(val)===String(cur)?'selected':''}>${label}</option>`;
+  const caps=[];for(let c=Math.max(2,f.members.length);c<=E.MAX_FED;c++)caps.push(c);
+  return`<h3>연맹 규칙</h3>
+    <p class="small">가입·제명 ${ADMIT_NAME[R.admit]} · 표결 구속 ${BIND_NAME[R.bind]} · 정원 ${R.cap}개 당 · 탈퇴 벌점 신뢰 −${R.leave}</p>
+    ${list}
+    <details class="deal" id="am-box" ${S.amOpen?'open':''}><summary><b>규칙 고치기</b></summary><div class="deal-form">
+      <label>연맹 이름<input data-am="name" maxlength="14" value="${esc(d.name)}"></label>
+      <label>대표 당<select data-am="head">${ms.map(p=>opt(p.id,d.head,esc(p.name))).join('')}</select></label>
+      ${E.pactLead(g)?`<label>${leadName(g)}<select data-am="lead">${opt('',d.lead,'정하지 않음')}${ms.map(p=>opt(p.id,d.lead,esc(p.name))).join('')}</select></label>`:''}
+      <label>가입·제명 결정<select data-am="admit">${opt('head',d.admit,ADMIT_NAME.head)}${opt('vote',d.admit,ADMIT_NAME.vote)}</select></label>
+      <label>표결 구속<select data-am="bind">${opt('pact',d.bind,BIND_NAME.pact)}${opt('all',d.bind,BIND_NAME.all)}</select></label>
+      <label>정원<select data-am="cap">${caps.map(c=>opt(c,d.cap,`${c}개 당`)).join('')}</select></label>
+      <label>탈퇴 벌점<select data-am="leave">${E.LEAVE_OPTS.map(c=>opt(c,d.leave,`신뢰 −${c}`)).join('')}</select></label>
+    </div><div class="row"><button class="btn sm" data-a="am-send">개정안 내기</button><span class="small muted">회원 과반이 찬성하면 바로 바뀝니다. 낸 당은 찬성으로 셉니다. AI 회원은 바로 답합니다.</span></div></details>`;
+}
+/* ---------- 당 정보 바꾸기 ---------- */
+function renderPartyEdit(){
+  const box=$('#partyedit');const g=S.game;const me=myParty();if(!box||!g||!me||g.status!=='playing'||me.fixed)return;
+  if(!S.peDraft||S.peDraft.round!==g.round||S.peDraft.pid!==me.id)S.peDraft={pid:me.id,round:g.round,name:me.name,leader:me.leader||'',slogan:me.slogan||'',colorIdx:me.colorIdx||0,ideology:me.ideology};
+  const d=S.peDraft,lineDone=me.lineRound===g.round,open=box.querySelector('details')&&box.querySelector('details').open;
+  box.innerHTML=`<details ${open?'open':''}><summary><h2 style="display:inline">당 정보 바꾸기</h2></summary><div class="deal-form" style="margin-top:10px">
+    <label>당 이름<input data-pe="name" maxlength="14" value="${esc(d.name)}"></label>
+    <label>대표 이름<input data-pe="leader" maxlength="10" value="${esc(d.leader)}"></label>
+    <label>구호<input data-pe="slogan" maxlength="30" value="${esc(d.slogan)}"></label>
+    <label>정당 색<select data-pe="colorIdx">${COLORS.map((c,i)=>`<option value="${i}" ${i===+d.colorIdx?'selected':''}>색 ${i+1}</option>`).join('')}</select></label>
+    <label>노선<select data-pe="ideology" ${lineDone?'disabled':''}>${Object.entries(E.IDEOLOGIES).map(([k,v])=>`<option value="${k}" ${k===d.ideology?'selected':''}>${esc(v.name)}</option>`).join('')}</select></label>
+  </div><p class="small muted">${lineDone?'이번 분기에는 이미 노선을 바꿨습니다.':`노선을 바꾸면 신뢰 −5, 분기에 한 번만 바꿀 수 있습니다. 지금 노선: ${esc(partyIdea(me))}`}</p>
+  <div class="row"><button class="btn sm" data-a="pe-save">바꾸기</button></div></details>`;
 }
 function billPickHtml(g,me){
   const name=g.country==='us'?'행정부 지지 법안':'정부 법안';
@@ -2081,10 +2293,10 @@ function renderDecide(){
   <section class="panel"><h2>${g.round}분기 본회의</h2>${agendaHtml(g,me)}</section>
   ${me&&g.pmParty===me.id&&(g.billOptions||[]).length&&g.round<g.maxRounds?billPickHtml(g,me):''}
   ${me&&E.govSlots(g,me)?govActionsHtml(g,me):''}
-  ${me?'<section class="panel" id="deals"></section>':''}
+  ${me?'<section class="panel" id="deals"></section><section class="panel" id="partyedit"></section>':''}
   ${me?actionsHtml(g,me):''}
   <section class="panel" id="waiting"></section>`;
-  renderDeals();renderWaiting();
+  renderDeals();renderPartyEdit();renderWaiting();
 }
 function paramSel(g,me,a,i,attr){
   const others=a.type==='expel'?E.allies(me).map(id=>E.party(g,id)):g.parties.filter(p=>p.id!==me.id);
@@ -2127,7 +2339,7 @@ function actionsHtml(g,me){
   }
   const full=d.actions.length>=E.AP;
   const myFed=E.fedOf(g,me);
-  const pal=Object.entries(E.ACTIONS).filter(([k])=>k==='leaveFed'?!!myFed&&!d.actions.some(x=>x.type==='leaveFed'):k==='expel'?!!myFed&&myFed.head===me.id:true)
+  const pal=Object.entries(E.ACTIONS).filter(([k])=>k==='leaveFed'?!!myFed&&!d.actions.some(x=>x.type==='leaveFed'):k==='expel'?!!myFed&&(myFed.head===me.id||E.rulesOf(myFed).admit==='vote'):true)
     .filter(([k])=>k!=='noConfidence'||(g.pmParty&&!E.inGov(g,me)&&g.system!=='presidential'))
     .map(([k,v])=>`<button class="act" data-a="add" data-v="${k}" ${full||E.actionCost({type:k,level:v.spend?0:2})>left?'disabled':''}><b>${v.label}<em>${k==='fundraise'?'+'+money(E.fundGain(me)):v.cost?(v.spend?money(E.actionCost({type:k,level:0}))+'부터':money(E.actionCost({type:k}))):'무료'}</em></b><span>${v.desc}</span></button>`).join('');
   return`<section class="panel"><div class="row between"><h2>이번 분기 행동</h2><span class="pill">남는 자금 ${money(left)}</span></div>
@@ -2377,6 +2589,22 @@ document.addEventListener('click',async ev=>{
       // AI가 받아들일 제안이면 그 자리에서 맺는다
       if(toBot)applyDealsNow();break;
     }
+    case'am-reply':{const k=b.dataset.k;const rep={...(myTalk().replies||{})};rep[k]=rep[k]===v?null:v;if(!rep[k])delete rep[k];await saveTalk({replies:rep});if(rep[k]==='yes')applyDealsNow();break}
+    case'am-send':{
+      const g=S.game,me=myParty(),f=E.fedOf(g,me),d=S.amDraft;if(!f||!d)break;
+      const raw={id:Date.now().toString(36),round:g.round,fed:f.id,name:d.name,head:d.head,admit:d.admit,bind:d.bind,cap:+d.cap,leave:+d.leave};
+      if(E.pactLead(g))raw.lead=d.lead||null;
+      const c=E.cleanAmend(g,me,raw);if(!c){toast('바꾼 내용이 없습니다.');break}
+      // 바뀌는 항목만 남겨 저장한다
+      const keep={id:raw.id,round:raw.round,fed:raw.fed};for(const k of E.AMEND_FIELDS)if(k in c)keep[k]=c[k];
+      await saveTalk({amends:[keep]});S.amDraft=null;toast('개정안을 냈습니다. 회원 과반이 찬성하면 바로 바뀝니다.');applyDealsNow();break;
+    }
+    case'am-withdraw':saveTalk({amends:(myTalk().amends||[]).filter(x=>x&&x.id!==v)});break;
+    case'pe-save':{
+      const g=S.game,d=S.peDraft;if(!d||!myParty())break;
+      await saveTalk({edit:{id:Date.now().toString(36),round:g.round,name:d.name,leader:d.leader,slogan:d.slogan,colorIdx:+d.colorIdx,ideology:d.ideology}});
+      S.peDraft=null;toast('당 정보를 바꿨습니다.');applyDealsNow();break;
+    }
     case'deal-withdraw':saveTalk({deals:(myTalk().deals||[]).filter(x=>x&&x.id!==v)});break;
     case'rm':S.draft.actions.splice(+v,1);touchDraft();renderDecide();break;
     case'submit':submitMove();break;
@@ -2393,8 +2621,12 @@ document.addEventListener('input',ev=>{
   else if(t.id==='pf-cname'){S.profile.cname=t.value;pushProfile()}
   else if(t.id==='pf-new-seats'){S.profile.newSeats=Math.max(0,parseInt(t.value,10)||0);pushProfile()}
   else if(t.dataset.dealname&&S.dealDraft){S.dealDraft.name=t.value}
+  else if(t.dataset.am&&S.amDraft){S.amDraft[t.dataset.am]=t.value}
+  else if(t.dataset.pe&&S.peDraft){S.peDraft[t.dataset.pe]=t.value}
   else if(t.dataset.param==='title'&&S.draft){S.draft.actions[+t.dataset.i].title=t.value;touchDraft();renderWaiting()}
 });
+// 다시 그려도 '규칙 고치기'를 펼친 채로 둔다
+document.addEventListener('toggle',ev=>{if(ev.target.id==='am-box')S.amOpen=ev.target.open},true);
 document.addEventListener('change',async ev=>{
   const t=ev.target;
   if(t.id==='pf-cideo'){S.profile.cideo=t.value;if(isFounding()){const o=$('#party-opts');if(o)o.innerHTML=partyOptsHtml(roomCountry())}pushProfile();return}
@@ -2409,6 +2641,8 @@ document.addEventListener('change',async ev=>{
     touchDraft();renderWaiting();
   }else if(t.dataset.gparam){
     S.draft.gov[+t.dataset.i][t.dataset.gparam]=t.value;touchDraft();renderWaiting();
+  }else if(t.dataset.am&&S.amDraft){S.amDraft[t.dataset.am]=t.value;
+  }else if(t.dataset.pe&&S.peDraft){S.peDraft[t.dataset.pe]=t.value;
   }else if(t.id==='deal-to'||t.dataset.deal){
     const d=S.dealDraft;if(!d)return;
     if(t.id==='deal-to')d.to=t.value;else d[t.dataset.deal]=t.value;

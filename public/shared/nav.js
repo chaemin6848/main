@@ -114,9 +114,13 @@
     [raw, tkm].forEach(function (c) { if (c && c.r != null && (!best || c.i < best.i)) best = c; });
     if (best) { best.r = restore(best.r); if (best.i < 100000 && !HANGUL.test(best.r)) return best.r; }
     if (useTerms && /( · |, |[.。] )/.test(s)) {
-      var parts = tk.split(/( · |, |(?<=[.。]) )/), ok = parts.length > 1;
-      for (var i = 0; ok && i < parts.length; i += 2) { if (untok(parts[i]) === s) { ok = false; break; } var x = t(untok(parts[i])); if (HANGUL.test(x)) { ok = false; break; } parts[i] = x; }
-      if (ok) return restore(parts.join(""));
+      // 문장 단위로 먼저, 안 되면 가운뎃점·쉼표 단위로 나눠 조각마다 바꾼다
+      var seps = [/((?<=[.。]) )/, /( · |, |(?<=[.。]) )/];
+      for (var q = 0; q < seps.length; q++) {
+        var parts = tk.split(seps[q]), ok = parts.length > 1;
+        for (var i = 0; ok && i < parts.length; i += 2) { if (untok(parts[i]) === s) { ok = false; break; } var x = t(untok(parts[i])); if (HANGUL.test(x)) { ok = false; break; } parts[i] = x; }
+        if (ok) return restore(parts.join(""));
+      }
     }
     if (tk !== s && !HANGUL.test(tk)) return restore(tk);
     if (best) return best.r;

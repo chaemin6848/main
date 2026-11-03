@@ -33,3 +33,10 @@ ND.add({
   "게임하러 가기": ["ゲームをする", "Play the game"],
   "개인정보처리방침:": ["プライバシーポリシー：", "Privacy policy:"]
 });
+
+// 고른 언어를 지원하지 않는 도구 카드는 숨긴다 (공통 메뉴와 같은 기준)
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".tools a.tool").forEach(function (a) {
+    if (!ND.toolShown(a.getAttribute("href"))) a.closest("li").hidden = true;
+  });
+});

@@ -212,7 +212,7 @@
     location.reload();
   }
 
-  window.ND = { lang: lang, langs: langs, add: add, pat: pat, fallback: fallback, terms: terms, t: t, apply: walk, setLang: setLang };
+  window.ND = { lang: lang, want: want, langs: langs, add: add, pat: pat, fallback: fallback, terms: terms, t: t, apply: walk, setLang: setLang };
 
   /* ---------- 공통 메뉴 ---------- */
   var NAMES = {
@@ -222,23 +222,26 @@
     "/jeildang/": ["제1당", "第一党", "First Party"]
   };
   var LI = { ko: 0, ja: 1, en: 2 };
+  // langs: 그 도구가 지원하는 언어. 고른 언어를 지원하지 않는 도구는 메뉴에서 뺀다 (지금 보고 있는 도구는 남긴다)
   var TOOLS = [
-    { path: "/japanese/", glyph: "あ", accent: "#dfff70" },
-    { path: "/alarm/", glyph: "留", accent: "#9fd8ff" },
-    { path: "/politics/", glyph: "政", accent: "#ffb4a2" },
-    { path: "/jeildang/", glyph: "党", accent: "#cdb9ff" }
+    { path: "/japanese/", glyph: "あ", accent: "#dfff70", langs: ["ko"] },
+    { path: "/alarm/", glyph: "留", accent: "#9fd8ff", langs: ["ko", "en"] },
+    { path: "/politics/", glyph: "政", accent: "#ffb4a2", langs: ["ko"] },
+    { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] }
   ];
+  var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
   var LANG_SHORT = { ko: "한", ja: "日", en: "EN" };
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
 
+  ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
   var here = location.pathname;
   var host = document.createElement("div");
   host.id = "nihongodic-nav";
   var root = host.attachShadow({ mode: "open" });
 
-  var links = TOOLS.map(function (tl) {
+  var links = TOOLS.filter(function (tl) { return toolOk(tl) || here.indexOf(tl.path) === 0; }).map(function (tl) {
     var on = here.indexOf(tl.path) === 0;
     var name = NAMES[tl.path][LI[lang]];
     return '<a href="' + tl.path + '" style="--accent:' + tl.accent + '" aria-label="' + name + '" title="' + name + '"' + (on ? ' aria-current="page"' : "") + ">" +

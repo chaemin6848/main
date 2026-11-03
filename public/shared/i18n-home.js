@@ -42,4 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".tools a.tool").forEach(function (a) {
     if (!ND.toolShown(a.getAttribute("href"))) a.closest("li").hidden = true;
   });
+  // 개인정보처리방침 링크도 같은 기준: 일본어 화면에서는 일본어판 방침만 남는다
+  var privacy = document.querySelector("footer .privacy");
+  if (privacy) {
+    var shown = 0;
+    privacy.querySelectorAll("a").forEach(function (a) {
+      if (ND.toolShown(a.getAttribute("href"))) shown++; else a.hidden = true;
+    });
+    if (!shown) privacy.hidden = true;
+  }
 });

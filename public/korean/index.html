@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja"><head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpeg" href="/japanese/IMG_2029.jpg" />
+  <title>단어 한 장｜韓国語単語クイズ・韓国語辞書</title>
+  <meta name="description" content="단어 한 장（タノ ハン ジャン）は、日本語の単語を見て韓国語（ハングル）で答える無料の韓国語単語クイズです。レベル1〜5の基本語彙を、例文や単語辞書と一緒に覚えられます。" />
+  <meta name="keywords" content="韓国語, 韓国語 単語, 韓国語 クイズ, ハングル, 韓国語 勉強, 韓国語 辞書, 韓国語 単語帳, 韓国語 学習" />
+  <link rel="canonical" href="https://nihongodic.com/korean/" />
+  <meta property="og:title" content="단어 한 장｜韓国語単語クイズ・韓国語辞書" />
+  <meta property="og:description" content="日本語の単語を見てハングルで答える韓国語単語クイズ。" />
+  <meta property="og:url" content="https://nihongodic.com/korean/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="단어 한 장｜韓国語単語クイズ・韓国語辞書" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5925323367833464" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/japanese/style.css" />
+  <link rel="stylesheet" href="korean.css" />
+</head><body>
+<script src="/shared/nav.js" data-langs="ja"></script>
+  <main class="app-shell" data-no-i18n>
+    <header><a class="brand" href="index.html" aria-label="トップへ"><span class="brand-mark" lang="ko">가</span><span lang="ko">단어 한 장</span></a>
+    <div class="header-actions"><a class="list-link dictionary-link" href="vocabulary-list.html">
+      <span aria-hidden="true">☷</span> 単語辞書</a>
+      <div class="streak"><span>✦</span> <b id="score">0</b> 点</div></div></header>
+    <section class="hero"><p class="eyebrow">KOREAN VOCABULARY</p><h1>단어 한 장｜<em>韓国語</em>単語</h1>
+<p>
+  日本語の単語を見て、韓国語（ハングル）で答えましょう。レベル1から5までの基本語彙をクイズで確認できます。<br><br>表記が少し違っても、意味が合っていれば正解になる場合があります。
+</p>
+</section>
+    <section class="controls" aria-label="クイズ設定">
+      <div>
+        <span class="control-label">レベル</span>
+        <div class="level-buttons" id="level-buttons">
+          <button class="level-btn active" data-level="N5">Lv.1</button>
+          <button class="level-btn" data-level="N4">Lv.2</button>
+          <button class="level-btn" data-level="N3">Lv.3</button>
+          <button class="level-btn" data-level="N2">Lv.4</button>
+          <button class="level-btn" data-level="N1">Lv.5</button></div></div>
+        </section>
+    <section class="quiz-card" aria-live="polite">
+      <div class="card-topline"><span id="level-badge">Lv.1</span>
+        <span id="word-count">単語データなし</span></div>
+        <div class="prompt-area"><p class="prompt-label">この言葉を韓国語で言うと？</p>
+          <h2 id="meaning" lang="ja">読み込み中…</h2><p class="ja-reading" id="reading" lang="ja"></p><p class="english-gloss" id="english-gloss"></p>
+          </div><form id="answer-form" autocomplete="off"><label class="sr-only" for="answer">韓国語の答え</label><input id="answer" type="text" placeholder="ハングルで入力してください" lang="ko" autocapitalize="off" spellcheck="false" disabled /><button type="submit" id="check-button" disabled>答え合わせ</button></form><p class="feedback" id="feedback" role="status"></p><div class="answer-reveal" id="answer-reveal" hidden></div><button class="save-word-button" id="save-word-button" type="button" hidden>マイ単語帳に追加</button><div class="card-actions"><button class="text-button" id="hint-button" type="button" disabled>ヒント</button><button class="next-button" id="next-button" type="button" disabled>次の単語 <span>→</span></button></div></section>
+    <nav class="site-links" aria-label="サイト案内"><a href="privacy.html">プライバシーポリシー</a> · <a href="privacy.html#sources">データ出典</a> · <a href="/japanese/" lang="ko">한국어 화자용 일본어 퀴즈</a></nav>
+  </main>
+  <dialog class="tutorial-dialog" id="tutorial-dialog" aria-labelledby="tutorial-title" data-no-i18n>
+    <div class="tutorial-dialog-header"><span class="brand-mark" aria-hidden="true" lang="ko">가</span><button class="dialog-close" id="tutorial-close" type="button" aria-label="チュートリアルを閉じる">×</button></div>
+    <p class="eyebrow">WELCOME TO NIHONGODIC</p>
+    <h2 id="tutorial-title">韓国語の単語を<br /><em>一枚ずつ</em>覚えよう。</h2>
+    <ol class="tutorial-steps">
+      <li><strong>レベルを選ぶ</strong><span>レベル1（入門）からレベル5（上級）まで選べます。</span></li>
+      <li><strong>日本語を見てハングルで答える</strong><span>端末に韓国語キーボードを追加すると入力できます。語尾が「-다」「-요」でも正解として扱います。</span></li>
+      <li><strong>間違えた単語をくり返す</strong><span>間違えた単語はマイ単語帳に追加して、あとで復習できます。</span></li>
+      <li><strong>単語辞書も使う</strong><span>右上の単語辞書で、単語の検索や例文の確認ができます。</span></li>
+    </ol>
+    <label class="tutorial-dismiss"><input id="tutorial-dismiss" type="checkbox" /> 次回から表示しない</label>
+    <button class="tutorial-start" id="tutorial-start" type="button">はじめる <span aria-hidden="true">→</span></button>
+  </dialog>
+  <script src="/japanese/vocabulary.js"></script><script src="common.js"></script><script src="app.js"></script></body></html>

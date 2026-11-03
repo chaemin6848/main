@@ -900,3 +900,15 @@ AI 정당 {0}곳	AI政党 {0}党	{0} AI parties
 연맹 합병	連盟の合併	Merge federations
 합병 후 연맹 이름	合併後の連盟名	Name after merger
 「{0}」 회원:	「{0}」加盟党：	“{0}” members:
+의석 보기	議席の表示	Seat view
+정당별	政党別	By party
+연맹별	連盟別	By federation
+· 대표	· 代表	· head
+{0} {1} · {2}석{3}	{0} {1} · {2}議席{3}	{0} {1} · {2} seats{3}
+{0} · {1}석{2}	{0} · {1}議席{2}	{0} · {1} seats{2}
+연맹 없음	連盟なし	No federation
+과반	過半数	Majority
+{0}석 부족	{0}議席不足	{0} short
+아직 결성된 연맹이 없습니다.	まだ結成された連盟はありません。	No federations have been formed yet.
+과반까지	過半数まで	To majority
+{0} 연맹 {1}석	{0}連盟 {1}議席	{0} Federation · {1} seats

@@ -1271,6 +1271,7 @@ function makeLocalDb(ns){
 const S={
   local:makeLocalDb('solo'),online:null,onlineMe:null,onlineState:'loading',canWrite:true,
   mode:null,store:null,me:null,code:null,screen:'home',
+  houseView:(()=>{try{return localStorage.getItem('jd-house-view')==='fed'?'fed':'party'}catch(e){return'party'}})(),
   game:null,members:{},moves:{},chat:{},rooms:[],roomsLoaded:false,
   unsub:[],draft:null,tab:'decide',seenElection:0,resolving:false,lastTry:0,
   profile:lsGet('party1:profile',{name:'',leader:'',slogan:'',ideology:'reform',colorIdx:0}),
@@ -1312,10 +1313,11 @@ function hemiPoints(total){
   pts.dot=Math.min(6.6,step*.36);
   return HEMIS[total]=pts.sort((a,b)=>b.t-a.t);
 }
-function hemicycle(parties,center,total){
+// ordered가 참이면 받은 순서 그대로 왼쪽부터 놓는다(연맹별 보기에서 연맹 회원을 붙여 놓을 때).
+function hemicycle(parties,center,total,ordered){
   total=total||E.TOTAL;
   const pts=hemiPoints(total),pr=parties.reduce((a,p)=>a+p.pr,0);
-  const sorted=parties.slice().sort((a,b)=>b.eco-a.eco||a.no-b.no);
+  const sorted=ordered?parties.slice():parties.slice().sort((a,b)=>b.eco-a.eco||a.no-b.no);
   let i=0;
   const groups=sorted.map(p=>{
     const dots=pts.slice(i,i+p.seats);i+=p.seats;
@@ -1793,12 +1795,32 @@ function renderHouse(){
   // 지금 총선을 치르면 나올 의석. 재보궐·총선 계산과 같은 식이다.
   const fc=E.electionSeats(g);const fcReg=Object.fromEntries(fc.regions.map(x=>[x.id,x.seats]));
   const fcTotal=p=>fc.district[p.id]+(E.PR?fc.pr[p.id]:0);
+  // 연맹별 보기: 연맹 하나를 한 묶음으로, 연맹이 없는 당은 혼자 한 묶음으로 센다.
+  const view=S.houseView==='fed'?'fed':'party';
+  const blocs=[...(g.feds||[]).map(f=>({fed:f,ps:f.members.map(id=>E.party(g,id))})),...g.parties.filter(p=>!E.fedOf(g,p)).map(p=>({fed:null,ps:[p]}))];
+  const bsum=(b,fn)=>b.ps.reduce((n,p)=>n+fn(p),0);
+  const bEco=b=>bsum(b,p=>p.eco*Math.max(p.seats,1))/bsum(b,p=>Math.max(p.seats,1));
+  const fedSeatOrder=blocs.slice().sort((a,b)=>bEco(b)-bEco(a)||a.ps[0].no-b.ps[0].no).flatMap(b=>b.ps.slice().sort((x,y)=>y.eco-x.eco||x.no-y.no));
+  const majority=Math.floor(E.TOTAL/2)+1;
+  const myFed=me?E.fedOf(g,me):null;
+  const viewBtns=`<div class="row" role="group" aria-label="의석 보기"><button class="btn ghost sm" data-a="house-view" data-v="party" aria-pressed="${view==='party'}">정당별</button><button class="btn ghost sm" data-a="house-view" data-v="fed" aria-pressed="${view==='fed'}">연맹별</button></div>`;
+  const fedTable=()=>{
+    const rows=blocs.slice().sort((a,b)=>bsum(b,p=>p.seats)-bsum(a,p=>p.seats)||a.ps[0].no-b.ps[0].no).map(b=>{
+      const seats=bsum(b,p=>p.seats),fcs=bsum(b,fcTotal),mine=me&&b.ps.includes(me);
+      const name=b.fed?`<b>${esc(b.fed.name)}</b><span class="ally">${b.ps.map(p=>`<span>${chip(p)} ${esc(p.name)} · ${p.seats}석${p.id===b.fed.head?' · 대표':''}</span>`).join(', ')}</span>`
+        :`${chip(b.ps[0])} ${esc(b.ps[0].name)}<span class="ally">연맹 없음</span>`;
+      return`<tr class="${mine?'me':''}"><td>${name}</td><td>${seats}</td>${E.PR?`<td>${bsum(b,p=>p.district)}·${bsum(b,p=>p.pr)}</td>`:''}<td>${fcs}${fcs!==seats?` <span class="small muted">${fmtD(fcs-seats)}</span>`:''}</td><td>${(bsum(b,p=>nat[p.id])*100).toFixed(1)}%</td><td>${seats>=majority?'<b>과반</b>':`${majority-seats}석 부족`}</td></tr>`}).join('');
+    return`<div class="scroll"><table class="ptable"><thead><tr><th>연맹</th><th>의석</th>${E.PR?'<th>지역·비례</th>':''}<th>총선 예상</th><th>정당 득표</th><th>과반까지</th></tr></thead><tbody>${rows}</tbody></table></div>
+      ${(g.feds||[]).length?'':'<p class="small muted">아직 결성된 연맹이 없습니다.</p>'}`;
+  };
   const regSeats=r=>{const a=fcReg[r.id];return`<div class="reg-seats">${g.parties.filter(p=>a[p.id]>0).sort((x,y)=>a[y.id]-a[x.id]||x.no-y.no).map(p=>`<span class="${me&&p.id===me.id?'me':''}"><i class="dot" style="--c:${pColor(p)}"></i>${esc(p.name)} ${a[p.id]}</span>`).join('')}</div>`};
   $('#col-house').innerHTML=`
-  <section class="panel"><h2>${g.country?esc(E.COUNTRIES[g.country].house):'국회'}</h2>${hemicycle(g.parties,me?`${me.name} ${me.seats}석`:E.TOTAL+'석')}
+  <section class="panel"><div class="row between"><h2>${g.country?esc(E.COUNTRIES[g.country].house):'국회'}</h2>${viewBtns}</div>${view==='fed'
+      ?hemicycle(fedSeatOrder,myFed?`${myFed.name} ${E.fedSeats(g,myFed)}석`:me?`${me.name} ${me.seats}석`:E.TOTAL+'석',0,true)+fedTable()
+      :hemicycle(g.parties,me?`${me.name} ${me.seats}석`:E.TOTAL+'석')+`
     <div class="scroll"><table class="ptable"><thead><tr><th>정당</th><th>의석</th>${E.PR?'<th>지역·비례</th>':''}<th>총선 예상</th><th>정당 득표</th><th>신뢰</th><th>결속</th></tr></thead><tbody>
     ${ps.map(p=>`<tr class="${me&&p.id===me.id?'me':''}"><td>${chip(p)} ${esc(p.name)}${p.bot?' <span class="small muted">AI</span>':''}${g.pmParty===p.id||g.presParty===p.id?` <span class="small" style="color:var(--stamp);font-weight:700">${roleLabel(g,p)}</span>`:''}<span class="ally">${E.KINDS[p.kind].name} · ${esc(partyIdea(p))}${p.members?` · ${esc(E.MEMBER_NAME)} ${members(p.members)}`:''}${E.fedOf(g,p)?' · '+esc(E.fedOf(g,p).name)+(E.fedOf(g,p).head===p.id?' 대표':''):''}</span></td><td>${p.seats}</td>${E.PR?`<td>${p.district}·${p.pr}</td>`:''}<td title="${E.PR?`지역구 ${fc.district[p.id]} · 비례 ${fc.pr[p.id]}`:''}">${fcTotal(p)}${fcTotal(p)!==p.seats?` <span class="small muted">${fmtD(fcTotal(p)-p.seats)}</span>`:''}</td><td>${(nat[p.id]*100).toFixed(1)}%</td><td>${Math.round(p.trust)}</td><td>${Math.round(p.unity)}</td></tr>`).join('')}
-    </tbody></table></div></section>
+    </tbody></table></div>`}</section>
   ${g.status==='playing'?scoreBoard(g):''}
   <section class="panel"><h3>승점 추이</h3>${scoreChart(g)}</section>
   <section class="panel"><h3>정당 득표 전망 추이</h3>${pollChart(g)}</section>
@@ -2276,6 +2298,7 @@ document.addEventListener('click',async ev=>{
       else{b.dataset.sure='1';b.textContent='정말 버리기'}
       break;
     case'tab':setTab(v);break;
+    case'house-view':S.houseView=v==='fed'?'fed':'party';try{localStorage.setItem('jd-house-view',S.houseView)}catch(e){}renderHouse();break;
     case'vote':S.draft.votes[b.dataset.id]=v;touchDraft();renderDecide();break;
     case'add':{
       const me=myParty();const def=E.ACTIONS[v];const a={type:v};

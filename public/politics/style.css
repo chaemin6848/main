@@ -26,7 +26,9 @@
   color-scheme:dark}
 
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* 공통 메뉴(/shared/nav.js)는 body 좌우 여백 밖으로 꽉 차게 — 다른 도구 페이지와 같은 모양 */
+#nihongodic-nav{margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
 .wrap{max-width:1200px;margin:0 auto;padding-block:24px 56px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}

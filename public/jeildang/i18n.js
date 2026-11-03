@@ -2804,6 +2804,10 @@ ND.add({
 "過半数まで",
 "To majority"
 ],
+"개인정보처리방침": [
+"プライバシーポリシー",
+"Privacy policy"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

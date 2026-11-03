@@ -15,8 +15,8 @@
 
   var links = TOOLS.map(function (t) {
     var on = here.indexOf(t.path) === 0;
-    return '<a href="' + t.path + '" style="--accent:' + t.accent + '"' + (on ? ' aria-current="page"' : "") + ">" +
-      '<i aria-hidden="true">' + t.glyph + "</i>" + t.name + "</a>";
+    return '<a href="' + t.path + '" style="--accent:' + t.accent + '" aria-label="' + t.name + '" title="' + t.name + '"' + (on ? ' aria-current="page"' : "") + ">" +
+      '<i aria-hidden="true">' + t.glyph + "</i></a>";
   }).join("");
 
   root.innerHTML =
@@ -30,14 +30,12 @@
     ".home i{font-style:normal;width:24px;height:24px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%;font-size:12px;line-height:1}" +
     ".tools{position:relative;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-left:auto}" +
     ".tools::-webkit-scrollbar{display:none}" +
-    ".tools a{display:inline-flex;align-items:center;gap:6px;flex:none;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap}" +
-    ".tools a i{font-style:normal;width:18px;height:18px;display:grid;place-items:center;border-radius:5px;background:var(--accent);color:var(--on);font-size:11px;font-weight:900;line-height:1}" +
-    ".tools a:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 25%,transparent)}" +
-    ".tools a[aria-current]{color:var(--on);background:var(--accent)}" +
-    ".tools a[aria-current] i{background:transparent}" +
+    ".tools a{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:8px;text-decoration:none}" +
+    ".tools a i{font-style:normal;width:24px;height:24px;display:grid;place-items:center;border-radius:6px;background:var(--accent);color:var(--on);font-size:13px;font-weight:900;line-height:1}" +
+    ".tools a:hover{background:color-mix(in srgb,var(--accent) 30%,transparent)}" +
+    ".tools a[aria-current]{box-shadow:inset 0 0 0 1.5px var(--ink)}" +
     "a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}" +
-    "@media (max-width:560px){.home b{display:none}.home{padding-right:2px}}" +
-    "@media print{nav{display:none}}" +
+        "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="nihongodic 도구">' +
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +

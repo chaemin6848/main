@@ -231,7 +231,6 @@
   ];
   var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
-  var LANG_SHORT = { ko: "한", ja: "日", en: "EN" };
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
 
@@ -249,7 +248,7 @@
   }).join("");
 
   var picker = langs.length > 1
-    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span aria-hidden="true">' + LANG_SHORT[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
+    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span aria-hidden="true">' + LANG_NAME[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
       langs.map(function (l) { return '<option value="' + l + '"' + (l === lang ? " selected" : "") + ' lang="' + l + '">' + LANG_NAME[l] + "</option>"; }).join("") +
       "</select></label>"
     : "";
@@ -271,7 +270,7 @@
     ".tools a[aria-current]{box-shadow:inset 0 0 0 1.5px var(--ink)}" +
     "a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}" +
     ".lang{position:relative;flex:none;display:grid;place-items:center;min-width:34px;height:30px;padding:0 8px;margin-left:4px;border:1.5px solid var(--line);border-radius:8px;" +
-    "font-size:12px;font-weight:800;color:var(--ink);cursor:pointer;box-sizing:border-box}" +
+    "font-size:12px;font-weight:800;color:var(--ink);cursor:pointer;box-sizing:border-box;white-space:nowrap}" +
     ".lang:hover{border-color:var(--ink)}" +
     ".lang:focus-within{outline:2px solid var(--ink);outline-offset:2px}" +
     ".lang select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0}" +

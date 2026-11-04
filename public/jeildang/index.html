@@ -52,6 +52,16 @@ label{display:grid;gap:4px;font-size:13px;color:var(--ink2)}
 .stack{display:grid;gap:14px;min-width:0}
 
 /* 첫 화면 */
+/* 첫 화면·대기실 배경: 고른 나라의 의사당 사진. 아래로 갈수록 바탕색에 녹아든다 */
+#backdrop{position:absolute;inset:0 0 auto 0;height:clamp(380px,62vh,640px);z-index:0;pointer-events:none;opacity:0;transition:opacity .5s;
+  background-size:cover;background-position:center 35%}
+#backdrop.on{opacity:1}
+#backdrop::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 42%,transparent) 0%,color-mix(in srgb,var(--bg) 62%,transparent) 45%,var(--bg) 100%)}
+body{position:relative}
+.wrap{position:relative;z-index:1}
+.has-backdrop .hero .lede,.has-backdrop .hero .mark{text-shadow:0 0 12px var(--bg),0 0 4px var(--bg)}
+@media (prefers-reduced-motion:reduce){#backdrop{transition:none}}
 .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:center;padding-block:4px 18px}
 .mark{font-size:1.55rem;font-weight:700}
 .stamp{display:inline-block;width:1em;height:1em;font-size:24px;line-height:0;color:var(--stamp);transform:rotate(-9deg);flex:none}
@@ -189,6 +199,7 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 <body>
 <script src="/shared/nav.js"></script>
 <script src="i18n.js"></script>
+<div id="backdrop" aria-hidden="true"></div>
 <div class="wrap" id="app"></div>
 <div id="modal"></div>
 <div id="toast" class="toast" hidden></div>
@@ -328,6 +339,20 @@ function trendChart(g,h,parties,val,unit,empty,label){
 }
 
 /* ---------- 정당 등록 양식 ---------- */
+// 첫 화면과 대기실에서만 고른 나라의 의사당 사진을 배경에 깐다. 가상 공화국과 게임 화면은 배경 없음.
+const BACKDROPS={jp:'img/jp.jpg',us:'img/us.jpg',uk:'img/uk.jpg',kr:'img/kr.jpg',fr:'img/fr.jpg'};
+function syncBackdrop(){
+  const el=$('#backdrop');if(!el)return;
+  const c=S.screen==='home'?S.profile.country||'':S.screen==='lobby'?roomCountry():'';
+  const src=BACKDROPS[c]||'';
+  document.body.classList.toggle('has-backdrop',!!src);
+  if(el.dataset.src===src)return;
+  el.dataset.src=src;
+  if(!src){el.classList.remove('on');return}
+  const img=new Image();
+  img.onload=()=>{if(el.dataset.src!==src)return;el.style.backgroundImage=`url("${src}")`;el.classList.add('on')};
+  el.classList.remove('on');img.src=src;
+}
 const roomCountry=()=>S.game&&S.game.settings?S.game.settings.country||'':S.profile.country||'';
 function takenPicks(){
   const t={};for(const m of Object.values(S.members)){if(m.uid!==S.me){const[k,v]=String(m.ideology).split(':');if(k==='pick')t[v]=1}}
@@ -466,6 +491,7 @@ function renderHome(){
   <p class="small muted" style="margin-top:16px">회원가입 없이 익명으로 접속합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요. <a href="/privacy.html">개인정보처리방침</a></p>`;
   renderRooms();
   renderResume();
+  syncBackdrop();
 }
 function systemRule(){
   const c=S.game&&S.game.country||(!S.game&&S.profile.country)||'';
@@ -657,7 +683,7 @@ function onGame(g){
 
 /* ---------- 대기실 ---------- */
 function mountLobby(){
-  S.screen='lobby';
+  S.screen='lobby';syncBackdrop();
   $('#app').classList.remove('wide');
   const code=S.code,solo=S.mode==='solo';
   const inRoom=!!S.members[S.me]||isHost();
@@ -718,7 +744,7 @@ async function startGame(){
 
 /* ---------- 게임 화면 ---------- */
 function mountGame(){
-  S.screen='game';
+  S.screen='game';syncBackdrop();
   $('#app').classList.add('wide');
   const solo=S.mode==='solo';
   $('#app').innerHTML=`

@@ -1310,13 +1310,13 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 중재 나서기	仲裁に乗り出す	Step in to mediate
 자금 2. 신뢰 +2. 정부 수반 당이 고르면 사건이 다음 분기로 번지지 않습니다.	資金2。信頼 +2。政府首班の党が選べば、事件は次の四半期に広がりません。	Costs 2. Trust +2. If the head-of-government party picks it, the event won't spread into next quarter.
 3석의 반란	3議席の反乱	Three-seat rebellion
-개혁신당을 맡아 12분기 안에 20석 이상을 만드세요.	改革新党を率いて12四半期のうちに20議席以上にしてください。	Lead the Reform Party and reach 20+ seats within 12 quarters.
+개혁신당을 맡아 12분기 안에 14석 이상을 만드세요.	改革新党を率いて12四半期のうちに14議席以上にしてください。	Lead the Reform Party and reach 14+ seats within 12 quarters.
 과반을 지켜라	過半数を守れ	Hold the majority
-자유민주당을 맡아 마지막 총선 뒤에도 단독 과반 233석을 지키세요.	自由民主党を率いて、最後の総選挙のあとも単独過半数233議席を守ってください。	Lead the LDP and keep a 233-seat single-party majority after the final election.
+자유민주당을 맡아 마지막 총선 뒤에도 290석 이상의 압도적 과반을 지키세요.	自由民主党を率いて、最後の総選挙のあとも290議席以上の圧倒的多数を守ってください。	Lead the LDP and keep an overwhelming majority of 290+ seats after the final election.
 하원 탈환	下院奪還	Retake the House
-민주당을 맡아 6분기 안에 228석 이상의 안정 과반을 차지하세요.	民主党を率いて、6四半期のうちに228議席以上の安定過半数を取ってください。	Lead the Democrats and win a solid majority of 228+ seats within 6 quarters.
+민주당을 맡아 6분기 안에 232석 이상의 안정 과반을 차지하세요.	民主党を率いて、6四半期のうちに232議席以上の安定過半数を取ってください。	Lead the Democrats and win a solid majority of 232+ seats within 6 quarters.
 반란군의 진격	反乱軍の進撃	Insurgent advance
-영국개혁당을 맡아 12분기 안에 65석 이상을 만드세요.	リフォームUKを率いて12四半期のうちに65議席以上にしてください。	Lead Reform UK to 65+ seats within 12 quarters.
+영국개혁당을 맡아 12분기 안에 50석 이상을 만드세요.	リフォームUKを率いて12四半期のうちに50議席以上にしてください。	Lead Reform UK to 50+ seats within 12 quarters.
 좌파 총리	左派の首相	A left-wing PM
 사회당 계열을 맡아 마지막 총선 뒤 75석 이상으로 총리를 배출하세요.	社会党系を率いて、最後の総選挙のあと75議席以上で首相を出してください。	Lead the Socialists and hold the premiership with 75+ seats after the final election.
 군소정당의 꿈	少数政党の夢	Minor party dream
@@ -1393,3 +1393,60 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 연맹과 상관없이 어느 당과도 이번 분기만의 거래를 맺습니다. 자금을 주고 표를 사거나, 서로 공격하지 않기로 약속할 수 있습니다. 어기면 배신이 공개됩니다.	連盟に関係なく、どの党とも今期だけの取引を結べます。資金で票を買ったり、互いに攻撃しないと約束したりできます。破れば裏切りが公表されます。	Regardless of federations, you can make a this-quarter-only deal with any party. Buy votes with money or agree not to attack each other. Break it and the betrayal is made public.
 거래를 제안했습니다. AI의 답은 아래에 보입니다.	取引を提案しました。AIの答えは下に表示されます。	Deal offered. The AI's answer is shown below.
 거래를 제안했습니다. 상대 화면에 바로 뜹니다.	取引を提案しました。相手の画面にすぐ表示されます。	Deal offered. It shows up on their screen right away.
+헌법 개정안 발의	憲法改正案の発議	Propose constitutional amendment
+정부 수반 당(또는 그 연맹)이 재적 3분의 2를 가졌을 때만. 다음 분기 본회의에 개헌안을 올리고, 재적 3분의 2가 찬성해야 가결됩니다. 가결되면 권력 강화 논란으로 우리 신뢰 −3.	政府首班の党（またはその連盟）が在籍議員の3分の2を持つときのみ。次の四半期の本会議に改憲案を出し、在籍3分の2の賛成で可決されます。可決されると権力強化への批判で自党の信頼 −3。	Only when the head-of-government party (or its federation) holds two-thirds of all seats. Tables an amendment for next quarter's floor; it needs two-thirds of all seats to pass. If it passes, the power grab costs us 3 trust.
+비상 체제 선포	非常体制の宣布	Declare emergency rule
+가상 공화국에서 우리 당 단독으로 재적 3분의 2를 가졌을 때만. 선거를 무기한 미루고 의석을 굳힙니다. 신뢰 −10. 저항이 쌓여 100%가 되면 시민 혁명으로 무너집니다.	架空の共和国で自党単独で在籍3分の2を持つときのみ。選挙を無期限に延期し、議席を固めます。信頼 −10。抵抗が積み上がって100%になると市民革命で崩壊します。	Fictional republic only, when our party alone holds two-thirds of all seats. Postpones elections indefinitely and locks in our seats. Trust −10. Resistance builds, and at 100% a popular revolution topples us.
+시위 진압	デモの鎮圧	Crush protests
+비상 체제에서만. 저항 −20(할 때마다 덜 먹히고, 반발이 쌓여 저항이 더 빨리 오릅니다), 신뢰 −3, 결속 +4.	非常体制でのみ。抵抗 −20（行うたびに効き目が落ち、反発が積もって抵抗の上昇が速くなります）、信頼 −3、結束 +4。	Emergency rule only. Resistance −20 (less effective each time, and the backlash makes resistance climb faster), trust −3, unity +4.
+언론 통제	報道統制	Control the press
+비상 체제에서만. 신뢰 +5, 저항 +3.	非常体制でのみ。信頼 +5、抵抗 +3。	Emergency rule only. Trust +5, resistance +3.
+정당 해산	政党解散	Ban a party
+비상 체제에서만. 상대 당 지역구 의석 절반을 빼앗고 그 당 신뢰 −10. 저항 +20.	非常体制でのみ。相手の党の選挙区議席の半分を奪い、その党の信頼 −10。抵抗 +20。	Emergency rule only. Seize half of the target's district seats; its trust −10. Resistance +20.
+민정 이양	民政移管	Restore civilian rule
+비상 체제에서만. 체제를 끝내고 다음 선거를 정상으로 치릅니다. 신뢰 +6.	非常体制でのみ。体制を終え、次の選挙を通常どおり行います。信頼 +6。	Emergency rule only. Ends the regime; the next election goes ahead as normal. Trust +6.
+비례 봉쇄 조항 상향	比例阻止条項の引き上げ	Raise the list threshold
+정당 득표 7% 미만이고 지역구 5석 미만이면 비례 의석을 받지 못합니다(지금 3%).	政党得票7%未満かつ選挙区5議席未満なら比例議席を得られません（現在3%）。	Parties under 7% of the list vote with fewer than 5 district seats get no list seats (currently 3%).
+지역구 승자 독식 강화	選挙区の勝者総取り強化	Strengthen winner-takes-all
+지역구에서 앞선 정당에 표가 더 몰립니다.	選挙区でリードする政党に票がさらに集まります。	Votes concentrate further on the leading party in each district.
+행정권 강화	行政権の強化	Strengthen the executive
+정부 수반 당의 행정 조치가 분기마다 1건 늘어납니다.	政府首班の党の行政措置が四半期ごとに1件増えます。	The head-of-government party gets one more government action each quarter.
+불신임 요건 강화	不信任要件の強化	Raise the no-confidence bar
+내각 불신임안이 재적 3분의 2 찬성으로만 가결됩니다.	内閣不信任案は在籍3分の2の賛成でのみ可決されます。	No-confidence motions pass only with two-thirds of all seats.
+선거 연기	選挙の延期	Postpone elections
+다음 재보궐·지방선거를 치르지 않습니다.	次の補選・地方選挙を行いません。	Skips the next by-elections and local elections.
+민주화 시위 확산	民主化デモの拡大	Pro-democracy protests spread
+비상 체제에 맞선 시위가 전국으로 번집니다. 저항 +10, 대상 당 신뢰 −3. 대상 당이 지도부 사퇴를 고르면 비상 체제가 끝납니다.	非常体制に抗議するデモが全国に広がっています。抵抗 +10、対象の党の信頼 −3。対象の党が指導部の辞任を選ぶと非常体制は終わります。	Protests against emergency rule spread nationwide. Resistance +10, target party trust −3. If the target chooses to have its leadership resign, emergency rule ends.
+비상 체제 종료	非常体制の終了	Emergency rule ended
+헌법 개정안 「{0}」 가결. 재적 3분의 2({1}석)를 넘겼습니다.	憲法改正案「{0}」可決。在籍3分の2（{1}議席）を超えました。	Constitutional amendment "{0}" passed, clearing two-thirds of all seats ({1}).
+헌법 개정안 「{0}」 부결. 찬성 {1}석으로 재적 3분의 2({2}석)에 못 미쳤습니다.	憲法改正案「{0}」否決。賛成{1}議席で在籍3分の2（{2}議席）に届きませんでした。	Constitutional amendment "{0}" failed: {1} seats in favour, short of two-thirds ({2}).
+정부, 헌법 개정안 「{0}」 발의. 다음 분기 본회의에서 재적 3분의 2 찬성이 필요합니다.	政府、憲法改正案「{0}」を発議。次の四半期の本会議で在籍3分の2の賛成が必要です。	Government tables constitutional amendment "{0}". It needs two-thirds of all seats next quarter.
+{0} 정부, 비상 체제 선포. 선거가 무기한 연기됩니다.	{0}政府、非常体制を宣布。選挙は無期限に延期されます。	{0} government declares emergency rule. Elections are postponed indefinitely.
+{0} 정부, 시위 강제 진압.	{0}政府、デモを強制鎮圧。	{0} government crushes protests by force.
+{0} 정부, 언론 통제 강화.	{0}政府、報道統制を強化。	{0} government tightens control of the press.
+{0} 정부, {1} 강제 해산 명령. 지역구 {2}석을 빼앗았습니다.	{0}政府、{1}に強制解散命令。選挙区{2}議席を奪いました。	{0} government orders {1} dissolved, seizing {2} district seats.
+{0} 정부, 민정 이양 선언. 비상 체제가 끝났습니다.	{0}政府、民政移管を宣言。非常体制が終わりました。	{0} government restores civilian rule. Emergency rule is over.
+시민 혁명. {0}의 비상 체제가 무너졌습니다. 이번 분기 말 조기 총선을 치릅니다.	市民革命。{0}の非常体制が崩壊しました。今期末に繰り上げ総選挙を行います。	Popular revolution. {0}'s emergency rule has collapsed. An early general election is held at the end of this quarter.
+비상 체제로 {0}이 연기됐습니다.	非常体制により{0}が延期されました。	The {0} has been postponed under emergency rule.
+헌법 개정안: {0}	憲法改正案: {0}	Constitutional amendment: {0}
+·비상 체제	・非常体制	·emergency rule
+비상 체제 유지	非常体制の維持	Emergency rule held
+헌법 개정	憲法改正	Constitutional amendments
+: 정부 수반 당이 혼자 또는 연맹으로 재적 3분의 2를 가지면 행정 조치로 개헌안을 낼 수 있습니다. 다음 분기 본회의에서 재적 3분의 2가 찬성해야 가결됩니다. 조항은 비례 봉쇄 조항 상향, 지역구 승자 독식 강화, 행정권 강화, 불신임 요건 강화, 선거 연기이고, 가결되면 권력 강화 논란으로 발의 당 신뢰 −3입니다.	：政府首班の党が単独または連盟で在籍3分の2を持つと、行政措置で改憲案を出せます。次の四半期の本会議で在籍3分の2の賛成があれば可決です。条項は比例阻止条項の引き上げ、選挙区の勝者総取り強化、行政権の強化、不信任要件の強化、選挙の延期で、可決されると権力強化への批判で発議した党の信頼 −3です。	: when the head-of-government party holds two-thirds of all seats, alone or with its federation, it can table an amendment as a government action. It passes next quarter with two-thirds of all seats. Clauses: raise the list threshold, strengthen winner-takes-all, strengthen the executive, raise the no-confidence bar, postpone elections. Passing one costs the proposer 3 trust over the power grab.
+비상 체제	非常体制	Emergency rule
+(가상 공화국만): 정부 수반 당이 단독으로 재적 3분의 2를 가지면 비상 체제를 선포할 수 있습니다. 선거가 미뤄져 의석이 굳고, 시위 진압·언론 통제·정당 해산·민정 이양을 쓸 수 있습니다. 대신 저항이 분기마다 쌓여 100%가 되면 시민 혁명으로 무너지고 조기 총선을 치릅니다. 체제를 끝까지 지키면 승점 +{0}.	（架空の共和国のみ）：政府首班の党が単独で在籍3分の2を持つと非常体制を宣布できます。選挙が延期されて議席が固まり、デモの鎮圧・報道統制・政党解散・民政移管が使えます。代わりに抵抗が四半期ごとに積み上がり、100%になると市民革命で崩壊し、繰り上げ総選挙になります。体制を最後まで守ると勝ち点 +{0}。	(fictional republic only): when the head-of-government party alone holds two-thirds of all seats it can declare emergency rule. Elections are postponed and seats locked in, and it can crush protests, control the press, ban parties or restore civilian rule. But resistance builds every quarter; at 100% a popular revolution brings it down and an early election follows. Hold on to the end for +{0} points.
+저항이 100%가 되면 시민 혁명이 일어납니다.	抵抗が100%になると市民革命が起きます。	At 100% resistance, a popular revolution breaks out.
+비상 체제 · {0} · 저항 {1}%	非常体制 · {0} · 抵抗 {1}%	Emergency rule · {0} · resistance {1}%
+재적 3분의 2({0}석). 헌법 개정안을 낼 수 있습니다.	在籍3分の2（{0}議席）。憲法改正案を出せます。	Two-thirds of all seats ({0}). Can table constitutional amendments.
+개헌선 확보: {0}	改憲ライン確保: {0}	Two-thirds majority: {0}
+헌법 개정안	憲法改正案	Constitutional amendment
+개헌으로 재적 3분의 2({0}석) 찬성이 필요합니다.	改憲により在籍3分の2（{0}議席）の賛成が必要です。	After the amendment, it needs two-thirds of all seats ({0}).
+재적 3분의 2({0}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다.	在籍3分の2（{0}議席）以上の賛成で可決されます。発議した党と連盟の加盟党はおおむね賛成し、その他の党はおおむね反対します。	Needs two-thirds of all seats ({0}) to pass. The proposer and its federation usually vote yes; other parties usually vote no.
+개헌 조항	改憲条項	Amendment clause
+개헌	改憲	Amender
+우리 당이 낸 헌법 개정안을 가결시킵니다.	自党が出した憲法改正案を可決させます。	Pass a constitutional amendment our party proposed.
+철권 통치	鉄拳統治	Iron fist
+가상 공화국에서 비상 체제를 지킨 채 게임을 마칩니다.	架空の共和国で非常体制を維持したままゲームを終えます。	Finish a game in the fictional republic with emergency rule still in place.
+시민 혁명	市民革命	People power
+다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.	他党の非常体制が市民革命で崩壊するのを見届けます。	See another party's emergency rule collapse in a popular revolution.
+압도적 과반	圧倒的多数	Overwhelming majority

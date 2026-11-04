@@ -6,13 +6,14 @@
   Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'
 
 # Firebase를 쓰는 두 도구는 더 엄격한 CSP를 따로 둔다 (! 로 위의 공통 CSP를 빼고 덮어씀)
+# 사이트 공통 Google 로그인(/shared/account.js)을 위해 apis.google.com, Firebase 로그인 창(firebaseapp.com), 프로필 사진(lh3.googleusercontent.com)을 허용
 /politics/*
   ! Content-Security-Policy
-  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; frame-src 'self' https://nihongodic.firebaseapp.com
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; frame-src 'self' https://nihongodic.firebaseapp.com
 
 /jeildang/*
   ! Content-Security-Policy
-  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.googleapis.com https://www.gstatic.com
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; frame-src 'self' https://nihongodic.firebaseapp.com
 
 # 도감 도우미: 외부 스크립트 없음 (Cloudflare가 넣는 분석 스크립트만 허용)
 /pokemon/*

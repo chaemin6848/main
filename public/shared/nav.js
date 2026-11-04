@@ -243,6 +243,9 @@
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
+  // 후원 링크 (모든 페이지 공통 메뉴 오른쪽 끝)
+  var COFFEE_URL = "https://buymeacoffee.com/attl6848";
+  var COFFEE_LABEL = { ko: "Buy Me a Coffee로 후원하기", ja: "Buy Me a Coffeeで支援する", en: "Support on Buy Me a Coffee" };
 
   ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
   var here = location.pathname;
@@ -284,11 +287,17 @@
     ".lang:hover{border-color:var(--ink)}" +
     ".lang:focus-within{outline:2px solid var(--ink);outline-offset:2px}" +
     ".lang select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0}" +
+    ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
+    ".coffee:hover{background:#ffe94d}" +
+    ".coffee svg{width:18px;height:18px}" +
     "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
+    '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
     "</nav>";
 
   if (me && me.parentNode) me.parentNode.insertBefore(host, me);

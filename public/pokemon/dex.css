@@ -7,6 +7,8 @@
   --f-jp:"Noto Sans JP","Hiragino Sans",sans-serif;
 }
 [data-game="rs"]{--v0:#b3203f; --v0-soft:#f6d9df; --v1:#2456a6; --v1-soft:#dae3f5}
+[data-game="bw"]{--v0:#2b2b2b; --v0-soft:#e3e1de; --v1:#5f7189; --v1-soft:#e1e7ee}
+[data-game="b2w2"]{--v0:#1f3d66; --v0-soft:#dce4f0; --v1:#b8532a; --v1-soft:#f5e0d6}
 html[lang="ja"]{--f-body:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif}
 html[lang="en"]{--f-body:"IBM Plex Sans KR",system-ui,sans-serif}
 @media (prefers-color-scheme:dark){
@@ -14,11 +16,15 @@ html[lang="en"]{--f-body:"IBM Plex Sans KR",system-ui,sans-serif}
     --bg:#181614; --surface:#22201d; --fg:#eee8e2; --muted:#a39a92; --line:#38332e; --on:#181614;
     --v0:#ff6b72; --v0-soft:#40242a; --v1:#62c487; --v1-soft:#1f3a29; --done:#62c487; color-scheme:dark}
   :root:not([data-theme="light"]) [data-game="rs"],html[data-game="rs"]:not([data-theme="light"]){--v0:#ff7a93; --v0-soft:#43212b; --v1:#7fa8ff; --v1-soft:#1e2b47}
+  :root:not([data-theme="light"]) [data-game="bw"],html[data-game="bw"]:not([data-theme="light"]){--v0:#d6d3cf; --v0-soft:#34312d; --v1:#9db4d2; --v1-soft:#243040}
+  :root:not([data-theme="light"]) [data-game="b2w2"],html[data-game="b2w2"]:not([data-theme="light"]){--v0:#8fb4ec; --v0-soft:#1d2b40; --v1:#f29a6e; --v1-soft:#432719}
 }
 :root[data-theme="dark"]{
   --bg:#181614; --surface:#22201d; --fg:#eee8e2; --muted:#a39a92; --line:#38332e; --on:#181614;
   --v0:#ff6b72; --v0-soft:#40242a; --v1:#62c487; --v1-soft:#1f3a29; --done:#62c487; color-scheme:dark}
 [data-theme="dark"] [data-game="rs"],html[data-game="rs"][data-theme="dark"]{--v0:#ff7a93; --v0-soft:#43212b; --v1:#7fa8ff; --v1-soft:#1e2b47}
+[data-theme="dark"] [data-game="bw"],html[data-game="bw"][data-theme="dark"]{--v0:#d6d3cf; --v0-soft:#34312d; --v1:#9db4d2; --v1-soft:#243040}
+[data-theme="dark"] [data-game="b2w2"],html[data-game="b2w2"][data-theme="dark"]{--v0:#8fb4ec; --v0-soft:#1d2b40; --v1:#f29a6e; --v1-soft:#432719}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.5}
@@ -72,6 +78,8 @@ ul.list li.none{display:block;color:var(--muted)}
 .pills{display:flex;gap:6px}
 .pill{font:inherit;font-family:var(--f-display);font-size:.78rem;min-width:2.6em;padding:4px 6px;border-radius:4px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
 .pill.v0.on{background:var(--v0);border-color:var(--v0);color:var(--on)}
+/* 도트 글꼴의 W가 ₩처럼 보여서 5세대는 버전 버튼을 본문 글꼴로 */
+[data-game="bw"] .pill,[data-game="b2w2"] .pill{font-family:var(--f-body);font-weight:600}
 .pill.v1.on{background:var(--v1);border-color:var(--v1);color:var(--on)}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
 input[type=search]{font:inherit;flex:1 1 180px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}

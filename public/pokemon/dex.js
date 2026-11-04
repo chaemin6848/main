@@ -3,7 +3,8 @@
    D 한 줄: [번호, 한국어, 일본어, 영어, 전단계, 진화, 입수처 토큰, 버전전용 태그, 특수 S/C/B]
    진화: 숫자=레벨, 그 밖은 EVO 키 ("trade"로 시작하면 교환 진화)
    입수처 토큰: 숫자=도로 번호, 문자열=PLACE 키, "T:장소:주는번호"=게임 내 교환
-   특수: S=스타팅 택1, C=화석 등 택1, B=교배로만 얻음 */
+   특수: S=스타팅 택1, C=화석 등 택1, B=교배로만 얻음, X=이 게임에서는 못 잡고 다른 게임에서 데려옴
+   numOffset: 화면에 보이는 번호 = 내부 번호 + numOffset (도감이 000번부터 시작하는 게임용) */
 (function(){
 "use strict";
 const G=window.GAME, D=G.D, V=G.vers;
@@ -62,6 +63,7 @@ const BASE={
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · ${jo(f,"은","는")} ${O}에서 받아오기`}`,
   exclT:O=>`${O}에서 잡아 받기`,exclN:T=>`${T}에서는 야생으로 안 나오는 버전 전용이에요.`,
   catchT:"직접 잡기",
+  extT:"다른 게임에서 데려오기",extN:"이 게임 안에서는 잡을 수 없어요. 다른 게임이나 앱에서 데려와야 해요.",
   breedT:"교배로 얻기",breedN:"키우미집에 진화형을 맡기면 알로 얻어요. 진화형을 먼저 채우세요.",
   choiceT:"선택지 (택1)",choiceN:"",
   preT:"전 단계부터",preN:"전 단계가 양쪽 세이브 모두에 없어요. 아래 진행 순서대로 채우면 돼요.",
@@ -99,6 +101,7 @@ const BASE={
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":`・${f}は${O}から受け取る`}`,
   exclT:O=>`${O}で捕まえて受け取る`,exclN:T=>`${T}では野生で出ないバージョン限定です。`,
   catchT:"自分で捕まえる",
+  extT:"ほかのソフトから連れてくる",extN:"このソフトの中では捕まえられません。ほかのソフトやアプリから連れてきましょう。",
   breedT:"タマゴで手に入れる",breedN:"育て屋に進化後のポケモンを預けるとタマゴで手に入ります。先に進化後を埋めましょう。",
   choiceT:"選択（どちらか1つ）",choiceN:"",
   preT:"進化前から",preN:"進化前がどちらのセーブにもいません。下の順番で埋めていきましょう。",
@@ -136,6 +139,7 @@ const BASE={
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · get ${f} from ${O}`}`,
   exclT:O=>`Catch in ${O} and trade over`,exclN:T=>`Version exclusives that don't appear in the wild in ${T}.`,
   catchT:"Catch",
+  extT:"Bring from another game",extN:"Can't be caught in this game. Bring it over from another game or app.",
   breedT:"Get from an Egg",breedN:"Leave the evolved form at the Day Care to get an Egg. Fill in the evolved form first.",
   choiceT:"Choices (pick one)",choiceN:"",
   preT:"Start from earlier stages",preN:"Neither save has the previous stage yet. Work through them in this order.",
@@ -195,7 +199,8 @@ const li=()=>LI[S.lang];
 const nm=n=>P[n][S.lang];
 const secLang=()=>S.lang==="ja"?"en":"ja";
 const VN=k=>V[vi(k)].name[S.lang];
-const pad=n=>String(n).padStart(3,"0");
+const OFF=G.numOffset||0;
+const pad=n=>String(n+OFF).padStart(3,"0");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const evoTxt=e=>typeof e==="number"?L().lv(e):EVO[e][li()];
 function locTxt(p){
@@ -243,6 +248,7 @@ function plan(){
     {k:"excl",t:t.exclT(ON),n:t.exclN(TN),d:[]},
     {k:"catch",t:t.catchT,n:"",d:[]},
     {k:"breed",t:t.breedT,n:t.breedN,d:[]},
+    {k:"ext",t:t.extT,n:t.extN,d:[]},
     {k:"choice",t:t.choiceT,n:t.choiceN,d:[]},
     {k:"pre",t:t.preT,n:t.preN,d:[]}
   ];
@@ -262,6 +268,7 @@ function plan(){
       }
     }
     if(p.ch==="B"){g("breed").push([p,locTxt(p)]);return}
+    if(p.ch==="X"){g("ext").push([p,locTxt(p)]);return}
     if(p.ch){g("choice").push([p,locTxt(p)]);return}
     if(p.ver&&p.ver!==tv){g("excl").push([p,`${ON}: ${locTxt(p)}`]);return}
     g("catch").push([p,locTxt(p)]);
@@ -281,7 +288,7 @@ function dex(){
     if(f==="need"&&(has(Tv,p.no)||p.ev))return false;
     if(f!=="all"&&f!=="need"&&f!=="T"&&p.ver!==f)return false;
     if(f==="T"&&!isTrade(p))return false;
-    if(q&&!(String(p.no).includes(q)||pad(p.no).includes(q)||p.ko.includes(q)||p.ja.includes(q)||p.en.toLowerCase().includes(q)))return false;
+    if(q&&!(String(p.no+OFF).includes(q)||pad(p.no).includes(q)||p.ko.includes(q)||p.ja.includes(q)||p.en.toLowerCase().includes(q)))return false;
     return true;
   });
   const ul=document.getElementById("dexList");

@@ -1,5 +1,8 @@
 /* 메인(nihongodic.com/) 번역 — 키는 한국어 원문 그대로 */
 ND.add({
+  "번외": ["番外編", "Bonus"],
+  "포켓몬 도감 채우기 도우미": ["ポケモン図鑑うめヘルパー", "Pokédex Completion Helper"],
+  "3·5세대 도감을 두 세이브로 채우는 순서와 입수처 정리": ["第3・第5世代の図鑑を2つのセーブで埋める手順と入手場所まとめ", "Order and locations for completing the Gen 3 and Gen 5 Pokédex with two saves"],
   "nihongodic | 일본어 공부·일본 유학 도구 모음": ["nihongodic | 日本語学習・日本留学ツール集", "nihongodic | Tools for learning Japanese and studying in Japan"],
   "일본어 단어 퀴즈 '단어 한 장', 일본 대학 유학생전형 일정표 '일유알리미', 일본 정치 정리 '나가타초 노트', 정당 운영 멀티 게임 '제1당'을 한곳에서 이동할 수 있습니다.":
     ["日本語単語クイズ「단어 한 장」、日本の大学の留学生入試日程表「日留アラーム」、日本政治まとめ「나가타초 노트」（韓国語）、政党運営マルチプレイゲーム「第一党」へここから移動できます。",

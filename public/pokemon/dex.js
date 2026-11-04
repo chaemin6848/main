@@ -59,6 +59,7 @@ const BASE={
   recvTE:"받기만 해도 등록 (교환 진화형)",recvReg:"상대 세이브에 등록됨",
   tradeT:"교환 진화",tradeN:"전 단계를 상대 세이브로 보냈다가 돌려받으면 진화해요.",
   tradeHow:(f,m,inT,O)=>(inT?`${jo(f,"을","를")} 교환`:`${f}(${O}에 있음) 교환`)+(m?` · ${m}`:""),
+  orCatch:l=>`또는 직접 잡기: ${l}`,orEvo:(f,m)=>`또는 ${f}에서 진화 (${m})`,
   evoT:"진화시키기",evoN:"전 단계를 갖고 있어요. 레벨업이나 진화의 돌 등으로 끝나요.",
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · ${jo(f,"은","는")} ${O}에서 받아오기`}`,
   exclT:O=>`${O}에서 잡아 받기`,exclN:T=>`${T}에서는 야생으로 안 나오는 버전 전용이에요.`,
@@ -97,6 +98,7 @@ const BASE={
   recvTE:"受け取るだけで登録（通信進化後）",recvReg:"相手のセーブに登録済み",
   tradeT:"通信進化",tradeN:"進化前を相手のセーブに送って返してもらうと進化します。",
   tradeHow:(f,m,inT,O)=>`${f}${inT?"":`（${O}にいる）`}を通信交換`+(m?`・${m}`:""),
+  orCatch:l=>`または野生で捕まえる：${l}`,orEvo:(f,m)=>`または${f}から進化（${m}）`,
   evoT:"進化させる",evoN:"進化前を持っています。レベルアップや進化の石などで完了です。",
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":`・${f}は${O}から受け取る`}`,
   exclT:O=>`${O}で捕まえて受け取る`,exclN:T=>`${T}では野生で出ないバージョン限定です。`,
@@ -135,6 +137,7 @@ const BASE={
   recvTE:"Registers on receipt (already trade-evolved)",recvReg:"Registered in the other save",
   tradeT:"Trade evolutions",tradeN:"Send the previous stage to the other save and trade it back to evolve.",
   tradeHow:(f,m,inT,O)=>`Trade ${f}${inT?"":` (in ${O})`}`+(m?` · ${m}`:""),
+  orCatch:l=>`or catch one: ${l}`,orEvo:(f,m)=>`or evolve ${f} (${m})`,
   evoT:"Evolve",evoN:"You already have the previous stage. Level it up, use a stone, and so on.",
   evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · get ${f} from ${O}`}`,
   exclT:O=>`Catch in ${O} and trade over`,exclN:T=>`Version exclusives that don't appear in the wild in ${T}.`,
@@ -259,8 +262,9 @@ function plan(){
     if(has(O,n)){g("recv").push([p,isTrade(p)?t.recvTE:(p.from?t.recvReg:locTxt(p))]);return}
     if(p.from){
       const f=P[p.from],inT=has(Tv,f.no),inO=has(O,f.no);
-      if(isTrade(p)&&(inT||inO)){g("trade").push([p,t.tradeHow(nm(f.no),tradeItem(p),inT,ON)]);return}
-      if(inT||inO){g("evo").push([p,t.evoHow(nm(f.no),evoTxt(p.evo),inT,ON)]);return}
+      if(isTrade(p)&&(inT||inO)){g("trade").push([p,t.tradeHow(nm(f.no),tradeItem(p),inT,ON)+(p.loc.length&&!p.ch&&(!p.ver||p.ver===tv)?t.sep+t.orCatch(locTxt(p)):"")]);return}
+      const wild=p.loc.length&&!p.ch&&(!p.ver||p.ver===tv)?t.sep+t.orCatch(locTxt(p)):"";
+      if(inT||inO){g("evo").push([p,t.evoHow(nm(f.no),evoTxt(p.evo),inT,ON)+wild]);return}
       // 진화형이지만 야생에서도 잡히는 경우(아기 포켓몬의 진화형)는 아래 '잡기'로
       if(!p.loc.length){
         const b=baseOf(p);
@@ -270,8 +274,9 @@ function plan(){
     if(p.ch==="B"){g("breed").push([p,locTxt(p)]);return}
     if(p.ch==="X"){g("ext").push([p,locTxt(p)]);return}
     if(p.ch){g("choice").push([p,locTxt(p)]);return}
-    if(p.ver&&p.ver!==tv){g("excl").push([p,`${ON}: ${locTxt(p)}`]);return}
-    g("catch").push([p,locTxt(p)]);
+    const alt=p.from?t.sep+t.orEvo(nm(p.from),evoTxt(p.evo)):"";
+    if(p.ver&&p.ver!==tv){g("excl").push([p,`${ON}: ${locTxt(p)}`+alt]);return}
+    g("catch").push([p,locTxt(p)+alt]);
   });
   const total=groups.reduce((a,x)=>a+x.d.length,0);
   const el=document.getElementById("plan");

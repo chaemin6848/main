@@ -1,0 +1,37 @@
+{
+  "name": "jeildang-desktop",
+  "productName": "First Party",
+  "version": "0.1.0",
+  "description": "제1당 데스크톱판(스팀용). public/의 웹 게임을 그대로 감싸고 스팀 도전과제를 연결한다.",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --smoke",
+    "dist:win": "electron-builder --win --x64",
+    "dist:linux": "electron-builder --linux --x64",
+    "dist:mac": "electron-builder --mac"
+  },
+  "dependencies": {
+    "steamworks.js": "0.4.0"
+  },
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.nihongodic.jeildang",
+    "productName": "First Party",
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      { "from": "../public", "to": "game", "filter": ["jeildang/**", "shared/**", "privacy.html"] }
+    ],
+    "asarUnpack": ["node_modules/steamworks.js/**"],
+    "extraFiles": [{ "from": "steam_appid.txt", "to": "steam_appid.txt" }],
+    "win": { "target": "dir" },
+    "linux": { "target": "dir" },
+    "mac": { "target": "dir" }
+  }
+}

@@ -3356,6 +3356,118 @@ ND.add({
 "チュートリアルを終える",
 "End tutorial"
 ],
+"한국어": [
+"한국어",
+"한국어"
+],
+"첫걸음": [
+"はじめの一歩",
+"First steps"
+],
+"튜토리얼을 끝까지 마칩니다.": [
+"チュートリアルを最後まで終えます。",
+"Finish the tutorial."
+],
+"한 판에서 이깁니다.": [
+"1ゲームで勝ちます。",
+"Win a game."
+],
+"정권 교체": [
+"政権交代",
+"Change of government"
+],
+"우리 당이 정부를 맡습니다(총리 또는 대통령).": [
+"自党が政府を担います（首相または大統領）。",
+"Our party takes charge of the government (prime minister or president)."
+],
+"마지막 총선을 단독 과반으로 마칩니다.": [
+"最後の総選挙を単独過半数で終えます。",
+"Finish the final general election with a single-party majority."
+],
+"연맹 정부": [
+"連盟政府",
+"Federation government"
+],
+"마지막 총선을 연맹 합산 과반으로 마칩니다.": [
+"最後の総選挙を連盟の合計過半数で終えます。",
+"Finish the final general election with a combined federation majority."
+],
+"군소정당의 반란": [
+"少数政党の反乱",
+"Minor party uprising"
+],
+"가상 공화국에서 군소정당으로 이깁니다.": [
+"架空の共和国で少数政党として勝ちます。",
+"Win as a minor party in the fictional republic."
+],
+"입법왕": [
+"立法王",
+"Lawmaker"
+],
+"한 판에서 우리 법안을 5건 통과시킵니다.": [
+"1ゲームで自党の法案を5件通します。",
+"Pass five of our own bills in one game."
+],
+"위기 관리": [
+"危機管理",
+"Crisis manager"
+],
+"정부를 맡은 분기에 긴급 대책이나 현장 지원으로 사건을 막습니다.": [
+"政府を担う四半期に、緊急対策か現場支援で事件の拡大を防ぎます。",
+"While in government, stop an event from spreading with an emergency plan or on-the-ground relief."
+],
+"의혹 사건에서 정면 돌파에 성공합니다.": [
+"疑惑の事件で正面突破に成功します。",
+"Tough out a scandal successfully."
+],
+"장기 집권": [
+"長期政権",
+"Long reign"
+],
+"한 임기 더 하기로 이은 판에서 두 임기 연속 이깁니다.": [
+"「もう1期続ける」でつないだゲームで2期連続で勝ちます。",
+"Win two terms in a row in a game continued with \"Play another term\"."
+],
+"여의도의 주인": [
+"汝矣島の主",
+"Master of Yeouido"
+],
+"한국 모드에서 이깁니다.": [
+"韓国モードで勝ちます。",
+"Win in South Korea mode."
+],
+"나가타초의 주인": [
+"永田町の主",
+"Master of Nagatacho"
+],
+"일본 모드에서 이깁니다.": [
+"日本モードで勝ちます。",
+"Win in Japan mode."
+],
+"캐피톨 힐의 주인": [
+"キャピトル・ヒルの主",
+"Master of Capitol Hill"
+],
+"미국 모드에서 이깁니다.": [
+"アメリカモードで勝ちます。",
+"Win in United States mode."
+],
+"웨스트민스터의 주인": [
+"ウェストミンスターの主",
+"Master of Westminster"
+],
+"영국 모드에서 이깁니다.": [
+"イギリスモードで勝ちます。",
+"Win in United Kingdom mode."
+],
+"부르봉궁의 주인": [
+"ブルボン宮の主",
+"Master of the Palais Bourbon"
+],
+"프랑스 모드에서 이깁니다.": [
+"フランスモードで勝ちます。",
+"Win in France mode."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -3505,6 +3617,7 @@ ND.pat([
 [/^(.*?)에서\ (.*?)\ 후보\ 양보$/,"$1で$2が候補を譲る","$2 stands down in $1"],
 [/^(.*?)·(.*?),\ 「(.*?)」\ 결성\.$/,"$1・$2、「$3」を結成。","$1 and $2 form “$3”."],
 [/^(.*?),\ 「(.*?)」에\ 합류\.$/,"$1、「$2」に合流。","$1 joins “$2”."],
+[/^도전과제\ 달성:\ (.*?)$/,"実績解除: $1","Achievement unlocked: $1"],
 [/^(.*?)\ 내각\ 불신임안$/,"$1内閣不信任案","No confidence in the $1 cabinet"],
 [/^지역구\ 판세\ (.*?)석$/,"選挙区情勢 $1議席","District outlook: $1 seats"],
 [/^(.*?)분기\ 결과\ 보고$/,"$1四半期の結果報告","Q$1 report"],
@@ -3518,6 +3631,7 @@ ND.pat([
 [/^·\ 대선\ 후보\ (.*?)$/,"· 大統領候補 $1","· Presidential candidate: $1"],
 [/^(.*?)석\ \/\ 목표\ (.*?)석$/,"$1議席 / 目標 $2議席","$1 seats / goal $2"],
 [/^책임지는\ 쪽:\ (.*?)$/,"責任を負う側: $1","Answerable: $1"],
+[/^도전과제\ (.*?)\ \/\ (.*?)$/,"実績 $1 / $2","Achievements $1 / $2"],
 [/^의석\ 배치:\ (.*?)$/,"議席配置：$1","Seat map: $1"],
 [/^AI\ 정당\ (.*?)곳$/,"AI政党 $1党","$1 AI parties"],
 [/^총선까지\ (.*?)분기$/,"総選挙まで$1四半期","$1 quarters to the election"],

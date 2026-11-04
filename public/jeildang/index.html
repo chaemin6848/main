@@ -65,6 +65,8 @@ body{position:relative}
 #backdrop.inside{height:clamp(300px,48vh,520px);filter:blur(1.5px);transform:scale(1.02)}
 #backdrop.inside::after{background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 55%,transparent) 0%,color-mix(in srgb,var(--bg) 75%,transparent) 50%,var(--bg) 100%)}
 #backdrop.strip{height:30vw;background-position:center top}
+#backdrop.tall{height:133.3vw;background-position:center top}
+#backdrop.tall::after{background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 45%,transparent) 0%,color-mix(in srgb,var(--bg) 55%,transparent) 75%,var(--bg) 100%)}
 @media (prefers-reduced-motion:reduce){#backdrop{transition:none}}
 .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:center;padding-block:4px 18px}
 .mark{font-size:1.55rem;font-weight:700}
@@ -400,6 +402,7 @@ function syncBackdrop(){
   const strip=!inside&&c===''&&WIDE.matches;
   const src=strip?'img/default-wide.jpg':(inside?INSIDES:BACKDROPS)[c]||'';
   el.classList.toggle('inside',inside);el.classList.toggle('strip',strip);
+  el.classList.toggle('tall',!inside&&c===''&&!WIDE.matches); // 휴대폰 기본 화면: 세로 모음 사진을 통째로
   document.body.classList.toggle('has-backdrop',!!src);
   if(el.dataset.src===src)return;
   el.dataset.src=src;

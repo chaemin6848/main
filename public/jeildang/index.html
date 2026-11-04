@@ -158,6 +158,23 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 .bill-opts{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
 .bill-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--mine)}
 .bill-opt[aria-pressed="true"] b{color:var(--accent)}
+/* 개표 연출 */
+.hemi circle.hid{opacity:0}
+.counting .hemi circle{transition:opacity .18s}
+.count-label,.done-label{display:none}
+.counting:not(.done) .count-label,.done .done-label{display:inline}
+.modal .count-stamp{opacity:0}
+.modal.done .count-stamp{animation:stampdrop .4s cubic-bezier(.2,1.5,.4,1) forwards}
+.modal.done .count-skip{display:none}
+@keyframes stampdrop{from{opacity:0;transform:scale(2.4) rotate(-9deg)}to{opacity:1;transform:scale(1) rotate(-9deg)}}
+@media (prefers-reduced-motion:reduce){.modal.done .count-stamp{animation:none;opacity:1}}
+/* 튜토리얼 */
+.tut-target{position:relative;z-index:40;box-shadow:0 0 0 3px var(--accent),0 0 0 100vmax var(--shade)!important;border-radius:8px}
+#tut{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;width:min(480px,calc(100vw - 32px));
+  background:var(--card);color:var(--ink);border:1px solid var(--accent);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.3);padding:14px 16px;display:grid;gap:8px}
+#tut.top{bottom:auto;top:calc(56px + env(safe-area-inset-top,0px))}
+body.tut-on{padding-bottom:240px}
+.snd .btn[aria-pressed="false"]{opacity:.65}
 .react-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--mine);box-shadow:inset 0 0 0 1px var(--accent)}
 .react-opt[aria-pressed="true"] b{color:var(--accent)}
 .react-opt[aria-pressed="true"] b::before{content:"✓ "}
@@ -261,7 +278,7 @@ function makeLocalDb(ns){
   return{doc,collection:p=>query(p),removeGame(code){load();for(const k of Object.keys(mem))if(k==='games/'+code||k.startsWith('games/'+code+'/'))delete mem[k];save()}};
 }
 
-const S={
+const S={tut:lsGet('party1:tut',null),tutPending:false,
   local:makeLocalDb('solo'),online:null,onlineMe:null,onlineState:'loading',canWrite:true,
   mode:null,store:null,me:null,code:null,screen:'home',
   houseView:(()=>{try{return localStorage.getItem('jd-house-view')==='fed'?'fed':'party'}catch(e){return'party'}})(),
@@ -357,6 +374,7 @@ const WIDE=matchMedia('(min-width:700px)');
 const BACKDROPS={'':'img/default.jpg',jp:'img/jp.jpg',us:'img/us.jpg',uk:'img/uk.jpg',kr:'img/kr.jpg',fr:'img/fr.jpg'};
 const INSIDES={jp:'img/jp-in.jpg',us:'img/us-in.jpg',uk:'img/uk-in.jpg',kr:'img/kr-in.jpg',fr:'img/fr-in.jpg'};
 function syncBackdrop(){
+  syncMusic();
   const el=$('#backdrop');if(!el)return;
   const inside=S.screen==='game';
   const c=S.screen==='home'?S.profile.country||'':S.screen==='lobby'?roomCountry():inside&&S.game?S.game.country||'':'';
@@ -481,6 +499,7 @@ function renderHome(){
     <div>
       <h1 class="mark">제1당</h1>
       <p class="lede">정당을 세워 정권을 잡고, 법안을 내고, 정부를 운영하며 총선 의석을 겨루는 멀티 전략 게임입니다. 친구와 몰래 연대하고, 총선 직전에 등을 돌려도 됩니다.</p>
+      <div class="row" style="margin-top:12px"><button class="btn" data-a="tutorial">튜토리얼로 배우기</button>${soundCtl()}</div>
     </div>
     <figure style="margin:0">${hemicycle(previewParties(),previewParties.label(),previewParties.total())}</figure>
   </header>
@@ -694,7 +713,7 @@ function onGame(g){
   }
   if(g.status==='playing'&&(!g.agenda||!g.parties[0].kind)){toast('규칙이 바뀌기 전에 시작한 판이라 이어 할 수 없습니다.');goHome();return}
   if(S.screen!=='game'){mountGame();ensureDraft();renderGameAll();maybeElection();return}
-  if(prevRound!==g.round||prevStatus!==g.status){ensureDraft();renderGameAll();maybeElection()}
+  if(prevRound!==g.round||prevStatus!==g.status){ensureDraft();renderGameAll();quarterFx(g,prevRound,prevStatus);maybeElection();syncMusic()}
   else{
     // 분기 중간 변화(연맹 결성·규칙 개정·당 정보)도 바로 보이게. 입력 중인 칸은 덮어쓰지 않는다
     const typing=el=>{const a=document.activeElement;return a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&a.closest(el)};
@@ -727,6 +746,7 @@ function mountLobby(){
 function memberLabel(m){const[i,k]=String(m.ideology).split(':');if(i==='pick')return'';return`${E.KINDS[k==='minor'?'minor':'major'].name} · ${Object.prototype.hasOwnProperty.call(E.IDEOLOGIES,i)?E.IDEOLOGIES[i].name:''}`}
 function memberList(){return Object.values(S.members).sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0))}
 function renderLobbyList(){
+  if(S.tutPending&&isHost()&&S.members[S.me]&&S.game&&S.game.status==='lobby'){S.tutPending=false;S.tut={code:S.code,i:0,shown:-1};tutSave();startGame()}
   const box=$('#lobby-list');if(!box)return;
   const ms=memberList(),C=E.COUNTRIES[roomCountry()],size=C?C.parties.length:S.game.settings.size;
   const bots=Math.max(0,size-ms.length);
@@ -840,7 +860,7 @@ function renderTop(){
   const pm=E.pmOf(g);
   const label=g.status==='over'?'총선 종료':E.isGeneralRound(g)?(g.round===g.maxRounds?'이번 분기 말 마지막 총선':'이번 분기 말 총선'):E.isMidRound(g)?(g.system==='presidential'||g.system==='semi'?'이번 분기 말 대통령 선거·재보궐':'이번 분기 말 재보궐·지방선거'):`총선까지 ${left}분기`;
   $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
-    <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}<button class="btn ghost" data-a="exit">나가기</button></div>`;
+    <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}${soundCtl()}<button class="btn ghost" data-a="exit">나가기</button></div>`;
   const stat=(k,v,d)=>`<div><span class="k">${k}</span><span class="v">${v}</span>${d!=null&&d!==0?` <span class="small muted">${fmtD(d)}</span>`:''}</div>`;
   $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${chip(me)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
     ${stat('의석',me.seats,me.delta&&me.delta.seats)}${stat(`자금 (${E.UNIT})`,Math.round(me.funds*100)/100,me.delta&&me.delta.funds)}${stat(`${E.MEMBER_NAME} (만 명)`,Math.round(me.members*100)/100,me.delta&&me.delta.members)}${stat('신뢰',Math.round(me.trust),me.delta&&me.delta.trust)}${stat('결속',Math.round(me.unity),me.delta&&me.delta.unity)}${(()=>{const G=E.goalOf(g,me);return G?`<div title="마지막 총선 뒤 ${G.seats}석 이상이면 승점 +${E.PTS.goalHit}. 순위는 승점에서 기준 승점 ${G.par}을 뺀 목표 대비로 매깁니다."><span class="k">목표 의석</span><span class="v">${G.seats}${me.seats>=G.seats?' ✓':''}</span><span class="small muted" style="display:block">기준 ${G.par}점</span></div>`:''})()}</div>`:'';
@@ -918,7 +938,7 @@ function reportHtml(g){
     const line=t=>Object.entries(t).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).map(([id,n])=>`${esc(E.party(g,id).name)} ${Math.round(n*10)/10}${unit}`).join(' · ');
     return`<div><b>대통령 선거: ${esc(w.name)} 당선</b> <span class="small muted">${esc(R.pres.method)}</span><p class="small muted">${R.pres.runoff?'1차 ':''}${line(R.pres.tally)}${R.pres.runoff?`<br>결선 ${line(R.pres.runoff)}`:''}</p></div>`;
   })():'';
-  return`<section class="panel"><details ${g.status==='over'?'':'open'}><summary>${R.round}분기 결과 보고</summary><div class="stack" style="margin-top:10px">
+  return`<section class="panel" id="report-panel"><details ${g.status==='over'?'':'open'}><summary>${R.round}분기 결과 보고</summary><div class="stack" style="margin-top:10px">
     ${scoreDeltaHtml(g,me)}${presHtml}${pmHtml}
     ${g.country?'<p class="small muted">아래 소식은 게임 속 가상 상황이며 실제 사건이 아닙니다.</p>':''}
     ${R.bills.map(b=>`<div><span class="small muted">${kind[b.kind]}</span> <b>${esc(b.title)}</b> <span class="pill">${b.vetoed?'거부권 행사':b.passed?'가결':'부결'} ${b.yes} : ${b.no}</span>
@@ -942,7 +962,7 @@ function eventHtml(g,me){
   const pick=opts.includes(S.draft.react)?S.draft.react:'';
   const left=me?remainingFunds(me,true):0;
   const btn=(k,label,desc,cost)=>`<button class="act react-opt" data-a="react" data-v="${k}" aria-pressed="${pick===k}" ${cost>left?'disabled':''}><b>${label}${cost?`<em>${money(cost)}</em>`:''}</b><span>${desc}</span></button>`;
-  return`<section class="panel"><div class="row between"><h2>이번 분기 사건</h2>${ev.follow?'<span class="pill hot">번질 수 있음</span>':''}</div>
+  return`<section class="panel" id="event-panel"><div class="row between"><h2>이번 분기 사건</h2>${ev.follow?'<span class="pill hot">번질 수 있음</span>':''}</div>
     <div><b>${esc(ev.title)}</b>${t?` <span class="pill">대상: ${esc(t.name)}</span>`:''}<p class="small muted">${esc(ev.text)}</p>
     ${ev.follow&&top?`<p class="small muted">책임지는 쪽: ${esc(top.name)}</p>`:''}</div>
     ${me&&opts.length?`<div class="acts">${btn('','지켜보기','아무 대응도 하지 않습니다.',0)}${opts.map(k=>btn(k,E.RESP[k].label,E.RESP[k].desc,reactCost(k))).join('')}</div>`
@@ -1187,14 +1207,14 @@ function billPickHtml(g,me){
 function pmVoteHtml(g,me){
   if(!g.pmElection)return'';
   const bound=me&&me.allyLead?E.party(g,me.allyLead):null;
-  return`<section class="panel"><h2>${g.system==='semi'?'총리 임명 표결':'총리 지명 선거'}</h2>
+  return`<section class="panel" id="pmvote-panel"><h2>${g.system==='semi'?'총리 임명 표결':'총리 지명 선거'}</h2>
     <p class="small muted">${g.system==='semi'?'실제로는 대통령이 임명하지만, 의회 불신임을 넘길 수 있어야 해서 게임에서는 의회 표결로 정합니다. ':''}의석수만큼 표를 던집니다. 과반이 없으면 상위 두 당의 결선으로 가고, 다른 당의 표는 연대 상대나 노선이 가까운 쪽으로 옮겨 갑니다.</p>
     ${bound?`<p>연맹 약속에 따라 ${chip(bound)} <b>${esc(bound.name)}</b>에 표를 던집니다.</p>`:me?`<label for="pm-pick">지명할 정당<select id="pm-pick" data-pm="1"><option value="">골라 주세요</option>${g.parties.slice().sort((a,b)=>b.seats-a.seats).map(p=>`<option value="${p.id}" ${S.draft.pm===p.id?'selected':''}>${p.no}번 ${esc(p.name)} (${p.seats}석)${p.id===me.id?' · 우리 당':''}</option>`).join('')}</select></label>`:''}
   </section>`;
 }
 // 처음 하는 사람을 위한 짧은 안내. 첫 두 분기에만 보이고, 닫으면 다시 나오지 않는다.
 function guideHtml(g,me){
-  if(!me||g.round>2||lsGet('party1:guide-off',false))return'';
+  if(!me||g.round>2||lsGet('party1:guide-off',false)||tutOn())return'';
   return`<section class="panel guide"><div class="row between"><h2>처음이신가요?</h2><button class="btn ghost sm" data-a="guide-off">다시 보지 않기</button></div>
     <ol class="small">
       <li><b>본회의 안건</b>마다 찬성·반대를 고릅니다. 우리 노선에 맞는 법에 찬성해 통과시키면 승점이 오릅니다.</li>
@@ -1210,7 +1230,7 @@ function renderDecide(){
   if(g.status==='over'){col.innerHTML=finalHtml(g)+reportHtml(g);return}
   const me=myParty();
   col.innerHTML=guideHtml(g,me)+reportHtml(g)+eventHtml(g,me)+govHtml(g)+pmVoteHtml(g,me)+`
-  <section class="panel"><h2>${g.round}분기 본회의</h2>${agendaHtml(g,me)}</section>
+  <section class="panel" id="agenda-panel"><h2>${g.round}분기 본회의</h2>${agendaHtml(g,me)}</section>
   ${me&&g.pmParty===me.id&&(g.billOptions||[]).length&&g.round<g.maxRounds?billPickHtml(g,me):''}
   ${me&&E.govSlots(g,me)?govActionsHtml(g,me):''}
   ${me?'<section class="panel" id="deals"></section><section class="panel" id="partyedit"></section>':''}
@@ -1262,7 +1282,7 @@ function actionsHtml(g,me){
   const pal=Object.entries(E.ACTIONS).filter(([k])=>k==='leaveFed'?!!myFed&&!d.actions.some(x=>x.type==='leaveFed'):k==='expel'?!!myFed&&(myFed.head===me.id||E.rulesOf(myFed).admit==='vote'):true)
     .filter(([k])=>k!=='noConfidence'||(g.pmParty&&!E.inGov(g,me)&&g.system!=='presidential'))
     .map(([k,v])=>`<button class="act" data-a="add" data-v="${k}" ${full||E.actionCost({type:k,level:v.spend?0:2})>left?'disabled':''}><b>${v.label}<em>${k==='fundraise'?'+'+money(E.fundGain(me)):v.cost?(v.spend?money(E.actionCost({type:k,level:0}))+'부터':money(E.actionCost({type:k}))):'무료'}</em></b><span>${v.desc}</span></button>`).join('');
-  return`<section class="panel"><div class="row between"><h2>이번 분기 행동</h2><span class="pill">남는 자금 ${money(left)}</span></div>
+  return`<section class="panel" id="actions-panel"><div class="row between"><h2>이번 분기 행동</h2><span class="pill">남는 자금 ${money(left)}</span></div>
     <div class="stack" style="gap:6px">${slots.join('')}</div>
     <div class="acts">${pal}</div></section>`;
 }
@@ -1298,7 +1318,7 @@ function scoreLine(g,x){
 function scoreBoard(g){
   const me=myParty();const rows=E.scoreRows(g).filter(x=>!E.party(g,x.id).fixed);const goals=rows.some(x=>x.par!=null);
   const sg=n=>n>0?'+'+n:n<0?'−'+Math.abs(n):'0';
-  return`<section class="panel"><h3>승점 현황</h3><p class="small muted">지금 게임이 끝나면 받을 점수입니다. 마지막 총선 뒤 같은 식으로 확정합니다.</p>${goals?`<p class="small muted">국가 모드는 정당마다 출발점이 달라, 순위를 승점이 아니라 목표 대비(승점 − 기준 승점)로 매깁니다. 목표 의석을 채우면 승점 +${E.PTS.goalHit}.</p>`:''}
+  return`<section class="panel" id="score-panel"><h3>승점 현황</h3><p class="small muted">지금 게임이 끝나면 받을 점수입니다. 마지막 총선 뒤 같은 식으로 확정합니다.</p>${goals?`<p class="small muted">국가 모드는 정당마다 출발점이 달라, 순위를 승점이 아니라 목표 대비(승점 − 기준 승점)로 매깁니다. 목표 의석을 채우면 승점 +${E.PTS.goalHit}.</p>`:''}
     <div class="scroll"><table class="ptable score"><thead><tr><th>정당</th><th>선거</th><th>입법</th><th>이념</th><th>집권</th><th>정부</th><th>신뢰</th>${goals?'<th>목표 의석</th>':''}<th>합계</th>${goals?'<th>기준</th><th>목표 대비</th>':''}</tr></thead><tbody>
     ${rows.map(x=>{const p=E.party(g,x.id);return`<tr class="${me&&p.id===me.id?'me':''}"><td>${chip(p)} ${esc(p.name)}</td><td>${x.elec+x.minor}</td><td title="입법 성공 ${x.nLaw}건">${x.law} <span class="small muted">${x.nLaw}건</span></td><td title="노선에 맞는 법 ${x.nIdeo}건">${x.ideo} <span class="small muted">${x.nIdeo}건</span></td><td>${x.gov}</td><td title="${esc(x.label)}">${x.end}</td><td>${x.rep}</td>${goals?`<td title="${x.seats}석 / 목표 ${x.goalSeats}석">${x.seats}/${x.goalSeats}${x.hit?' ✓':''}</td>`:''}${goals?`<td>${x.score}</td><td class="muted">${x.par}</td><td><b>${sg(x.vs)}</b></td>`:`<td><b>${x.score}</b></td>`}</tr>`}).join('')}
     </tbody></table></div></section>`;
@@ -1323,13 +1343,163 @@ function maybeElection(){
   const el=R.election;
   const ps=g.parties.slice().sort((a,b)=>b.seats-a.seats);
   $('#modal').innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="el-t">
-    <div class="row">${stamp('big-stamp')}<div><span class="small muted">개표 완료</span><h2 id="el-t" style="font-size:1.2rem;color:var(--ink)">${el.kind==='general'?'총선':el.kind==='dissolve'?(g.system==='westminster'?'조기 총선':'해산 조기 총선'):R.pres?'대통령 선거·재보궐':'재보궐·지방선거'}</h2></div></div>
+    <div class="row">${stamp('big-stamp count-stamp')}<div><span class="small muted count-label">개표 중</span><span class="small muted done-label">개표 완료</span><h2 id="el-t" style="font-size:1.2rem;color:var(--ink)">${el.kind==='general'?'총선':el.kind==='dissolve'?(g.system==='westminster'?'조기 총선':'해산 조기 총선'):R.pres?'대통령 선거·재보궐':'재보궐·지방선거'}</h2></div></div>
     ${R.pres?`<p><b>대통령 당선: ${esc(E.party(g,R.pres.winner).name)}</b> <span class="small muted">${esc(R.pres.method)}</span></p>`:''}
     ${hemicycle(g.parties,'개표 결과')}
-    <div class="scroll"><table class="ptable"><thead><tr><th>정당</th>${E.PR?'<th>지역구</th><th>비례</th>':''}<th>합계</th><th>증감</th><th>득표</th></tr></thead><tbody>${ps.map(p=>`<tr><td>${chip(p)} ${esc(p.name)}</td>${E.PR?`<td>${p.district}</td><td>${p.pr}</td>`:''}<td><b>${p.seats}</b></td><td>${fmtD(p.seats-el.prev[p.id])}</td><td>${el.vote[p.id]}%</td></tr>`).join('')}</tbody></table></div>
+    <div class="scroll"><table class="ptable"><thead><tr><th>정당</th>${E.PR?'<th>지역구</th><th>비례</th>':''}<th>합계</th><th>증감</th><th>득표</th></tr></thead><tbody>${ps.map(p=>`<tr><td>${chip(p)} ${esc(p.name)}</td>${E.PR?`<td>${p.district}</td><td>${p.pr}</td>`:''}<td><b data-count="${p.seats}" data-from="${el.prev[p.id]||0}">${p.seats}</b></td><td>${fmtD(p.seats-el.prev[p.id])}</td><td>${el.vote[p.id]}%</td></tr>`).join('')}</tbody></table></div>
     <div class="scroll"><table class="ptable"><thead><tr><th>지역구</th><th>1위</th></tr></thead><tbody>${el.regions.map(x=>{const p=E.party(g,x.winner);return`<tr><td>${E.REG[x.id].name}</td><td style="text-align:right">${chip(p)} ${esc(p.name)}</td></tr>`}).join('')}</tbody></table></div>
-    <button class="btn" data-a="close-modal">확인</button></div></div>`;
+    <div class="row"><button class="btn" data-a="close-modal">확인</button><button class="btn ghost count-skip" data-a="skip-count">바로 보기</button></div></div></div>`;
+  music('election');playCount();
 }
+// 개표 방송: 의석 점이 무작위 순서로 하나씩 켜지고 의석 숫자가 올라간 뒤 도장이 찍힌다. 움직임 줄이기 설정이면 바로 결과.
+function playCount(){
+  const box=$('#modal .modal');if(!box)return;
+  const dots=[...box.querySelectorAll('.hemi circle')],nums=[...box.querySelectorAll('[data-count]')];
+  let raf=0,tick=0;
+  const finish=()=>{
+    cancelAnimationFrame(raf);clearInterval(tick);playCount.finish=null;
+    dots.forEach(d=>d.classList.remove('hid'));nums.forEach(n=>n.textContent=n.dataset.count);
+    if(!box.classList.contains('done')){box.classList.add('done');sfx('stamp');setTimeout(()=>sfx('reveal'),200)}
+  };
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!dots.length){finish();return}
+  box.classList.add('counting');
+  const order=dots.map((d,i)=>[Math.random(),d]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  order.forEach(d=>d.classList.add('hid'));
+  const T=2600,t0=performance.now();let shown=0;
+  tick=setInterval(()=>sfx('tick'),110);
+  const step=now=>{
+    const k=Math.min(1,(now-t0)/T),e=1-Math.pow(1-k,2);
+    const want=Math.floor(e*order.length);
+    for(;shown<want;shown++)order[shown].classList.remove('hid');
+    nums.forEach(n=>{const a=+n.dataset.from,b=+n.dataset.count;n.textContent=Math.round(a+(b-a)*e)});
+    if(k<1)raf=requestAnimationFrame(step);else finish();
+  };
+  raf=requestAnimationFrame(step);playCount.finish=finish;
+}
+
+/* ---------- 소리 ---------- */
+// 효과음은 Web Audio로 그 자리에서 만든다(소리 파일 없음). 배경음악은 운영자가 고른 파일을 audio/ 폴더에 넣으면 재생된다.
+// 파일이 없으면 조용히 넘어간다. 효과음·음악은 따로 켜고 끈다(이 브라우저에만 저장).
+const BGM={home:'audio/bgm-home.mp3',game:'audio/bgm-game.mp3',election:'audio/bgm-election.mp3',ending:'audio/bgm-ending.mp3'};
+const SND={fx:lsGet('jd-sfx',true),bgm:lsGet('jd-bgm',true),ctx:null,want:null,el:null,cur:null,missing:{}};
+function actx(){
+  if(!SND.ctx){const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;try{SND.ctx=new A()}catch(e){return null}}
+  if(SND.ctx.state==='suspended')SND.ctx.resume().catch(()=>{});
+  return SND.ctx;
+}
+function tone(f,dur,o={}){
+  const c=actx();if(!c)return;const t=c.currentTime+(o.at||0);
+  const osc=c.createOscillator(),g=c.createGain();
+  osc.type=o.type||'sine';osc.frequency.setValueAtTime(f,t);if(o.to)osc.frequency.exponentialRampToValueAtTime(o.to,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(o.vol||.15,t+(o.attack||.005));g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  osc.connect(g).connect(c.destination);osc.start(t);osc.stop(t+dur+.02);
+}
+function noise(dur,o={}){
+  const c=actx();if(!c)return;const t=c.currentTime+(o.at||0);
+  const n=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,n,c.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
+  const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+  src.buffer=buf;f.type='lowpass';f.frequency.value=o.cut||1500;g.gain.value=o.vol||.3;
+  src.connect(f).connect(g).connect(c.destination);src.start(t);
+}
+const SFX={
+  click:()=>tone(720,.05,{type:'triangle',vol:.05}),
+  stamp:()=>{noise(.09,{vol:.55,cut:500});tone(110,.2,{vol:.45,to:55})},               // 도장 쾅
+  gavel:()=>{[0,.2].forEach(at=>{noise(.05,{vol:.4,cut:2200,at});tone(260,.09,{type:'triangle',vol:.25,at,to:200})})}, // 의사봉 두 번
+  tick:()=>tone(1500+Math.random()*500,.02,{type:'square',vol:.018}),                 // 개표 똑딱
+  event:()=>{tone(880,.12,{type:'triangle',vol:.08});tone(660,.18,{type:'triangle',vol:.08,at:.13})}, // 속보 알림
+  reveal:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.35,{type:'triangle',vol:.07,at:i*.09})),       // 개표 완료
+  win:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i>3?.5:.22,{type:'sawtooth',vol:.045,at:i*.14})), // 승리
+  lose:()=>[392,330,262].forEach((f,i)=>tone(f,.4,{type:'triangle',vol:.06,at:i*.2})),
+};
+function sfx(k){if(!SND.fx||!SFX[k])return;try{SFX[k]()}catch(e){}}
+// 화면에 맞는 배경음악. 같은 곡이면 이어서 튼다. 자동 재생이 막히면 첫 클릭 때 다시 시도한다.
+function music(track){
+  SND.want=track||null;
+  const src=SND.bgm&&track&&!SND.missing[track]?BGM[track]:null;
+  if(SND.cur===src&&SND.el&&!SND.el.paused)return;
+  if(SND.el){SND.el.pause();SND.el=null}
+  SND.cur=src;if(!src)return;
+  const a=new Audio(src);a.loop=track!=='ending';a.volume=.35;a.preload='auto';
+  a.addEventListener('error',()=>{SND.missing[track]=true;if(SND.el===a){SND.el=null;SND.cur=null}});
+  SND.el=a;a.play().catch(()=>{SND.cur=null});
+}
+function syncMusic(){
+  if($('#modal .count-stamp'))return music('election');
+  const g=S.game;
+  music(S.screen==='game'?(g&&g.status==='over'?'ending':'game'):S.screen==='home'||S.screen==='lobby'?'home':null);
+}
+document.addEventListener('pointerdown',()=>{actx();if(SND.want&&!SND.cur)music(SND.want)},{passive:true});
+function soundCtl(){
+  return`<span class="snd row" style="gap:6px"><button class="btn ghost sm" data-a="snd" data-v="fx" aria-pressed="${SND.fx}" title="효과음">${SND.fx?'효과음 켬':'효과음 끔'}</button><button class="btn ghost sm" data-a="snd" data-v="bgm" aria-pressed="${SND.bgm}" title="배경음악">${SND.bgm?'음악 켬':'음악 끔'}</button></span>`;
+}
+// 분기가 넘어갈 때: 가결된 법이 있으면 의사봉, 새 사건이 있으면 알림, 판이 끝나면 승패 효과음
+function quarterFx(g,prevRound,prevStatus){
+  if(prevRound==null)return;
+  const R=g.report;
+  if(R&&(R.bills||[]).some(b=>b.passed&&!b.vetoed))sfx('gavel');
+  if(g.status==='over'&&prevStatus==='playing'){const me=myParty();setTimeout(()=>sfx(me&&g.result&&g.result.winner===me.id?'win':'lose'),700)}
+  else if(g.event&&g.event.round===g.round)setTimeout(()=>sfx('event'),450);
+}
+
+/* ---------- 튜토리얼 ---------- */
+// 첫 화면의 '튜토리얼로 배우기'로 4개 정당·6분기 연습 판을 열고, 화면 각 부분을 차례로 짚는다.
+// 진행 상태는 이 브라우저에 저장해 새로고침해도 이어진다. 가리킬 칸이 없으면(예: 총리 지명이 없는 분기) 건너뛴다.
+const TUT=[
+  {title:'튜토리얼에 오신 것을 환영합니다',text:'가상 해람 공화국에서 4개 정당이 6분기 동안 겨룹니다. 3분기째 재보궐, 6분기째 총선이 있습니다. 화면을 차례로 짚어 드릴게요.'},
+  {sel:'#mybar',title:'우리 당',text:'의석, 자금, 당원, 신뢰, 결속입니다. 자금으로 행동하고, 신뢰는 득표에, 결속은 탈당을 막는 데 중요합니다. 끝났을 때 신뢰와 결속도 승점이 됩니다.'},
+  {sel:'#col-house',tab:'house',title:'국회',text:'의석 배치와 정당 표입니다. 총선 예상 의석, 득표, 신뢰, 결속을 비교해 보세요. AI 정당 이름 옆에는 협상가, 강경파 같은 성격이 나옵니다.'},
+  {sel:'#event-panel',tab:'decide',title:'이번 분기 사건',text:'분기마다 사건이 하나 미리 공개됩니다. 고를 수 있는 대응이 있으면 하나 고르세요. 고르지 않으면 지켜보기입니다.'},
+  {sel:'#pmvote-panel',tab:'decide',title:'총리 지명',text:'첫 분기에는 의석수만큼의 표로 총리를 뽑습니다. 우리 당이나 손잡을 당을 고르세요.'},
+  {sel:'#agenda-panel',tab:'decide',title:'본회의 표결',text:'안건마다 찬성 또는 반대를 고릅니다. 우리 노선에 맞는 법을 통과시키면 승점이 오릅니다. 안건마다 노선과 맞는지 표시돼 있습니다.'},
+  {sel:'#actions-panel',tab:'decide',title:'행동 3개',text:'유세로 지역 기반을 넓히고, 인재 영입과 정책 발표로 신뢰를 올립니다. 처음에는 의석이 많이 걸린 지역에 유세를 해 보세요.'},
+  {sel:'#deals',tab:'decide',title:'연맹 협상',text:'노선이 가까운 당과 연맹을 맺으면 함께 정부를 꾸리고 법을 통과시키기 쉬워집니다. AI는 제안에 그 자리에서 답합니다.'},
+  {sel:'#waiting',tab:'decide',title:'기표하고 제출',text:'다 골랐으면 기표하고 제출을 누르세요. 모든 정당의 결정이 한 번에 공개되고 다음 분기로 넘어갑니다.'},
+  {sel:'#report-panel',tab:'decide',round:2,title:'결과 보고',text:'지난 분기에 무엇이 가결됐는지, 사건에 누가 어떻게 대응했는지, 우리 승점이 어디서 바뀌었는지 나옵니다.'},
+  {sel:'#score-panel',tab:'house',round:2,title:'승점',text:'승점 현황은 국회 탭에서 언제든 볼 수 있습니다. 마지막 총선이 끝났을 때 승점이 가장 높은 당이 이깁니다.'},
+  {round:2,title:'준비 끝',text:'이제 직접 해 보세요. 재보궐과 총선 결과는 개표 화면으로 보여 드립니다. 규칙은 규칙 칸(휴대폰은 세 번째 탭)에 있습니다.'},
+];
+const tutOn=()=>!!(S.tut&&S.tut.code===S.code&&S.screen==='game');
+function startTutorial(){
+  if(!S.profile.name.trim())S.profile.name='튜토리얼당';
+  S.tutPending=true;
+  createRoom('solo',{rounds:6,size:4,timer:0,country:''});
+}
+function tutSave(){lsSet('party1:tut',S.tut||null)}
+function tutGo(i){
+  S.tut.i=i;S.tut.shown=-1;tutSave();
+  if(i>=TUT.length){S.tut=null;tutSave();tutPaint();toast('튜토리얼을 마쳤습니다. 계속 플레이하세요.');return}
+  tutPaint();
+}
+function tutPaint(){
+  document.querySelectorAll('.tut-target').forEach(x=>x.classList.remove('tut-target'));
+  let card=$('#tut');
+  if(!tutOn()){if(card)card.remove();document.body.classList.remove('tut-on');return}
+  const g=S.game;
+  if(g.status==='over'){S.tut=null;tutSave();if(card)card.remove();return}
+  // 2분기가 되면 1분기 단계는 건너뛴다
+  if(g.round>=2&&S.tut.i<9){S.tut.i=9;S.tut.shown=-1;tutSave()}
+  const st=TUT[S.tut.i];
+  if(!st){S.tut=null;tutSave();if(card)card.remove();return}
+  if(st.round&&g.round<st.round){if(card)card.remove();return}
+  const first=S.tut.shown!==S.tut.i;
+  if(first&&st.tab&&narrow.matches)setTab(st.tab);
+  const el=st.sel?$(st.sel):null;
+  if(st.sel&&!el){return tutGo(S.tut.i+1)}
+  if(el){el.classList.add('tut-target');if(first)el.scrollIntoView({block:'center'})}
+  S.tut.shown=S.tut.i;
+  document.body.classList.add('tut-on');
+  if(!card){card=document.createElement('div');card.id='tut';card.setAttribute('role','dialog');card.setAttribute('aria-live','polite');document.body.appendChild(card)}
+  // 강조한 칸이 화면 아래쪽이면 안내 카드를 위로 올려 가리지 않게 한다(제출 단계는 늘 위).
+  if(first){const r=el?el.getBoundingClientRect():null;card.classList.toggle('top',st.sel==='#waiting'||!!(r&&(r.top+r.bottom)/2>innerHeight*.5))}
+  const n=TUT.length,last=S.tut.i===n-1,submitStep=st.sel==='#waiting';
+  card.innerHTML=`<div class="row between"><b>${esc(st.title)}</b><span class="small muted">${S.tut.i+1} / ${n}</span></div>
+    <p class="small">${esc(st.text)}</p>
+    <div class="row between"><button class="btn ghost sm" data-a="tut-end">튜토리얼 끝내기</button>
+      <span class="row" style="gap:6px">${S.tut.i>0&&!st.round?'<button class="btn ghost sm" data-a="tut-prev">이전</button>':''}${submitStep?'<span class="small muted">제출하면 다음 분기에서 이어집니다</span>':`<button class="btn sm" data-a="tut-next">${last?'시작하기':'다음'}</button>`}</span></div>`;
+}
+// 화면이 다시 그려지면 강조를 다시 붙인다
+new MutationObserver(()=>{if(tutPaint.q)return;tutPaint.q=requestAnimationFrame(()=>{tutPaint.q=0;if(S.tut||$('#tut'))tutPaint()})}).observe(document.getElementById('app'),{childList:true,subtree:true});
 
 /* ---------- 결정 제출과 분기 처리 ---------- */
 async function submitMove(){
@@ -1442,10 +1612,19 @@ async function sendChat(text,to){
 
 /* ---------- 입력 처리 ---------- */
 function touchDraft(){const d=S.draft;d.touched=true;if(d.submitted)d.dirty=true}
+const CLICK_FX=new Set(['react','vote','add','rm','bill','tab','ideo','kind','pick','country','color','house-view']);
 document.addEventListener('click',async ev=>{
   const b=ev.target.closest('[data-a]');if(!b||b.disabled)return;
   const v=b.dataset.v;
+  if(b.dataset.a==='submit')sfx('stamp');else if(CLICK_FX.has(b.dataset.a))sfx('click');
   switch(b.dataset.a){
+    case'snd':{const k=v==='bgm'?'bgm':'fx';SND[k]=!SND[k];lsSet(k==='bgm'?'jd-bgm':'jd-sfx',SND[k]);
+      document.querySelectorAll('.snd').forEach(x=>x.outerHTML=soundCtl());if(k==='bgm')syncMusic();else sfx('click');break}
+    case'tutorial':startTutorial();break;
+    case'tut-next':tutGo(S.tut.i+1);break;
+    case'tut-prev':tutGo(Math.max(0,S.tut.i-1));break;
+    case'tut-end':S.tut=null;tutSave();tutPaint();break;
+    case'skip-count':if(playCount.finish)playCount.finish();break;
     case'ideo':S.profile.ideology=v;document.querySelectorAll('[data-a=ideo]').forEach(x=>x.setAttribute('aria-pressed',x===b));pushProfile();break;
     case'country':S.profile.country=v;saveProfile();renderHome();break;
     case'pick':if(S.profile.pick!==v){S.profile.cname='';S.profile.cideo=''}S.profile.pick=v;document.querySelectorAll('[data-a=pick]').forEach(x=>x.setAttribute('aria-pressed',x===b));{const o=$('#party-opts');if(o)o.innerHTML=partyOptsHtml(roomCountry())}pushProfile();break;
@@ -1531,7 +1710,7 @@ document.addEventListener('click',async ev=>{
     case'rm':S.draft.actions.splice(+v,1);touchDraft();renderDecide();break;
     case'submit':submitMove();break;
     case'force':tryResolve(true);break;
-    case'close-modal':$('#modal').innerHTML='';break;
+    case'close-modal':if(playCount.finish)playCount.finish();$('#modal').innerHTML='';syncMusic();break;
     case'guide-off':lsSet('party1:guide-off',true);renderDecide();break;
   }
 });

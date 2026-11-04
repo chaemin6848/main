@@ -175,6 +175,11 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 #tut.top{bottom:auto;top:calc(56px + env(safe-area-inset-top,0px))}
 body.tut-on{padding-bottom:240px}
 .snd .btn[aria-pressed="false"]{opacity:.65}
+html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ach{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.ach li{display:grid;gap:2px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;opacity:.6}
+.ach li.got{opacity:1;border-color:var(--accent);background:var(--mine)}
 .react-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--mine);box-shadow:inset 0 0 0 1px var(--accent)}
 .react-opt[aria-pressed="true"] b{color:var(--accent)}
 .react-opt[aria-pressed="true"] b::before{content:"✓ "}
@@ -236,6 +241,11 @@ body.tut-on{padding-bottom:240px}
 <script>
 if(typeof document!=='undefined'){
 
+// 데스크톱판(스팀용 Electron)인지: preload가 window.steamBridge를 열어 준다. 사이트 공통 메뉴와 온라인 멀티는 숨긴다.
+const DESKTOP=!!(window.steamBridge&&window.steamBridge.desktop);
+if(DESKTOP)document.documentElement.classList.add('desktop');
+const langSel=()=>!DESKTOP||!window.ND?'':`<label class="desk-lang" style="display:inline-grid;width:auto"><span class="sr">Language</span><select data-lang aria-label="Language">${[['ko','한국어'],['ja','日本語'],['en','English']].map(([k,n])=>`<option value="${k}" ${ND.lang===k?'selected':''}>${n}</option>`).join('')}</select></label>`;
+document.addEventListener('change',e=>{const t=e.target;if(t.matches&&t.matches('[data-lang]')&&window.ND)ND.setLang(t.value)});
 const COLORS=['#1F6FB2','#C93A2B','#16875A','#B98500','#7A4FC0','#0B8A8F','#C4477F','#7D6238'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -499,7 +509,7 @@ function renderHome(){
     <div>
       <h1 class="mark">제1당</h1>
       <p class="lede">정당을 세워 정권을 잡고, 법안을 내고, 정부를 운영하며 총선 의석을 겨루는 멀티 전략 게임입니다. 친구와 몰래 연대하고, 총선 직전에 등을 돌려도 됩니다.</p>
-      <div class="row" style="margin-top:12px"><button class="btn" data-a="tutorial">튜토리얼로 배우기</button>${soundCtl()}</div>
+      <div class="row" style="margin-top:12px"><button class="btn" data-a="tutorial">튜토리얼로 배우기</button>${soundCtl()}${langSel()}</div>
     </div>
     <figure style="margin:0">${hemicycle(previewParties(),previewParties.label(),previewParties.total())}</figure>
   </header>
@@ -510,12 +520,12 @@ function renderHome(){
       ${countryChips()}
       ${profileForm()}
       <div class="row">
-        <button class="btn" id="btn-create" data-a="create">멀티 방 만들기</button>
+        <button class="btn online-only" id="btn-create" data-a="create">멀티 방 만들기</button>
         <button class="btn ghost" data-a="solo">AI 정당과 혼자 하기</button>
       </div>
     </section>
     <div class="stack">
-      <section class="panel">
+      <section class="panel online-only">
         <h2>방 참가</h2>
         <form class="join" id="join-form"><label for="join-code" style="display:contents"><input id="join-code" maxlength="4" placeholder="방 코드 4자리" autocomplete="off" style="text-transform:uppercase" aria-label="방 코드"></label><button class="btn" id="btn-join">참가</button></form>
         <div id="online-note"></div>
@@ -524,6 +534,7 @@ function renderHome(){
       <section class="panel">
         <details><summary>규칙 3분 요약</summary><div class="rules">${rulesHtml()}</div></details>
       </section>
+      <section class="panel" id="ach-panel">${achHtml()}</section>
     </div>
   </div>
   <p class="small muted" style="margin-top:16px">회원가입 없이 익명으로 접속합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요. <a href="/privacy.html">개인정보처리방침</a></p>`;
@@ -713,7 +724,7 @@ function onGame(g){
   }
   if(g.status==='playing'&&(!g.agenda||!g.parties[0].kind)){toast('규칙이 바뀌기 전에 시작한 판이라 이어 할 수 없습니다.');goHome();return}
   if(S.screen!=='game'){mountGame();ensureDraft();renderGameAll();maybeElection();return}
-  if(prevRound!==g.round||prevStatus!==g.status){ensureDraft();renderGameAll();quarterFx(g,prevRound,prevStatus);maybeElection();syncMusic()}
+  if(prevRound!==g.round||prevStatus!==g.status){ensureDraft();renderGameAll();quarterFx(g,prevRound,prevStatus);maybeElection();syncMusic();achCheck(g)}
   else{
     // 분기 중간 변화(연맹 결성·규칙 개정·당 정보)도 바로 보이게. 입력 중인 칸은 덮어쓰지 않는다
     const typing=el=>{const a=document.activeElement;return a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&a.closest(el)};
@@ -1442,6 +1453,62 @@ function quarterFx(g,prevRound,prevStatus){
   else if(g.event&&g.event.round===g.round)setTimeout(()=>sfx('event'),450);
 }
 
+/* ---------- 도전과제 ---------- */
+// 이 브라우저에 기록하고, 스팀판(데스크톱 앱)에서는 같은 id로 스팀 도전과제를 연다(window.steamBridge, desktop/preload.js).
+// 스팀 쪽 API 이름은 'ACH_' + id 대문자(예: ACH_FIRST_WIN). Steamworks에 같은 이름으로 등록한다(tools/jeildang/STEAM.md).
+const ACH=[
+  {id:'tutorial',name:'첫걸음',desc:'튜토리얼을 끝까지 마칩니다.'},
+  {id:'first_win',name:'제1당',desc:'한 판에서 이깁니다.'},
+  {id:'pm',name:'정권 교체',desc:'우리 당이 정부를 맡습니다(총리 또는 대통령).'},
+  {id:'majority',name:'단독 과반',desc:'마지막 총선을 단독 과반으로 마칩니다.'},
+  {id:'coalition',name:'연맹 정부',desc:'마지막 총선을 연맹 합산 과반으로 마칩니다.'},
+  {id:'underdog',name:'군소정당의 반란',desc:'가상 공화국에서 군소정당으로 이깁니다.'},
+  {id:'lawmaker',name:'입법왕',desc:'한 판에서 우리 법안을 5건 통과시킵니다.'},
+  {id:'crisis',name:'위기 관리',desc:'정부를 맡은 분기에 긴급 대책이나 현장 지원으로 사건을 막습니다.'},
+  {id:'defy',name:'정면 돌파',desc:'의혹 사건에서 정면 돌파에 성공합니다.'},
+  {id:'two_terms',name:'장기 집권',desc:'한 임기 더 하기로 이은 판에서 두 임기 연속 이깁니다.'},
+  {id:'win_kr',name:'여의도의 주인',desc:'한국 모드에서 이깁니다.'},
+  {id:'win_jp',name:'나가타초의 주인',desc:'일본 모드에서 이깁니다.'},
+  {id:'win_us',name:'캐피톨 힐의 주인',desc:'미국 모드에서 이깁니다.'},
+  {id:'win_uk',name:'웨스트민스터의 주인',desc:'영국 모드에서 이깁니다.'},
+  {id:'win_fr',name:'부르봉궁의 주인',desc:'프랑스 모드에서 이깁니다.'},
+];
+const achGot=()=>lsGet('party1:ach',{});
+function achUnlock(id){
+  const got=achGot();
+  if(window.steamBridge&&window.steamBridge.achieve)try{window.steamBridge.achieve('ACH_'+id.toUpperCase())}catch(e){}
+  if(got[id])return;
+  got[id]=Date.now();lsSet('party1:ach',got);
+  const a=ACH.find(x=>x.id===id);if(!a)return;
+  sfx('reveal');toast(`도전과제 달성: ${a.name}`);
+  const box=$('#ach-panel');if(box)box.innerHTML=achHtml();
+}
+// 판 상태가 바뀔 때마다 우리 당 기준으로 확인한다.
+function achCheck(g){
+  const me=myParty();if(!g||!me||g.status==='lobby')return;
+  if(g.pmParty===me.id||g.presParty===me.id)achUnlock('pm');
+  const R=g.report;
+  if(R&&R.event&&R.event.reacts){
+    const mine=R.event.reacts.find(x=>x.id===me.id);
+    if(mine&&mine.react==='defy'&&mine.note==='성공')achUnlock('defy');
+    if(mine&&(mine.react==='stimulus'||mine.react==='relief')&&!R.event.follow&&E.EVENTS2[R.event.key]&&E.EVENTS2[R.event.key].follow)achUnlock('crisis');
+  }
+  const row=(g.result?g.result.rows:E.scoreRows(g)).find(x=>x.id===me.id);
+  if(row&&row.nLaw>=5)achUnlock('lawmaker');
+  if(g.status!=='over'||!g.result)return;
+  if(row&&row.label&&row.label.includes('단독 과반'))achUnlock('majority');
+  if(row&&row.label&&row.label.includes('연립 과반'))achUnlock('coalition');
+  if(g.result.winner!==me.id)return;
+  achUnlock('first_win');
+  if(!g.country&&me.kind==='minor')achUnlock('underdog');
+  if(g.country)achUnlock('win_'+g.country);
+  const t=g.terms||[];if(t.length&&t[t.length-1].winner===me.id)achUnlock('two_terms');
+}
+function achHtml(){
+  const got=achGot(),n=ACH.filter(a=>got[a.id]).length;
+  return`<details><summary>도전과제 ${n} / ${ACH.length}</summary><ul class="ach">${ACH.map(a=>`<li class="${got[a.id]?'got':''}"><b>${got[a.id]?'✓ ':''}${esc(a.name)}</b><span class="small muted">${esc(a.desc)}</span></li>`).join('')}</ul></details>`;
+}
+
 /* ---------- 튜토리얼 ---------- */
 // 첫 화면의 '튜토리얼로 배우기'로 4개 정당·6분기 연습 판을 열고, 화면 각 부분을 차례로 짚는다.
 // 진행 상태는 이 브라우저에 저장해 새로고침해도 이어진다. 가리킬 칸이 없으면(예: 총리 지명이 없는 분기) 건너뛴다.
@@ -1468,7 +1535,7 @@ function startTutorial(){
 function tutSave(){lsSet('party1:tut',S.tut||null)}
 function tutGo(i){
   S.tut.i=i;S.tut.shown=-1;tutSave();
-  if(i>=TUT.length){S.tut=null;tutSave();tutPaint();toast('튜토리얼을 마쳤습니다. 계속 플레이하세요.');return}
+  if(i>=TUT.length){S.tut=null;tutSave();tutPaint();toast('튜토리얼을 마쳤습니다. 계속 플레이하세요.');achUnlock('tutorial');return}
   tutPaint();
 }
 function tutPaint(){

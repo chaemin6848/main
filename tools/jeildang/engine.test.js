@@ -116,3 +116,59 @@ test('정부가 대책을 내지 않으면 사건이 번지고, 대책을 내면
   assert.strictEqual(run(null).event.key, 'finance');
   assert.notStrictEqual(run('stimulus').event.key, 'finance');
 });
+
+test('콘텐츠: 법안 50개·사건 50개 이상, 사건이 가리키는 대응·번짐·권역이 모두 있다', () => {
+  assert.ok(E.BILLS.length >= 50 && Object.keys(E.EVENTS2).length >= 50);
+  for (const [k, e] of Object.entries(E.EVENTS2)) {
+    for (const r of e.resp) assert.ok(E.RESP[r], `${k}: 없는 대응 ${r}`);
+    if (e.follow) assert.ok(E.EVENTS2[e.follow.key], `${k}: 없는 번짐`);
+    if (e.region) assert.ok(['hanbyeol', 'neoreun', 'donghae', 'namnyeok', 'seodeul', 'bukbang', 'seom'].includes(e.region), `${k}: 권역`);
+    if (e.country) assert.ok(E.COUNTRIES[e.country], `${k}: 나라`);
+  }
+});
+
+test('나라 전용 사건은 그 나라에서만, 조건부 사건은 조건이 맞을 때만 나온다', () => {
+  const seen = { country: {}, when: {} };
+  for (const country of [null, ...Object.keys(E.COUNTRIES)]) {
+    for (let seed = 1; seed <= 12; seed++) {
+      let g = E.newGame({ players: [], size: 5, seed, rounds: 12, timer: 0, now: 1, country });
+      let k = 0;
+      while (g.status === 'playing') {
+        const ev = E.EVENTS2[g.event.key];
+        if (ev.country) { assert.strictEqual(ev.country, country, `${g.event.key} in ${country}`); seen.country[g.event.key] = 1; }
+        if (ev.target) assert.ok(E.party(g, g.event.target), '대상 당이 있다');
+        if (ev.bill) assert.ok(g.agenda.some(it => it.kind === 'emer' && it.title === ev.bill.title), '긴급 법안이 안건에 오른다');
+        if (ev.when) seen.when[g.event.key] = 1;
+        g = E.resolveRound(g, {}, 2 + k++, {});
+      }
+    }
+  }
+  assert.ok(Object.keys(seen.country).length >= 10, '나라 전용 사건이 나온다');
+  assert.ok(Object.keys(seen.when).length >= 2, '조건부 사건이 나온다');
+});
+
+test('갈래 사건: 정부가 중재하면 파업이 번지지 않는다', () => {
+  const run = react => {
+    let g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 2, rounds: 12, timer: 0, now: 1 });
+    const me = g.parties.find(p => p.ownerId === 'me');
+    g.pmParty = me.id; g.pmElection = false; me.funds = 50;
+    g.event = { key: 'strike', round: g.round };
+    const votes = Object.fromEntries(g.agenda.map(it => [it.id, 'yes']));
+    return E.resolveRound(g, { me: { round: g.round, votes, pm: me.id, actions: [], gov: [], bill: null, react } }, 1, {});
+  };
+  assert.strictEqual(run(null).event.key, 'strike2');
+  assert.notStrictEqual(run('mediate').event.key, 'strike2');
+});
+
+test('시나리오: 정해진 정당으로 시작하고 목표를 판정한다', () => {
+  for (const sc of E.SCENARIOS) {
+    let g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: sc.country ? 'pick:' + sc.pick : 'center:' + (sc.kind || 'major'), colorIdx: 0 }], size: 5, seed: 3, rounds: sc.rounds, timer: 0, now: 1, country: sc.country || null });
+    g.scenario = sc.id;
+    const me = g.parties.find(p => p.ownerId === 'me');
+    if (sc.country) assert.strictEqual(me.pick, sc.pick, sc.id);
+    let k = 0; while (g.status === 'playing') g = E.resolveRound(g, {}, 2 + k++, {});
+    const st = E.scenarioState(g, me.id);
+    assert.ok(st && st.done && typeof st.ok === 'boolean', sc.id);
+    if (sc.goal.seats != null && !sc.goal.gov && !sc.goal.win) assert.strictEqual(st.ok, E.party(g, me.id).seats >= sc.goal.seats, sc.id);
+  }
+});

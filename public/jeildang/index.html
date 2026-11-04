@@ -60,7 +60,10 @@ label{display:grid;gap:4px;font-size:13px;color:var(--ink2)}
   background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 42%,transparent) 0%,color-mix(in srgb,var(--bg) 62%,transparent) 45%,var(--bg) 100%)}
 body{position:relative}
 .wrap{position:relative;z-index:1}
-.has-backdrop .hero .lede,.has-backdrop .hero .mark{text-shadow:0 0 12px var(--bg),0 0 4px var(--bg)}
+.has-backdrop .hero .lede,.has-backdrop .hero .mark,.has-backdrop #topbar .logo{text-shadow:0 0 12px var(--bg),0 0 4px var(--bg)}
+/* 게임 중에는 본회의장 내부 사진. 정보가 많은 화면이라 낮게, 흐리게, 더 진하게 덮는다 */
+#backdrop.inside{height:clamp(300px,48vh,520px);filter:blur(1.5px);transform:scale(1.02)}
+#backdrop.inside::after{background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 55%,transparent) 0%,color-mix(in srgb,var(--bg) 75%,transparent) 50%,var(--bg) 100%)}
 @media (prefers-reduced-motion:reduce){#backdrop{transition:none}}
 .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:center;padding-block:4px 18px}
 .mark{font-size:1.55rem;font-weight:700}
@@ -339,12 +342,15 @@ function trendChart(g,h,parties,val,unit,empty,label){
 }
 
 /* ---------- 정당 등록 양식 ---------- */
-// 첫 화면과 대기실에서만 고른 나라의 의사당 사진을 배경에 깐다. 가상 공화국과 게임 화면은 배경 없음.
+// 첫 화면·대기실에는 고른 나라의 의사당 외관, 게임 중에는 본회의장 내부 사진을 배경에 깐다. 가상 공화국은 배경 없음.
 const BACKDROPS={jp:'img/jp.jpg',us:'img/us.jpg',uk:'img/uk.jpg',kr:'img/kr.jpg',fr:'img/fr.jpg'};
+const INSIDES={jp:'img/jp-in.jpg',us:'img/us-in.jpg',uk:'img/uk-in.jpg',kr:'img/kr-in.jpg',fr:'img/fr-in.jpg'};
 function syncBackdrop(){
   const el=$('#backdrop');if(!el)return;
-  const c=S.screen==='home'?S.profile.country||'':S.screen==='lobby'?roomCountry():'';
-  const src=BACKDROPS[c]||'';
+  const inside=S.screen==='game';
+  const c=S.screen==='home'?S.profile.country||'':S.screen==='lobby'?roomCountry():inside&&S.game?S.game.country||'':'';
+  const src=(inside?INSIDES:BACKDROPS)[c]||'';
+  el.classList.toggle('inside',inside);
   document.body.classList.toggle('has-backdrop',!!src);
   if(el.dataset.src===src)return;
   el.dataset.src=src;

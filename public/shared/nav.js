@@ -290,6 +290,11 @@
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
+    // 휴대폰: 버튼 간격·크기를 줄여 도구 아이콘이 잘리지 않게. 그래도 넘치면 아래 fit()이 nihongodic 글자를 숨긴다
+    "@media (max-width:440px){nav{gap:4px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}" +
+    ".home{padding-right:4px}.tools{gap:2px}.tools a{width:28px;height:32px}" +
+    ".lang{padding:0 6px;margin-left:2px}.coffee{width:30px;margin-left:2px}}" +
+    "nav.tight .home b{display:none}" +
     "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
@@ -305,6 +310,17 @@
 
   var sel = root.querySelector("select");
   if (sel) sel.addEventListener("change", function () { setLang(sel.value); });
+
+  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 nihongodic 글자를 숨긴다 (폭이 넓어지면 다시 보인다)
+  var navEl = root.querySelector("nav"), toolsEl = root.querySelector(".tools");
+  function fit() {
+    if (!navEl || !toolsEl) return;
+    navEl.classList.remove("tight");
+    if (toolsEl.scrollWidth > toolsEl.clientWidth + 1) navEl.classList.add("tight");
+  }
+  fit();
+  window.addEventListener("resize", fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
   var cur = root.querySelector("[aria-current]");
   // 좁은 화면에서 현재 도구가 가로 스크롤 밖에 있으면 보이게 (페이지 세로 위치는 건드리지 않음)

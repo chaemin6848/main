@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpeg" href="/japanese/IMG_2029.jpg" />
+  <title>Wordcard Japanese | Japanese vocabulary quiz & dictionary</title>
+  <meta name="description" content="Wordcard Japanese is a free Japanese vocabulary quiz: see the English meaning and type the Japanese word in kana, kanji or romaji. Practise JLPT N5–N1 words and browse the dictionary." />
+  <link rel="canonical" href="https://nihongodic.com/en/japanese/" />
+  <meta property="og:title" content="Wordcard Japanese | Japanese vocabulary quiz & dictionary" />
+  <meta property="og:description" content="Wordcard Japanese is a free Japanese vocabulary quiz: see the English meaning and type the Japanese word in kana, kanji or romaji. Practise JLPT N5–N1 words and browse the dictionary." />
+  <meta property="og:url" content="https://nihongodic.com/en/japanese/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5925323367833464" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/japanese/style.css" />
+  <link rel="stylesheet" href="/en/en.css" />
+</head><body>
+<script src="/shared/nav.js" data-langs="en"></script>
+  <main class="app-shell" data-no-i18n>
+    <header><a class="brand" href="index.html" aria-label="Home"><span class="brand-mark" lang="ja">あ</span><span>Wordcard Japanese</span></a>
+    <div class="header-actions"><a class="list-link dictionary-link" href="vocabulary-list.html"><span aria-hidden="true">☷</span> Dictionary</a>
+      <div class="streak"><span>✦</span> <b id="score">0</b> pts</div></div></header>
+    <section class="hero"><p class="eyebrow">JAPANESE VOCABULARY</p><h1>Wordcard<br><em>Japanese</em></h1>
+<p>See the English meaning and type the Japanese word. Practise JLPT N5 to N1 vocabulary one card at a time.<br><br>Answers spelled a little differently may still count if the meaning matches.</p>
+</section>
+    <section class="controls" aria-label="Quiz settings"><div><span class="control-label">LEVEL</span>
+        <div class="level-buttons" id="level-buttons"><button class="level-btn active" data-level="N5">N5</button><button class="level-btn" data-level="N4">N4</button><button class="level-btn" data-level="N3">N3</button><button class="level-btn" data-level="N2">N2</button><button class="level-btn" data-level="N1">N1</button></div></div></section>
+    <section class="quiz-card" aria-live="polite">
+      <div class="card-topline"><span id="level-badge">JLPT N5</span><span id="word-count">Loading…</span></div>
+      <div class="prompt-area"><p class="prompt-label">What is this in Japanese?</p><h2 id="meaning" lang="en">Loading…</h2></div>
+      <form id="answer-form" autocomplete="off"><label class="sr-only" for="answer">Japanese answer</label><input id="answer" type="text" lang="ja" autocapitalize="off" autocorrect="off" spellcheck="false" disabled /><button type="submit" id="check-button" disabled>Check</button></form>
+      <p class="feedback" id="feedback" role="status"></p><div class="answer-reveal" id="answer-reveal" hidden></div>
+      <button class="save-word-button" id="save-word-button" type="button" hidden>Save to My words</button>
+      <div class="card-actions"><button class="text-button" id="hint-button" type="button" disabled>Hint</button><button class="next-button" id="next-button" type="button" disabled>Next word <span>→</span></button></div>
+    </section>
+    <nav class="site-links" aria-label="Site links"><a href="/privacy.html?lang=en">Privacy policy</a> · <a href="/privacy.html?lang=en#sources">Data sources</a> · <a href="/en/korean/">Learning Korean? Try Wordcard Korean</a></nav>
+  </main>
+  <dialog class="tutorial-dialog" id="tutorial-dialog" aria-labelledby="tutorial-title" data-no-i18n>
+    <div class="tutorial-dialog-header"><span class="brand-mark" aria-hidden="true" lang="ja">あ</span><button class="dialog-close" id="tutorial-close" type="button" aria-label="Close tutorial">×</button></div>
+    <p class="eyebrow">WELCOME TO NIHONGODIC</p>
+    <h2 id="tutorial-title">Learn Japanese words<br /><em>one card</em> at a time.</h2>
+    <ol class="tutorial-steps"><li><strong>Pick a level</strong><span>Choose any JLPT level from N5 (beginner) to N1 (advanced).</span></li><li><strong>Answer in Japanese</strong><span>Type kana or kanji — or romaji if you don’t have a Japanese keyboard. Both shi/si and long-vowel spellings like ō/ou count.</span></li><li><strong>Review what you miss</strong><span>Save words you get wrong to My words and come back to them later.</span></li><li><strong>Browse the dictionary</strong><span>Search every word with its reading, romaji and an example sentence.</span></li></ol>
+    <label class="tutorial-dismiss"><input id="tutorial-dismiss" type="checkbox" /> Don’t show this again</label>
+    <button class="tutorial-start" id="tutorial-start" type="button">Start learning <span aria-hidden="true">→</span></button>
+  </dialog>
+  <script>window.WORDCARD = { target: "ja", page: "quiz" };</script>
+  <script src="/japanese/vocabulary.js"></script><script src="/en/engine.js"></script></body></html>

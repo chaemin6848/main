@@ -1,6 +1,8 @@
 # 끝에 / 없이 들어오면 붙여서 상대 경로(style.css 등)가 맞게 풀리도록
 /japanese  /japanese/  301
 /korean    /korean/    301
+/en/japanese  /en/japanese/  301
+/en/korean    /en/korean/    301
 /alarm     /alarm/     301
 /politics  /politics/  301
 /jeildang  /jeildang/  301

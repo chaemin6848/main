@@ -1,0 +1,10 @@
+/* Wordcard (영어 화자용) — /japanese/style.css 위에 덧붙이는 차이만 */
+body { font-family:"Noto Sans","Noto Sans JP","Noto Sans KR",system-ui,sans-serif; }
+[lang="ja"] { font-family:"Noto Sans JP",sans-serif; }
+[lang="ko"] { font-family:"Noto Sans KR",sans-serif; }
+#meaning { font-weight:700; letter-spacing:-.03em; word-break:normal; overflow-wrap:anywhere; }
+#answer { font-family:"Noto Sans JP","Noto Sans KR",system-ui,sans-serif; }
+.other-meanings { display:block; margin-top:4px; color:var(--muted); font-size:13px; line-height:1.5; }
+.answer-reveal { grid-template-columns:1fr; }
+.list-meaning { font-weight:500; }
+.streak { white-space:nowrap; }

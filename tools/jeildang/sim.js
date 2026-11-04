@@ -30,7 +30,7 @@ function playOne({ seed, rounds, size, country, extend = 0 }) {
   // 사람 자리도 AI와 같은 기준으로 두도록 봇 표시를 한다(관전 자리 없음).
   for (const p of g.parties) p.bot = true;
   g.playerIds = [];
-  const start = Object.fromEntries(g.parties.map(p => [p.id, { seats: p.seats, ideology: p.ideology, kind: p.kind, name: p.name }]));
+  const start = Object.fromEntries(g.parties.map(p => [p.id, { seats: p.seats, ideology: p.ideology, kind: p.kind, name: p.name, persona: p.persona }]));
   let guard = 0;
   for (let t = 0; t <= extend; t++) {
     if (t) g = E.continueGame(g, now0 + guard * 60000);
@@ -66,6 +66,7 @@ function tally(results) {
       const won = r === win;
       add('노선:' + (s.ideology || '?'), r, won);
       add('규모:' + (s.kind || '?'), r, won);
+      if (s.persona) add('성격:' + s.persona, r, won);
       if (g.country) add('정당:' + g.country + ':' + s.name, r, won);
     }
     if ((g.feds || []).length) fedGames++;

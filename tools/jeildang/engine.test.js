@@ -76,3 +76,43 @@ test('표에 없는 새 정당과 긴 판도 목표를 받는다', () => {
   const big = E.goalOf(g, { pick: 'ldp', startSeats: 315 });
   assert.ok(big.par > E.goalOf({ country: 'jp', maxRounds: 24 }, { pick: 'ldp' }).par, '24분기 뒤로도 기준 승점이 늘어난다');
 });
+
+test('AI 정당은 성격을 받고, 사람 당은 받지 않는다', () => {
+  const g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 6, seed: 4, rounds: 12, timer: 0, now: 1 });
+  const bots = g.parties.filter(p => p.bot && !p.fixed);
+  assert.ok(bots.length >= 5 && bots.every(p => E.PERSONAS[p.persona]), '모든 AI에 성격');
+  assert.strictEqual(new Set(bots.slice(0, 5).map(p => p.persona)).size, 5, '처음 다섯은 서로 다른 성격');
+  assert.ok(!g.parties.find(p => p.ownerId === 'me').persona);
+});
+
+test('사건은 분기 초에 공개되고, 대응은 고를 수 있는 것만 받아들인다', () => {
+  let g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 8, rounds: 12, timer: 0, now: 1 });
+  const me = () => g.parties.find(p => p.ownerId === 'me');
+  for (let q = 0; q < 10; q++) {
+    assert.ok(g.event && g.event.round === g.round && E.EVENTS2[g.event.key], '이번 분기 사건이 있다');
+    const opts = E.reactOpts(g, me());
+    const pick = opts[0] || 'attack';
+    const valid = opts.includes(pick);
+    const votes = Object.fromEntries(g.agenda.map(it => [it.id, 'yes']));
+    g = E.resolveRound(g, { me: { round: g.round, votes, pm: me().id, actions: [], gov: [], bill: null, react: pick } }, 1 + q, {});
+    const mine = (g.report.event.reacts || []).find(x => x.id === me().id);
+    if (valid) assert.ok(mine && mine.react === pick, `고른 대응(${pick})이 반영된다`);
+    else assert.ok(!mine, '고를 수 없는 대응은 무시된다');
+    if (g.status !== 'playing') break;
+  }
+});
+
+test('정부가 대책을 내지 않으면 사건이 번지고, 대책을 내면 번지지 않는다', () => {
+  const run = react => {
+    let g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 2, rounds: 12, timer: 0, now: 1 });
+    const me = g.parties.find(p => p.ownerId === 'me');
+    // 우리 당을 정부 수반으로 두고 경기 침체 경보를 건다.
+    g.pmParty = me.id; g.pmElection = false; me.seats = Math.max(me.seats, 1); g.treasury = 30 * E.U;
+    g.event = { key: 'recession', round: g.round };
+    const votes = Object.fromEntries(g.agenda.map(it => [it.id, 'yes']));
+    g = E.resolveRound(g, { me: { round: g.round, votes, pm: me.id, actions: [], gov: [], bill: null, react } }, 1, {});
+    return g;
+  };
+  assert.strictEqual(run(null).event.key, 'finance');
+  assert.notStrictEqual(run('stimulus').event.key, 'finance');
+});

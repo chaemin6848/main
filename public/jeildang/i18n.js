@@ -2988,6 +2988,242 @@ ND.add({
 "目標比",
 "vs goal"
 ],
+"원칙주의": [
+"原則主義",
+"Principled"
+],
+"노선에 맞는 표결과 입법에 매달립니다. 노선이 먼 당과는 좀처럼 손잡지 않습니다.": [
+"路線に沿った採決と立法にこだわります。路線の遠い党とはめったに手を組みません。",
+"Sticks to votes and bills that fit its line. Rarely teams up with parties far from it."
+],
+"포퓰리스트": [
+"ポピュリスト",
+"Populist"
+],
+"여론을 따라 유세에 크게 씁니다. 인기 있는 법이면 노선이 조금 달라도 찬성합니다.": [
+"世論に合わせて遊説に大きく使います。人気のある法案なら路線が少し違っても賛成します。",
+"Follows public opinion and spends big on rallies. Backs popular bills even if they stray a little from its line."
+],
+"협상가": [
+"交渉家",
+"Dealmaker"
+],
+"연맹과 거래로 세를 불립니다. 제안을 잘 받아들이고 먼저 손을 내밉니다.": [
+"連盟と取引で勢力を広げます。提案を受け入れやすく、自分からも手を差し伸べます。",
+"Grows through federations and deals. Accepts offers readily and reaches out first."
+],
+"강경파": [
+"強硬派",
+"Hardliner"
+],
+"1당과 정부를 집요하게 공격합니다. 폭로와 의원 빼오기를 즐깁니다.": [
+"第一党と政府をしつこく攻撃します。暴露と議員の引き抜きを好みます。",
+"Relentlessly attacks the largest party and the government. Loves exposés and poaching MPs."
+],
+"실리형": [
+"実利型",
+"Pragmatist"
+],
+"자금과 조직을 아낍니다. 인재와 당원을 꾸준히 모으고 큰 모험을 피합니다.": [
+"資金と組織を大切にします。人材と党員をこつこつ集め、大きな賭けは避けます。",
+"Guards its money and organisation. Steadily recruits talent and members and avoids big gambles."
+],
+"성장률 전망이 꺾였습니다. 분배 정당에 여론이 쏠리고 후원이 줄어듭니다. 정부가 대책을 내놓지 않으면 다음 분기 금융 불안으로 번집니다.": [
+"成長率の見通しが下がりました。分配を掲げる政党に世論が傾き、献金が減ります。政府が対策を出さなければ、次の四半期に金融不安へ広がります。",
+"Growth forecasts have been cut. Opinion swings toward redistribution and donations shrink. If the government offers no plan, it turns into financial instability next quarter."
+],
+"금융 불안": [
+"金融不安",
+"Financial instability"
+],
+"침체 경보에 정부가 손을 놓아 금융시장이 흔들립니다. 정부 책임론이 커지고 후원이 더 줄어듭니다.": [
+"景気後退の警報に政府が手を打たず、金融市場が揺れています。政府の責任を問う声が強まり、献金がさらに減ります。",
+"The government ignored the recession warning and markets are shaking. Blame on the government grows and donations fall further."
+],
+"집중호우 피해 대응을 두고 정부 책임론이 나옵니다. 정부가 현장을 챙기지 않으면 다음 분기 복구 지연 논란으로 번집니다.": [
+"集中豪雨の被害対応をめぐり政府の責任を問う声が出ています。政府が現場に向き合わなければ、次の四半期に復旧遅れの論争へ広がります。",
+"The government is blamed over its response to the floods. If it doesn't show up on the ground, it turns into a row over slow recovery next quarter."
+],
+"복구 지연": [
+"復旧の遅れ",
+"Slow recovery"
+],
+"수해 복구가 늦어져 피해 지역의 분노가 정부로 향합니다.": [
+"水害の復旧が遅れ、被災地の怒りが政府に向かっています。",
+"Flood recovery is lagging and anger in the affected areas turns on the government."
+],
+"정치자금 의혹": [
+"政治資金疑惑",
+"Political funding scandal"
+],
+"한 정당 지도부가 불법 정치자금 의혹을 받습니다. 대상 당 신뢰 −4. 대상 당의 대응에 따라 다른 당의 공세가 먹히는 정도가 달라집니다.": [
+"ある政党の指導部に違法な政治資金の疑惑が浮上しました。対象の党の信頼 −4。対象の党の対応次第で、他党の攻勢の効き目が変わります。",
+"One party's leadership faces allegations of illegal political funding. Target party trust −4. How the target responds decides how well other parties' attacks land."
+],
+"계파 갈등 폭발": [
+"派閥抗争の勃発",
+"Factional feud erupts"
+],
+"한 정당에서 공천을 두고 계파 싸움이 터졌습니다. 대상 당 결속 −6.": [
+"ある政党で公認をめぐる派閥争いが勃発しました。対象の党の結束 −6。",
+"A fight over candidate nominations has broken out inside one party. Target party unity −6."
+],
+"긴급 대책 발표": [
+"緊急対策の発表",
+"Emergency plan"
+],
+"정부 수반 당만. 국고 4를 써서 대책을 내놓습니다. 신뢰 +2, 사건이 다음 분기로 번지지 않습니다.": [
+"政府首班の党のみ。国庫4を使って対策を打ち出します。信頼 +2、事件は次の四半期に広がりません。",
+"Head-of-government party only. Spend 4 from the treasury on a response. Trust +2, and the event won't spread into next quarter."
+],
+"현장 지원": [
+"現場支援",
+"On-the-ground relief"
+],
+"자금 3을 써서 피해 현장을 챙깁니다. 신뢰 +3. 정부 수반 당이 고르면 사건이 다음 분기로 번지지 않습니다.": [
+"資金3を使って被災現場を支援します。信頼 +3。政府首班の党が選べば、事件は次の四半期に広がりません。",
+"Spend 3 to help on the ground. Trust +3. If the head-of-government party picks it, the event won't spread into next quarter."
+],
+"정부 책임 추궁": [
+"政府の責任追及",
+"Hold the government to account"
+],
+"정부에 들지 않은 당만. 정부 수반 당 신뢰 −2, 우리 신뢰 +1.": [
+"政府に入っていない党のみ。政府首班の党の信頼 −2、自党の信頼 +1。",
+"Parties outside government only. Head-of-government party trust −2, our trust +1."
+],
+"노선 홍보": [
+"路線アピール",
+"Push our line"
+],
+"자금 1. 사건이 우리 노선 쪽이면 신뢰 +3, 반대쪽이면 신뢰 −1.": [
+"資金1。事件が自党の路線寄りなら信頼 +3、逆なら信頼 −1。",
+"Costs 1. If the event leans our way, trust +3; if it leans the other way, trust −1."
+],
+"당내 결속": [
+"党内の結束",
+"Close ranks"
+],
+"흔들리는 당을 다잡습니다. 결속 +4.": [
+"揺らぐ党を引き締めます。結束 +4。",
+"Pull the wavering party together. Unity +4."
+],
+"정치 개혁 선언": [
+"政治改革宣言",
+"Pledge political reform"
+],
+"자금 2. 깨끗한 정치를 약속합니다. 신뢰 +3.": [
+"資金2。クリーンな政治を約束します。信頼 +3。",
+"Costs 2. Promise clean politics. Trust +3."
+],
+"사과": [
+"謝罪",
+"Apologise"
+],
+"대상 당만. 신뢰 −2, 결속 +3. 다른 당의 공세 피해가 절반으로 줄어듭니다.": [
+"対象の党のみ。信頼 −2、結束 +3。他党の攻勢による被害が半分になります。",
+"Target party only. Trust −2, unity +3. Damage from other parties' attacks is halved."
+],
+"정면 돌파": [
+"正面突破",
+"Tough it out"
+],
+"대상 당만. 반반 확률로 신뢰 +2 또는 신뢰 −8.": [
+"対象の党のみ。五分五分で信頼 +2 か信頼 −8。",
+"Target party only. 50/50: trust +2 or trust −8."
+],
+"꼬리 자르기": [
+"トカゲの尻尾切り",
+"Cut them loose"
+],
+"대상 당만. 관련자를 내보냅니다. 결속 −6, 신뢰 −1, 다른 당의 공세가 먹히지 않습니다.": [
+"対象の党のみ。関係者を切り捨てます。結束 −6、信頼 −1、他党の攻勢は効きません。",
+"Target party only. Expel those involved. Unity −6, trust −1, and other parties' attacks have no effect."
+],
+"계파 나눠 먹기": [
+"派閥への配分",
+"Buy off the factions"
+],
+"대상 당만. 자금 3으로 계파를 달랩니다. 결속 +7.": [
+"対象の党のみ。資金3で派閥をなだめます。結束 +7。",
+"Target party only. Spend 3 to placate the factions. Unity +7."
+],
+"공세": [
+"攻勢",
+"Go on the attack"
+],
+"대상이 아닌 당만. 자금 2로 대상 당을 몰아붙입니다. 대상 당 신뢰 −2.": [
+"対象以外の党のみ。資金2で対象の党を追い込みます。対象の党の信頼 −2。",
+"Non-target parties only. Spend 2 to press the target. Target party trust −2."
+],
+"국고 부족": [
+"国庫不足",
+"Treasury short"
+],
+"노선 바람을 탐": [
+"路線の追い風に乗った",
+"Rode the wave"
+],
+"역풍": [
+"逆風",
+"Backfired"
+],
+"효과 없음": [
+"効果なし",
+"No effect"
+],
+"성공": [
+"成功",
+"Success"
+],
+"실패": [
+"失敗",
+"Failed"
+],
+"먹히지 않음": [
+"効かなかった",
+"Didn't land"
+],
+"사건": [
+"事件",
+"Events"
+],
+": 분기마다 사건이 하나 미리 공개됩니다. 결재 탭의 '이번 분기 사건'에서 대응을 하나 고르면 다른 결정과 함께 제출됩니다. 정부 수반 당이 제때 대응하지 않으면 다음 분기로 번지는 사건이 있고, 한 정당을 겨냥하는 의혹·갈등 사건도 있습니다.": [
+"：四半期ごとに事件がひとつ事前に公開されます。決裁タブの「今期の事件」で対応をひとつ選ぶと、他の決定と一緒に提出されます。政府首班の党が適切に対応しないと次の四半期に広がる事件があり、特定の政党を狙った疑惑・抗争の事件もあります。",
+": each quarter one event is announced in advance. Pick a response under \"This quarter's event\" on the Decide tab and it's submitted with your other choices. Some events spread into the next quarter if the head-of-government party doesn't respond in time, and some scandals and feuds target a single party."
+],
+"AI 성격": [
+"AIの性格",
+"AI personalities"
+],
+": AI 정당은 원칙주의·포퓰리스트·협상가·강경파·실리형 가운데 한 성격으로 움직입니다. 표결, 행동, 연맹 제안을 받아들이는 기준이 성격마다 다릅니다. 국회 탭 정당 이름 옆에 나옵니다.": [
+"：AI政党は原則主義・ポピュリスト・交渉家・強硬派・実利型のいずれかの性格で動きます。採決、行動、連盟の提案を受け入れる基準が性格ごとに違います。国会タブの政党名の横に表示されます。",
+": each AI party plays as Principled, Populist, Dealmaker, Hardliner or Pragmatist. Votes, actions and how readily it accepts federation offers differ by personality. It's shown next to the party name on the Parliament tab."
+],
+"번질 수 있음": [
+"広がるおそれ",
+"May spread"
+],
+"지켜보기": [
+"静観",
+"Stay out of it"
+],
+"아무 대응도 하지 않습니다.": [
+"何も対応しません。",
+"Do nothing."
+],
+"우리 당이 고를 수 있는 대응이 없습니다.": [
+"自党が選べる対応はありません。",
+"There's no response our party can pick."
+],
+"이번 분기 사건": [
+"今期の事件",
+"This quarter's event"
+],
+"에 어떻게 대응할지 고릅니다. 고르지 않으면 지켜보기입니다.": [
+"にどう対応するか選びます。選ばなければ静観です。",
+": choose how to respond. If you don't pick, you stay out of it."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -3033,6 +3269,7 @@ ND.pat([
 [/^내각\ 불신임안\ 가결\.\ (.*?)\ 내각이\ 무너져\ 조기\ 총선을\ 치릅니다\.$/,"内閣不信任案が可決。$1内閣が倒れ、解散総選挙になります。","No-confidence motion passed. The $1 cabinet falls and a snap election is called."],
 [/^「(.*?)」\ 합의\ ·\ (.*?)\.\ 연맹\ 소속\ 당은\ 모두\ 찬성으로\ 묶입니다\.$/,"「$1」の合意 · $2。連盟の加盟党はすべて賛成で縛られます。","“$1” agreement · $2. Every member party is bound to vote yes."],
 [/^(.*?)\ 발의\.\ 가결되면\ 내각이\ 물러나고\ 총리를\ 새로\ 뽑습니다\.$/,"$1提出。可決されると内閣は退陣し、首相を新たに選びます。","Moved by $1. If it passes the cabinet resigns and a new prime minister is chosen."],
+[/^정부가\ 제때\ 대응하지\ 않아\ 이번\ 분기\ 「(.*?)」로\ 번졌습니다\.$/,"政府が適切に対応しなかったため、今期「$1」に広がりました。","The government didn't respond in time, so it has turned into \"$1\" this quarter."],
 [/^대통령은\ 임기\ 중\ 물러나지\ 않습니다\.\ 대통령\ 선거는\ (.*?)$/,"大統領は任期中に退任しません。大統領選挙は$1","The president doesn't leave office mid-term. Presidential election: $1"],
 [/^(.*?)이\ 연맹\ 동료\ (.*?)을\ 공격해\ 「(.*?)」에서\ 떨어져\ 나갔습니다\.$/,"$1が連盟の仲間$2を攻撃し、「$3」から離脱しました。","$1 attacked fellow member $2 and has been cut loose from “$3”."],
 [/^새\ 당을\ 연맹에\ 들이는\ 일은\ 대표\ 당\((.*?)\)이\ 합니다\.$/,"新しい党を連盟に迎え入れるのは代表党（$1）です。","Only the head party ($1) can bring new parties into the federation."],
@@ -3148,6 +3385,7 @@ ND.pat([
 [/^「(.*?)」\ 가입\ 신청$/,"「$1」への加盟申請","request to join “$1”"],
 [/^·\ 대선\ 후보\ (.*?)$/,"· 大統領候補 $1","· Presidential candidate: $1"],
 [/^(.*?)석\ \/\ 목표\ (.*?)석$/,"$1議席 / 目標 $2議席","$1 seats / goal $2"],
+[/^책임지는\ 쪽:\ (.*?)$/,"責任を負う側: $1","Answerable: $1"],
 [/^의석\ 배치:\ (.*?)$/,"議席配置：$1","Seat map: $1"],
 [/^AI\ 정당\ (.*?)곳$/,"AI政党 $1党","$1 AI parties"],
 [/^총선까지\ (.*?)분기$/,"総選挙まで$1四半期","$1 quarters to the election"],
@@ -3199,6 +3437,7 @@ ND.pat([
 [/^(.*?)\ (.*?)\ ·\ (.*?)석(.*?)$/,"$1 $2 · $3議席$4","$1 $2 · $3 seats$4"],
 [/^(.*?)\ 연맹\ (.*?)석$/,"$1連盟 $2議席","$1 Federation · $2 seats"],
 [/^이름\ 「(.*?)」$/,"名前「$1」","name \"$1\""],
+[/^(.*?)\ 신뢰\ −(.*?)$/,"$1 信頼 −$2","$1 trust −$2"],
 [/^과반\ (.*?)석$/,"過半数 $1議席","Majority $1 seats"],
 [/^(.*?)석\ ·\ (.*?)$/,"$1議席 · $2","$1 seats · $2"],
 [/^찬성:\ (.*?)$/,"賛成：$1","In favour: $1"],
@@ -3209,6 +3448,7 @@ ND.pat([
 [/^(.*?)석\ 부족$/,"$1議席不足","$1 short"],
 [/^신뢰\ −(.*?)$/,"信頼 −$1","trust −$1"],
 [/^기준\ (.*?)점$/,"基準 $1点","Par $1"],
+[/^대상:\ (.*?)$/,"対象: $1","Target: $1"],
 [/^연맹:\ (.*?)(.*?)$/,"連盟：$1$2","Federation: $1$2"],
 [/^(.*?)만\ 명$/,"$1万人",null],
 [/^(.*?)\ 모드$/,"$1モード","$1 mode"],

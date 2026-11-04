@@ -1053,3 +1053,36 @@ AI 성격	AIの性格	AI personalities
 우리 당이 고를 수 있는 대응이 없습니다.	自党が選べる対応はありません。	There's no response our party can pick.
 이번 분기 사건	今期の事件	This quarter's event
 에 어떻게 대응할지 고릅니다. 고르지 않으면 지켜보기입니다.	にどう対応するか選びます。選ばなければ静観です。	: choose how to respond. If you don't pick, you stay out of it.
+튜토리얼로 배우기	チュートリアルで学ぶ	Learn with the tutorial
+개표 중	開票中	Counting
+바로 보기	すぐ見る	Skip to result
+효과음 켬	効果音オン	Sound on
+효과음 끔	効果音オフ	Sound off
+음악 켬	音楽オン	Music on
+음악 끔	音楽オフ	Music off
+효과음	効果音	Sound effects
+배경음악	BGM	Background music
+튜토리얼에 오신 것을 환영합니다	チュートリアルへようこそ	Welcome to the tutorial
+가상 해람 공화국에서 4개 정당이 6분기 동안 겨룹니다. 3분기째 재보궐, 6분기째 총선이 있습니다. 화면을 차례로 짚어 드릴게요.	架空のヘラム共和国で4つの政党が6四半期にわたって競います。3期目に補選、6期目に総選挙があります。画面を順番に案内します。	Four parties compete for six quarters in the fictional Republic of Haeram. By-elections come in Q3 and the general election in Q6. We'll walk you through the screen.
+의석, 자금, 당원, 신뢰, 결속입니다. 자금으로 행동하고, 신뢰는 득표에, 결속은 탈당을 막는 데 중요합니다. 끝났을 때 신뢰와 결속도 승점이 됩니다.	議席、資金、党員、信頼、結束です。資金で行動し、信頼は得票に、結束は離党を防ぐのに重要です。終了時には信頼と結束も勝ち点になります。	Seats, money, members, trust and unity. Money pays for actions, trust drives votes, and unity stops defections. Trust and unity also count for points at the end.
+의석 배치와 정당 표입니다. 총선 예상 의석, 득표, 신뢰, 결속을 비교해 보세요. AI 정당 이름 옆에는 협상가, 강경파 같은 성격이 나옵니다.	議席配置と政党の表です。総選挙の予想議席、得票、信頼、結束を比べてみましょう。AI政党の名前の横には交渉家、強硬派などの性格が表示されます。	The seating chart and party table. Compare projected seats, vote share, trust and unity. AI parties show a personality such as Dealmaker or Hardliner next to their name.
+분기마다 사건이 하나 미리 공개됩니다. 고를 수 있는 대응이 있으면 하나 고르세요. 고르지 않으면 지켜보기입니다.	四半期ごとに事件がひとつ事前に公開されます。選べる対応があればひとつ選びましょう。選ばなければ静観です。	Each quarter one event is announced in advance. If there's a response you can pick, choose one. Otherwise you stay out of it.
+총리 지명	首相指名	PM nomination
+첫 분기에는 의석수만큼의 표로 총리를 뽑습니다. 우리 당이나 손잡을 당을 고르세요.	最初の四半期は議席数分の票で首相を選びます。自党か手を組む党を選びましょう。	In the first quarter the prime minister is chosen with votes equal to seats. Pick our party or a partner.
+본회의 표결	本会議の採決	Floor votes
+안건마다 찬성 또는 반대를 고릅니다. 우리 노선에 맞는 법을 통과시키면 승점이 오릅니다. 안건마다 노선과 맞는지 표시돼 있습니다.	議案ごとに賛成か反対を選びます。自党の路線に合う法を通すと勝ち点が上がります。議案ごとに路線と合うかが表示されています。	Vote yes or no on each bill. Passing laws that fit our line earns points. Each bill shows whether it fits our line.
+유세로 지역 기반을 넓히고, 인재 영입과 정책 발표로 신뢰를 올립니다. 처음에는 의석이 많이 걸린 지역에 유세를 해 보세요.	遊説で地域基盤を広げ、人材登用や政策発表で信頼を上げます。最初は議席の多い地域で遊説してみましょう。	Rallies grow your regional base; recruiting talent and policy announcements raise trust. Start by rallying in a region with lots of seats.
+노선이 가까운 당과 연맹을 맺으면 함께 정부를 꾸리고 법을 통과시키기 쉬워집니다. AI는 제안에 그 자리에서 답합니다.	路線の近い党と連盟を結ぶと、一緒に政府を作り法を通しやすくなります。AIは提案にその場で答えます。	A federation with parties close to your line makes it easier to form a government and pass laws. AI parties answer offers on the spot.
+다 골랐으면 기표하고 제출을 누르세요. 모든 정당의 결정이 한 번에 공개되고 다음 분기로 넘어갑니다.	すべて選んだら「投票して提出」を押しましょう。全政党の決定が一度に公開され、次の四半期に進みます。	When you're done, press Vote & submit. Every party's decisions are revealed at once and the game moves to the next quarter.
+결과 보고	結果報告	Report
+지난 분기에 무엇이 가결됐는지, 사건에 누가 어떻게 대응했는지, 우리 승점이 어디서 바뀌었는지 나옵니다.	前の四半期に何が可決されたか、事件に誰がどう対応したか、自党の勝ち点がどこで変わったかが表示されます。	Shows what passed last quarter, how each party responded to the event, and where our points changed.
+승점 현황은 국회 탭에서 언제든 볼 수 있습니다. 마지막 총선이 끝났을 때 승점이 가장 높은 당이 이깁니다.	勝ち点状況は国会タブでいつでも見られます。最後の総選挙が終わったとき勝ち点が最も高い党が勝ちます。	Standings are always on the Parliament tab. The party with the most points after the final general election wins.
+준비 끝	準備完了	You're ready
+이제 직접 해 보세요. 재보궐과 총선 결과는 개표 화면으로 보여 드립니다. 규칙은 규칙 칸(휴대폰은 세 번째 탭)에 있습니다.	さあ、自分でやってみましょう。補選と総選挙の結果は開票画面でお見せします。ルールはルール欄（スマホは3つ目のタブ）にあります。	Now try it yourself. By-election and general election results are shown on the vote-count screen. The rules are in the Rules panel (the third tab on phones).
+튜토리얼당	チュートリアル党	Tutorial Party
+튜토리얼을 마쳤습니다. 계속 플레이하세요.	チュートリアルを終えました。このまま続けてプレイしてください。	Tutorial complete. Keep playing.
+이전	前へ	Back
+제출하면 다음 분기에서 이어집니다	提出すると次の四半期に続きます	Continues next quarter after you submit
+시작하기	始める	Start playing
+다음	次へ	Next
+튜토리얼 끝내기	チュートリアルを終える	End tutorial

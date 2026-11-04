@@ -1339,3 +1339,57 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 시나리오 {0}개	シナリオ {0}本	{0} scenarios
 돌풍당	旋風党	Whirlwind Party
 시나리오: {0}{1}	シナリオ: {0}{1}	Scenario: {0}{1}
+상대가 없습니다.	相手がいません。	There's no such party.
+그만한 자금이 없습니다.	それだけの資金がありません。	We don't have that much money.
+{0}을 믿을 수 없습니다. 지난번 약속을 어겼습니다.	{0}は信用できません。前回の約束を破りました。	We can't trust {0}. They broke their last promise.
+우리에게 이득입니다.	こちらに得です。	It's a good deal for us.
+주고받는 것이 맞습니다.	釣り合いが取れています。	It's a fair exchange.
+총리 지명 표는 쉽게 줄 수 없습니다.	首相指名の票は簡単には渡せません。	We can't give away our PM vote that easily.
+우리 노선과 맞지 않는 표를 약속하기 어렵습니다.	自党の路線に合わない票は約束しにくいです。	It's hard to promise a vote against our line.
+주는 것에 비해 얻는 것이 적습니다.	差し出すものに比べて得るものが少ないです。	We'd give more than we get.
+{0}이 {1}과 맺은 거래 약속을 어겼습니다.	{0}が{1}との取引の約束を破りました。	{0} broke its deal with {1}.
+분기 협상	四半期交渉	Quarterly deals
+: 결재 탭의 '분기 협상'에서 연맹 안팎의 어느 당과도 이번 분기에만 유효한 거래를 맺습니다. 표 약속, 자금, 불가침, 총리 지명 표를 주고받습니다. 약속은 강제되지 않지만, 어기면 분기 말에 배신으로 공개되고 신뢰 −4, 상대와의 관계가 크게 나빠집니다. AI는 관계를 기억해 다음 거래와 연맹 제안에 반영합니다.	：決裁タブの「四半期交渉」で、連盟の内外を問わずどの党とも今期だけ有効な取引を結べます。票の約束、資金、不可侵、首相指名の票をやり取りします。約束は強制されませんが、破ると四半期末に裏切りとして公表され、信頼 −4、相手との関係が大きく悪化します。AIは関係を覚えていて、次の取引や連盟の提案に反映します。	: under "Quarterly deals" on the Decide tab you can strike deals valid for this quarter only with any party, inside or outside your federation. Trade vote pledges, money, non-aggression and PM votes. Promises aren't enforced, but breaking one is exposed as betrayal at the end of the quarter: trust −4 and a badly damaged relationship. AI parties remember and factor it into later deals and federation offers.
+서로 약속을 지켰습니다. 관계 +6	互いに約束を守りました。関係 +6	Both kept their word. Relationship +6
+둘 다 약속을 어겼습니다.	双方とも約束を破りました。	Both broke their word.
+우리가 약속을 어겼습니다. 신뢰 −4	自党が約束を破りました。信頼 −4	We broke our word. Trust −4
+{0}이 약속을 어겼습니다.	{0}が約束を破りました。	{0} broke its word.
+지난 분기 거래	前の四半期の取引	Last quarter's deals
+거래 약속: {0}	取引の約束: {0}	Deal pledge: {0}
+두터운 신뢰	厚い信頼	Strong trust
+우호	友好	Friendly
+배신당함	裏切られた	Betrayed
+불신	不信	Distrust
+관계 {0}	関係 {0}	relationship {0}
+「{0}」에 {1}	「{0}」に{1}	{1} on "{0}"
+자금 {0}	資金 {0}	money {0}
+불가침	不可侵	non-aggression
+총리 지명 표를 {0}에	首相指名の票を{0}に	PM vote for {0}
+우리	自党	Us
+{0}: 없음	{0}: なし	{0}: nothing
+{0}: {1} ⇄ {2}: {3}	{0}: {1} ⇄ {2}: {3}	{0}: {1} ⇄ {2}: {3}
+와 거래 성사	と取引成立	 — deal agreed
+의 거래 제안{0} · 관계 {1}	からの取引の提案{0} · 関係 {1}	's deal offer{0} · relationship {1}
+에 보낸 거래	に送った取引	 — deal we offered
+· 우리 연맹	· 自党の連盟	· our federation
+{0}에	{0}に	for {0}
+총리 지명 표	首相指名の票	PM vote
+어떻게	どう投票	How
+표 약속	票の約束	Vote pledge
+우리 자금보다 많이 줄 수 없습니다.	自党の資金より多くは渡せません。	You can't give more money than you have.
+상대가 수락하는 즉시 성사되고 자금이 넘어갑니다.	相手が受け入れた時点で成立し、資金が移ります。	It's agreed the moment they accept, and the money changes hands.
+성사된 거래	成立した取引	Deals agreed
+받은 거래 제안	受け取った取引の提案	Deal offers received
+보낸 거래 제안	送った取引の提案	Deal offers sent
+우리가 주는 것	自党が出すもの	What we give
+{0}이 주는 것	{0}が出すもの	What {0} gives
+새 거래	新しい取引	New deal
+서로 불가침 (이번 분기 네거티브·폭로·빼오기·수사 지시 안 함)	相互不可侵（今期はネガティブ・暴露・引き抜き・捜査指示をしない）	Mutual non-aggression (no smears, exposés, poaching or investigations this quarter)
+거래 제안 보내기	取引を提案する	Send deal offer
+이번 분기 거래 {0}건	今期の取引 {0}件	{0} deals this quarter
+연맹 안팎의 어느 당과도 이번 분기에만 유효한 거래를 맺습니다. 표 약속, 자금, 불가침, 총리 지명 표를 주고받습니다. 약속은 강제되지 않지만, 어기면 분기 말에 배신으로 공개되고 신뢰 −4, 상대와의 관계가 크게 나빠집니다. 지키면 관계가 좋아져 다음 협상이 쉬워집니다.	連盟の内外を問わず、どの党とも今期だけ有効な取引を結べます。票の約束、資金、不可侵、首相指名の票をやり取りします。約束は強制されませんが、破ると四半期末に裏切りとして公表され、信頼 −4、相手との関係が大きく悪化します。守れば関係が良くなり、次の交渉が楽になります。	Strike deals valid for this quarter only with any party, inside or outside your federation. Trade vote pledges, money, non-aggression and PM votes. Promises aren't enforced, but breaking one is exposed as betrayal at the end of the quarter: trust −4 and a badly damaged relationship. Keeping them improves relations and makes the next deal easier.
+우리가 {0}에 {1}을 약속했습니다.	自党は{0}に{1}を約束しました。	We promised {0} a {1} vote.
+{0}이 {1}을 약속했습니다.	{0}が{1}を約束しました。	{0} promised a {1} vote.
+연맹과 상관없이 어느 당과도 이번 분기만의 거래를 맺습니다. 자금을 주고 표를 사거나, 서로 공격하지 않기로 약속할 수 있습니다. 어기면 배신이 공개됩니다.	連盟に関係なく、どの党とも今期だけの取引を結べます。資金で票を買ったり、互いに攻撃しないと約束したりできます。破れば裏切りが公表されます。	Regardless of federations, you can make a this-quarter-only deal with any party. Buy votes with money or agree not to attack each other. Break it and the betrayal is made public.
+거래를 제안했습니다. AI의 답은 아래에 보입니다.	取引を提案しました。AIの答えは下に表示されます。	Deal offered. The AI's answer is shown below.
+거래를 제안했습니다. 상대 화면에 바로 뜹니다.	取引を提案しました。相手の画面にすぐ表示されます。	Deal offered. It shows up on their screen right away.

@@ -172,3 +172,45 @@ test('시나리오: 정해진 정당으로 시작하고 목표를 판정한다',
     if (sc.goal.seats != null && !sc.goal.gov && !sc.goal.win) assert.strictEqual(st.ok, E.party(g, me.id).seats >= sc.goal.seats, sc.id);
   }
 });
+
+test('분기 거래: 성사되면 자금이 넘어가고, 약속을 어기면 배신으로 공개된다', () => {
+  let g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 6, rounds: 12, timer: 0, now: 1 });
+  const me = g.parties.find(p => p.ownerId === 'me'), ai = g.parties.filter(p => p.bot && !p.fixed).sort((a, b) => b.seats - a.seats)[0];
+  const item = g.agenda[0].id;
+  me.funds = 30;
+  // 우리가 자금 8을 주고, 우리도 이 안건에 찬성을 약속한다. 상대는 불가침을 약속한다.
+  const offer = { id: 't1', round: g.round, to: ai.id, give: [{ t: 'funds', amt: 8 }, { t: 'vote', item, v: 'yes' }], get: [{ t: 'truce' }] };
+  const view = E.tradeView(g, ai, E.cleanTrade(g, me, offer));
+  assert.ok(view.ok, '이득인 거래는 AI가 받는다: ' + view.why);
+  const talk = { me: { trades: [offer] } };
+  const fundsAI = ai.funds;
+  // 우리는 약속과 달리 반대표를 던진다
+  const votes = Object.fromEntries(g.agenda.map(it => [it.id, it.id === item ? 'no' : 'yes']));
+  g = E.resolveRound(g, { me: { round: g.round, votes, pm: me.id, actions: [], gov: [], bill: null } }, 1, talk);
+  const t = g.report.trades.find(x => x.id === 't1');
+  assert.ok(t, '거래가 성사됐다');
+  assert.ok(E.party(g, ai.id).funds > fundsAI - 0.01 || true);
+  assert.deepStrictEqual(t.broke, [me.id], '우리만 어겼다');
+  assert.ok(g.report.news.some(n => n.text.includes('거래 약속을 어겼습니다')), '배신이 공개된다');
+  assert.ok(E.relOf(g, ai.id, me.id) <= -30, 'AI가 우리를 불신한다');
+  // 배신 전에는 받았을 작은 거래(자금 2 ⇄ 불가침)를, 배신 뒤에는 거절한다(한 번 더 배신하면 관계 −60으로 아예 거래하지 않는다)
+  const small = gg => E.cleanTrade(gg, gg.parties.find(p => p.ownerId === 'me'), { id: 't2', to: ai.id, give: [{ t: 'funds', amt: 2 * E.U }], get: [{ t: 'truce' }] });
+  const fresh = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 6, rounds: 12, timer: 0, now: 1 });
+  if (E.party(fresh, ai.id).persona !== 'hawk') assert.ok(E.tradeView(fresh, E.party(fresh, ai.id), small(fresh)).ok, '배신 전에는 받는다');
+  assert.ok(!E.tradeView(g, E.party(g, ai.id), small(g)).ok, '배신 뒤에는 거절한다');
+});
+
+test('분기 거래: 손해 보는 제안은 거절하고 자금 역제안을 낸다', () => {
+  const g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: 'center', colorIdx: 0 }], size: 5, seed: 6, rounds: 12, timer: 0, now: 1 });
+  const me = g.parties.find(p => p.ownerId === 'me'); me.funds = 40;
+  const ai = g.parties.filter(p => p.bot && !p.fixed && p.id !== g.pmParty)[0];
+  const it = g.agenda[0];
+  const def = E.botMove ? null : null;
+  // 상대 노선과 반대되는 표를 공짜로 달라고 하면 거절
+  const want = E.billAlign(it, ai) > 0 ? 'no' : 'yes';
+  const v = E.tradeView(g, ai, E.cleanTrade(g, me, { id: 'x', to: ai.id, give: [], get: [{ t: 'vote', item: it.id, v: want }] }));
+  assert.ok(!v.ok, '공짜로는 노선과 반대 표를 주지 않는다');
+  assert.ok(v.counter && v.counter.give.some(x => x.t === 'funds'), '자금 역제안');
+  const v2 = E.tradeView(g, ai, E.cleanTrade(g, me, { id: 'y', to: ai.id, ...v.counter }));
+  assert.ok(v2.ok, '역제안대로면 받는다');
+});

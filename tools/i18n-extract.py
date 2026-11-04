@@ -79,13 +79,17 @@ def from_template(parts):
     # 태그 속성 안 ${}도 같은 방식
     return keys
 
-def main(path):
-    src = open(path, encoding='utf-8').read()
-    keys = []
-    body = re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->', '', src)
-    keys += segments(body)
-    for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>', src):
-        for kind, v in scan(m.group(1)):
+def main(paths):
+    """HTML은 본문과 인라인 <script>를, .js 파일(예: engine.js)은 파일 전체를 훑는다."""
+    keys = []; codes = []
+    for path in paths:
+        src = open(path, encoding='utf-8').read()
+        if path.endswith('.js'): codes.append(src); continue
+        body = re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->', '', src)
+        keys += segments(body)
+        codes += [m.group(1) for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>', src)]
+    for code in codes:
+        for kind, v in scan(code):
             if kind == 's':
                 if H.search(v): keys += segments(v) if '<' in v else [v.strip()]
             else:
@@ -96,4 +100,4 @@ def main(path):
         if k and k not in seen: seen.add(k); res.append(k)
     for k in res: print(json.dumps(k, ensure_ascii=False))
 
-if __name__ == '__main__': main(sys.argv[1])
+if __name__ == '__main__': main(sys.argv[1:])

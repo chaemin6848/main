@@ -11,11 +11,11 @@ const E=(function(){
   // 사이 분기 수는 직선으로 잇고, 마지막보다 길면(한 임기 더 하기를 여러 번) 마지막 구간을 늘려 쓴다.
   const GOAL_ROUNDS=[6,12,18,24];
   const GOALS=/*GOALS-START*/{
-    kr:{dem:[161,125,90,109,114,102,146,98,176],rebuild:[12,29,71,35,117,38,162,40,201],jinbo:[4,15,46,22,81,25,122,27,159],ppp:[109,109,82,108,101,106,118,105,139],reform:[3,13,31,16,47,17,62,18,77]},
-    jp:{sansei:[15,45,71,57,128,62,170,65,207],ishin:[36,54,71,62,123,65,156,67,187],ldp:[315,246,114,207,118,194,146,188,177],komeito:[27,41,43,51,75,52,96,52,116],dpp:[28,29,30,30,39,31,47,31,51],cdp:[20,26,31,31,45,33,57,34,66],mirai:[11,12,15,14,18,14,22,14,26]},
-    us:{gop:[218,211,89,204,108,201,118,208,139],dem:[214,223,110,230,136,233,169,226,192]},
-    uk:{lab:[404,300,113,254,122,250,158,245,196],ld:[71,68,79,89,131,97,169,101,203],con:[118,165,93,162,116,144,126,137,143],snp:[8,14,36,15,65,14,88,13,110],reform:[8,39,35,55,56,62,74,66,88],green:[5,13,48,24,101,29,156,36,203],plaid:[4,6,28,6,44,5,61,5,75]},
-    fr:{dr:[47,69,51,75,73,78,89,79,105],eco:[38,57,51,68,87,72,123,76,155],ps:[67,85,66,68,90,63,112,63,141],rn:[118,113,65,91,70,85,83,82,95],epr:[90,58,34,68,48,72,62,70,69],lfi:[70,78,61,87,106,90,143,91,177],dem:[71,53,28,49,35,45,44,44,51]}}/*GOALS-END*/;
+    kr:{ppp:[109,110,82,110,103,108,122,107,141],rebuild:[12,29,71,34,118,38,162,40,204],dem:[161,125,93,108,117,101,150,98,183],jinbo:[4,15,46,22,83,25,126,27,164],reform:[3,12,32,15,49,16,64,17,78]},
+    jp:{ishin:[36,52,67,59,118,61,148,63,178],sansei:[15,44,68,55,125,60,158,64,194],ldp:[315,247,112,209,117,198,142,190,170],dpp:[28,29,31,31,39,31,47,31,52],komeito:[27,41,42,51,73,54,93,53,115],cdp:[20,27,30,32,43,33,54,34,63],mirai:[11,12,16,14,18,14,23,15,26]},
+    us:{dem:[214,225,113,230,139,233,174,225,198],gop:[218,209,87,205,108,201,117,209,139]},
+    uk:{ld:[71,72,83,84,129,95,171,101,206],lab:[404,304,121,259,129,253,164,253,205],con:[118,159,91,159,112,142,126,133,143],plaid:[4,6,29,6,47,5,64,5,80],reform:[8,38,32,54,55,62,74,65,88],green:[5,13,47,27,107,29,162,33,213],snp:[8,14,38,14,67,14,93,13,116]},
+    fr:{rn:[118,113,67,94,77,88,89,84,102],dr:[47,70,52,75,72,78,87,80,102],ps:[67,86,66,70,93,63,118,61,144],eco:[38,58,51,68,90,73,126,77,159],lfi:[70,79,61,87,106,92,147,93,182],dem:[71,50,24,45,31,42,36,40,44],epr:[90,56,29,66,45,68,55,66,60]}}/*GOALS-END*/;
   let TOTAL=400,DISTRICT=280,PR=120,U=1,UNIT='억',MEMBER_NAME='당원';
   const HAERAM=[
     {id:'hanbyeol',name:'한별 수도권',seats:90,eco:.1,soc:.35,tag:'청년·사무직'},
@@ -162,6 +162,44 @@ const E=(function(){
     {title:'공공기관 지방 이전법',desc:'수도권 공공기관을 지방으로 옮깁니다.',eco:.3,soc:-.1,pass:{seom:3,hanbyeol:-2}},
     {title:'공공부문 구조개혁안',desc:'공공기관 정원을 줄이고 성과급제를 넓힙니다.',eco:-.7,soc:-.3,pass:{neoreun:3}},
     {title:'흉악범 처벌 강화법',desc:'강력 범죄 형량을 높이고 가석방을 줄입니다.',eco:-.2,soc:-.8,pass:{seodeul:3,bukbang:2}},
+    {title:"최저임금 인상안",desc:"내년 최저임금을 큰 폭으로 올립니다.",eco:0.8,soc:0.1,pass:{'donghae': 3}},
+    {title:"상속세 완화안",desc:"가업 승계 때 상속세 부담을 줄입니다.",eco:-0.8,soc:-0.1,pass:{'neoreun': 3}},
+    {title:"공공 돌봄 확대법",desc:"국공립 어린이집과 노인 돌봄을 늘립니다.",eco:0.7,soc:0.2,pass:{'hanbyeol': 2, 'seodeul': 2}},
+    {title:"플랫폼 노동자 보호법",desc:"배달·대리 기사에게 산재보험과 최저 보수를 보장합니다.",eco:0.7,soc:0.4,pass:{'hanbyeol': 3}},
+    {title:"규제 샌드박스 확대법",desc:"신산업에 규제 없이 시험할 기회를 넓힙니다.",eco:-0.6,soc:0.5,pass:{'namnyeok': 3}},
+    {title:"대기업 집단 규제법",desc:"재벌 계열사 간 일감 몰아주기를 막습니다.",eco:0.7,soc:0.1,pass:{}},
+    {title:"부동산 공급 확대법",desc:"도심 고밀 개발로 주택 공급을 늘립니다.",eco:-0.5,soc:0.2,pass:{'hanbyeol': 2, 'neoreun': 2}},
+    {title:"임대료 상한제",desc:"전월세 인상률에 상한을 둡니다.",eco:0.8,soc:0.2,pass:{'hanbyeol': 3, 'neoreun': -2}},
+    {title:"국가 장학금 확대법",desc:"소득 하위 절반의 대학 등록금을 지원합니다.",eco:0.6,soc:0.4,pass:{'hanbyeol': 2}},
+    {title:"사립학교 자율화법",desc:"사립학교의 교육과정·학생 선발 자율을 넓힙니다.",eco:-0.5,soc:-0.3,pass:{'neoreun': 2}},
+    {title:"징병제 개편안",desc:"복무 기간을 줄이고 모병 비중을 늘립니다.",eco:0.1,soc:0.6,pass:{'hanbyeol': 2, 'bukbang': -2}},
+    {title:"예비군 강화법",desc:"예비군 훈련과 장비를 늘립니다.",eco:-0.2,soc:-0.8,pass:{'bukbang': 3}},
+    {title:"동성 결혼 인정법",desc:"동성 부부의 혼인 신고를 받습니다.",eco:0.1,soc:0.95,pass:{'hanbyeol': 2, 'seodeul': -3}},
+    {title:"가족 가치 지원법",desc:"다자녀·전통 가정에 세제 혜택을 줍니다.",eco:0.2,soc:-0.8,pass:{'seodeul': 3}},
+    {title:"차별금지법",desc:"고용·서비스에서 차별을 금지하고 구제 절차를 둡니다.",eco:0.2,soc:0.8,pass:{'hanbyeol': 2}},
+    {title:"공공 와이파이 무료화",desc:"전국 공공장소 와이파이를 무료로 엽니다.",eco:0.4,soc:0.4,pass:{'seom': 2}},
+    {title:"전기요금 현실화",desc:"원가에 맞춰 전기요금을 올립니다.",eco:-0.5,soc:0,pass:{'donghae': -2}},
+    {title:"재생에너지 의무화",desc:"발전량의 40%를 재생에너지로 채웁니다.",eco:0.3,soc:0.6,pass:{'seom': 2, 'donghae': -2}},
+    {title:"석탄 발전 조기 폐쇄",desc:"석탄 발전소를 10년 앞당겨 닫습니다.",eco:0.3,soc:0.5,pass:{'donghae': -3, 'hanbyeol': 2}},
+    {title:"수소 산업 육성법",desc:"수소차와 충전소에 보조금을 줍니다.",eco:-0.3,soc:0.3,pass:{'donghae': 3}},
+    {title:"반도체 특별법",desc:"반도체 공장에 세액 공제와 전력망을 지원합니다.",eco:-0.6,soc:0.2,pass:{'neoreun': 3}},
+    {title:"중소기업 납품단가 연동제",desc:"원자재 값이 오르면 납품 단가도 오르게 합니다.",eco:0.6,soc:0,pass:{'donghae': 2}},
+    {title:"자영업 손실 보상법",desc:"재난으로 문을 닫은 가게에 손실을 보상합니다.",eco:0.6,soc:-0.1,pass:{'seodeul': 2}},
+    {title:"지역화폐 확대법",desc:"지역 상품권 발행에 국비를 대폭 지원합니다.",eco:0.6,soc:-0.2,pass:{'seodeul': 2, 'seom': 2}},
+    {title:"공무원 연금 개혁안",desc:"공무원 연금을 국민연금 수준에 맞춥니다.",eco:-0.6,soc:0,pass:{}},
+    {title:"국민연금 보장 강화안",desc:"소득대체율을 올리고 보험료도 올립니다.",eco:0.7,soc:-0.1,pass:{'seodeul': 3}},
+    {title:"검찰 수사권 축소법",desc:"검찰의 직접 수사 범위를 줄입니다.",eco:0.2,soc:0.5,pass:{}},
+    {title:"경찰력 강화법",desc:"순찰 인력과 장비를 크게 늘립니다.",eco:-0.2,soc:-0.7,pass:{'neoreun': 2}},
+    {title:"마약 범죄 엄벌법",desc:"마약 유통에 무기징역까지 선고할 수 있게 합니다.",eco:0,soc:-0.7,pass:{}},
+    {title:"사형제 폐지안",desc:"사형을 종신형으로 바꿉니다.",eco:0.1,soc:0.8,pass:{'seodeul': -2}},
+    {title:"언론 중재법",desc:"허위 보도에 징벌적 손해배상을 물립니다.",eco:0.2,soc:-0.4,pass:{}},
+    {title:"공영방송 독립법",desc:"공영방송 이사회를 정치권 밖에서 뽑습니다.",eco:0.1,soc:0.6,pass:{}},
+    {title:"선거 연령 하향안",desc:"투표 연령을 16세로 낮춥니다.",eco:0.2,soc:0.7,pass:{'hanbyeol': 2}},
+    {title:"비례대표 확대안",desc:"지역구를 줄이고 비례 의석을 늘립니다.",eco:0.2,soc:0.4,pass:{}},
+    {title:"수도 이전 특별법",desc:"행정 수도를 중부 지역으로 옮깁니다.",eco:0.4,soc:-0.1,pass:{'hanbyeol': -3, 'seodeul': 3}},
+    {title:"관광 비자 면제 확대",desc:"관광객 무비자 입국 국가를 늘립니다.",eco:-0.3,soc:0.6,pass:{'namnyeok': 2, 'seom': 2}},
+    {title:"농지 규제 완화법",desc:"농지를 공장·주택 용지로 쉽게 바꿉니다.",eco:-0.6,soc:0,pass:{'neoreun': 2, 'seodeul': -3}},
+    {title:"스마트팜 지원법",desc:"첨단 농업 설비에 보조금을 줍니다.",eco:-0.1,soc:0.2,pass:{'seodeul': 3}},
   ];
   // AI 성격. 판을 만들 때 AI 정당마다 하나씩 붙는다(사람 당과 성격 없는 옛 판은 기존 방식 그대로).
   //   act: 남은 행동 칸을 채울 때 고르는 비율 · spend: 남은 돈의 몇 분의 1까지 한 행동에 쓰는지 · propose: 법안 발의 확률
@@ -208,7 +246,7 @@ const E=(function(){
     youth:{title:'청년 실업 대란',text:'청년 실업률이 치솟아 개방·분배 노선에 관심이 몰립니다.',eco:.6,soc:.6,amt:4,resp:['ride','blame']},
     distrust:{title:'정치 불신 확산',text:'여론조사에서 정치권 신뢰가 바닥을 쳤습니다. 모든 정당 신뢰 −3.',trust:-3,resp:['reform']},
     flood:{title:'대형 수해',text:'집중호우 피해 대응을 두고 정부 책임론이 나옵니다. 정부가 현장을 챙기지 않으면 다음 분기 복구 지연 논란으로 번집니다.',blameTop:6,resp:['relief','blame'],follow:{key:'recovery',unless:'relief'}},
-    recovery:{title:'복구 지연',text:'수해 복구가 늦어져 피해 지역의 분노가 정부로 향합니다.',blameTop:5,resp:['relief','blame'],chain:true},
+    recovery:{title:'복구 지연',text:'재난 복구가 늦어져 피해 지역의 분노가 정부로 향합니다.',blameTop:5,resp:['relief','blame'],chain:true},
     fundprobe:{title:'정치자금 수사',text:'검찰이 정치자금 수사에 나섰습니다. 자금이 넉넉한 정당이 의심받습니다.',blameRich:5,resp:['reform']},
     sports:{title:'국제대회 호성적',text:'국제대회 선전으로 사회 분위기가 좋아집니다. 모든 정당 결속 +3.',unity:3,resp:[]},
     housing:{title:'집값 급등',text:'주택 가격이 폭등하고 정부 책임론이 나옵니다.',blameTop:5,resp:['stimulus','blame']},
@@ -219,6 +257,55 @@ const E=(function(){
     quiet:{title:'조용한 분기',text:'이번 분기는 큰 사건 없이 지나갔습니다.',resp:[]},
     scandal:{title:'정치자금 의혹',text:'한 정당 지도부가 불법 정치자금 의혹을 받습니다. 대상 당 신뢰 −4. 대상 당의 대응에 따라 다른 당의 공세가 먹히는 정도가 달라집니다.',target:true,hitTrust:4,resp:['apology','defy','cut','attack']},
     feud:{title:'계파 갈등 폭발',text:'한 정당에서 공천을 두고 계파 싸움이 터졌습니다. 대상 당 결속 −6.',target:true,hitUnity:6,resp:['compromise','unity','attack']},
+    pandemic:{title:"신종 감염병 유행",text:"새 감염병이 퍼지기 시작했습니다. 정부가 현장을 챙기지 않으면 다음 분기 대유행으로 번집니다.",trust:-1,resp:["relief", "stimulus", "blame"],follow:{"key": "pandemic2", "unless": "relief"}},
+    pandemic2:{title:"감염병 대유행",text:"방역에 실패해 병상이 부족하고 가게들이 문을 닫습니다. 정부 책임론이 거셉니다.",blameTop:7,funds:-2,resp:["relief", "blame", "unity"],chain:true},
+    strike:{title:"항만 총파업",text:"남녘 항만 노조가 총파업에 들어갔습니다. 정부가 중재하지 않으면 장기 파업으로 번집니다.",region:"namnyeok",reco:1,rsoc:0,ramt:5,resp:["mediate", "local", "ride"],follow:{"key": "strike2", "unless": "mediate"}},
+    strike2:{title:"장기 파업",text:"파업이 길어져 물류가 멈췄습니다. 수출 기업과 시민 모두 정부를 탓합니다.",blameTop:5,funds:-1,resp:["mediate", "blame", "protest"],chain:true},
+    factory:{title:"공장 대형 화재",text:"동해 공단 공장에서 큰불이 나 안전 규제 논쟁이 붙었습니다.",region:"donghae",reco:1,rsoc:0.2,ramt:5,trust:-1,resp:["relief", "local", "blame"]},
+    drought:{title:"가뭄과 흉작",text:"서들 농촌에 가뭄이 이어져 농가가 시름에 빠졌습니다.",region:"seodeul",reco:0.6,rsoc:-0.6,ramt:5,resp:["relief", "local", "ride"]},
+    newtown:{title:"신도시 교통 대란",text:"너른 신도시권 출퇴근길이 마비돼 광역 교통 대책 요구가 커집니다.",region:"neoreun",reco:-0.5,rsoc:0,ramt:5,resp:["local", "stimulus", "blame"]},
+    bordershot:{title:"접경 지역 포격",text:"접경에서 포격이 오갔습니다. 정부를 중심으로 뭉치자는 여론이 생깁니다.",region:"bukbang",reco:0,rsoc:-1,ramt:6,boostTop:3,resp:["unity", "ride", "coop"]},
+    island:{title:"섬 지역 의료 헬기 사고",text:"응급 헬기 사고로 섬·산간 의료 공백이 드러났습니다.",region:"seom",reco:0.6,rsoc:0,ramt:6,resp:["relief", "local"]},
+    capitalrent:{title:"수도권 전세 사기",text:"한별 수도권에서 전세 사기 피해가 잇따릅니다. 청년층이 분노합니다.",region:"hanbyeol",reco:0.6,rsoc:0.4,ramt:5,resp:["relief", "local", "blame"]},
+    inflation:{title:"물가 급등",text:"장바구니 물가가 치솟아 생활비 부담이 커졌습니다.",eco:0.6,soc:0,amt:3,blameTop:3,resp:["stimulus", "blame", "ride"]},
+    taxshock:{title:"세수 결손",text:"세금이 예상보다 덜 걷혀 나라 살림에 구멍이 났습니다. 긴급 재정 법안이 올라옵니다.",funds:-1,resp:["coop", "blame"],bill:{title:"긴급 재정 건전화법",desc:"지출을 줄이고 일부 세율을 올려 적자를 메웁니다.",eco:-0.3,soc:0}},
+    cyber:{title:"대규모 해킹",text:"공공기관 전산망이 해킹당했습니다. 사이버 안보 긴급 법안이 올라옵니다.",eco:0,soc:-0.7,amt:3,resp:["ride", "blame"],bill:{title:"사이버 안보 긴급법",desc:"정보기관에 민간 통신망 감시 권한을 줍니다.",eco:0,soc:-0.7}},
+    aiboom:{title:"AI 일자리 충격",text:"AI 자동화로 사무직 일자리가 줄어든다는 보고서가 나왔습니다.",eco:0.6,soc:0.4,amt:4,resp:["ride", "debate"]},
+    birthrate:{title:"출생아 수 역대 최저",text:"출생아 수가 또 최저를 기록했습니다. 가족 지원 경쟁이 붙습니다.",eco:0.4,soc:-0.4,amt:3,resp:["ride", "coop"]},
+    olympics:{title:"국제 행사 유치",text:"대형 국제 행사 유치에 성공해 분위기가 들뜹니다.",boostTop:3,unity:2,resp:["ride", "local"]},
+    scandal2:{title:"보좌진 갑질 폭로",text:"한 정당 의원의 보좌진 갑질이 폭로됐습니다. 대상 당 신뢰 −3.",target:true,hitTrust:3,resp:["apology", "cut", "resign", "attack"]},
+    defector:{title:"의원 탈당 선언",text:"한 정당의 중진 의원이 탈당을 예고했습니다. 대상 당 결속 −5.",target:true,hitUnity:5,resp:["compromise", "unity", "attack"]},
+    nocon_storm:{title:"내각 총사퇴 요구",text:"정부 수반 당의 신뢰가 바닥을 치자 총사퇴 요구가 쏟아집니다. 대상 당 신뢰 −3.",target:true,hitTrust:3,when:"pmWeak",resp:["coop", "resign", "protest", "attack"]},
+    tvdebate:{title:"총선 TV 토론",text:"총선을 앞두고 정당 대표 TV 토론이 열립니다. 준비한 만큼 결과가 갈립니다.",when:"election",resp:["debate", "ride"]},
+    split:{title:"분당 위기",text:"결속이 무너진 정당에서 분당 이야기가 나옵니다. 대상 당 결속 −4.",target:true,hitUnity:4,when:"split",resp:["compromise", "unity", "resign", "attack"]},
+    surge:{title:"신드롬급 돌풍",text:"신뢰가 치솟은 정당에 언론의 검증이 몰립니다. 대상 당 신뢰 −2.",target:true,hitTrust:2,when:"surge",resp:["apology", "defy", "attack"]},
+    fatigue:{title:"정권 심판론",text:"집권이 길어지자 이번에는 바꿔야 한다는 여론이 커집니다. 대상 당 신뢰 −3.",target:true,hitTrust:3,when:"longGov",resp:["coop", "defy", "blame"]},
+    kr_semi:{title:"반도체 수출 신기록",text:"반도체 수출이 사상 최대를 기록했습니다. 시장 노선이 힘을 받습니다.",country:"kr",eco:-0.8,soc:0.2,amt:4,funds:1,resp:["ride"]},
+    kr_med:{title:"의대 정원 갈등",text:"의대 정원 확대를 두고 의료계가 집단행동에 나섰습니다. 정부가 중재하지 않으면 의료 공백으로 번집니다.",country:"kr",trust:-1,resp:["mediate", "blame", "ride"],follow:{"key": "medical", "unless": "mediate"}},
+    kr_missile:{title:"북한 미사일 발사",text:"북한이 탄도미사일을 쏘았습니다. 안보 노선에 관심이 쏠립니다.",country:"kr",eco:0,soc:-1,amt:4,region:"bukbang",reco:0,rsoc:-1,ramt:4,resp:["ride", "unity"]},
+    kr_local:{title:"지방 소멸 경고",text:"지방 군 단위 절반이 소멸 위기라는 보고서가 나왔습니다.",country:"kr",region:"seodeul",reco:0.6,rsoc:-0.3,ramt:5,resp:["local", "ride"]},
+    kr_jeonse:{title:"청년 주거 시위",text:"청년들이 주거비 대책을 요구하며 광장에 모였습니다.",country:"kr",eco:0.6,soc:0.5,amt:4,resp:["ride", "coop", "protest"]},
+    jp_yen:{title:"엔저 장기화",text:"엔화 약세가 이어져 수입 물가가 오르고 수출 기업은 웃습니다.",country:"jp",eco:0.4,soc:0,amt:3,funds:1,resp:["stimulus", "ride", "blame"]},
+    jp_quake:{title:"대지진 발생",text:"큰 지진이 났습니다. 정부가 현장을 챙기지 않으면 복구 지연 논란으로 번집니다.",country:"jp",blameTop:4,resp:["relief", "blame", "unity"],follow:{"key": "recovery", "unless": "relief"}},
+    jp_rice:{title:"쌀값 급등",text:"쌀값이 폭등해 비축미 방출 요구가 커집니다.",country:"jp",blameTop:3,region:"seodeul",reco:0.5,rsoc:-0.5,ramt:4,resp:["stimulus", "blame", "local"]},
+    jp_defense:{title:"방위비 증액 논쟁",text:"방위비를 두 배로 늘리는 계획을 두고 논쟁이 붙었습니다.",country:"jp",eco:-0.2,soc:-0.8,amt:4,resp:["ride", "debate"]},
+    jp_party:{title:"파티권 의혹",text:"한 정당의 정치자금 파티 수입 누락 의혹이 불거졌습니다. 대상 당 신뢰 −4.",country:"jp",target:true,hitTrust:4,resp:["apology", "cut", "resign", "attack"]},
+    us_shutdown:{title:"연방정부 셧다운 위기",text:"예산안이 막혀 연방정부가 문을 닫을 위기입니다. 정부가 협치하지 않으면 셧다운으로 번집니다.",country:"us",trust:-1,resp:["coop", "blame", "protest"],follow:{"key": "us_shutdown2", "unless": "coop"}},
+    us_shutdown2:{title:"연방정부 셧다운",text:"연방정부가 멈췄습니다. 공무원 무급 휴직에 여론이 나빠집니다.",country:"us",blameTop:6,trust:-2,resp:["coop", "blame"],chain:true},
+    us_court:{title:"대법원 판결 논쟁",text:"대법원의 사회 쟁점 판결로 나라가 둘로 갈렸습니다.",country:"us",eco:0,soc:0.8,amt:4,resp:["ride", "protest", "debate"]},
+    us_tariff:{title:"관세 전쟁",text:"주요 교역국과 관세 보복이 오갑니다. 농가와 공장이 흔들립니다.",country:"us",funds:-1,region:"seodeul",reco:0.3,rsoc:-0.5,ramt:4,resp:["stimulus", "ride", "blame"]},
+    us_border:{title:"국경 이민 급증",text:"남부 국경으로 이민자가 몰려 이민 정책 논쟁이 커집니다.",country:"us",eco:0,soc:-0.8,amt:4,resp:["ride", "blame"]},
+    us_gun:{title:"총기 참사",text:"총기 참사 뒤 총기 규제 논쟁이 다시 불붙었습니다.",country:"us",eco:0,soc:0.7,amt:4,resp:["ride", "unity"]},
+    uk_nhs:{title:"NHS 대기 명단 최장",text:"국민보건서비스 대기 명단이 역대 최장을 기록했습니다.",country:"uk",eco:0.7,soc:0,amt:4,blameTop:3,resp:["stimulus", "blame", "ride"]},
+    uk_scot:{title:"스코틀랜드 독립 여론",text:"스코틀랜드 독립 찬성 여론이 과반을 넘었습니다.",country:"uk",trust:-1,resp:["unity", "ride", "debate"]},
+    uk_living:{title:"생활비 위기",text:"에너지와 식료품 값이 올라 생활비 위기가 깊어집니다.",country:"uk",eco:0.6,soc:0,amt:4,funds:-1,resp:["stimulus", "blame", "ride"]},
+    uk_eu:{title:"유럽연합 관계 재협상",text:"유럽연합과의 무역 협정 재협상을 두고 논쟁이 붙었습니다.",country:"uk",eco:-0.2,soc:0.7,amt:4,resp:["ride", "debate"]},
+    uk_royal:{title:"왕실 경사",text:"왕실 경사로 나라 분위기가 들뜹니다. 모든 정당 결속 +3.",country:"uk",unity:3,resp:[]},
+    fr_pension:{title:"연금 개혁 시위",text:"연금 수령 나이를 늦추는 계획에 대규모 시위가 일어났습니다. 정부가 중재하지 않으면 총파업으로 번집니다.",country:"fr",eco:0.6,soc:0,amt:3,resp:["mediate", "protest", "ride"],follow:{"key": "strike2", "unless": "mediate"}},
+    fr_farmers:{title:"농민 트랙터 시위",text:"농민들이 트랙터로 고속도로를 막았습니다.",country:"fr",region:"seodeul",reco:0.3,rsoc:-0.6,ramt:5,resp:["local", "mediate", "blame"]},
+    fr_riots:{title:"교외 소요 사태",text:"교외 지역에서 소요가 번져 치안과 사회 통합 논쟁이 붙었습니다.",country:"fr",eco:0,soc:-0.6,amt:4,resp:["ride", "unity", "coop"]},
+    fr_energy:{title:"에너지 가격 급등",text:"전기와 가스 값이 급등해 가격 상한 요구가 커집니다.",country:"fr",eco:0.6,soc:0,amt:3,blameTop:2,resp:["stimulus", "blame"]},
+    fr_493:{title:"표결 없는 법안 통과 논란",text:"정부가 표결 없이 법안을 통과시키는 헌법 조항을 쓰려 해 반발이 큽니다. 대상 당 신뢰 −3.",country:"fr",target:true,hitTrust:3,when:"longGov",resp:["coop", "defy", "protest", "attack"]},
   };
   // 대응. cost 자금(억 단위) · treasury 국고 · trust·unity 우리 당 · govTrust 정부 수반 당 신뢰 · ride 노선 홍보(맞으면 +ride, 어긋나면 −1)
   //   who: gov 정부 수반 당만 · opp 정부에 들지 않은 당만 · target 대상 당만 · other 대상이 아닌 당만(대상이 있는 사건)
@@ -235,8 +322,28 @@ const E=(function(){
     cut:{label:'꼬리 자르기',desc:'대상 당만. 관련자를 내보냅니다. 결속 −6, 신뢰 −1, 다른 당의 공세가 먹히지 않습니다.',who:'target',unity:-6,trust:-1,shield:1},
     compromise:{label:'계파 나눠 먹기',desc:'대상 당만. 자금 3으로 계파를 달랩니다. 결속 +7.',who:'target',cost:3,unity:7},
     attack:{label:'공세',desc:'대상이 아닌 당만. 자금 2로 대상 당을 몰아붙입니다. 대상 당 신뢰 −2.',who:'other',cost:2,hit:2},
+    debate:{label:'토론 준비',desc:'자금 2. 반반 확률로 신뢰 +4 또는 신뢰 −2.',cost:2,risk:{win:{trust:4},lose:{trust:-2}}},
+    protest:{label:'장외 투쟁',desc:'정부에 들지 않은 당만. 결속 +5, 우리 신뢰 −1, 정부 수반 당 신뢰 −1.',who:'opp',unity:5,trust:-1,govTrust:-1},
+    coop:{label:'협치 제안',desc:'정부 수반 당만. 야당에 손을 내밉니다. 신뢰 +3, 결속 −2.',who:'gov',trust:3,unity:-2},
+    resign:{label:'지도부 사퇴',desc:'대상 당만. 신뢰 +5, 결속 −5. 다른 당의 공세가 먹히지 않습니다.',who:'target',trust:5,unity:-5,shield:1},
+    local:{label:'지역 공약',desc:'자금 2. 사건이 일어난 권역의 우리 지지 기반 +4.',cost:2,local:4},
+    mediate:{label:'중재 나서기',desc:'자금 2. 신뢰 +2. 정부 수반 당이 고르면 사건이 다음 분기로 번지지 않습니다.',cost:2,trust:2},
   };
-  const EVENT_KEYS=Object.keys(EVENTS2).filter(k=>!EVENTS2[k].chain);
+  // 조건부 사건: 판 상황이 맞을 때만 나온다(분기마다 30% 확률로 일반 사건 대신). target은 그 상황의 당을 겨냥한다.
+  const WHEN={
+    pmWeak:g=>{const p=pmOf(g);return!!p&&p.trust<40},
+    election:g=>isGeneralRound(g),
+    split:g=>g.parties.some(p=>!p.fixed&&p.seats>0&&p.unity<34),
+    surge:g=>g.parties.some(p=>!p.fixed&&p.seats>0&&p.trust>=76&&p.id!==g.pmParty),
+    longGov:g=>{const p=pmOf(g);return!!p&&g.round>=6&&p.trust<48},
+  };
+  const WHEN_TARGET={
+    pmWeak:g=>g.pmParty,longGov:g=>g.pmParty,
+    split:g=>g.parties.filter(p=>!p.fixed&&p.seats>0).sort((a,b)=>a.unity-b.unity)[0].id,
+    surge:g=>g.parties.filter(p=>!p.fixed&&p.seats>0&&p.id!==g.pmParty).sort((a,b)=>b.trust-a.trust)[0].id,
+  };
+  // 일반 사건 덱: 번진 사건·조건부 사건을 빼고, 나라 전용 사건은 그 나라에서만
+  const eventPool=g=>Object.keys(EVENTS2).filter(k=>{const e=EVENTS2[k];return!e.chain&&!e.when&&(!e.country||e.country===g.country)});
   const respCost=(g,p,k)=>(RESP[k].cost||0)*U;
   // 이 정당이 지금 사건에 고를 수 있는 대응(돈이 모자라면 뺀다). 무소속 묶음과 사건이 없는 판은 없음.
   function reactOpts(g,p){
@@ -247,6 +354,7 @@ const E=(function(){
       if(R.who==='opp'&&(inGov(g,p)||(top&&top.id===p.id)))return false;
       if(R.who==='target'&&e.target!==p.id)return false;
       if(R.who==='other'&&(!e.target||e.target===p.id))return false;
+      if(R.local&&!ev.region)return false;
       if(R.treasury&&g.treasury<R.treasury*U)return false;
       return respCost(g,p,k)<=p.funds;
     });
@@ -255,17 +363,30 @@ const E=(function(){
   const eventTop=g=>pmOf(g)||g.parties.filter(p=>!p.fixed).sort((a,b)=>b.seats-a.seats)[0];
   // 다음 사건 뽑기. 번진 사건이 있으면 그것, 아니면 섞어 둔 순서대로. 대상 사건은 자금·의석이 많은 당이 걸리기 쉽다.
   function drawEvent(g,r,forced){
-    if(!g.evDeck||!g.evDeck.length){g.evDeck=shuffle(EVENT_KEYS.slice(),r);g.evN=0}
-    let key=forced;
-    if(!key){key=g.evDeck[g.evN%g.evDeck.length];g.evN=(g.evN||0)+1;if(g.evN>=g.evDeck.length){g.evDeck=shuffle(EVENT_KEYS.slice(),r);g.evN=0}}
-    const e={key,round:g.round};
-    if(EVENTS2[key].target){
-      const live=g.parties.filter(p=>!p.fixed&&p.seats>0);
-      const w=live.map(p=>p.seats/TOTAL+Math.max(0,p.funds)/Math.max(1,live.reduce((n,x)=>n+Math.max(0,x.funds),0))+.15);
-      let x=r()*w.reduce((a,b)=>a+b,0),i=0;for(;i<w.length-1;i++){if(x<w[i])break;x-=w[i]}
-      e.target=live[i]?live[i].id:null;if(!e.target)e.key='quiet';
+    const pool=eventPool(g),recent=g.evRecent||[];
+    if(!g.evDeck||!g.evDeck.length||g.evDeck.some(k=>!pool.includes(k))){g.evDeck=shuffle(pool.slice(),r);g.evN=0}
+    let key=forced&&own(EVENTS2,forced)?forced:null;
+    if(!key){
+      const cands=Object.keys(EVENTS2).filter(k=>{const e=EVENTS2[k];return e.when&&(!e.country||e.country===g.country)&&!recent.includes(k)&&WHEN[e.when](g)});
+      if(cands.length&&r()<.3)key=cands[Math.floor(r()*cands.length)];
     }
+    if(!key){key=g.evDeck[(g.evN||0)%g.evDeck.length];g.evN=(g.evN||0)+1;if(g.evN>=g.evDeck.length){g.evDeck=shuffle(pool.slice(),r);g.evN=0}}
+    const ev=EVENTS2[key],e={key,round:g.round};
+    if(ev.target){
+      if(ev.when&&WHEN_TARGET[ev.when])e.target=WHEN_TARGET[ev.when](g);
+      else{
+        const live=g.parties.filter(p=>!p.fixed&&p.seats>0);
+        const w=live.map(p=>p.seats/TOTAL+Math.max(0,p.funds)/Math.max(1,live.reduce((n,x)=>n+Math.max(0,x.funds),0))+.15);
+        let x=r()*w.reduce((a,b)=>a+b,0),i=0;for(;i<w.length-1;i++){if(x<w[i])break;x-=w[i]}
+        e.target=live[i]?live[i].id:null;
+      }
+      if(!e.target){e.key='quiet';delete e.target}
+    }
+    g.evRecent=recent.concat(e.key).slice(-6);
     g.event=e;
+    // 긴급 법안을 거는 사건은 이번 분기 본회의에 올린다(정부·의원 법안과 함께 표결).
+    const B=EVENTS2[e.key].bill;
+    if(B&&g.agenda)g.agenda.push({id:'a'+(g.seq++),kind:'emer',title:B.title,desc:B.desc,eco:B.eco,soc:B.soc,pass:B.pass||{},by:null});
   }
   // AI 대응 고르기(성격별). 사람이 수를 내지 않았을 때도 이걸로 대신 고른다.
   function botReact(g,p,r){
@@ -277,7 +398,14 @@ const E=(function(){
       if(has('unity'))return'unity';
       return has(pref)?pref:opts[0];
     }
+    const isTop=eventTop(g)&&eventTop(g).id===p.id;
+    if(has('resign')&&(p.trust<38||k==='principled')&&r()<.6)return'resign';
     if(has('stimulus')&&r()<(k==='hawk'?.5:.85))return'stimulus';
+    if(has('mediate')&&isTop&&ev.follow&&r()<(k==='hawk'?.4:.8))return'mediate';
+    if(has('coop')&&r()<({dealer:.8,steady:.6,principled:.4}[k]||.3))return'coop';
+    if(has('protest')&&r()<({hawk:.8,principled:.35}[k]||.15))return'protest';
+    if(has('debate')&&r()<({populist:.7,hawk:.6,principled:.4}[k]||.35))return'debate';
+    if(has('local')&&p.eco*(ev.reco||0)+p.soc*(ev.rsoc||0)>-.1&&r()<.5)return'local';
     if(has('relief')&&eventTop(g).id===p.id&&r()<(k==='hawk'?.5:.85))return'relief';
     if(has('attack')&&!isAlly(p,e.target)&&r()<({hawk:.9,populist:.5}[k]||.2))return'attack';
     if(has('blame')&&r()<({hawk:1,populist:.6}[k]||.3))return'blame';
@@ -299,6 +427,9 @@ const E=(function(){
     }
     if(ev.blameTop&&top)top.trust-=ev.blameTop;
     if(tgt){if(ev.hitTrust)tgt.trust-=ev.hitTrust;if(ev.hitUnity)tgt.unity-=ev.hitUnity}
+    if(ev.boostTop&&top)top.trust+=ev.boostTop;
+    // 지역 사건: 그 권역에서 사건 쪽 노선의 당은 기반이 늘고 반대쪽은 준다
+    if(ev.region&&own(REG,ev.region)&&ev.ramt)for(const p of g.parties)if(!p.fixed)p.reg[ev.region]+=(p.eco*(ev.reco||0)+p.soc*(ev.rsoc||0))*ev.ramt;
     const picks={},lines=[];
     for(const p of g.parties){const k=plans[p.id]&&plans[p.id].react;if(k&&own(RESP,k)&&ev.resp.includes(k))picks[p.id]=k} // 분기 초에 sanitize에서 이미 확인함
     // 대상 당이 먼저 대응해야 공세가 얼마나 먹힐지 정해진다.
@@ -315,10 +446,13 @@ const E=(function(){
       if(R.ride){const d=p.eco*(ev.eco||0)+p.soc*(ev.soc||0);p.trust+=d>.1?R.ride:d<-.1?-1:0;note=d>.1?'노선 바람을 탐':d<-.1?'역풍':'효과 없음'}
       if(R.risk){const win=r()<.5,o=win?R.risk.win:R.risk.lose;p.trust+=o.trust||0;note=win?'성공':'실패'}
       if(R.shield)shield=R.shield;
+      if(R.local&&ev.region&&own(REG,ev.region)){p.reg[ev.region]+=R.local;note=REG[ev.region].name}
       if(R.hit&&tgt){const h=R.hit*(1-shield);tgt.trust-=h;note=h>0?`${tgt.name} 신뢰 −${Math.round(h*10)/10}`:'먹히지 않음'}
       lines.push({id:p.id,react:k,label:R.label,note});
     }
-    const follow=ev.follow&&top&&picks[top.id]!==ev.follow.unless?ev.follow.key:null;
+    // 번짐: 정부 수반 당이 unless 대응을 고르지 않으면 follow로. branch가 있으면 고른 대응에 따라 다른 사건으로 갈린다.
+    const tp=top?picks[top.id]:null;
+    const follow=ev.branch&&tp&&ev.branch[tp]?ev.branch[tp]:ev.follow&&tp!==ev.follow.unless?ev.follow.key:null;
     return{key:e.key,title:ev.title,text:ev.text,target:e.target||null,reacts:lines,follow};
   }
   const BOTS={
@@ -1120,6 +1254,7 @@ const E=(function(){
         if(it.kind==='pact'&&passed)for(const id of[it.by,it.by2]){const q=party(g,id),x=s(q);if(x){x.law+=PTS.pactLaw*sway(q);x.nLaw++}}
       }
       if(it.kind==='pact')say(`연립 합의 법안 「${it.title}」 ${passed?'가결':'부결'}.`,it.by,it.by2);
+      if(it.kind==='emer')say(`긴급 법안 「${it.title}」 ${passed?'가결':'부결'}.`);
       for(const p of g.parties){
         const v=votes[p.id]==='yes'?1:-1;const a=billAlign(it,p);
         if(Math.abs(a)>.2)p.unity+=a*v>0?4:follow.has(p.id)?-2:-6;
@@ -1417,6 +1552,25 @@ const E=(function(){
     rows.sort((a,b)=>out(a.id)-out(b.id)||key(b)-key(a)||b.score-a.score||b.seats-a.seats);
     return rows;
   }
+  // 시나리오: 정해진 나라·정당·분기로 시작해 목표를 이루면 성공. goal: seats(이상) · gov(정부를 맡음) · win(1위)
+  const SCENARIOS=[
+    {id:'kr_underdog',country:'kr',pick:'reform',rounds:12,goal:{seats:20},title:'3석의 반란',desc:'개혁신당을 맡아 12분기 안에 20석 이상을 만드세요.'},
+    {id:'jp_hold',country:'jp',pick:'ldp',rounds:12,goal:{seats:233},title:'과반을 지켜라',desc:'자유민주당을 맡아 마지막 총선 뒤에도 단독 과반 233석을 지키세요.'},
+    {id:'us_flip',country:'us',pick:'dem',rounds:6,goal:{seats:228},title:'하원 탈환',desc:'민주당을 맡아 6분기 안에 228석 이상의 안정 과반을 차지하세요.'},
+    {id:'uk_insurgent',country:'uk',pick:'reform',rounds:12,goal:{seats:65},title:'반란군의 진격',desc:'영국개혁당을 맡아 12분기 안에 65석 이상을 만드세요.'},
+    {id:'fr_left',country:'fr',pick:'ps',rounds:12,goal:{gov:true,seats:75},title:'좌파 총리',desc:'사회당 계열을 맡아 마지막 총선 뒤 75석 이상으로 총리를 배출하세요.'},
+    {id:'virtual_minor',country:'',kind:'minor',rounds:12,goal:{win:true},title:'군소정당의 꿈',desc:'가상 공화국에서 군소정당으로 시작해 1위를 차지하세요.'},
+  ];
+  // 시나리오 진행 상황: {sc, ok(지금 기준 달성 여부), done(끝났는지), now(지금 값 설명용)}
+  function scenarioState(g,pid){
+    const sc=SCENARIOS.find(x=>x.id===g.scenario);if(!sc)return null;
+    const p=party(g,pid);if(!p)return null;
+    const G=sc.goal;let ok=true;
+    if(G.seats!=null)ok=ok&&p.seats>=G.seats;
+    if(G.gov)ok=ok&&(g.pmParty===p.id||g.presParty===p.id);
+    if(G.win)ok=ok&&(g.result?g.result.winner===p.id:scoreRows(g)[0].id===p.id);
+    return{sc,ok,done:g.status==='over'};
+  }
   function finalResult(g){const rows=scoreRows(g);return{rows,winner:rows[0].id}}
   // 끝난 판을 한 임기 더 잇는다. 승점과 의석은 그대로 이어지고, 처음 정한 분기 수만큼 가서 다음 총선을 치른다.
   function continueGame(state,now){
@@ -1436,6 +1590,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

@@ -48,7 +48,7 @@ npm run dist:mac     # macOS (Mac에서)
 
 1. **Steamworks 가입과 앱 등록**: partner.steamgames.com에서 가입하고 앱 등록비(앱마다 100달러)를 낸다. 세금·계좌 정보를 넣으면 앱 ID가 나온다.
 2. **앱 ID 반영**: `desktop/steam_appid.txt`를 받은 앱 ID로 바꾼다.
-3. **도전과제 등록**: Steamworks → 앱 관리 → 도전과제에 아래 15개를 같은 API 이름으로 만든다. 아이콘(64×64, 잠김/열림 두 장)이 필요하다.
+3. **도전과제 등록**: Steamworks → 앱 관리 → 도전과제에 아래 16개를 같은 API 이름으로 만든다. 아이콘(64×64, 잠김/열림 두 장)이 필요하다.
 
    | API 이름 | 이름 | 조건 |
    |---|---|---|
@@ -62,6 +62,7 @@ npm run dist:mac     # macOS (Mac에서)
    | ACH_CRISIS | 위기 관리 | 정부일 때 대책으로 사건이 번지는 것을 막는다 |
    | ACH_DEFY | 정면 돌파 | 의혹 사건에서 정면 돌파에 성공한다 |
    | ACH_TWO_TERMS | 장기 집권 | 이어 한 판에서 두 임기 연속 이긴다 |
+   | ACH_SCENARIO | 시나리오 정복 | 시나리오 하나를 성공한다 |
    | ACH_WIN_KR | 여의도의 주인 | 한국 모드에서 이긴다 |
    | ACH_WIN_JP | 나가타초의 주인 | 일본 모드에서 이긴다 |
    | ACH_WIN_US | 캐피톨 힐의 주인 | 미국 모드에서 이긴다 |

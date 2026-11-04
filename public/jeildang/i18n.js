@@ -2972,6 +2972,22 @@ ND.add({
 "大統領候補",
 "Presidential candidate"
 ],
+"목표 의석": [
+"目標議席",
+"Seat goal"
+],
+"목표 의석 달성": [
+"目標議席達成",
+"Seat goal reached"
+],
+"기준": [
+"基準",
+"Par"
+],
+"목표 대비": [
+"目標比",
+"vs goal"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -2992,6 +3008,7 @@ ND.add({
 ND.pat([
 [/^:\ 연대는\ 1:1이\ 아니라\ 연맹\ 단위로\ 맺습니다\.\ 결재\ 탭의\ 연맹\ 협상에서\ 연맹이\ 없는\ 당끼리\ 새\ 연맹을\ 결성하거나,\ 이미\ 있는\ 연맹의\ 대표\ 당에\ 가입을\ 신청합니다\.\ 대표\ 당은\ 다른\ 당을\ 초대하거나,\ 다른\ 연맹의\ 대표\ 당에\ 두\ 연맹의\ 합병을\ 제안할\ 수\ 있습니다\(합친\ 회원이\ 정원\ 안일\ 때,\ 제안한\ 쪽\ 대표가\ 새\ 연맹의\ 대표\)\.\ 한\ 당은\ 한\ 연맹에만\ 들어가고,\ 한\ 연맹에는\ (.*?)개\ 당까지\ 들어갑니다\.\ 회원\ 당은\ 모두\ 서로\ 연대\ 상대가\ 되고,\ 수반\ 후보도\ 연맹에\ 하나입니다\.\ 제안에는\ 수반\ 후보,\ 공동\ 입법\ 과제\(다음\ 분기에\ 연맹\ 합의\ 법안으로\ 올라가고\ 연맹\ 회원은\ 모두\ 찬성으로\ 묶임\),\ 선거\ 협력\(한\ 지역\ 후보\ 양보\),\ 공개\ 지지\(지지하는\ 당\ 신뢰를\ 나눠\ 줌\)를\ 겁니다\.\ 받는\ 쪽이\ 수락하는\ 즉시\ 성사되고,\ AI는\ 그\ 자리에서\ 답하거나\ 역제안합니다\.\ 나오려면\ '연맹\ 탈퇴'를,\ 대표\ 당은\ '연맹\ 제명'을\ 씁니다\.\ 회원이\ 하나만\ 남으면\ 연맹은\ 해체됩니다\.\ 같은\ 연맹의\ 당을\ 공격하면\ 연맹에서\ 떨어져\ 나가고\ 신뢰가\ 크게\ 떨어집니다\.$/,"：連携は1対1ではなく連盟単位で組みます。決裁タブの連盟交渉で、連盟のない党同士が新しい連盟を結成するか、既存の連盟の代表党に加盟を申請します。代表党は他の党を招待したり、他の連盟の代表党に両連盟の合併を提案したりできます（合わせた加盟党が定員内のとき。提案した側の代表が新しい連盟の代表）。1つの党が入れる連盟は1つだけで、1つの連盟には$1党まで入れます。加盟党はすべて互いの連携相手になり、首班候補も連盟で1つです。提案には首班候補、共同立法課題（次の四半期に連盟合意法案として上程され、加盟党はすべて賛成で縛られる）、選挙協力（1地域の候補を譲る）、公の支持（支持する党に信頼を分け与える）を条件にできます。受け手が承諾した時点ですぐに成立し、AIはその場で答えるか逆提案します。抜けるには「連盟から脱退」を、代表党は「連盟から除名」を使います。加盟党が1つだけになると連盟は解散します。同じ連盟の党を攻撃すると連盟から外れ、信頼が大きく下がります。",": Alliances are no longer one-to-one — they work through federations. In the federation talks on the Decisions tab, parties without a federation can found a new one together, or apply to join an existing federation through its head party. The head can also invite other parties, or propose to another federation's head that the two federations merge (if the combined membership fits; the proposing head leads the merged federation). Each party belongs to at most one federation, and a federation holds up to $1 parties. Every member is allied with every other member, and the federation names a single head-of-government candidate. Offers can include that candidate, a joint bill (tabled next quarter as a federation bill every member must back), electoral cooperation (stand down in one region) or a public endorsement (share your trust with the party you back). It takes effect the moment it is accepted; AI parties answer on the spot or counter-offer. Use \"Leave federation\" to get out; the head can use \"Expel from federation\". A federation with only one party left dissolves. Attacking a fellow member cuts you loose from the federation and costs a lot of trust."],
 [/^이념\ 실현:\ 누가\ 냈든\ 우리가\ 찬성해\ 법이\ 되면,\ 노선에\ 맞을\ 때\ \+(.*?)\(아주\ 잘\ 맞으면\ \+(.*?)\),\ 노선에\ 어긋날\ 때\ (.*?)\.\ 노선에\ 어긋나는\ 법에\ 반대표를\ 던졌는데\ 통과되면\ 소신\ 점수\ \+(.*?)\.\ 실용중도처럼\ 노선이\ 가운데인\ 당은\ 65%\ 이상\ 찬성으로\ 통과된\ 법에\ 찬성하면\ \+(.*?)\.\ 가점은\ 표결\ 영향력만큼\ 받습니다:\ 의회의\ 10%\ 이상을\ 가진\ 당은\ 그대로,\ 그보다\ 작으면\ 줄어듭니다\(최소\ 30%\)\.$/,"理念の実現：誰が出したかにかかわらず自党が賛成して法になれば、路線に合うとき +$1（とても合うと +$2）、路線に反するとき $3。路線に反する法に反対票を投じたのに通過すると信念点 +$4。実用中道のように路線が真ん中の党は、65%以上の賛成で通過した法に賛成すると +$5。加点は採決影響力の分だけ受け取ります：議会の10%以上を持つ党はそのまま、それより小さいと減ります（最低30%）。","Ideology: whenever a law passes with your vote, whoever filed it, +$1 if it fits your line (+$2 if it fits very well), $3 if it goes against it. Vote against a bill that clashes with your line and it passes anyway: +$4 for conviction. Centrist parties like Pragmatic Centre get +$5 for backing laws that pass with 65%+ support. Bonuses scale with voting weight: full for parties with at least 10% of the chamber, less for smaller ones (minimum 30%)."],
+[/^국가\ 모드\ 목표:\ 실제\ 정당은\ 출발점이\ 크게\ 달라\ 정당마다\ 목표\ 의석과\ 기준\ 승점을\ 따로\ 줍니다\.\ 마지막\ 총선\ 뒤\ 목표\ 의석\ 이상이면\ \+(.*?),\ 순위는\ 승점에서\ 기준\ 승점을\ 뺀\ '목표\ 대비'로\ 매깁니다\.\ 큰\ 여당은\ 목표가\ 높고\ 작은\ 당은\ 낮아\ 어느\ 당을\ 맡아도\ 이길\ 수\ 있습니다\.\ 목표는\ 맨\ 위\ 우리\ 당\ 칸과\ 승점\ 현황에\ 나옵니다\.$/,"国別モードの目標: 実在の政党はスタート地点が大きく違うため、政党ごとに目標議席と基準勝ち点を設けます。最後の総選挙で目標議席以上なら +$1。順位は勝ち点から基準勝ち点を引いた「目標比」で決まります。大きな与党ほど目標が高く小さな党ほど低いので、どの党を担当しても勝てます。目標は画面上の自党欄と勝ち点状況に表示されます。","Country-mode goals: real parties start from very different places, so each gets its own seat goal and par score. Reaching the seat goal at the final general election is worth +$1, and the ranking uses points minus par (\"vs goal\"). Big governing parties get high goals and small parties low ones, so any party can win. Your goal is shown in your party bar at the top and in the standings."],
 [/^입법:\ 우리\ 의원\ 법안\ 가결\ \+(.*?)\(부결\ (.*?)\),\ 연립\ 합의\ 법안\ 가결\ 두\ 당\ 각\ \+(.*?),\ 정부\ 법안\ 가결\ 집권당\ \+(.*?)·연립\ 상대\ \+(.*?)\(부결\ 시\ 집권당\ (.*?),\ 반대해서\ 막은\ 야당\ 각\ \+(.*?)\),\ 불신임안\ 가결\ 시\ 발의\ 당\ \+(.*?)\.\ 연립\ 합의\ 법안과\ 연립\ 상대\ 점수는\ 아래\ 표결\ 영향력만큼\ 받습니다\.$/,"立法：自党の議員法案が可決 +$1（否決 $2）、連立合意法案が可決で両党それぞれ +$3、政府法案が可決で政権党 +$4・連立相手 +$5（否決時は政権党 $6、反対して阻止した野党それぞれ +$7）、不信任案が可決で提出党 +$8。連立合意法案と連立相手の点数は下の採決影響力の分だけ受け取ります。","Legislation: your member's bill passes +$1 (fails $2); coalition bill passes, +$3 each for both parties; government bill passes, governing party +$4 and partners +$5 (if it fails: governing party $6, and +$7 for each opposition party that blocked it); no-confidence passes, +$8 for the mover. Coalition-bill and partner points are scaled by voting weight (below)."],
 [/^집권·견제:\ 분기마다\ 집권당\ \+(.*?),\ 연립\ 상대\ \+(.*?),\ 정부에\ 들지\ 않은\ 당\ 가운데\ 의석이\ 가장\ 많은\ 제1야당\ \+(.*?)\.\ 집권당은\ 대신\ 신뢰가\ 매\ 분기\ 깎이고\ 오래\ 집권할수록\ 표가\ 줄어듭니다\.\ 제1야당은\ 정권\ 견제\ 여론으로\ 분기마다\ 표가\ 조금씩\ 붙습니다\.$/,"政権・けん制：四半期ごとに政権党 +$1、連立相手 +$2、政府に入っていない党のうち議席が最も多い野党第一党 +$3。そのかわり政権党は毎四半期信頼が削られ、長く政権にいるほど票が減ります。野党第一党は政権けん制の世論で四半期ごとに少しずつ票が増えます。","Power and opposition: each quarter, governing party +$1, partners +$2, and the largest party outside government (main opposition) +$3. The governing party loses trust every quarter and bleeds votes the longer it governs; the main opposition slowly gains votes as a check on power."],
 [/^선거:\ 가상\ 공화국은\ 의석\ 1석당\ (.*?)점\(군소정당은\ 의회의\ 15%까지\ 1석당\ \+(.*?)점\ 더\),\ 국가\ 모드는\ 가진\ 1석당\ (.*?)점에\ 시작\ 의석에서\ 늘린\ 1석당\ (.*?)점을\ 더합니다\(의회의\ (.*?)%까지,\ 줄면\ 감점\)\.\ 의회\ 크기에\ 맞춰\ 조정합니다\.$/,"選挙：架空の共和国は1議席あたり$1点（少数政党は議会の15%まで1議席あたりさらに+$2点）、国家モードは保有1議席あたり$3点に、開始時から増やした1議席あたり$4点を足します（議会の$5%まで、減ると減点）。議会の大きさに合わせて調整します。","Elections: in the fictional republic, $1 points per seat (minor parties get +$2 more per seat up to 15% of the chamber). In country mode, $3 points per seat held plus $4 per seat gained since the start (up to $5% of the chamber; losses count against you). Scaled to chamber size."],
@@ -2999,7 +3016,9 @@ ND.pat([
 [/^정부:\ 끝났을\ 때\ 단독\ 과반\ \+(.*?),\ 연맹\ 합산\ 과반이면\ 그\ 당들\ 각\ \+(.*?),\ 둘\ 다\ 없으면\ 원내\ 1당\ \+(.*?),\ 대통령제의\ 대통령\ 여당\ \+(.*?),\ 이원집정부제의\ 대통령\ 당\ \+(.*?)\.$/,"政府：終了時に単独過半数 +$1、連盟の合計が過半数ならその加盟党それぞれ +$2、どちらもなければ院内第一党 +$3、大統領制の大統領与党 +$4、半大統領制の大統領の党 +$5。","Government at the end: single-party majority +$1; if a federation has a combined majority, +$2 for each member; otherwise the largest party +$3; president's party in a presidential system +$4; president's party in a semi-presidential system +$5."],
 [/^(.*?)분기\ 본회의에\ 올릴\ (.*?)을\ 고릅니다\.\ 고르지\ 않으면\ 우리\ 노선에\ 가장\ 맞는\ 안이\ 올라갑니다\.\ 분기\ 말에\ 정부가\ 바뀌면\ 새\ 정부가\ 다시\ 고릅니다\.$/,"$1四半期の本会議に出す$2を選びます。選ばなければ自党の路線に最も合う案が出ます。四半期末に政府が変われば新政府が選び直します。","Choose the $2 for the Q$1 floor session. If you don't, the option closest to our line goes forward. If the government changes at the end of the quarter, the new one chooses again."],
 [/^(.*?)의석수만큼\ 표를\ 던집니다\.\ 과반이\ 없으면\ 상위\ 두\ 당의\ 결선으로\ 가고,\ 다른\ 당의\ 표는\ 연대\ 상대나\ 노선이\ 가까운\ 쪽으로\ 옮겨\ 갑니다\.$/,"$1議席数の分だけ票を投じます。過半数がなければ上位2党の決選になり、他の党の票は連携相手や路線が近い側に移ります。","$1Each party casts votes equal to its seats. Without a majority it goes to a run-off between the top two, and other parties' votes move to their allies or the closest party."],
+[/^국가\ 모드는\ 정당마다\ 출발점이\ 달라,\ 순위를\ 승점이\ 아니라\ 목표\ 대비\(승점\ −\ 기준\ 승점\)로\ 매깁니다\.\ 목표\ 의석을\ 채우면\ 승점\ \+(.*?)\.$/,"国別モードは政党ごとにスタート地点が違うため、順位を勝ち点ではなく目標比（勝ち点 − 基準勝ち点）で決めます。目標議席に届けば勝ち点 +$1。","In country mode parties start from different places, so the ranking uses vs goal (points − par) instead of raw points. Reaching your seat goal adds +$1."],
 [/^한\ 임기\ 더\ 하면\ 지금\ 의석과\ 승점을\ 그대로\ 이어\ (.*?)분기를\ 더\ 합니다(.*?)\.\ 몇\ 번이든\ 이어\ 갈\ 수\ 있습니다\.$/,"もう1期続けると、いまの議席と勝ち点をそのまま引き継いで$1四半期さらに遊びます$2。何度でも続けられます。","Play another term to continue for $1 more quarters, keeping your seats and points$2. You can keep going as long as you like."],
+[/^마지막\ 총선\ 뒤\ (.*?)석\ 이상이면\ 승점\ \+(.*?)\.\ 순위는\ 승점에서\ 기준\ 승점\ (.*?)을\ 뺀\ 목표\ 대비로\ 매깁니다\.$/,"最後の総選挙で$1議席以上なら勝ち点 +$2。順位は勝ち点から基準勝ち点 $3 を引いた目標比で決まります。","$1+ seats after the final general election earns +$2 points. Ranking is points minus your par of $3."],
 [/^을\ (.*?)개까지\ 고릅니다\.\ 유세·인재\ 영입으로\ 표를\ 늘리고,\ 법안\ 발의로\ 입법\ 점수를\ 노리세요\.$/,"を$1つまで選びます。遊説・人材登用で票を増やし、法案提出で立法点を狙いましょう。",": choose up to $1. Rallies and recruiting win votes; filing bills earns legislation points."],
 [/^신뢰·결속:\ 끝났을\ 때\ 신뢰가\ 50에서\ 1\ 오를\ 때마다\ \+(.*?),\ 결속은\ \+(.*?)\(내려가면\ 감점\)\.$/,"信頼・結束：終了時に信頼が50から1上がるごとに +$1、結束は +$2（下がると減点）。","Trust and unity at the end: +$1 per point of trust above 50, +$2 per point of unity (below counts against you)."],
 [/^(.*?)\ (.*?)석\ 가운데\ 원하는\ 만큼\ 의원을\ 데려와\ 당을\ 만듭니다\.\ 이름과\ 노선은\ 직접\ 정합니다\.$/,"$1 $2議席のうち好きなだけ議員を連れて党をつくります。名前と路線は自分で決めます。","Take as many of $1's $2 seats as you like and start a party. You choose the name and line."],
@@ -3025,6 +3044,7 @@ ND.pat([
 [/^(.*?)\ 내분\.\ 지역구\ 의원\ (.*?)명이\ (.*?)으로\ 탈당했습니다\.$/,"$1で内紛。選挙区議員$2人が離党して$3へ移りました。","Infighting in $1: $2 district lawmakers quit for $3."],
 [/^(.*?)\ 대표가\ 최대\ 정당\ 대표로\ 총리에\ 취임합니다\.$/,"$1代表が最大政党の党首として首相に就任します。","$1's leader takes office as prime minister as head of the largest party."],
 [/^:\ 빼오기와\ 탈당은\ 지역구\ 의원만\ 가능합니다\.(.*?)$/,"：引き抜きと離党は選挙区議員だけ可能です。$1",": Only district lawmakers can be poached or defect.$1"],
+[/^우리\ 당\ 승점\ (.*?)점\ \((.*?)\)\ ·\ 목표\ 대비\ (.*?)\ ·\ (.*?)위$/,"自党の勝ち点 $1点（$2） · 目標比 $3 · $4位","Our points: $1 ($2) · vs goal $3 · rank $4"],
 [/^내각\ 불신임안\ 가결\.\ (.*?)\ 내각이\ 총사퇴합니다\.$/,"内閣不信任案が可決。$1内閣が総辞職します。","No-confidence motion passed. The $1 cabinet resigns en masse."],
 [/^정부\ 법안\ 「(.*?)」\ 부결\.\ (.*?)\ 내각에\ 타격입니다\.$/,"政府法案「$1」否決。$2内閣に打撃です。","Government bill \"$1\" defeated. A blow to the $2 cabinet."],
 [/^(.*?),\ 의회\ 해산\ 선언\.\ 조기\ 총선을\ 치릅니다\.$/,"$1、議会の解散を宣言。解散総選挙を行います。","$1 dissolves parliament. A snap election will be held."],
@@ -3082,6 +3102,7 @@ ND.pat([
 [/^연립\ 합의\ 법안\ 「(.*?)」\ (.*?)\.$/,"連立合意法案「$1」$2。","Coalition bill \"$1\" $2."],
 [/^(.*?)가\ 총리로\ 지명됐습니다\.$/,"$1が首相に指名されました。","$1 has been named prime minister."],
 [/^·\ 대통령\ 선거\ (.*?)분기\ 말$/,"· 大統領選挙 $1四半期末","· Presidential election end of Q$1"],
+[/^목표\ (.*?)석\ ·\ 기준\ 승점\ (.*?)$/,"目標 $1議席 · 基準勝ち点 $2","Goal $1 seats · par $2 pts"],
 [/^정부,\ (.*?)에\ 예산\ 배정\.$/,"政府、$1に予算を配分。","Government allocates budget to $1."],
 [/^(.*?),\ (.*?)에서\ (.*?)\ 비난\ 광고\.$/,"$1、$2で$3を非難する広告。","$1 runs attack ads against $3 in $2."],
 [/^(.*?)\ 발의\ ·\ (.*?)\ ·\ (.*?)\ 지원$/,"$1提出 · $2 · $3支援","Moved by $1 · $2 · supports $3"],
@@ -3126,6 +3147,7 @@ ND.pat([
 [/^연맹\ 이름\ 「(.*?)」$/,"連盟名「$1」","Federation name “$1”"],
 [/^「(.*?)」\ 가입\ 신청$/,"「$1」への加盟申請","request to join “$1”"],
 [/^·\ 대선\ 후보\ (.*?)$/,"· 大統領候補 $1","· Presidential candidate: $1"],
+[/^(.*?)석\ \/\ 목표\ (.*?)석$/,"$1議席 / 目標 $2議席","$1 seats / goal $2"],
 [/^의석\ 배치:\ (.*?)$/,"議席配置：$1","Seat map: $1"],
 [/^AI\ 정당\ (.*?)곳$/,"AI政党 $1党","$1 AI parties"],
 [/^총선까지\ (.*?)분기$/,"総選挙まで$1四半期","$1 quarters to the election"],
@@ -3160,6 +3182,7 @@ ND.pat([
 [/^(.*?)\ (.*?)분기:\ (.*?)점$/,"$1 第$2四半期：$3点","$1 Q$2: $3 pts"],
 [/^(.*?)\ 시작:\ (.*?)%$/,"$1 開始：$2%","$1 start: $2%"],
 [/^(.*?)\ (.*?)분기:\ (.*?)%$/,"$1 第$2四半期：$3%","$1 Q$2: $3%"],
+[/^(.*?)\ \/\ 기준\ (.*?)$/,"$1 / 基準 $2","$1 / par $2"],
 [/^대선\ 후보\ (.*?)$/,"大統領候補 $1","Presidential candidate: $1"],
 [/^지역구\ (.*?)석$/,"選挙区$1議席","$1 district seats"],
 [/^(.*?)\ \/\ (.*?)분기$/,"$1 / $2四半期","Q$1 / $2"],
@@ -3185,6 +3208,7 @@ ND.pat([
 [/^(.*?)\ ·\ (.*?)석(.*?)$/,"$1 · $2議席$3","$1 · $2 seats$3"],
 [/^(.*?)석\ 부족$/,"$1議席不足","$1 short"],
 [/^신뢰\ −(.*?)$/,"信頼 −$1","trust −$1"],
+[/^기준\ (.*?)점$/,"基準 $1点","Par $1"],
 [/^연맹:\ (.*?)(.*?)$/,"連盟：$1$2","Federation: $1$2"],
 [/^(.*?)만\ 명$/,"$1万人",null],
 [/^(.*?)\ 모드$/,"$1モード","$1 mode"],

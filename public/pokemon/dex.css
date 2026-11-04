@@ -80,6 +80,7 @@ ul.list li.none{display:block;color:var(--muted)}
 .pill.v0.on{background:var(--v0);border-color:var(--v0);color:var(--on)}
 /* 도트 글꼴의 W가 ₩처럼 보여서 5세대는 버전 버튼을 본문 글꼴로 */
 [data-game="bw"] .pill,[data-game="b2w2"] .pill{font-family:var(--f-body);font-weight:600}
+[data-game="bw"] .foot textarea,[data-game="b2w2"] .foot textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace}
 .pill.v1.on{background:var(--v1);border-color:var(--v1);color:var(--on)}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
 input[type=search]{font:inherit;flex:1 1 180px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
@@ -94,6 +95,8 @@ input[type=search]{font:inherit;flex:1 1 180px;min-width:0;padding:7px 10px;bord
 .msg{font-size:.8rem;color:var(--done);min-height:1.2em}
 .legal{margin-top:24px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
 .legal a,.legal button{font:inherit;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+.legal a.bmc{text-decoration:none;color:#1c211d;background:#ffdd00;padding:2px 10px;border-radius:999px;font-weight:600}
+.legal a.bmc:hover{background:#ffe94d}
 .support{margin-top:14px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .support p{margin:0;font-size:.82rem;color:var(--muted);flex:1 1 220px;min-width:0}
 .support .btns{flex:0 0 auto}

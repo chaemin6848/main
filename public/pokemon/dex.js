@@ -47,7 +47,7 @@ const BASE={
   ckT:"체크 기록을 쿠키에도 저장할까요?",
   ckP:c=>`체크 상태는 기본으로 이 기기 브라우저 저장소에 남아요. 허용하면 같은 내용을 쿠키(${c}, 1년)에도 저장해서, 브라우저 저장소가 지워져도 기록을 되살릴 수 있어요. 서버로 보내는 정보는 없어요.`,
   ckMore:"자세히 보기",ckYes:"쿠키 허용",ckNo:"거부 (기본 저장만)",
-  supHide:"후원 안내 닫기",supShow:"후원하기",mSupHid:"후원 안내를 닫았어요. 맨 아래 '후원하기'를 누르면 다시 보여요",
+  supHide:"후원 안내 닫기",supShow:"☕ Buy Me a Coffee",mSupHid:"후원 안내를 닫았어요. 맨 아래 Buy Me a Coffee 링크는 그대로 있어요",
   supP:"이 도우미가 도감 채우는 데 도움이 됐다면 후원으로 응원해 주세요. 후원은 외부 사이트에서 진행돼요.",
   credit:"비공식 팬 제작 도구입니다. 포켓몬 관련 권리는 Nintendo · Creatures · GAME FREAK에 있습니다.",
   pill:v=>`${v} 등록`,
@@ -86,7 +86,7 @@ const BASE={
   ckT:"チェック記録をクッキーにも保存しますか？",
   ckP:c=>`チェック状態は基本的にこの端末のブラウザ内に保存されます。許可すると同じ内容をクッキー（${c}、1年間）にも保存し、ブラウザの保存データが消えても記録を復元できます。サーバーに送信される情報はありません。`,
   ckMore:"詳しく見る",ckYes:"クッキーを許可",ckNo:"拒否（基本の保存のみ）",
-  supHide:"支援の案内を閉じる",supShow:"支援する",mSupHid:"支援の案内を閉じました。いちばん下の「支援する」を押すとまた表示されます",
+  supHide:"支援の案内を閉じる",supShow:"☕ Buy Me a Coffee",mSupHid:"支援の案内を閉じました。いちばん下のBuy Me a Coffeeリンクはそのまま使えます",
   supP:"このヘルパーが図鑑埋めの役に立ったら、応援していただけるとうれしいです。支援は外部サイトで行われます。",
   credit:"非公式のファン制作ツールです。ポケモンに関する権利は Nintendo・Creatures・GAME FREAK に帰属します。",
   pill:v=>`${v}に登録`,
@@ -125,7 +125,7 @@ const BASE={
   ckT:"Also save your checks in a cookie?",
   ckP:c=>`Your checks are always kept in this browser's storage. If you allow it, the same data is also saved in a cookie (${c}, 1 year), so it can be restored if browser storage gets cleared. Nothing is sent to a server.`,
   ckMore:"Learn more",ckYes:"Allow cookie",ckNo:"Decline (browser storage only)",
-  supHide:"Hide tip banner",supShow:"Support",mSupHid:"Tip banner hidden. Use \"Support\" at the bottom to show it again",
+  supHide:"Hide tip banner",supShow:"☕ Buy Me a Coffee",mSupHid:"Tip banner hidden. The Buy Me a Coffee link at the bottom is still there",
   supP:"If this helper saved you some time, you can support it with a tip. Tips are handled on an external site.",
   credit:"Unofficial fan-made tool. Pokémon and related names are trademarks of Nintendo, Creatures and GAME FREAK.",
   pill:v=>`Registered in ${v}`,
@@ -325,7 +325,6 @@ function applyLang(){
   whereText();
   const links=DONATE.filter(d=>d.url&&(!d.only||d.only===S.lang));
   document.getElementById("support").hidden=!links.length||supHidden;
-  document.getElementById("supShow").hidden=!links.length;
   document.getElementById("supX").setAttribute("aria-label",t.supHide);document.getElementById("supX").title=t.supHide;
   document.getElementById("supBtns").innerHTML=links.map(d=>`<a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.label)}</a>`).join("");
   if(!armed)rb.textContent=t.reset;
@@ -395,7 +394,6 @@ document.getElementById("ckYes").addEventListener("click",()=>{setConsent("yes")
 document.getElementById("ckNo").addEventListener("click",()=>{setConsent("no");msg("mCkOff")});
 document.getElementById("cookieSet").addEventListener("click",showBanner);
 document.getElementById("supX").addEventListener("click",()=>{supHidden=true;applyLang();msg("mSupHid")});
-document.getElementById("supShow").addEventListener("click",()=>{supHidden=false;applyLang();window.scrollTo({top:0,behavior:"smooth"})});
 
 /* ===== 이전 주소에서 넘어온 백업 코드 (#import=코드) ===== */
 function takeImport(){

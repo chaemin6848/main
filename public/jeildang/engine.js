@@ -1,8 +1,8 @@
 // 제1당 게임 엔진 — 규칙·선거·AI·승점. 브라우저와 Node(시뮬레이터·테스트)에서 함께 쓴다. DOM에 의존하지 않는다.
 const E=(function(){
-  const AP=3, NCOLORS=8, PR_THRESHOLD=.03, MEMBER_BILLS=2, GOV_FATIGUE=2.5, BAL={check:1,checkMax:8,revert:.08,welfare:3,reshuffle:1,sat:18,talentKeep:.88,talentMax:14,fatigueMax:10,fatigueMaxReal:16};
+  const AP=3, NCOLORS=8, PR_THRESHOLD=.03, MEMBER_BILLS=2, GOV_FATIGUE=2.5, BAL={check:1,checkMax:8,revert:.08,welfare:3,reshuffle:1,sat:18,talentKeep:.88,talentMax:14,fatigueMax:7,fatigueMaxReal:10,govFatigue:2.5,fatigueStep:1.5,majorUnity:2,relCamp:.7,resist:5,crush:20};
   // 승점 배점. 400석 기준이며 의석 관련 점수는 의회 크기로 나눠 맞춘다.
-  const PTS={seat:200,share:120,growth:200,growthMax:.15,minor:240,ownLaw:3,ownFail:-1,ideoMid:1,govLaw:1,govFail:-2,partnerLaw:1,pactLaw:5,ideoHit:2,ideoStrong:1,ideoMiss:-2,ideoStand:1.5,oppRound:2,block:2,noconf:8,pmRound:1.5,partnerRound:1,presRound:1,solo:20,coalition:15,minority:8,president:8,semiPres:10,trust:.25,unity:.2,goalHit:10};
+  const PTS={seat:200,share:120,growth:200,growthMax:.15,minor:300,ownLaw:3,ownFail:-1,ideoMid:1,govLaw:1,govFail:-2,partnerLaw:1,pactLaw:5,ideoHit:2,ideoStrong:1,ideoMiss:-2,ideoStand:1.5,oppRound:2,block:2,noconf:8,pmRound:1.5,partnerRound:1,presRound:1,solo:20,coalition:15,minority:8,president:8,semiPres:10,trust:.25,unity:.2,goalHit:10,regime:12};
 
   // 국가 모드 정당별 목표. 정당마다 시작 처지가 달라 승점 절대값으로 겨루면 여당이 거의 늘 이긴다.
   // 그래서 정당마다 [시작 의석, 그다음 GOAL_ROUNDS 분기 수마다 (목표 의석, 기준 승점)]을 두고,
@@ -11,11 +11,11 @@ const E=(function(){
   // 사이 분기 수는 직선으로 잇고, 마지막보다 길면(한 임기 더 하기를 여러 번) 마지막 구간을 늘려 쓴다.
   const GOAL_ROUNDS=[6,12,18,24];
   const GOALS=/*GOALS-START*/{
-    kr:{dem:[161,124,90,107,113,101,147,97,179],rebuild:[12,29,72,35,118,38,161,39,207],ppp:[109,110,86,110,108,109,128,108,150],reform:[3,12,33,15,49,17,64,17,76],jinbo:[4,16,47,22,84,25,125,27,167]},
-    jp:{ldp:[315,246,109,207,113,195,137,188,164],sansei:[15,44,68,54,123,59,160,62,196],ishin:[36,52,66,59,117,60,150,61,180],komeito:[27,42,44,53,80,56,105,57,126],dpp:[28,30,32,31,42,32,51,32,56],cdp:[20,27,32,32,46,34,59,35,71],mirai:[11,12,17,14,19,14,24,15,27]},
-    us:{dem:[214,224,114,230,144,234,179,226,203],gop:[218,210,83,204,98,200,104,208,124]},
-    uk:{lab:[404,302,117,256,124,250,159,245,195],ld:[71,65,79,82,132,89,166,95,203],con:[118,163,95,163,118,148,135,143,152],snp:[8,14,39,15,65,14,90,14,112],reform:[8,40,35,56,62,64,84,68,103],green:[5,13,50,24,105,32,160,36,210],plaid:[4,6,28,6,46,5,63,5,78]},
-    fr:{ps:[67,85,68,70,94,64,118,63,148],lfi:[70,79,64,88,111,92,149,93,187],eco:[38,58,51,69,94,73,129,76,162],rn:[118,114,62,93,62,85,71,83,83],dr:[47,70,53,77,76,80,92,82,108],dem:[71,51,27,45,34,42,44,40,54],epr:[90,55,34,64,49,70,64,66,70]}}/*GOALS-END*/;
+    kr:{dem:[161,139,109,135,146,132,182,130,217],ppp:[109,109,87,106,105,104,128,103,150],rebuild:[12,23,66,25,110,26,154,28,196],reform:[3,9,28,10,41,11,52,11,62],jinbo:[4,11,42,14,75,16,112,17,147]},
+    jp:{ldp:[315,272,129,258,160,255,193,252,223],sansei:[15,38,62,44,102,46,138,49,170],komeito:[27,37,40,43,71,44,91,41,110],ishin:[36,48,61,50,98,50,128,51,158],cdp:[20,24,29,25,41,26,53,27,66],mirai:[11,9,12,4,13,4,16,8,16],dpp:[28,26,28,23,35,22,42,21,45]},
+    us:{gop:[218,212,84,206,100,203,105,209,123],dem:[214,222,113,228,142,231,179,226,205]},
+    uk:{lab:[404,326,134,317,173,317,210,321,252],ld:[71,53,72,56,113,55,146,54,180],con:[118,164,95,159,114,150,133,141,154],snp:[8,16,39,15,64,15,88,14,111],green:[5,9,41,12,88,17,131,19,176],reform:[8,30,31,36,47,41,63,43,78],plaid:[4,9,30,8,47,7,64,7,80]},
+    fr:{ps:[67,87,68,71,98,67,124,67,155],eco:[38,53,49,64,92,67,124,70,162],rn:[118,117,65,97,65,88,73,86,82],dr:[47,67,51,76,73,79,93,80,106],lfi:[70,80,64,91,117,95,154,98,192],dem:[71,47,26,40,31,35,41,31,46],epr:[90,57,36,66,50,71,64,67,72]}}/*GOALS-END*/;
   let TOTAL=400,DISTRICT=280,PR=120,U=1,UNIT='억',MEMBER_NAME='당원';
   const HAERAM=[
     {id:'hanbyeol',name:'한별 수도권',seats:90,eco:.1,soc:.35,tag:'청년·사무직'},
@@ -129,6 +129,22 @@ const E=(function(){
     reshuffle:{label:'내각 개편',cost:2,need:[],desc:'결속 +10, 신뢰 +1'},
     probe:{label:'정치 수사 지시',cost:3,need:['target'],desc:'상대 신뢰 −7. 40% 확률로 역풍을 맞아 우리 신뢰 −8'},
     dissolve:{label:'의회 해산',cost:0,need:[],pmOnly:true,desc:'이번 분기 말 전 의석 조기 총선. 게임 중 한 번. 그 뒤 총리를 새로 정합니다.'},
+    // 개헌선(재적 3분의 2)을 넘긴 정부만
+    amend:{label:'헌법 개정안 발의',cost:4,need:['clause'],special:'amend',desc:'정부 수반 당(또는 그 연맹)이 재적 3분의 2를 가졌을 때만. 다음 분기 본회의에 개헌안을 올리고, 재적 3분의 2가 찬성해야 가결됩니다. 가결되면 권력 강화 논란으로 우리 신뢰 −3.'},
+    // 독재: 가상 공화국에서 정부 수반 당이 단독으로 3분의 2를 가졌을 때만
+    emergency:{label:'비상 체제 선포',cost:0,need:[],special:'emergency',desc:'가상 공화국에서 우리 당 단독으로 재적 3분의 2를 가졌을 때만. 선거를 무기한 미루고 의석을 굳힙니다. 신뢰 −10. 저항이 쌓여 100%가 되면 시민 혁명으로 무너집니다.'},
+    crackdown:{label:'시위 진압',cost:3,need:[],special:'regime',desc:'비상 체제에서만. 저항 −20(할 때마다 덜 먹히고, 반발이 쌓여 저항이 더 빨리 오릅니다), 신뢰 −3, 결속 +4.'},
+    propaganda:{label:'언론 통제',cost:3,need:[],special:'regime',desc:'비상 체제에서만. 신뢰 +5, 저항 +3.'},
+    ban:{label:'정당 해산',cost:5,need:['target'],special:'regime',desc:'비상 체제에서만. 상대 당 지역구 의석 절반을 빼앗고 그 당 신뢰 −10. 저항 +20.'},
+    restore:{label:'민정 이양',cost:0,need:[],special:'regime',desc:'비상 체제에서만. 체제를 끝내고 다음 선거를 정상으로 치릅니다. 신뢰 +6.'},
+  };
+  // 헌법 개정 조항. 한 판에 조항마다 한 번
+  const CLAUSES={
+    threshold:{label:'비례 봉쇄 조항 상향',desc:'정당 득표 7% 미만이고 지역구 5석 미만이면 비례 의석을 받지 못합니다(지금 3%).'},
+    winner:{label:'지역구 승자 독식 강화',desc:'지역구에서 앞선 정당에 표가 더 몰립니다.'},
+    executive:{label:'행정권 강화',desc:'정부 수반 당의 행정 조치가 분기마다 1건 늘어납니다.'},
+    noconf:{label:'불신임 요건 강화',desc:'내각 불신임안이 재적 3분의 2 찬성으로만 가결됩니다.'},
+    delay:{label:'선거 연기',desc:'다음 재보궐·지방선거를 치르지 않습니다.'},
   };
   const TOPICS={
     welfare:{label:'복지 확대',title:'복지 확대법',eco:.8,soc:.2},
@@ -212,7 +228,7 @@ const E=(function(){
     dealer:{name:'협상가',desc:'연맹과 거래로 세를 불립니다. 제안을 잘 받아들이고 먼저 손을 내밉니다.',
       act:{rally:.45,talent:.2,policy:.15,attack:.05,expose:.03,poach:.02},spend:3,propose:.25,deal:2,line:.9,ask:1.3},
     hawk:{name:'강경파',desc:'1당과 정부를 집요하게 공격합니다. 폭로와 의원 빼오기를 즐깁니다.',
-      act:{rally:.55,talent:.1,policy:.08,attack:.12,expose:.1,poach:.05},spend:3,propose:.25,deal:-1,line:1,ask:.8},
+      act:{rally:.6,talent:.12,policy:.08,attack:.09,expose:.07,poach:.04},spend:3,propose:.3,deal:-1,line:1,ask:.8},
     steady:{name:'실리형',desc:'자금과 조직을 아낍니다. 인재와 당원을 꾸준히 모으고 큰 모험을 피합니다.',
       act:{rally:.35,talent:.3,policy:.15,attack:.05,expose:.02,poach:0},spend:4,propose:.25,deal:2,line:1,ask:1},
   };
@@ -239,6 +255,7 @@ const E=(function(){
   // 효과 필드는 옛 EVENTS와 같다: eco·soc·amt 노선 바람, funds 후원 증감, trust·unity 모든 당, blameTop 정부 책임, blameRich 자금 많은 당
   //   hitTrust·hitUnity: 대상 당만 · chain: 다른 사건에서 번져서만 나온다 · resp: 고를 수 있는 대응
   const EVENTS2={
+    democracy:{title:'민주화 시위 확산',text:'비상 체제에 맞선 시위가 전국으로 번집니다. 저항 +10, 대상 당 신뢰 −3. 대상 당이 지도부 사퇴를 고르면 비상 체제가 끝납니다.',target:true,hitTrust:3,resist:10,when:'regime',resp:['resign','defy','protest','attack']},
     recession:{title:'경기 침체 경보',text:'성장률 전망이 꺾였습니다. 분배 정당에 여론이 쏠리고 후원이 줄어듭니다. 정부가 대책을 내놓지 않으면 다음 분기 금융 불안으로 번집니다.',eco:1,soc:0,amt:4,funds:-2,resp:['stimulus','ride','blame'],follow:{key:'finance',unless:'stimulus'}},
     finance:{title:'금융 불안',text:'침체 경보에 정부가 손을 놓아 금융시장이 흔들립니다. 정부 책임론이 커지고 후원이 더 줄어듭니다.',blameTop:6,funds:-2,resp:['blame','unity'],chain:true},
     boom:{title:'수출 호황',text:'수출이 사상 최대치를 기록했습니다. 시장 노선이 힘을 받습니다.',eco:-1,soc:0,amt:4,funds:2,resp:['ride']},
@@ -336,9 +353,10 @@ const E=(function(){
     split:g=>g.parties.some(p=>!p.fixed&&p.seats>0&&p.unity<34),
     surge:g=>g.parties.some(p=>!p.fixed&&p.seats>0&&p.trust>=76&&p.id!==g.pmParty),
     longGov:g=>{const p=pmOf(g);return!!p&&g.round>=6&&p.trust<48},
+    regime:g=>!!g.regime,
   };
   const WHEN_TARGET={
-    pmWeak:g=>g.pmParty,longGov:g=>g.pmParty,
+    pmWeak:g=>g.pmParty,longGov:g=>g.pmParty,regime:g=>g.regime.p,
     split:g=>g.parties.filter(p=>!p.fixed&&p.seats>0).sort((a,b)=>a.unity-b.unity)[0].id,
     surge:g=>g.parties.filter(p=>!p.fixed&&p.seats>0&&p.id!==g.pmParty).sort((a,b)=>b.trust-a.trust)[0].id,
   };
@@ -368,7 +386,8 @@ const E=(function(){
     let key=forced&&own(EVENTS2,forced)?forced:null;
     if(!key){
       const cands=Object.keys(EVENTS2).filter(k=>{const e=EVENTS2[k];return e.when&&(!e.country||e.country===g.country)&&!recent.includes(k)&&WHEN[e.when](g)});
-      if(cands.length&&r()<.3)key=cands[Math.floor(r()*cands.length)];
+      if(cands.includes('democracy')&&r()<.5)key='democracy';
+      else if(cands.length&&r()<.3)key=cands[Math.floor(r()*cands.length)];
     }
     if(!key){key=g.evDeck[(g.evN||0)%g.evDeck.length];g.evN=(g.evN||0)+1;if(g.evN>=g.evDeck.length){g.evDeck=shuffle(pool.slice(),r);g.evN=0}}
     const ev=EVENTS2[key],e={key,round:g.round};
@@ -428,6 +447,7 @@ const E=(function(){
     if(ev.blameTop&&top)top.trust-=ev.blameTop;
     if(tgt){if(ev.hitTrust)tgt.trust-=ev.hitTrust;if(ev.hitUnity)tgt.unity-=ev.hitUnity}
     if(ev.boostTop&&top)top.trust+=ev.boostTop;
+    if(ev.resist&&g.regime)g.regime.resist+=ev.resist;
     // 지역 사건: 그 권역에서 사건 쪽 노선의 당은 기반이 늘고 반대쪽은 준다
     if(ev.region&&own(REG,ev.region)&&ev.ramt)for(const p of g.parties)if(!p.fixed)p.reg[ev.region]+=(p.eco*(ev.reco||0)+p.soc*(ev.rsoc||0))*ev.ramt;
     const picks={},lines=[];
@@ -451,6 +471,7 @@ const E=(function(){
       lines.push({id:p.id,react:k,label:R.label,note});
     }
     // 번짐: 정부 수반 당이 unless 대응을 고르지 않으면 follow로. branch가 있으면 고른 대응에 따라 다른 사건으로 갈린다.
+    if(g.regime&&e.target===g.regime.p&&picks[e.target]==='resign'){g.regime=null;lines.push({id:e.target,react:'resign',label:RESP.resign.label,note:'비상 체제 종료'})}
     const tp=top?picks[top.id]:null;
     const follow=ev.branch&&tp&&ev.branch[tp]?ev.branch[tp]:ev.follow&&tp!==ev.follow.unless?ev.follow.key:null;
     return{key:e.key,title:ev.title,text:ev.text,target:e.target||null,reacts:lines,follow};
@@ -548,20 +569,24 @@ const E=(function(){
   // 선거 일정: 6분기마다 총선, 그 사이 3분기째에 재보궐. 마지막 분기에도 총선. 예전 판은 처음 정한 일정을 따른다.
   const CYCLE=6;
   const isGeneralRound=g=>g.round>=g.maxRounds||(!!g.cycle&&g.round%g.cycle===0);
-  const isMidRound=g=>g.cycle?g.round%g.cycle===g.cycle/2&&g.round<g.maxRounds:g.round===g.midRound;
+  const isMidRound=g=>(g.cycle?g.round%g.cycle===g.cycle/2&&g.round<g.maxRounds:g.round===g.midRound)&&g.round!==g.skipMid;
   const nextGeneral=g=>g.cycle?Math.min(g.maxRounds,Math.ceil(g.round/g.cycle)*g.cycle):g.maxRounds;
   const nextMid=g=>{if(!g.cycle)return g.round<=g.midRound?g.midRound:null;let m=Math.floor(g.round/g.cycle)*g.cycle+g.cycle/2;if(m<g.round)m+=g.cycle;return m<g.maxRounds?m:null};
   const shut=(p,reg)=>(p.only&&!p.only.includes(reg.id))||(reg.only&&!reg.only.includes(p.pick));
-  function raw(p,reg){if(shut(p,reg))return 1;return Math.max(1,6+p.base-(p.fatigue||0)+(p.m0?clamp(15*Math.log(p.members/p.m0),-4,8):0)+(p.home&&p.home[reg.id]||0)+fit(p,reg)*24+(p.reg[reg.id]||0)+(p.trust-50)*.2+(p.unity-50)*.06+p.talent*.7+(p.check||0))}
+  // 선거 운동(지역 기반·인재)은 그 지역 정당들의 평균과 비교한 몫이 주로 표가 된다(BAL.relCamp=0.7이면 평균의 70%를 뺀다). 모두가 똑같이 유세하면 아무도 앞서지 못하고,
+  // 판이 길어질수록 모든 당의 표 힘이 함께 불어나 큰 당의 우위가 희석되던 문제를 막는다.
+  function campAvg(g,reg){const live=g.parties.filter(p=>!p.fixed);const n=Math.max(1,live.length),k=BAL.relCamp;
+    return{reg:k*live.reduce((a,p)=>a+(p.reg[reg.id]||0),0)/n,talent:k*live.reduce((a,p)=>a+(p.talent||0),0)/n}}
+  function raw(p,reg,avg){if(shut(p,reg))return 1;return Math.max(1,6+p.base-(p.fatigue||0)+(p.m0?clamp(15*Math.log(p.members/p.m0),-4,8):0)+(p.home&&p.home[reg.id]||0)+fit(p,reg)*24+(p.reg[reg.id]||0)-(avg?avg.reg:0)+(p.trust-50)*.2+(p.unity-50)*.06+(p.talent-(avg?avg.talent:0))*.7+(p.check||0))}
   function regionShares(g,reg){
-    const base=Object.fromEntries(g.parties.map(p=>[p.id,raw(p,reg)]));
+    const avg=campAvg(g,reg),base=Object.fromEntries(g.parties.map(p=>[p.id,raw(p,reg,avg)]));
     // 선거 협력: 후보를 양보한 지역에서는 그 당 표의 상당수가 연대 상대에게 간다.
     for(const p of g.parties){const to=(p.yields||{})[reg.id];if(to&&base[to]!=null){base[to]+=base[p.id]*.6;base[p.id]*=.25}}
     const w={};let sum=0;
     for(const p of g.parties){
       let v=base[p.id];
       const al=allies(p).map(id=>base[id]||0);if(al.length)v+=Math.max(...al)*(p.kind==='minor'?.25:.18);
-      w[p.id]=v*v;sum+=w[p.id];
+      w[p.id]=Math.pow(v,g.distExp||2);sum+=w[p.id];
     }
     for(const k in w)w[k]/=sum;
     return w;
@@ -571,7 +596,7 @@ const E=(function(){
     const out=Object.fromEntries(g.parties.map(p=>[p.id,0]));
     for(const reg of REGIONS){
       const w={};let sum=0;
-      for(const p of g.parties){w[p.id]=p.fixed&&g.country==='kr'?0:Math.pow(raw(p,reg),1.2)*(p.kind==='minor'?1.3:1)*(list?p.prw||1:1);sum+=w[p.id]}
+      const avg=campAvg(g,reg);for(const p of g.parties){w[p.id]=p.fixed&&g.country==='kr'?0:Math.pow(raw(p,reg,avg),1.2)*(p.kind==='minor'?1.3:1)*(list?p.prw||1:1);sum+=w[p.id]}
       for(const k in w)out[k]+=w[k]/sum*reg.seats/DISTRICT;
     }
     return out;
@@ -597,7 +622,7 @@ const E=(function(){
     }
     // 비례 배분은 실제 비례 의석에 맞춘 정당 투표로 하고, 화면에 보이는 득표는 보정 전 값이다.
     const vote=nationalShares(g),list=nationalShares(g,true);const pass={};
-    for(const k in list)pass[k]=!party(g,k).hold&&(list[k]>=PR_THRESHOLD||district[k]>=5)?list[k]:0;
+    for(const k in list)pass[k]=!party(g,k).hold&&(list[k]>=(g.prTh||PR_THRESHOLD)||district[k]>=5)?list[k]:0;
     const prKept=holders.reduce((n,p)=>n+(p.holdPr||0),0);const pr=allocate(pass,PR-prKept);for(const p of holders)pr[p.id]=p.holdPr||0;
     return{district,pr,vote,regions};
   }
@@ -702,9 +727,15 @@ const E=(function(){
       }
       // 무소속·기타 묶음은 정당처럼 뛰지 않으니, 선거 때마다 지금 의석을 지역별로 그대로 지킨다.
       const res=electionSeats(g);
+      // 권역 정원을 넘지 않게 나눈다(예전에는 영국 북아일랜드 32석이 18석짜리 권역에 몰려 다른 당 의석이 음수가 됐다).
+      const room=Object.fromEntries(REGIONS.map(x=>[x.id,x.seats]));
       for(const p of g.parties.filter(x=>x.fixed&&x.seats)){
-        const w={};for(const x of res.regions)w[x.id]=(x.seats[p.id]||0)+.01;
-        p.hold=allocate(w,p.district);p.holdPr=p.pr;
+        const hold=Object.fromEntries(REGIONS.map(x=>[x.id,0]));let left=p.district;
+        for(const x of res.regions){const n=Math.min(x.seats[p.id]||0,room[x.id],left);hold[x.id]+=n;room[x.id]-=n;left-=n}
+        while(left>0){const ids=REGIONS.map(x=>x.id).filter(id=>room[id]>0);if(!ids.length)break;
+          const add=allocate(Object.fromEntries(ids.map(id=>[id,room[id]])),left);
+          for(const id of ids){const n=Math.min(add[id]||0,room[id]);hold[id]+=n;room[id]-=n;left-=n}}
+        p.hold=hold;p.holdPr=p.pr;
       }
     }else{
       const first=electionSeats(g);
@@ -731,7 +762,21 @@ const E=(function(){
   const quarterIncome=p=>p.income0!=null?p.income0/4*(.35*(p.m0?p.members/p.m0:1)+.65*clamp(p.seats/Math.max(p.startSeats||1,1),.3,3)):2+p.members*.45+p.seats*4.8/TOTAL;
   function billAlign(b,o){return b.eco*o.eco+b.soc*o.soc}
   const pmOf=g=>g.pmParty?party(g,g.pmParty):null;
-  function govSlots(g,p){if(g.pmParty===p.id)return 2;if(g.system==='semi'&&g.presParty===p.id)return 1;if(!g.pmParty)return 0;return isAlly(p,g.pmParty)?1:0}
+  const superLine=()=>Math.ceil(TOTAL*2/3);
+  // 정부 수반 당이 혼자 또는 연맹으로 개헌선을 가졌는지
+  const superBloc=(g,p)=>!!p&&(p.seats>=superLine()||(!!fedOf(g,p)&&fedSeats(g,fedOf(g,p))>=superLine()));
+  const canAmend=(g,p)=>!g.regime&&g.pmParty===p.id&&superBloc(g,p)&&!g.pendingConst&&Object.keys(CLAUSES).some(k=>!(g.consts||[]).includes(k));
+  const canRegime=(g,p)=>!g.country&&!g.regime&&g.pmParty===p.id&&p.seats>=superLine()&&g.round<g.maxRounds;
+  const regimeOf=g=>g.regime?party(g,g.regime.p):null;
+  function govAvail(g,p,k){
+    const d=GOV[k];if(!d)return false;
+    if(d.special==='amend')return canAmend(g,p);
+    if(d.special==='emergency')return canRegime(g,p);
+    if(d.special==='regime')return!!g.regime&&g.regime.p===p.id&&g.pmParty===p.id;
+    if(k==='dissolve')return!g.regime&&canDissolve(g,p)&&!g.dissolved&&nextGeneral(g)-g.round>1;
+    return true;
+  }
+  function govSlots(g,p){if(g.pmParty===p.id)return 2+(g.execPlus?1:0);if(g.system==='semi'&&g.presParty===p.id)return 1;if(!g.pmParty)return 0;return isAlly(p,g.pmParty)?1:0}
   const canDissolve=(g,p)=>g.system==='presidential'?false:g.system==='semi'?g.presParty===p.id:g.pmParty===p.id;
   const inGov=(g,p)=>govSlots(g,p)>0;
   // 정부는 후보 세 건 가운데 다음 분기에 올릴 법안을 고른다. 고르지 않으면 노선에 가장 맞는 안이 올라간다.
@@ -745,6 +790,7 @@ const E=(function(){
     return{id:'a'+(g.seq++),kind:'gov',title:b.title,desc:b.desc,eco:b.eco,soc:b.soc,pass:b.pass,by:g.pmParty||null};
   }
   function defaultVote(g,p,item){
+    if(item.kind==='const')return item.by===p.id||isAlly(p,item.by)?'yes':'no';
     if(item.kind==='noconf'){
       if(inGov(g,p))return'no';
       if(item.by===p.id)return'yes';
@@ -782,7 +828,7 @@ const E=(function(){
       const d=a&&own(ACTIONS,a.type)?ACTIONS[a.type]:null;if(!d)continue;
       if(d.need.includes('region')&&!own(REG,a.region))continue;
       if(d.need.includes('target')){const t=party(g,a.target);if(!t||t.id===p.id)continue}
-      if(a.type==='noConfidence'&&(!g.pmParty||inGov(g,p)||g.system==='presidential'))continue;
+      if(a.type==='noConfidence'&&(!g.pmParty||inGov(g,p)||g.system==='presidential'||g.regime))continue;
       if(a.type==='propose'&&out.actions.some(x=>x.type==='propose'))continue;
       const c={type:a.type,region:a.region,target:a.target,level:d.spend&&Number.isInteger(a.level)&&LEVELS[a.level]?a.level:2};
       const cost=actionCost(c);
@@ -800,17 +846,21 @@ const E=(function(){
     for(const a of gs){
       const d=a&&own(GOV,a.type)?GOV[a.type]:null;if(!d)continue;
       if(d.pmOnly&&!canDissolve(g,p))continue;
-      if(a.type==='dissolve'&&(g.dissolved||nextGeneral(g)-g.round<=1))continue;
+      if(!govAvail(g,p,a.type))continue;
+      if(a.type==='amend'&&!(own(CLAUSES,a.clause)&&!(g.consts||[]).includes(a.clause)))continue;
+      if(out.gov.some(x=>GOV[x.type].special&&GOV[x.type].special!=='regime'&&x.type===a.type))continue;
       if(d.need.includes('region')&&!own(REG,a.region))continue;
       if(d.need.includes('target')){const t=party(g,a.target);if(!t||t.id===p.id)continue}
       if(govCost(a.type)>tr)continue;
-      tr-=govCost(a.type);out.gov.push({type:a.type,region:a.region,target:a.target});
+      tr-=govCost(a.type);out.gov.push({type:a.type,region:a.region,target:a.target,clause:a.clause});
     }
     return out;
   }
   // AI 표결: 기본 표결에 성격을 더한다. 연맹으로 묶인 표는 분기 처리에서 따로 맞춘다.
   function botVote(g,p,it){
     const v=defaultVote(g,p,it),P=personaOf(p);if(!P)return v;
+    // 개헌안: 원칙주의 연맹 동료는 권력을 키우는 조항(행정권·불신임 요건·선거 연기)에 반대한다
+    if(it.kind==='const')return v==='yes'&&it.by!==p.id&&p.persona==='principled'&&['executive','noconf','delay'].includes(it.clause)?'no':v;
     const k=p.persona,gov=inGov(g,p);
     if(it.kind==='noconf'){
       if(k==='hawk'&&!gov&&it.by!==p.id){const pm=pmOf(g);return pm&&pm.trust<55?'yes':'no'}
@@ -884,8 +934,19 @@ const E=(function(){
       add('fundraise');
     }
     const gov=[];const slots=govSlots(g,p);let tr=g.treasury;
-    const gadd=(type,x={})=>{if(gov.length>=slots||govCost(type)>tr)return;tr-=govCost(type);gov.push({type,...x})};
+    const gadd=(type,x={})=>{if(gov.length>=slots||govCost(type)>tr||!govAvail(g,p,type))return;tr-=govCost(type);gov.push({type,...x})};
     if(slots){
+      const k=P?p.persona:'';
+      if(g.regime&&g.regime.p===p.id){
+        if(g.regime.resist>85&&(k==='principled'||k==='steady'||!P))gadd('restore');
+        else if(g.regime.resist>55)gadd('crackdown');
+        if(p.trust<35)gadd('propaganda');
+        if(k==='hawk'&&r()<.3){const t=others.filter(o=>!o.fixed&&o.district>4).sort((a,b)=>b.seats-a.seats)[0];if(t)gadd('ban',{target:t.id})}
+      }
+      if(govAvail(g,p,'emergency')&&r()<({hawk:.5,populist:.2}[k]||.03))gadd('emergency');
+      // 개헌은 드물게: 원칙주의는 하지 않고, 한 당이 한 판에 두 번까지
+      if(govAvail(g,p,'amend')&&k!=='principled'&&(p.amends||0)<2&&r()<({hawk:.3,dealer:.2,populist:.15}[k]||.1)){
+        const c=['executive','winner','threshold','noconf','delay'].find(x=>!(g.consts||[]).includes(x));if(c){gadd('amend',{clause:c});if(gov.some(x=>x.type==='amend'))p.amends=(p.amends||0)+1}}
       if(p.unity<50)gadd('reshuffle');
       if(canDissolve(g,p)&&!g.dissolved&&nextGeneral(g)-g.round>1&&g.round>2){
         const nat=nationalShares(g)[p.id]*TOTAL;
@@ -1370,11 +1431,28 @@ const E=(function(){
         if(votes[p.id]==='yes')yes+=p.seats;else no+=p.seats;
       }
       let passed=yes>no,vetoed=false;
-      if(passed&&g.system==='presidential'&&it.kind!=='noconf'&&g.pmParty&&votes[g.pmParty]==='no'&&yes<(yes+no)*2/3){
+      // 개헌안은 재적 3분의 2 찬성, 불신임 요건을 강화했으면 불신임안도 재적 3분의 2
+      if(it.kind==='const'||(it.kind==='noconf'&&g.noconfSuper))passed=yes>=superLine();
+      if(passed&&g.system==='presidential'&&it.kind!=='noconf'&&it.kind!=='const'&&g.pmParty&&votes[g.pmParty]==='no'&&yes<(yes+no)*2/3){
         passed=false;vetoed=true;say(`대통령이 「${it.title}」에 거부권을 행사했습니다. 재의결에 필요한 3분의 2에 못 미쳤습니다.`,g.pmParty);
       }
       bills.push({id:it.id,kind:it.kind,title:it.title,by:it.by,yes,no,passed,vetoed,votes});
       const author=it.by?party(g,it.by):null;
+      if(it.kind==='const'){
+        const C=CLAUSES[it.clause];
+        if(passed&&C){
+          (g.consts=g.consts||[]).push(it.clause);
+          if(it.clause==='threshold')g.prTh=.07;
+          if(it.clause==='winner')g.distExp=2.6;
+          if(it.clause==='executive')g.execPlus=1;
+          if(it.clause==='noconf')g.noconfSuper=true;
+          if(it.clause==='delay'){const m=nextMid(g);if(m!=null)g.skipMid=m}
+          if(author){author.trust-=3;pts(author).law+=PTS.ownLaw;pts(author).nLaw++}
+          for(const q of g.parties)if(!q.fixed&&q.id!==it.by&&!isAlly(q,it.by))q.unity+=3;
+          say(`헌법 개정안 「${C.label}」 가결. 재적 3분의 2(${superLine()}석)를 넘겼습니다.`,it.by);
+        }else if(C)say(`헌법 개정안 「${C.label}」 부결. 찬성 ${yes}석으로 재적 3분의 2(${superLine()}석)에 못 미쳤습니다.`,it.by);
+        continue;
+      }
       if(it.kind==='noconf'){
         const pm=pmOf(g);
         if(passed&&pm&&author&&!author.fixed)pts(author).law+=PTS.noconf;
@@ -1455,6 +1533,12 @@ const E=(function(){
             case'security':REGIONS.filter(x=>x.soc<0).forEach(x=>p.reg[x.id]+=3);say('정부, 안보 태세 강화.',p.id);break;
             case'reshuffle':p.unity+=10;p.trust+=BAL.reshuffle;say(`${p.name}, 내각 개편 단행.`,p.id);break;
             case'probe':betray(p,t);t.trust-=7;if(r()<.4){p.trust-=8;say(`${t.name} 수사 지시가 권력 남용 논란으로 번졌습니다.`,p.id,t.id)}else say(`검찰, ${t.name} 관련 수사 착수.`,p.id,t.id);break;
+            case'amend':g.pendingConst={clause:a.clause,by:p.id};say(`정부, 헌법 개정안 「${CLAUSES[a.clause].label}」 발의. 다음 분기 본회의에서 재적 3분의 2 찬성이 필요합니다.`,p.id);break;
+            case'emergency':g.regime={p:p.id,since:g.round,resist:15};p.trust-=10;say(`${p.name} 정부, 비상 체제 선포. 선거가 무기한 연기됩니다.`,p.id);break;
+            case'crackdown':if(g.regime){const n=g.regime.crush||0;g.regime.resist=Math.max(0,g.regime.resist-Math.round(BAL.crush*Math.pow(.9,n)));g.regime.crush=n+1;p.trust-=3;p.unity+=4;say(`${p.name} 정부, 시위 강제 진압.`,p.id)}break;
+            case'propaganda':if(g.regime){p.trust+=5;g.regime.resist+=3;say(`${p.name} 정부, 언론 통제 강화.`,p.id)}break;
+            case'ban':if(g.regime&&t&&!t.fixed){const n=moveDistrict(t,p,Math.floor(t.district/2));t.trust-=10;g.regime.resist+=20;say(`${p.name} 정부, ${t.name} 강제 해산 명령. 지역구 ${n}석을 빼앗았습니다.`,p.id,t.id)}break;
+            case'restore':if(g.regime){g.regime=null;p.trust+=6;say(`${p.name} 정부, 민정 이양 선언. 비상 체제가 끝났습니다.`,p.id)}break;
             case'dissolve':dissolve=true;g.dissolved=true;say(`${g.system==='semi'?p.name+' 출신 대통령':p.leader?p.leader+' 총리':p.name+' 출신 총리'}, 의회 해산 선언. 조기 총선을 치릅니다.`,p.id);break;
           }
         }
@@ -1511,18 +1595,34 @@ const E=(function(){
     for(const p of g.parties){
       p.funds+=quarterIncome(p);
       p.funds=Math.max(0,p.funds);
-      if(p.kind==='major'){if(p.unity>45)p.unity-=2}else if(p.unity>55)p.unity-=1;
+      if(p.kind==='major'){if(p.unity>45)p.unity-=BAL.majorUnity}else if(p.unity>55)p.unity-=1;
       p.trust+=(50-p.trust)*BAL.revert;
       // 정권 견제론: 제1야당으로 버티는 동안 표가 조금씩 모이고, 자리를 내주면 빠진다.
       p.check=p.id===oppLead?Math.min(BAL.checkMax,(p.check||0)+BAL.check):Math.max(0,(p.check||0)-BAL.check*2);
       // 오래 집권할수록 표가 줄고, 야당이 되면 서서히 회복한다.
       if(!p.fixed&&p.id===oppLead)pts(p).gov+=PTS.oppRound;
       if(!p.fixed){if(g.pmParty===p.id)pts(p).gov+=PTS.pmRound;else if(inGov(g,p))pts(p).gov+=g.system==='semi'&&g.presParty===p.id&&!isAlly(p,g.pmParty)?PTS.presRound:PTS.partnerRound}
-      if(g.pmParty===p.id){p.trust-=GOV_FATIGUE;p.pmRounds=(p.pmRounds||0)+1;p.fatigue=Math.min(g.country?BAL.fatigueMaxReal:BAL.fatigueMax,(p.fatigue||0)+1.5)}
+      if(g.pmParty===p.id){p.trust-=BAL.govFatigue;p.pmRounds=(p.pmRounds||0)+1;p.fatigue=Math.min(g.country?BAL.fatigueMaxReal:BAL.fatigueMax,(p.fatigue||0)+BAL.fatigueStep)}
       else if(p.fatigue)p.fatigue=Math.max(0,p.fatigue-.75);
       for(const k in p.reg)p.reg[k]*=.95;
       p.talent=(p.talent||0)*BAL.talentKeep;
       p.trust=clamp(p.trust,0,100);p.unity=clamp(p.unity,0,100);
+    }
+    // 비상 체제: 저항이 쌓인다. 야당이 많을수록, 체제 정당의 신뢰가 낮을수록 빠르다. 100%면 시민 혁명.
+    let revolution=null;
+    if(g.regime){
+      const R=regimeOf(g);
+      if(!R||g.pmParty!==R.id)g.regime=null;
+      else{
+        const opp=g.parties.filter(q=>!q.fixed&&q.id!==R.id&&q.seats>0);
+        g.regime.resist=Math.round(g.regime.resist+BAL.resist+opp.length*.5+Math.max(0,50-R.trust)*.2+(g.regime.crush||0)*.5); // 진압할수록 반발이 쌓인다
+        for(const q of opp)q.trust+=1;
+        if(g.regime.resist>=100){
+          R.trust-=20;R.unity-=25;g.regime=null;g.pmParty=null;g.pmElection=g.system!=='westminster';dissolve=true;
+          revolution={round:g.round,party:R.id};g.revolution=revolution;
+          say(`시민 혁명. ${R.name}의 비상 체제가 무너졌습니다. 이번 분기 말 조기 총선을 치릅니다.`,R.id);
+        }
+      }
     }
     // 탈당
     for(const p of g.parties){
@@ -1535,7 +1635,8 @@ const E=(function(){
     }
     // 선거
     let election=null;
-    const isFinal=g.round>=g.maxRounds,general=isGeneralRound(g),mid=isMidRound(g);
+    const isFinal=g.round>=g.maxRounds;let general=isGeneralRound(g),mid=isMidRound(g);
+    if(g.regime&&(general||mid)){say(`비상 체제로 ${general?'총선':'재보궐·지방선거'}이 연기됐습니다.`,g.regime.p);general=false;mid=false}
     if(general||dissolve||mid){
       const res=electionSeats(g);
       const prev=Object.fromEntries(g.parties.map(p=>[p.id,p.seats]));
@@ -1574,7 +1675,7 @@ const E=(function(){
       for(const k in p.reg)p.reg[k]=r1(p.reg[k]);
     }
     const tradeRep=judgeTrades(g,plans,bills,pmVoted,say);
-    g.report={round:g.round,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
+    g.report={round:g.round,revolution,regime:g.regime?{...g.regime}:null,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
     // 이번 분기에 승점이 어디서 얼마나 바뀌었는지 남긴다.
     const sc1=scoreRows(g);
     g.report.score=Object.fromEntries(sc1.map((x,i)=>{const a=sc0[x.id];return[x.id,{total:x.score,rank:i+1,d:x.score-a.score,vs:x.vs,
@@ -1599,6 +1700,11 @@ const E=(function(){
         const t=TOPICS[a.topic];
         agenda.push({id:'a'+(g.seq++),kind:'member',title:a.title,desc:`${p.name} 발의 · ${t.label} · ${REG[a.region].name} 지원`,eco:t.eco,soc:t.soc,pass:{[a.region]:3},by:p.id});
       });
+      if(g.pendingConst&&party(g,g.pendingConst.by)&&!(g.consts||[]).includes(g.pendingConst.clause)){
+        const C=CLAUSES[g.pendingConst.clause];
+        agenda.unshift({id:'a'+(g.seq++),kind:'const',clause:g.pendingConst.clause,title:`헌법 개정안: ${C.label}`,desc:C.desc,eco:0,soc:-.2,pass:{},by:g.pendingConst.by});
+      }
+      g.pendingConst=null;
       g.agenda=agenda;
       drawEvent(g,r,evRep.follow||null);
       g.trades=[];g.tradesDone=[];g.botTrades=botTrades(g,r);
@@ -1685,6 +1791,7 @@ const E=(function(){
         for(const id of b.ids){row(id).end=PTS.coalition;row(id).label='연립 과반'}}
       else{const t=live.slice().sort((x,y)=>y.seats-x.seats)[0];if(t){t.end=PTS.minority;t.label='원내 1당'}}
     }
+    if(g.regime&&g.status==='over'){const t=row(g.regime.p);if(t){t.end=Math.max(t.end,0)+PTS.regime;t.label=t.label?t.label+'·비상 체제':'비상 체제 유지'}}
     if(g.system==='semi'&&g.presParty){const t=row(g.presParty);t.end+=PTS.semiPres;t.label=t.label?t.label+'·대통령':'대통령'}
     for(const x of rows){
       const G=goalOf(g,party(g,x.id));x.goal=0;
@@ -1699,10 +1806,10 @@ const E=(function(){
   }
   // 시나리오: 정해진 나라·정당·분기로 시작해 목표를 이루면 성공. goal: seats(이상) · gov(정부를 맡음) · win(1위)
   const SCENARIOS=[
-    {id:'kr_underdog',country:'kr',pick:'reform',rounds:12,goal:{seats:20},title:'3석의 반란',desc:'개혁신당을 맡아 12분기 안에 20석 이상을 만드세요.'},
-    {id:'jp_hold',country:'jp',pick:'ldp',rounds:12,goal:{seats:233},title:'과반을 지켜라',desc:'자유민주당을 맡아 마지막 총선 뒤에도 단독 과반 233석을 지키세요.'},
-    {id:'us_flip',country:'us',pick:'dem',rounds:6,goal:{seats:228},title:'하원 탈환',desc:'민주당을 맡아 6분기 안에 228석 이상의 안정 과반을 차지하세요.'},
-    {id:'uk_insurgent',country:'uk',pick:'reform',rounds:12,goal:{seats:65},title:'반란군의 진격',desc:'영국개혁당을 맡아 12분기 안에 65석 이상을 만드세요.'},
+    {id:'kr_underdog',country:'kr',pick:'reform',rounds:12,goal:{seats:14},title:'3석의 반란',desc:'개혁신당을 맡아 12분기 안에 14석 이상을 만드세요.'},
+    {id:'jp_hold',country:'jp',pick:'ldp',rounds:12,goal:{seats:290},title:'압도적 과반',desc:'자유민주당을 맡아 마지막 총선 뒤에도 290석 이상의 압도적 과반을 지키세요.'},
+    {id:'us_flip',country:'us',pick:'dem',rounds:6,goal:{seats:232},title:'하원 탈환',desc:'민주당을 맡아 6분기 안에 232석 이상의 안정 과반을 차지하세요.'},
+    {id:'uk_insurgent',country:'uk',pick:'reform',rounds:12,goal:{seats:50},title:'반란군의 진격',desc:'영국개혁당을 맡아 12분기 안에 50석 이상을 만드세요.'},
     {id:'fr_left',country:'fr',pick:'ps',rounds:12,goal:{gov:true,seats:75},title:'좌파 총리',desc:'사회당 계열을 맡아 마지막 총선 뒤 75석 이상으로 총리를 배출하세요.'},
     {id:'virtual_minor',country:'',kind:'minor',rounds:12,goal:{win:true},title:'군소정당의 꿈',desc:'가상 공화국에서 군소정당으로 시작해 1위를 차지하세요.'},
   ];
@@ -1736,6 +1843,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

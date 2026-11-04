@@ -214,3 +214,53 @@ test('분기 거래: 손해 보는 제안은 거절하고 자금 역제안을 �
   const v2 = E.tradeView(g, ai, E.cleanTrade(g, me, { id: 'y', to: ai.id, ...v.counter }));
   assert.ok(v2.ok, '역제안대로면 받는다');
 });
+
+// 우리 당을 정부 수반으로 두고 의석을 몰아 준다(시험용)
+function superGame(country, seats) {
+  const g = E.newGame({ players: [{ ownerId: 'me', name: '우리당', leader: '', slogan: '', ideology: country ? 'pick:' : 'center', colorIdx: 0 }], size: 5, seed: 12, rounds: 12, timer: 0, now: 1, country });
+  const me = g.parties.find(p => p.ownerId === 'me');
+  let need = seats - me.seats;
+  for (const p of g.parties.filter(p => p.id !== me.id && !p.fixed).sort((a, b) => b.district - a.district)) {
+    const n = Math.min(need, p.district); p.district -= n; p.seats -= n; me.district += n; me.seats += n; need -= n; if (need <= 0) break;
+  }
+  g.pmParty = me.id; g.pmElection = false; g.treasury = 60 * E.U; me.funds = 50 * E.U;
+  return { g, me };
+}
+const quarter = (g, me, gov, extra = {}) => {
+  const votes = Object.fromEntries(g.agenda.map(it => [it.id, it.kind === 'noconf' ? 'no' : 'yes']));
+  return E.resolveRound(g, { me: { round: g.round, votes, pm: me.id, actions: [], gov, bill: null, ...extra } }, 1 + g.round, {});
+};
+
+test('헌법 개정: 개헌선이 있어야 발의되고, 다음 분기 재적 3분의 2 찬성으로 가결된다', () => {
+  let { g, me } = superGame(null, Math.ceil(E.TOTAL * 0.7));
+  assert.ok(E.govAvail(g, me, 'amend'), '개헌선이면 발의 가능');
+  g = quarter(g, me, [{ type: 'amend', clause: 'executive' }]);
+  const item = g.agenda.find(it => it.kind === 'const');
+  assert.ok(item && item.clause === 'executive', '다음 분기 안건에 개헌안');
+  const slots0 = E.govSlots(g, E.party(g, me.id));
+  g = quarter(g, E.party(g, me.id), []);
+  assert.ok((g.consts || []).includes('executive'), '가결');
+  assert.strictEqual(E.govSlots(g, E.party(g, me.id)), slots0 + 1, '행정 조치 +1');
+  const small = superGame(null, Math.floor(E.TOTAL * 0.5));
+  assert.ok(!E.govAvail(small.g, small.me, 'amend') || E.superBloc(small.g, small.me), '개헌선이 없으면 발의 못 함');
+});
+
+test('비상 체제: 가상 공화국 단독 3분의 2에서만, 선거가 미뤄지고 저항이 차면 시민 혁명', () => {
+  let { g, me } = superGame(null, Math.ceil(E.TOTAL * 0.7));
+  assert.ok(E.govAvail(g, me, 'emergency'), '선포 가능');
+  const kr = superGame('kr', Math.ceil(300 * 0.7));
+  assert.ok(!E.govAvail(kr.g, kr.me, 'emergency'), '국가 모드에서는 불가');
+  g = quarter(g, me, [{ type: 'emergency' }]);
+  assert.ok(g.regime && g.regime.p === me.id, '비상 체제 시작');
+  const seats0 = E.party(g, me.id).seats;
+  let revolution = null, elections = 0;
+  for (let i = 0; i < 11 && g.status === 'playing'; i++) {
+    g = quarter(g, E.party(g, me.id), []);
+    if (g.report.election) elections++;
+    if (g.report.revolution) { revolution = g.report.revolution; break; }
+  }
+  assert.ok(revolution, '진압하지 않으면 저항이 차서 혁명이 일어난다');
+  assert.strictEqual(elections, 1, '혁명 전까지 선거가 없고, 혁명 분기에 조기 총선');
+  assert.ok(!g.regime, '체제가 끝났다');
+  assert.ok(E.party(g, me.id).seats < seats0, '혁명 뒤 총선에서 의석을 잃는다');
+});

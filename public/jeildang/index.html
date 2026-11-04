@@ -187,6 +187,8 @@ html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
 @media (max-width:520px){.trade-grid{grid-template-columns:minmax(0,1fr)}}
 .deal.ok{background:var(--mine);border:1px solid var(--accent);border-radius:6px;padding:10px}
 .promise{color:var(--accent);font-weight:600}
+.act.special{border-color:var(--stamp)}
+.act.special b{color:var(--stamp)}
 .real-pill{border-color:var(--warn)!important;color:var(--warn)}
 .ach{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
 .ach li{display:grid;gap:2px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;opacity:.6}
@@ -574,6 +576,8 @@ function rulesHtml(){return`
     <li><b>당 정보</b>: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색·노선을 바로 바꿉니다. 노선은 분기에 한 번만, 바꾸면 신뢰 −5.</li>
     <li><b>결속 25 미만</b>이면 의원들이 탈당합니다.</li>
     <li><b>사건</b>: 분기마다 사건이 하나 미리 공개됩니다. 결재 탭의 '이번 분기 사건'에서 대응을 하나 고르면 다른 결정과 함께 제출됩니다. 정부 수반 당이 제때 대응하지 않으면 다음 분기로 번지는 사건이 있고, 한 정당을 겨냥하는 의혹·갈등 사건도 있습니다.</li>
+    <li><b>헌법 개정</b>: 정부 수반 당이 혼자 또는 연맹으로 재적 3분의 2를 가지면 행정 조치로 개헌안을 낼 수 있습니다. 다음 분기 본회의에서 재적 3분의 2가 찬성해야 가결됩니다. 조항은 비례 봉쇄 조항 상향, 지역구 승자 독식 강화, 행정권 강화, 불신임 요건 강화, 선거 연기이고, 가결되면 권력 강화 논란으로 발의 당 신뢰 −3입니다.</li>
+    <li><b>비상 체제</b>(가상 공화국만): 정부 수반 당이 단독으로 재적 3분의 2를 가지면 비상 체제를 선포할 수 있습니다. 선거가 미뤄져 의석이 굳고, 시위 진압·언론 통제·정당 해산·민정 이양을 쓸 수 있습니다. 대신 저항이 분기마다 쌓여 100%가 되면 시민 혁명으로 무너지고 조기 총선을 치릅니다. 체제를 끝까지 지키면 승점 +${E.PTS.regime}.</li>
     <li><b>분기 협상</b>: 결재 탭의 '분기 협상'에서 연맹 안팎의 어느 당과도 이번 분기에만 유효한 거래를 맺습니다. 표 약속, 자금, 불가침, 총리 지명 표를 주고받습니다. 약속은 강제되지 않지만, 어기면 분기 말에 배신으로 공개되고 신뢰 −4, 상대와의 관계가 크게 나빠집니다. AI는 관계를 기억해 다음 거래와 연맹 제안에 반영합니다.</li>
     <li><b>시나리오</b>: 첫 화면의 시나리오 칸에서 정해진 나라·정당·목표로 시작합니다. 마지막 총선 뒤 목표를 이루면 성공입니다.</li>
     <li><b>AI 성격</b>: AI 정당은 원칙주의·포퓰리스트·협상가·강경파·실리형 가운데 한 성격으로 움직입니다. 표결, 행동, 연맹 제안을 받아들이는 기준이 성격마다 다릅니다. 국회 탭 정당 이름 옆에 나옵니다.</li>
@@ -887,7 +891,7 @@ function renderTop(){
   const g=S.game,me=myParty();const left=E.nextGeneral(g)-g.round;
   const pm=E.pmOf(g);
   const label=g.status==='over'?'총선 종료':E.isGeneralRound(g)?(g.round===g.maxRounds?'이번 분기 말 마지막 총선':'이번 분기 말 총선'):E.isMidRound(g)?(g.system==='presidential'||g.system==='semi'?'이번 분기 말 대통령 선거·재보궐':'이번 분기 말 재보궐·지방선거'):`총선까지 ${left}분기`;
-  $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span><span class="pill real-pill" title="${esc(E.COUNTRIES[g.country].asOf)} 기준 실제 의석에서 시작합니다. 이후 전개는 모두 게임 속 가상입니다.">출발 의석만 실제 기준</span>`:''}${scenarioPill(g,me)}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
+  $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span><span class="pill real-pill" title="${esc(E.COUNTRIES[g.country].asOf)} 기준 실제 의석에서 시작합니다. 이후 전개는 모두 게임 속 가상입니다.">출발 의석만 실제 기준</span>`:''}${scenarioPill(g,me)}${g.regime?`<span class="pill hot" title="저항이 100%가 되면 시민 혁명이 일어납니다.">비상 체제 · ${esc(E.party(g,g.regime.p).name)} · 저항 ${Math.min(100,g.regime.resist)}%</span>`:pm&&E.superBloc(g,pm)?`<span class="pill" title="재적 3분의 2(${E.superLine()}석). 헌법 개정안을 낼 수 있습니다.">개헌선 확보: ${esc(pm.name)}</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
     <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}${soundCtl()}<button class="btn ghost" data-a="exit">나가기</button></div>`;
   const stat=(k,v,d)=>`<div><span class="k">${k}</span><span class="v">${v}</span>${d!=null&&d!==0?` <span class="small muted">${fmtD(d)}</span>`:''}</div>`;
   $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${chip(me)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
@@ -955,7 +959,7 @@ function reportHtml(g){
   const R=g.report;if(!R)return'';
   const me=myParty();
   const auto=(R.auto||[]).map(id=>E.party(g,id).name);
-  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'불신임안',emer:'긴급 법안'};
+  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'불신임안',emer:'긴급 법안',const:'헌법 개정안'};
   const pmHtml=R.pm?(()=>{
     const w=E.party(g,R.pm.winner);
     const line=(t)=>Object.entries(t).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>0).map(([id,n])=>`${esc(E.party(g,id).name)} ${n}`).join(' · ');
@@ -1020,10 +1024,11 @@ const isPactBound=(g,me,it)=>it.kind==='pact'&&E.isAlly(E.party(g,it.by),it.by2)
 const followHead=(g,me)=>{const f=E.fedOf(g,me);return f&&E.rulesOf(f).bind==='all'&&f.head!==me.id?E.party(g,f.head):null};
 const isBound=(g,me,it)=>isPactBound(g,me,it)||!!followHead(g,me);
 function agendaHtml(g,me){
-  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'내각 불신임안',emer:'긴급 법안'};
+  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'내각 불신임안',emer:'긴급 법안',const:'헌법 개정안'};
   return g.agenda.map(it=>{
     let hint='';
-    if(it.kind==='noconf')hint=me&&E.inGov(g,me)?'우리는 여당입니다. 가결되면 내각이 물러납니다.':'가결되면 총리를 새로 뽑습니다.';
+    if(it.kind==='noconf')hint=(me&&E.inGov(g,me)?'우리는 여당입니다. 가결되면 내각이 물러납니다.':'가결되면 총리를 새로 뽑습니다.')+(g.noconfSuper?` 개헌으로 재적 3분의 2(${E.superLine()}석) 찬성이 필요합니다.`:'');
+    else if(it.kind==='const')hint=`재적 3분의 2(${E.superLine()}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다.`;
     else{
       const regs=E.REGIONS.slice().sort((x,y)=>E.billAlign(it,y)-E.billAlign(it,x));
       const passTxt=Object.entries(it.pass).map(([k,v])=>`${E.REG[k].name} ${fmtD(v)}`).join(', ')||'없음';
@@ -1368,7 +1373,8 @@ function paramSel(g,me,a,i,attr){
   const target=()=>`<select ${attr}="target" data-i="${i}" aria-label="대상 정당">${others.map(p=>`<option value="${p.id}" ${p.id===a.target?'selected':''}>${p.no}번 ${esc(p.name)}</option>`).join('')}</select>`;
   const topic=()=>`<select ${attr}="topic" data-i="${i}" aria-label="정책 분야">${Object.entries(E.TOPICS).map(([k,t])=>`<option value="${k}" ${k===a.topic?'selected':''}>${t.label}</option>`).join('')}</select>`;
   const title=()=>`<input ${attr}="title" data-i="${i}" maxlength="24" aria-label="법안 이름" placeholder="법안 이름" value="${esc(a.title||'')}">`;
-  const map={region,target,topic,title};
+  const clause=()=>`<select ${attr}="clause" data-i="${i}" aria-label="개헌 조항">${Object.entries(E.CLAUSES).filter(([k])=>!(g.consts||[]).includes(k)).map(([k,c])=>`<option value="${k}" ${k===a.clause?'selected':''}>${esc(c.label)}</option>`).join('')}</select>`;
+  const map={region,target,topic,title,clause};
   return n=>map[n]();
 }
 function govActionsHtml(g,me){
@@ -1382,8 +1388,8 @@ function govActionsHtml(g,me){
     rows.push(`<div class="slot"><b>${i+1}</b><div style="min-width:0"><b>${def.label}</b> <span class="small muted">국고 ${money(E.govCost(a.type))}</span>${params?`<div class="params">${params}</div>`:''}</div><button class="x" data-a="grm" data-v="${i}" aria-label="${def.label} 빼기">×</button></div>`);
   }
   const full=d.gov.length>=slots;const isPm=g.pmParty===me.id;
-  const pal=Object.entries(E.GOV).filter(([k,v])=>!v.pmOnly||E.canDissolve(g,me)).filter(([k])=>k!=='dissolve'||(!g.dissolved&&E.nextGeneral(g)-g.round>1)).map(([k,v])=>
-    `<button class="act" data-a="gadd" data-v="${k}" ${full||E.govCost(k)>left||d.gov.some(x=>x.type==='dissolve'&&k==='dissolve')?'disabled':''}><b>${v.label}<em>${v.cost?'국고 '+money(E.govCost(k)):'무료'}</em></b><span>${v.desc}</span></button>`).join('');
+  const pal=Object.entries(E.GOV).filter(([k,v])=>(!v.pmOnly||E.canDissolve(g,me))&&E.govAvail(g,me,k)).map(([k,v])=>
+    `<button class="act${v.special?' special':''}" data-a="gadd" data-v="${k}" ${full||E.govCost(k)>left||(v.special&&v.special!=='regime'||k==='dissolve')&&d.gov.some(x=>x.type===k)?'disabled':''}><b>${v.label}<em>${v.cost?'국고 '+money(E.govCost(k)):'무료'}</em></b><span>${v.desc}</span></button>`).join('');
   return`<section class="panel"><div class="row between"><h2>${isPm?`${headTitle(g)} 행정`:g.system==='semi'&&g.presParty===me.id?'대통령 권한':'연립 행정'}</h2><span class="pill">남는 국고 ${money(left)}</span></div>
     <p class="small muted">일반 행동과 별도로 ${slots}건 집행합니다. 비용은 국고에서 나갑니다.</p>
     <div class="stack" style="gap:6px">${rows.join('')}</div><div class="acts">${pal}</div></section>`;
@@ -1585,6 +1591,9 @@ const ACH=[
   {id:'defy',name:'정면 돌파',desc:'의혹 사건에서 정면 돌파에 성공합니다.'},
   {id:'two_terms',name:'장기 집권',desc:'한 임기 더 하기로 이은 판에서 두 임기 연속 이깁니다.'},
   {id:'scenario',name:'시나리오 정복',desc:'시나리오 하나를 성공합니다.'},
+  {id:'amend',name:'개헌',desc:'우리 당이 낸 헌법 개정안을 가결시킵니다.'},
+  {id:'regime',name:'철권 통치',desc:'가상 공화국에서 비상 체제를 지킨 채 게임을 마칩니다.'},
+  {id:'revolution',name:'시민 혁명',desc:'다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.'},
   {id:'win_kr',name:'여의도의 주인',desc:'한국 모드에서 이깁니다.'},
   {id:'win_jp',name:'나가타초의 주인',desc:'일본 모드에서 이깁니다.'},
   {id:'win_us',name:'캐피톨 힐의 주인',desc:'미국 모드에서 이깁니다.'},
@@ -1611,6 +1620,9 @@ function achCheck(g){
     if(mine&&mine.react==='defy'&&mine.note==='성공')achUnlock('defy');
     if(mine&&(mine.react==='stimulus'||mine.react==='relief')&&!R.event.follow&&E.EVENTS2[R.event.key]&&E.EVENTS2[R.event.key].follow)achUnlock('crisis');
   }
+  if(R&&(R.bills||[]).some(b=>b.kind==='const'&&b.passed&&b.by===me.id))achUnlock('amend');
+  if(R&&R.revolution&&R.revolution.party!==me.id)achUnlock('revolution');
+  if(g.status==='over'&&g.regime&&g.regime.p===me.id)achUnlock('regime');
   const row=(g.result?g.result.rows:E.scoreRows(g)).find(x=>x.id===me.id);
   if(row&&row.nLaw>=5)achUnlock('lawmaker');
   if(g.status!=='over'||!g.result)return;
@@ -1872,7 +1884,8 @@ document.addEventListener('click',async ev=>{
     case'gadd':{
       const me=myParty();const a={type:v};
       if(E.GOV[v].need.includes('region'))a.region=E.REGIONS.slice().sort((x,y)=>y.seats*E.fit(me,y)-x.seats*E.fit(me,x))[0].id;
-      if(E.GOV[v].need.includes('target'))a.target=S.game.parties.filter(p=>p.id!==me.id&&!E.isAlly(me,p.id)).sort((x,y)=>y.seats-x.seats)[0].id;
+      if(E.GOV[v].need.includes('target'))a.target=S.game.parties.filter(p=>p.id!==me.id&&!E.isAlly(me,p.id)&&!p.fixed).sort((x,y)=>y.seats-x.seats)[0].id;
+      if(E.GOV[v].need.includes('clause'))a.clause=Object.keys(E.CLAUSES).find(k=>!(S.game.consts||[]).includes(k));
       S.draft.gov.push(a);touchDraft();renderDecide();break;
     }
     case'grm':S.draft.gov.splice(+v,1);touchDraft();renderDecide();break;

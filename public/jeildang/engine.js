@@ -11,11 +11,11 @@ const E=(function(){
   // 사이 분기 수는 직선으로 잇고, 마지막보다 길면(한 임기 더 하기를 여러 번) 마지막 구간을 늘려 쓴다.
   const GOAL_ROUNDS=[6,12,18,24];
   const GOALS=/*GOALS-START*/{
-    kr:{ppp:[109,110,82,110,103,108,122,107,141],rebuild:[12,29,71,34,118,38,162,40,204],dem:[161,125,93,108,117,101,150,98,183],jinbo:[4,15,46,22,83,25,126,27,164],reform:[3,12,32,15,49,16,64,17,78]},
-    jp:{ishin:[36,52,67,59,118,61,148,63,178],sansei:[15,44,68,55,125,60,158,64,194],ldp:[315,247,112,209,117,198,142,190,170],dpp:[28,29,31,31,39,31,47,31,52],komeito:[27,41,42,51,73,54,93,53,115],cdp:[20,27,30,32,43,33,54,34,63],mirai:[11,12,16,14,18,14,23,15,26]},
-    us:{dem:[214,225,113,230,139,233,174,225,198],gop:[218,209,87,205,108,201,117,209,139]},
-    uk:{ld:[71,72,83,84,129,95,171,101,206],lab:[404,304,121,259,129,253,164,253,205],con:[118,159,91,159,112,142,126,133,143],plaid:[4,6,29,6,47,5,64,5,80],reform:[8,38,32,54,55,62,74,65,88],green:[5,13,47,27,107,29,162,33,213],snp:[8,14,38,14,67,14,93,13,116]},
-    fr:{rn:[118,113,67,94,77,88,89,84,102],dr:[47,70,52,75,72,78,87,80,102],ps:[67,86,66,70,93,63,118,61,144],eco:[38,58,51,68,90,73,126,77,159],lfi:[70,79,61,87,106,92,147,93,182],dem:[71,50,24,45,31,42,36,40,44],epr:[90,56,29,66,45,68,55,66,60]}}/*GOALS-END*/;
+    kr:{dem:[161,124,90,107,113,101,147,97,179],rebuild:[12,29,72,35,118,38,161,39,207],ppp:[109,110,86,110,108,109,128,108,150],reform:[3,12,33,15,49,17,64,17,76],jinbo:[4,16,47,22,84,25,125,27,167]},
+    jp:{ldp:[315,246,109,207,113,195,137,188,164],sansei:[15,44,68,54,123,59,160,62,196],ishin:[36,52,66,59,117,60,150,61,180],komeito:[27,42,44,53,80,56,105,57,126],dpp:[28,30,32,31,42,32,51,32,56],cdp:[20,27,32,32,46,34,59,35,71],mirai:[11,12,17,14,19,14,24,15,27]},
+    us:{dem:[214,224,114,230,144,234,179,226,203],gop:[218,210,83,204,98,200,104,208,124]},
+    uk:{lab:[404,302,117,256,124,250,159,245,195],ld:[71,65,79,82,132,89,166,95,203],con:[118,163,95,163,118,148,135,143,152],snp:[8,14,39,15,65,14,90,14,112],reform:[8,40,35,56,62,64,84,68,103],green:[5,13,50,24,105,32,160,36,210],plaid:[4,6,28,6,46,5,63,5,78]},
+    fr:{ps:[67,85,68,70,94,64,118,63,148],lfi:[70,79,64,88,111,92,149,93,187],eco:[38,58,51,69,94,73,129,76,162],rn:[118,114,62,93,62,85,71,83,83],dr:[47,70,53,77,76,80,92,82,108],dem:[71,51,27,45,34,42,44,40,54],epr:[90,55,34,64,49,70,64,66,70]}}/*GOALS-END*/;
   let TOTAL=400,DISTRICT=280,PR=120,U=1,UNIT='억',MEMBER_NAME='당원';
   const HAERAM=[
     {id:'hanbyeol',name:'한별 수도권',seats:90,eco:.1,soc:.35,tag:'청년·사무직'},
@@ -713,6 +713,7 @@ const E=(function(){
     g.history.push({round:0,shares:roundShares(g),score:Object.fromEntries(scoreRows(g).map(x=>[x.id,x.score]))});
     g.agenda=[nextGovBill(g)];
     drawEvent(g,r);
+    g.botTrades=botTrades(g,r);
     g.botDeals=botDeals(g,r);
     g.dealNews=[];formDeals(g,{},(text,...who)=>g.dealNews.push({text,who}),false);
     return g;
@@ -895,7 +896,7 @@ const E=(function(){
       gadd(p.eco>.2?'welfare':p.soc<-.2&&r()<.5?'security':'taxcut');
       gadd('budget',{region:bestReg().id});
     }
-    return{votes,pm:defaultPm(g,p),actions:acts,gov,bill:g.pmParty===p.id?defaultBill(g,p):null,react:botReact(g,p,r)};
+    return honorTrades(g,p,{votes,pm:defaultPm(g,p),actions:acts,gov,bill:g.pmParty===p.id?defaultBill(g,p):null,react:botReact(g,p,r)},r);
   }
   // 연맹 협상. 제안은 보낸 쪽 협상 문서(AI는 판 상태)에 있고, 받는 쪽이 수락하는 순간 성사된다(applyDeals).
   // 제안의 종류는 두 당의 처지로 정해진다:
@@ -959,7 +960,7 @@ const E=(function(){
       if(x.endorse==='from')o.endorse=2+endorseGain(from);else if(x.endorse==='to')o.endorse=-3-(from.trust<40?6:0);
       return o};
     // 성격: 노선 차이를 얼마나 따지는지(line 배수)와 거래 자체를 반기는 정도(deal)
-    const P=personaOf(bot),lineW=line*(P?P.line:1)+(P?P.deal:0);
+    const P=personaOf(bot),lineW=line*(P?P.line:1)+(P?P.deal:0)+relOf(g,bot.id,from.id)/5;
     const val=x=>{const o=part(x);return lineW+size+o.lead+o.topic+o.yield+o.endorse};
     if(val(d)>=0)return{ok:true,why:line>5?(k.kind==='join'?'노선이 가까워 우리 연맹에 받아들일 만합니다.':merge?'두 연맹의 노선이 가까워 합칠 만합니다.':'노선이 가까워 받아들일 만합니다.'):'조건이 맞아 받아들일 만합니다.'};
     const o=part(d);
@@ -1168,13 +1169,155 @@ const E=(function(){
     if(g.status!=='playing')return{state,formed:0,news:[]};
     g.dealNews=g.dealNews||[];const news=[];
     const say=(text,...who)=>{const n={text,who};news.push(n);g.dealNews.push(n)};
-    const formed=formEdits(g,talk,say)+formAmends(g,talk,say)+formDeals(g,talk,say,false).formed;
+    const formed=formEdits(g,talk,say)+formAmends(g,talk,say)+formDeals(g,talk,say,false).formed+formTrades(g,talk);
     return{state:formed?g:state,formed,news};
+  }
+  // ── 분기 거래 ──
+  // 연맹과 상관없이 어느 두 당이든 이번 분기에만 유효한 거래를 맺는다. 거래 = {id, from, to, give:[제안한 당이 주는 것], get:[받는 당이 주는 것]}
+  // 항목: {t:'vote', item:안건 id, v:'yes'|'no'} 표 약속 · {t:'funds', amt} 자금(성사 즉시 이전) · {t:'truce'} 이번 분기 불가침(네거티브·폭로·빼오기·수사 지시 안 함)
+  //       {t:'pm', p:정당 id} 총리 지명 투표
+  // 약속은 강제하지 않는다. 분기 말에 지켰는지 보고, 어기면 배신으로 공개되어 신뢰가 깎이고 상대와의 관계가 크게 나빠진다.
+  // 관계 점수(g.rel['a>b'], −100~100)는 a가 b를 얼마나 믿는지이며 AI의 거래·연맹 판단에 들어간다.
+  const relOf=(g,a,b)=>(g.rel&&g.rel[a+'>'+b])||0;
+  function relAdd(g,a,b,d){g.rel=g.rel||{};const k=a+'>'+b;g.rel[k]=clamp(Math.round(((g.rel[k]||0)+d)*10)/10,-100,100)}
+  const HOSTILE=new Set(['attack','expose','poach']);
+  function cleanTrade(g,from,t){
+    if(!t||typeof t!=='object')return null;
+    const to=party(g,t.to);if(!from||!to||from.id===to.id||from.fixed||to.fixed)return null;
+    const side=list=>{const out=[];let votes=0;
+      for(const it of Array.isArray(list)?list.slice(0,4):[]){
+        if(!it||typeof it!=='object')continue;
+        if(it.t==='vote'&&votes<2&&g.agenda.some(a=>a.id===it.item)&&(it.v==='yes'||it.v==='no')&&!out.some(x=>x.t==='vote'&&x.item===it.item)){out.push({t:'vote',item:it.item,v:it.v});votes++}
+        else if(it.t==='funds'&&Number.isFinite(+it.amt)&&+it.amt>0&&!out.some(x=>x.t==='funds'))out.push({t:'funds',amt:Math.round(Math.min(+it.amt,99*U)*10)/10});
+        else if(it.t==='truce'&&!out.some(x=>x.t==='truce'))out.push({t:'truce'});
+        else if(it.t==='pm'&&g.pmElection&&party(g,it.p)&&!party(g,it.p).fixed&&!out.some(x=>x.t==='pm'))out.push({t:'pm',p:it.p});
+      }
+      return out};
+    const give=side(t.give),get=side(t.get);
+    if(!give.length&&!get.length)return null;
+    return{id:String(t.id||'').slice(0,20),from:from.id,to:to.id,give,get};
+  }
+  // giver가 이 약속을 지키는 데 드는 비용(AI 판단용, 대략 승점 단위)
+  function tradeCost(g,giver,it){
+    if(it.t==='vote'){const a=g.agenda.find(x=>x.id===it.item);if(!a)return 0;const def=giver.bot?botVote(g,giver,a):defaultVote(g,giver,a);
+      return def===it.v?.5:3+Math.abs(billAlign(a,giver))*12+(a.by===giver.id?20:0)}
+    if(it.t==='funds')return it.amt/U*(giver.funds<6*U?1.5:1);
+    if(it.t==='truce')return giver.persona==='hawk'?4:1;
+    if(it.t==='pm'){if(it.p===giver.id)return 0;const def=defaultPm(g,giver);return def===it.p?.5:isAlly(giver,it.p)?2:14}
+    return 0;
+  }
+  // taker가 이 약속을 받으면 얻는 가치
+  function tradeValue(g,taker,giver,it){
+    if(it.t==='vote'){const a=g.agenda.find(x=>x.id===it.item);if(!a)return 0;const want=defaultVote(g,taker,a)===it.v?1:-1;
+      return(3+Math.abs(billAlign(a,taker))*10+(a.by===taker.id?10:0))*want*clamp(giver.seats/(TOTAL*.1),.2,1.5)}
+    if(it.t==='funds')return it.amt/U*(taker.funds<6*U?1.3:1);
+    if(it.t==='truce')return 2+(giver.persona==='hawk'?3:0)+(relOf(g,taker.id,giver.id)<-20?2:0);
+    if(it.t==='pm')return it.p===taker.id?14:isAlly(taker,it.p)?4:0;
+    return 0;
+  }
+  // AI(bot)가 받은 거래를 받아들일지. 손해면 모자란 만큼 자금을 더 달라는 역제안을 낸다.
+  function tradeView(g,bot,t){
+    const from=party(g,t.from);if(!from)return{ok:false,why:'상대가 없습니다.'};
+    for(const it of t.get)if(it.t==='funds'&&it.amt>bot.funds)return{ok:false,why:'그만한 자금이 없습니다.'};
+    const P=personaOf(bot),rel=relOf(g,bot.id,from.id);
+    const gain=t.give.reduce((n,it)=>n+tradeValue(g,bot,from,it),0),cost=t.get.reduce((n,it)=>n+tradeCost(g,bot,it),0);
+    const val=gain-cost+rel/6+(P?P.deal/3:0)+(isAlly(bot,from.id)?2:0);
+    if(rel<=-40)return{ok:false,why:`${from.name}을 믿을 수 없습니다. 지난번 약속을 어겼습니다.`};
+    if(val>=0)return{ok:true,why:gain>cost+3?'우리에게 이득입니다.':'주고받는 것이 맞습니다.'};
+    const need=Math.ceil(-val*10)/10*U,paid=(t.give.find(x=>x.t==='funds')||{}).amt||0;
+    const counter=need+paid<=from.funds?{give:t.give.filter(x=>x.t!=='funds').concat({t:'funds',amt:Math.round((paid+need)*10)/10}),get:t.get}:null;
+    const why=t.get.some(it=>it.t==='pm'&&tradeCost(g,bot,it)>10)?'총리 지명 표는 쉽게 줄 수 없습니다.':t.get.some(it=>it.t==='vote'&&tradeCost(g,bot,it)>8)?'우리 노선과 맞지 않는 표를 약속하기 어렵습니다.':'주는 것에 비해 얻는 것이 적습니다.';
+    return{ok:false,why,counter};
+  }
+  // AI가 먼저 내는 거래: 자기 법안 표 사기, 총리 지명 표 구하기, 정부 법안 표 모으기
+  function botTrades(g,r){
+    const out=[];
+    for(const p of g.parties){
+      const P=personaOf(p);if(!P||p.fixed||r()>=.3*P.ask)continue;
+      const others=g.parties.filter(o=>o.id!==p.id&&!o.fixed&&o.seats>0&&relOf(g,p.id,o.id)>-40);
+      // 값은 상대가 치를 비용에 10%를 얹어 부른다. 우리 자금의 절반을 넘으면 내지 않는다.
+      const price=(q,items)=>Math.round(items.reduce((n,it)=>n+tradeCost(g,q,it),0)*1.1*U*10)/10;
+      const pay=a=>a<=p.funds/2?Math.max(U,Math.round(a*10)/10):0;
+      const mine=g.agenda.find(a=>(a.by===p.id&&a.kind==='member')||(a.kind==='gov'&&g.pmParty===p.id));
+      let t=null;
+      if(mine){
+        const q=others.filter(o=>!isAlly(p,o.id)&&(o.bot?botVote(g,o,mine):defaultVote(g,o,mine))==='no').sort((a,b)=>b.seats-a.seats)[0];
+        const ask=q&&[{t:'vote',item:mine.id,v:'yes'}],amt=q?pay(price(q,ask)):0;
+        if(q&&amt)t={to:q.id,give:[{t:'funds',amt}],get:ask};
+      }
+      if(!t&&g.pmElection&&defaultPm(g,p)===p.id){
+        const q=others.filter(o=>!isAlly(p,o.id)&&defaultPm(g,o)!==p.id).sort((a,b)=>b.seats-a.seats)[0];
+        const ask=q&&[{t:'pm',p:p.id}],amt=q?pay(Math.max(0,price(q,ask)-2*U)):0;
+        if(q&&amt)t={to:q.id,give:[{t:'truce'},{t:'funds',amt}],get:ask};
+      }
+      if(!t&&p.persona!=='hawk'&&r()<.3){
+        const h=others.find(o=>o.persona==='hawk'&&!isAlly(p,o.id));
+        if(h)t={to:h.id,give:[{t:'truce'}],get:[{t:'truce'}]};
+      }
+      if(t)out.push({id:'bt'+(g.seq++),from:p.id,...t});
+    }
+    return out;
+  }
+  // 수락된 거래를 성사시킨다(자금 이전). 사람 답은 replies['T:보낸당:id'], AI는 tradeView로 정한다.
+  function formTrades(g,talk){
+    talk=talk||{};g.tradesDone=g.tradesDone||[];g.trades=(g.trades||[]).filter(t=>t.round===g.round);
+    const list=[];
+    for(const p of g.parties){
+      const tk=!p.bot&&p.ownerId&&talk[p.ownerId];
+      for(const t of(tk&&Array.isArray(tk.trades)?tk.trades.slice(0,6):[]))if(t&&t.round===g.round){const c=cleanTrade(g,p,t);if(c)list.push(c)}
+    }
+    for(const t of g.botTrades||[]){const c=cleanTrade(g,party(g,t.from),t);if(c)list.push(c)}
+    let formed=0;
+    for(const t of list){
+      const key=t.from+':'+t.id;if(g.tradesDone.includes(key))continue;
+      const a=party(g,t.from),b=party(g,t.to);
+      if(!replyYes(g,b,talk,'T:'+key,()=>tradeView(g,b,t).ok))continue;
+      const fa=(t.give.find(x=>x.t==='funds')||{}).amt||0,fb=(t.get.find(x=>x.t==='funds')||{}).amt||0;
+      if(fa>a.funds||fb>b.funds)continue;
+      a.funds=r2(a.funds-fa+fb);b.funds=r2(b.funds-fb+fa);
+      g.tradesDone.push(key);g.trades.push({...t,round:g.round});formed++;
+    }
+    return formed;
+  }
+  // AI가 맺은 거래 약속을 수에 반영한다(강경파는 12%, 포퓰리스트는 5% 확률로 어긴다).
+  function honorTrades(g,p,mv,r){
+    const P=personaOf(p);
+    for(const t of g.trades||[]){
+      if(t.round!==g.round||(t.from!==p.id&&t.to!==p.id))continue;
+      const mine=t.from===p.id?t.give:t.get,other=t.from===p.id?t.to:t.from;
+      if(P&&r()<({hawk:.12,populist:.05}[p.persona]||0))continue;
+      for(const it of mine){
+        if(it.t==='vote')mv.votes[it.item]=it.v;
+        if(it.t==='pm')mv.pm=it.p;
+        if(it.t==='truce'){mv.actions=mv.actions.filter(a=>!(HOSTILE.has(a.type)&&a.target===other));mv.gov=mv.gov.filter(a=>!(a.type==='probe'&&a.target===other))}
+      }
+    }
+    return mv;
+  }
+  // 분기 말 판정: 지켰으면 서로 관계 +6, 어기면 배신 공개·신뢰 −4·관계 −30
+  function judgeTrades(g,plans,bills,pmVoted,say){
+    const out=[];
+    for(const t of g.trades||[]){
+      if(t.round!==g.round)continue;
+      const a=party(g,t.from),b=party(g,t.to),broke=[];
+      for(const[p,q,list]of[[a,b,t.give],[b,a,t.get]]){
+        const bad=list.filter(it=>{
+          if(it.t==='vote'){const bl=bills.find(x=>x.id===it.item);return!!bl&&bl.votes[p.id]!==it.v}
+          if(it.t==='truce')return plans[p.id].actions.some(x=>HOSTILE.has(x.type)&&x.target===q.id)||plans[p.id].gov.some(x=>x.type==='probe'&&x.target===q.id);
+          if(it.t==='pm')return pmVoted&&!p.allyLead&&plans[p.id].pm!==it.p;
+          return false});
+        if(bad.length){broke.push(p);p.trust-=4;relAdd(g,q.id,p.id,-30);say(`${p.name}이 ${q.name}과 맺은 거래 약속을 어겼습니다.`,p.id,q.id)}
+      }
+      if(!broke.length){relAdd(g,a.id,b.id,6);relAdd(g,b.id,a.id,6)}
+      out.push({id:t.id,from:t.from,to:t.to,broke:broke.map(p=>p.id)});
+    }
+    return out;
   }
   function resolveRound(state,moves,now,talk){
     useMap(state);const g=normAllies(clone(state));const r=rng((g.seed+g.round*7919)>>>0);talk=talk||{};
     const before=Object.fromEntries(g.parties.map(p=>[p.id,{funds:p.funds,members:p.members,trust:p.trust,unity:p.unity,seats:p.seats}]));
     const sc0=Object.fromEntries(scoreRows(g).map(x=>[x.id,x]));
+    formTrades(g,talk);const pmVoted=!!g.pmElection;
     const plans={};const chooser=g.pmParty;
     for(const p of g.parties){
       const mv=p.ownerId&&moves[p.ownerId]&&moves[p.ownerId].round===g.round?moves[p.ownerId]:null;
@@ -1430,7 +1573,8 @@ const E=(function(){
       p.funds=r2(p.funds);p.members=r2(p.members);p.trust=r1(p.trust);p.unity=r1(p.unity);p.talent=r1(p.talent);
       for(const k in p.reg)p.reg[k]=r1(p.reg[k]);
     }
-    g.report={round:g.round,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
+    const tradeRep=judgeTrades(g,plans,bills,pmVoted,say);
+    g.report={round:g.round,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
     // 이번 분기에 승점이 어디서 얼마나 바뀌었는지 남긴다.
     const sc1=scoreRows(g);
     g.report.score=Object.fromEntries(sc1.map((x,i)=>{const a=sc0[x.id];return[x.id,{total:x.score,rank:i+1,d:x.score-a.score,vs:x.vs,
@@ -1457,6 +1601,7 @@ const E=(function(){
       });
       g.agenda=agenda;
       drawEvent(g,r,evRep.follow||null);
+      g.trades=[];g.tradesDone=[];g.botTrades=botTrades(g,r);
       g.botDeals=botDeals(g,r);
       // AI끼리 주고받은 제안은 기다릴 것 없이 바로 맺고, 소식은 이번 결과 보고에 싣는다
       formDeals(g,{},(text,...who)=>g.report.news.push({text,who}),false);
@@ -1585,11 +1730,12 @@ const E=(function(){
     else if(g.system!=='presidential'){g.pmParty=null;g.pmElection=true}
     g.agenda=[nextGovBill(g)];
     drawEvent(g,r);
+    g.trades=[];g.tradesDone=[];g.botTrades=botTrades(g,r);
     g.botDeals=botDeals(g,r);g.dealsDone=[];g.amendsDone=[];g.editsDone=[];g.pendingPacts=[];
     g.dealNews=[];formDeals(g,{},(text,...who)=>g.dealNews.push({text,who}),false);
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

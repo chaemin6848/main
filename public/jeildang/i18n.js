@@ -4328,6 +4328,158 @@ ND.add({
 "旋風党",
 "Whirlwind Party"
 ],
+"상대가 없습니다.": [
+"相手がいません。",
+"There's no such party."
+],
+"그만한 자금이 없습니다.": [
+"それだけの資金がありません。",
+"We don't have that much money."
+],
+"우리에게 이득입니다.": [
+"こちらに得です。",
+"It's a good deal for us."
+],
+"주고받는 것이 맞습니다.": [
+"釣り合いが取れています。",
+"It's a fair exchange."
+],
+"총리 지명 표는 쉽게 줄 수 없습니다.": [
+"首相指名の票は簡単には渡せません。",
+"We can't give away our PM vote that easily."
+],
+"우리 노선과 맞지 않는 표를 약속하기 어렵습니다.": [
+"自党の路線に合わない票は約束しにくいです。",
+"It's hard to promise a vote against our line."
+],
+"주는 것에 비해 얻는 것이 적습니다.": [
+"差し出すものに比べて得るものが少ないです。",
+"We'd give more than we get."
+],
+"분기 협상": [
+"四半期交渉",
+"Quarterly deals"
+],
+": 결재 탭의 '분기 협상'에서 연맹 안팎의 어느 당과도 이번 분기에만 유효한 거래를 맺습니다. 표 약속, 자금, 불가침, 총리 지명 표를 주고받습니다. 약속은 강제되지 않지만, 어기면 분기 말에 배신으로 공개되고 신뢰 −4, 상대와의 관계가 크게 나빠집니다. AI는 관계를 기억해 다음 거래와 연맹 제안에 반영합니다.": [
+"：決裁タブの「四半期交渉」で、連盟の内外を問わずどの党とも今期だけ有効な取引を結べます。票の約束、資金、不可侵、首相指名の票をやり取りします。約束は強制されませんが、破ると四半期末に裏切りとして公表され、信頼 −4、相手との関係が大きく悪化します。AIは関係を覚えていて、次の取引や連盟の提案に反映します。",
+": under \"Quarterly deals\" on the Decide tab you can strike deals valid for this quarter only with any party, inside or outside your federation. Trade vote pledges, money, non-aggression and PM votes. Promises aren't enforced, but breaking one is exposed as betrayal at the end of the quarter: trust −4 and a badly damaged relationship. AI parties remember and factor it into later deals and federation offers."
+],
+"서로 약속을 지켰습니다. 관계 +6": [
+"互いに約束を守りました。関係 +6",
+"Both kept their word. Relationship +6"
+],
+"둘 다 약속을 어겼습니다.": [
+"双方とも約束を破りました。",
+"Both broke their word."
+],
+"우리가 약속을 어겼습니다. 신뢰 −4": [
+"自党が約束を破りました。信頼 −4",
+"We broke our word. Trust −4"
+],
+"지난 분기 거래": [
+"前の四半期の取引",
+"Last quarter's deals"
+],
+"두터운 신뢰": [
+"厚い信頼",
+"Strong trust"
+],
+"우호": [
+"友好",
+"Friendly"
+],
+"배신당함": [
+"裏切られた",
+"Betrayed"
+],
+"불신": [
+"不信",
+"Distrust"
+],
+"불가침": [
+"不可侵",
+"non-aggression"
+],
+"우리": [
+"自党",
+"Us"
+],
+"와 거래 성사": [
+"と取引成立",
+" — deal agreed"
+],
+"에 보낸 거래": [
+"に送った取引",
+" — deal we offered"
+],
+"· 우리 연맹": [
+"· 自党の連盟",
+"· our federation"
+],
+"총리 지명 표": [
+"首相指名の票",
+"PM vote"
+],
+"어떻게": [
+"どう投票",
+"How"
+],
+"표 약속": [
+"票の約束",
+"Vote pledge"
+],
+"우리 자금보다 많이 줄 수 없습니다.": [
+"自党の資金より多くは渡せません。",
+"You can't give more money than you have."
+],
+"상대가 수락하는 즉시 성사되고 자금이 넘어갑니다.": [
+"相手が受け入れた時点で成立し、資金が移ります。",
+"It's agreed the moment they accept, and the money changes hands."
+],
+"성사된 거래": [
+"成立した取引",
+"Deals agreed"
+],
+"받은 거래 제안": [
+"受け取った取引の提案",
+"Deal offers received"
+],
+"보낸 거래 제안": [
+"送った取引の提案",
+"Deal offers sent"
+],
+"우리가 주는 것": [
+"自党が出すもの",
+"What we give"
+],
+"새 거래": [
+"新しい取引",
+"New deal"
+],
+"서로 불가침 (이번 분기 네거티브·폭로·빼오기·수사 지시 안 함)": [
+"相互不可侵（今期はネガティブ・暴露・引き抜き・捜査指示をしない）",
+"Mutual non-aggression (no smears, exposés, poaching or investigations this quarter)"
+],
+"거래 제안 보내기": [
+"取引を提案する",
+"Send deal offer"
+],
+"연맹 안팎의 어느 당과도 이번 분기에만 유효한 거래를 맺습니다. 표 약속, 자금, 불가침, 총리 지명 표를 주고받습니다. 약속은 강제되지 않지만, 어기면 분기 말에 배신으로 공개되고 신뢰 −4, 상대와의 관계가 크게 나빠집니다. 지키면 관계가 좋아져 다음 협상이 쉬워집니다.": [
+"連盟の内外を問わず、どの党とも今期だけ有効な取引を結べます。票の約束、資金、不可侵、首相指名の票をやり取りします。約束は強制されませんが、破ると四半期末に裏切りとして公表され、信頼 −4、相手との関係が大きく悪化します。守れば関係が良くなり、次の交渉が楽になります。",
+"Strike deals valid for this quarter only with any party, inside or outside your federation. Trade vote pledges, money, non-aggression and PM votes. Promises aren't enforced, but breaking one is exposed as betrayal at the end of the quarter: trust −4 and a badly damaged relationship. Keeping them improves relations and makes the next deal easier."
+],
+"연맹과 상관없이 어느 당과도 이번 분기만의 거래를 맺습니다. 자금을 주고 표를 사거나, 서로 공격하지 않기로 약속할 수 있습니다. 어기면 배신이 공개됩니다.": [
+"連盟に関係なく、どの党とも今期だけの取引を結べます。資金で票を買ったり、互いに攻撃しないと約束したりできます。破れば裏切りが公表されます。",
+"Regardless of federations, you can make a this-quarter-only deal with any party. Buy votes with money or agree not to attack each other. Break it and the betrayal is made public."
+],
+"거래를 제안했습니다. AI의 답은 아래에 보입니다.": [
+"取引を提案しました。AIの答えは下に表示されます。",
+"Deal offered. The AI's answer is shown below."
+],
+"거래를 제안했습니다. 상대 화면에 바로 뜹니다.": [
+"取引を提案しました。相手の画面にすぐ表示されます。",
+"Deal offered. It shows up on their screen right away."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -4351,6 +4503,10 @@ ND.add({
 "정부를 맡음": [
 "政府を担当",
 "In government"
+],
+"우리 연맹": [
+"自党の連盟",
+"our federation"
 ]
 });
 ND.pat([
@@ -4391,6 +4547,7 @@ ND.pat([
 [/^(.*?)·(.*?)\ 연대\ 합의\ ·\ (.*?)\.\ 두\ 당은\ 찬성으로\ 묶입니다\.$/,"$1・$2連携の合意 · $3。両党は賛成で縛られます。","$1–$2 alliance deal · $3. Both parties are bound to vote yes."],
 [/^(.*?)승점\ 현황과\ 추이는\ 국회\ 탭에서\ 볼\ 수\ 있습니다\.$/,"$1勝ち点の状況と推移は国会タブで見られます。","$1Standings and trends are on the Parliament tab."],
 [/^「(.*?)」에서\ (.*?)\ 제명안이\ 회원\ 과반을\ 얻지\ 못했습니다\.$/,"「$1」で$2の除名案は加盟党の過半数を得られませんでした。","In \"$1\", the motion to expel $2 failed to win a majority of members."],
+[/^(.*?)을\ 믿을\ 수\ 없습니다\.\ 지난번\ 약속을\ 어겼습니다\.$/,"$1は信用できません。前回の約束を破りました。","We can't trust $1. They broke their last promise."],
 [/^(.*?)\ 수사\ 지시가\ 권력\ 남용\ 논란으로\ 번졌습니다\.$/,"$1への捜査指示が権力乱用の論争に発展しました。","The order to investigate $1 has turned into an abuse-of-power row."],
 [/^(.*?)\ 내분\.\ 지역구\ 의원\ (.*?)명이\ (.*?)으로\ 탈당했습니다\.$/,"$1で内紛。選挙区議員$2人が離党して$3へ移りました。","Infighting in $1: $2 district lawmakers quit for $3."],
 [/^(.*?)\ 대표가\ 최대\ 정당\ 대표로\ 총리에\ 취임합니다\.$/,"$1代表が最大政党の党首として首相に就任します。","$1's leader takes office as prime minister as head of the largest party."],
@@ -4420,6 +4577,7 @@ ND.pat([
 [/^(.*?)\ 지역구\ 의원\ (.*?)명이\ (.*?)으로\ 옮겼습니다\.$/,"$1の選挙区議員$2人が$3に移りました。","$2 district lawmakers from $1 defected to $3."],
 [/^(.*?)에서\ 우리가\ (.*?)에\ 후보를\ 양보했습니다\.$/,"$1で自党が$2に候補を譲りました。","In $1, we stood down for $2."],
 [/^(.*?)이\ (.*?)의\ 연맹\ 제안을\ 받지\ 않았습니다\.$/,"$1は$2の連盟提案を受けませんでした。","$1 turned down $2's federation offer."],
+[/^(.*?)이\ (.*?)과\ 맺은\ 거래\ 약속을\ 어겼습니다\.$/,"$1が$2との取引の約束を破りました。","$1 broke its deal with $2."],
 [/^(.*?)의\ 폭로로\ (.*?)\ 대표\ 의혹이\ 번집니다\.$/,"$1の暴露で$2代表の疑惑が広がります。","$1's revelations spread suspicion about $2's leader."],
 [/^시간\ 안에\ 내지\ 않아\ 자동\ 처리:\ (.*?)$/,"時間内に提出しなかったため自動処理：$1","Not submitted in time, handled automatically: $1"],
 [/^본회의\ 안건\ (.*?)건에\ 찬반을\ 정하세요\.$/,"本会議の議案$1件に賛否を決めてください。","Vote on $1 floor items."],
@@ -4443,6 +4601,7 @@ ND.pat([
 [/^(.*?)\ 이름·노선\ 바꾸기\ \(선택\)$/,"$1の名前・路線を変える（任意）","Rename $1 / change its line (optional)"],
 [/^우리\ 지역구\ 예상\ 합계\ (.*?)석\.$/,"自党の選挙区予想合計 $1議席。","Projected district total for us: $1 seats."],
 [/^(.*?),\ (.*?)의\ 초대로\ 「(.*?)」에\ 합류\.$/,"$1、$2の招待で「$3」に合流。","$1 joins “$3” at $2's invitation."],
+[/^우리가\ (.*?)에\ (.*?)을\ 약속했습니다\.$/,"自党は$1に$2を約束しました。","We promised $1 a $2 vote."],
 [/^검찰,\ (.*?)\ 관련\ 수사\ 착수\.$/,"検察、$1関連の捜査に着手。","Prosecutors open an investigation into $1."],
 [/^(.*?),\ 외부\ 인재\ 영입\ 발표\.$/,"$1、外部人材の登用を発表。","$1 announces new outside recruits."],
 [/^지금은\ 총리가\ 없습니다\.\ (.*?)$/,"いまは首相がいません。$1","There is no prime minister right now. $1"],
@@ -4454,12 +4613,14 @@ ND.pat([
 [/^(.*?)가\ 총리로\ 지명됐습니다\.$/,"$1が首相に指名されました。","$1 has been named prime minister."],
 [/^·\ 대통령\ 선거\ (.*?)분기\ 말$/,"· 大統領選挙 $1四半期末","· Presidential election end of Q$1"],
 [/^목표\ (.*?)석\ ·\ 기준\ 승점\ (.*?)$/,"目標 $1議席 · 基準勝ち点 $2","Goal $1 seats · par $2 pts"],
+[/^의\ 거래\ 제안(.*?)\ ·\ 관계\ (.*?)$/,"からの取引の提案$1 · 関係 $2","'s deal offer$1 · relationship $2"],
 [/^정부,\ (.*?)에\ 예산\ 배정\.$/,"政府、$1に予算を配分。","Government allocates budget to $1."],
 [/^(.*?),\ (.*?)에서\ (.*?)\ 비난\ 광고\.$/,"$1、$2で$3を非難する広告。","$1 runs attack ads against $3 in $2."],
 [/^(.*?)\ 발의\ ·\ (.*?)\ ·\ (.*?)\ 지원$/,"$1提出 · $2 · $3支援","Moved by $1 · $2 · supports $3"],
 [/^●\ 지역구\ (.*?)\ ○\ 비례\ (.*?)$/,"● 選挙区 $1 ○ 比例 $2","● District $1 ○ PR $2"],
 [/^·\ 지역구\ (.*?)\ ·\ 비례\ (.*?)$/,"· 選挙区 $1 · 比例 $2","· district $1 · PR $2"],
 [/^지역구\ (.*?)석\ \+\ 비례\ (.*?)석$/,"選挙区$1議席 + 比例$2議席","$1 district seats + $2 PR seats"],
+[/^(.*?)이\ 약속을\ 어겼습니다\.$/,"$1が約束を破りました。","$1 broke its word."],
 [/^수반\ 후보는\ (.*?)입니다\.$/,"首班候補は$1です。","The head-of-government candidate is $1."],
 [/^(.*?),\ 내각\ 개편\ 단행\.$/,"$1、内閣改造を断行。","$1 reshuffles the cabinet."],
 [/^\(지역구\ (.*?),\ 비례\ (.*?)\)$/,"（選挙区$1、比例$2）","(district $1, PR $2)"],
@@ -4470,6 +4631,7 @@ ND.pat([
 [/^대통령\ 선거\ (.*?)분기\ 말$/,"大統領選挙 $1四半期末","Presidential election end of Q$1"],
 [/^「(.*?)」·「(.*?)」\ 합병\ 제안$/,"「$1」と「$2」の合併提案","merger of “$1” and “$2”"],
 [/^「(.*?)」\ 규칙\ 개정:\ (.*?)\.$/,"「$1」規則改正：$2。","\"$1\" rules amended: $2."],
+[/^(.*?)이\ (.*?)을\ 약속했습니다\.$/,"$1が$2を約束しました。","$1 promised a $2 vote."],
 [/^(.*?)\ 발의\ 「(.*?)」\ 가결\.$/,"$1提出の「$2」可決。","$1's \"$2\" passed."],
 [/^(.*?)\ 발의\ 「(.*?)」\ 부결\.$/,"$1提出の「$2」否決。","$1's \"$2\" defeated."],
 [/^지역구\ (.*?)\ ·\ 비례\ (.*?)$/,"選挙区 $1 · 比例 $2","District $1 · PR $2"],
@@ -4482,6 +4644,8 @@ ND.pat([
 [/^(.*?),\ 「(.*?)」에\ 합류\.\ (.*?)$/,"$1、「$2」に合流。$3","$1 joins “$2”. $3"],
 [/^탈퇴\ 벌점\ 신뢰\ −(.*?)$/,"脱退ペナルティ 信頼 −$1","leave penalty trust −$1"],
 [/^긴급\ 법안\ 「(.*?)」\ (.*?)\.$/,"緊急法案「$1」$2。","Emergency bill \"$1\" $2."],
+[/^총리\ 지명\ 표를\ (.*?)에$/,"首相指名の票を$1に","PM vote for $1"],
+[/^이번\ 분기\ 거래\ (.*?)건$/,"今期の取引 $1件","$1 deals this quarter"],
 [/^(.*?)·(.*?)\ 연대\ 성사\.\ (.*?)$/,"$1・$2の連携が成立。$3","$1–$2 alliance formed. $3"],
 [/^(.*?)\ (.*?)\ ·\ 연\ 수입\ (.*?)(.*?)$/,"$1 $2 · 年間収入 $3$4","$1 $2 · annual income $3$4"],
 [/^다른\ 당\ 변동:\ (.*?)$/,"他党の変動：$1","Other parties: $1"],
@@ -4513,6 +4677,8 @@ ND.pat([
 [/^여당\ 의석\ (.*?)석$/,"与党議席 $1","Ruling seats $1"],
 [/^지금대로\ \((.*?)\)$/,"今のまま（$1）","Keep current ($1)"],
 [/^일어난\ 곳:\ (.*?)$/,"発生地域: $1","Where: $1"],
+[/^거래\ 약속:\ (.*?)$/,"取引の約束: $1","Deal pledge: $1"],
+[/^(.*?):\ (.*?)\ ⇄\ (.*?):\ (.*?)$/,"$1: $2 ⇄ $3: $4","$1: $2 ⇄ $3: $4"],
 [/^그대로\ \((.*?)\)$/,"そのまま（$1）","Keep ($1)"],
 [/^(.*?)\ 정부\ 형태$/,"$1の政府形態","$1's system of government"],
 [/^(.*?)\ 모드\ 시작$/,"$1モードで開始","Start $1 mode"],
@@ -4542,6 +4708,7 @@ ND.pat([
 [/^우리\ 당\ (.*?)석(.*?)$/,"自党 $1議席$2","Our party: $1 seats$2"],
 [/^시나리오\ (.*?)개$/,"シナリオ $1本","$1 scenarios"],
 [/^시나리오:\ (.*?)(.*?)$/,"シナリオ: $1$2","Scenario: $1$2"],
+[/^(.*?)이\ 주는\ 것$/,"$1が出すもの","What $1 gives"],
 [/^대선\ 후보\ (.*?)$/,"大統領候補 $1","Presidential candidate: $1"],
 [/^지역구\ (.*?)석$/,"選挙区$1議席","$1 district seats"],
 [/^(.*?)\ \/\ (.*?)분기$/,"$1 / $2四半期","Q$1 / $2"],
@@ -4571,6 +4738,8 @@ ND.pat([
 [/^신뢰\ −(.*?)$/,"信頼 −$1","trust −$1"],
 [/^기준\ (.*?)점$/,"基準 $1点","Par $1"],
 [/^대상:\ (.*?)$/,"対象: $1","Target: $1"],
+[/^「(.*?)」에\ (.*?)$/,"「$1」に$2","$2 on \"$1\""],
+[/^(.*?):\ 없음$/,"$1: なし","$1: nothing"],
 [/^연맹:\ (.*?)(.*?)$/,"連盟：$1$2","Federation: $1$2"],
 [/^(.*?)만\ 명$/,"$1万人",null],
 [/^(.*?)\ 모드$/,"$1モード","$1 mode"],
@@ -4597,6 +4766,8 @@ ND.pat([
 [/^대표\ (.*?)$/,"代表 $1","leader $1"],
 [/^(.*?)개\ 당$/,"$1党","$1 parties"],
 [/^(.*?)\ 연맹$/,"$1連盟","$1 League"],
+[/^관계\ (.*?)$/,"関係 $1","relationship $1"],
+[/^자금\ (.*?)$/,"資金 $1","money $1"],
 [/^(.*?)\ (.*?)석(.*?)$/,"$1 $2議席$3","$1 $2 seats$3"],
 [/^(.*?)\ (.*?)석$/,"$1 $2議席","$1 $2 seats"],
 [/^색\ (.*?)$/,"色 $1","Colour $1"],
@@ -4611,7 +4782,8 @@ ND.pat([
 [/^(.*?)석$/,"$1議席","$1 seats"],
 [/^(.*?)건$/,"$1件","$1"],
 [/^(.*?)석(.*?)$/,"$1議席$2","$1 seats$2"],
-[/^(.*?)개$/,"$1党","$1"]
+[/^(.*?)개$/,"$1党","$1"],
+[/^(.*?)에$/,"$1に","for $1"]
 ]);
 /* ---- 손으로 쓴 부분 (tools/i18n/jeildang-extra.js) ---- */
 ND.terms();

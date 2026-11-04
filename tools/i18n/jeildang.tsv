@@ -978,3 +978,15 @@ AI 정당 {0}곳	AI政党 {0}党	{0} AI parties
 각자 출마	各党が個別に出馬	Run separately
 대선 후보	大統領候補	Presidential candidate
 · 대선 후보 {0}	· 大統領候補 {0}	· Presidential candidate: {0}
+목표 {0}석 · 기준 승점 {1}	目標 {0}議席 · 基準勝ち点 {1}	Goal {0} seats · par {1} pts
+국가 모드 목표: 실제 정당은 출발점이 크게 달라 정당마다 목표 의석과 기준 승점을 따로 줍니다. 마지막 총선 뒤 목표 의석 이상이면 +{0}, 순위는 승점에서 기준 승점을 뺀 '목표 대비'로 매깁니다. 큰 여당은 목표가 높고 작은 당은 낮아 어느 당을 맡아도 이길 수 있습니다. 목표는 맨 위 우리 당 칸과 승점 현황에 나옵니다.	国別モードの目標: 実在の政党はスタート地点が大きく違うため、政党ごとに目標議席と基準勝ち点を設けます。最後の総選挙で目標議席以上なら +{0}。順位は勝ち点から基準勝ち点を引いた「目標比」で決まります。大きな与党ほど目標が高く小さな党ほど低いので、どの党を担当しても勝てます。目標は画面上の自党欄と勝ち点状況に表示されます。	Country-mode goals: real parties start from very different places, so each gets its own seat goal and par score. Reaching the seat goal at the final general election is worth +{0}, and the ranking uses points minus par ("vs goal"). Big governing parties get high goals and small parties low ones, so any party can win. Your goal is shown in your party bar at the top and in the standings.
+마지막 총선 뒤 {0}석 이상이면 승점 +{1}. 순위는 승점에서 기준 승점 {2}을 뺀 목표 대비로 매깁니다.	最後の総選挙で{0}議席以上なら勝ち点 +{1}。順位は勝ち点から基準勝ち点 {2} を引いた目標比で決まります。	{0}+ seats after the final general election earns +{1} points. Ranking is points minus your par of {2}.
+목표 의석	目標議席	Seat goal
+기준 {0}점	基準 {0}点	Par {0}
+우리 당 승점 {0}점 ({1}) · 목표 대비 {2} · {3}위	自党の勝ち点 {0}点（{1}） · 目標比 {2} · {3}位	Our points: {0} ({1}) · vs goal {2} · rank {3}
+목표 의석 달성	目標議席達成	Seat goal reached
+국가 모드는 정당마다 출발점이 달라, 순위를 승점이 아니라 목표 대비(승점 − 기준 승점)로 매깁니다. 목표 의석을 채우면 승점 +{0}.	国別モードは政党ごとにスタート地点が違うため、順位を勝ち点ではなく目標比（勝ち点 − 基準勝ち点）で決めます。目標議席に届けば勝ち点 +{0}。	In country mode parties start from different places, so the ranking uses vs goal (points − par) instead of raw points. Reaching your seat goal adds +{0}.
+기준	基準	Par
+목표 대비	目標比	vs goal
+{0}석 / 목표 {1}석	{0}議席 / 目標 {1}議席	{0} seats / goal {1}
+{0} / 기준 {1}	{0} / 基準 {1}	{0} / par {1}

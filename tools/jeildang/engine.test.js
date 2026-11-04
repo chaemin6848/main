@@ -47,3 +47,32 @@ test('끝난 판을 이어 하면 다시 진행된다', () => {
   assert.strictEqual(h.status, 'playing');
   assert.ok(h.maxRounds > g.maxRounds);
 });
+
+test('국가 모드 정당은 모두 목표가 있고, 순위는 목표 대비로 매긴다', () => {
+  for (const c of Object.keys(E.COUNTRIES)) {
+    const { g, rows } = playOne({ seed: 11, rounds: 12, size: 5, country: c });
+    const live = rows.filter(r => !E.party(g, r.id).fixed);
+    for (const r of live) {
+      const p = E.party(g, r.id);
+      assert.ok(E.GOALS[c][p.pick], `${c} ${p.pick} 목표 표 없음`);
+      assert.ok(r.goalSeats >= 1 && Number.isFinite(r.par) && r.vs === r.score - r.par, `${c} ${p.pick}`);
+      assert.strictEqual(r.goal, r.seats >= r.goalSeats ? E.PTS.goalHit : 0);
+    }
+    for (let i = 1; i < live.length; i++) assert.ok(live[i - 1].vs >= live[i].vs, c + ' 목표 대비 순서');
+    assert.strictEqual(g.result.winner, live[0].id);
+  }
+});
+
+test('가상 공화국은 목표 없이 승점 순서 그대로', () => {
+  const { rows } = playOne({ seed: 11, rounds: 12, size: 5, country: null });
+  assert.ok(rows.every(r => r.par == null && r.goal === 0));
+  for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1].score >= rows[i].score);
+});
+
+test('표에 없는 새 정당과 긴 판도 목표를 받는다', () => {
+  const g = { country: 'jp', maxRounds: 36 };
+  const G = E.goalOf(g, { pick: 'new', startSeats: 5 });
+  assert.ok(G && G.seats >= 1 && G.par >= 0, JSON.stringify(G));
+  const big = E.goalOf(g, { pick: 'ldp', startSeats: 315 });
+  assert.ok(big.par > E.goalOf({ country: 'jp', maxRounds: 24 }, { pick: 'ldp' }).par, '24분기 뒤로도 기준 승점이 늘어난다');
+});

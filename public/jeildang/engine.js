@@ -2,7 +2,20 @@
 const E=(function(){
   const AP=3, NCOLORS=8, PR_THRESHOLD=.03, MEMBER_BILLS=2, GOV_FATIGUE=2.5, BAL={check:1,checkMax:8,revert:.08,welfare:3,reshuffle:1,sat:18,talentKeep:.88,talentMax:14,fatigueMax:10,fatigueMaxReal:16};
   // 승점 배점. 400석 기준이며 의석 관련 점수는 의회 크기로 나눠 맞춘다.
-  const PTS={seat:200,share:120,growth:200,growthMax:.15,minor:240,ownLaw:3,ownFail:-1,ideoMid:1,govLaw:1,govFail:-2,partnerLaw:1,pactLaw:5,ideoHit:2,ideoStrong:1,ideoMiss:-2,ideoStand:1.5,oppRound:2,block:2,noconf:8,pmRound:1.5,partnerRound:1,presRound:1,solo:20,coalition:15,minority:8,president:8,semiPres:10,trust:.25,unity:.2};
+  const PTS={seat:200,share:120,growth:200,growthMax:.15,minor:240,ownLaw:3,ownFail:-1,ideoMid:1,govLaw:1,govFail:-2,partnerLaw:1,pactLaw:5,ideoHit:2,ideoStrong:1,ideoMiss:-2,ideoStand:1.5,oppRound:2,block:2,noconf:8,pmRound:1.5,partnerRound:1,presRound:1,solo:20,coalition:15,minority:8,president:8,semiPres:10,trust:.25,unity:.2,goalHit:10};
+
+  // 국가 모드 정당별 목표. 정당마다 시작 처지가 달라 승점 절대값으로 겨루면 여당이 거의 늘 이긴다.
+  // 그래서 정당마다 [시작 의석, 그다음 GOAL_ROUNDS 분기 수마다 (목표 의석, 기준 승점)]을 두고,
+  // 목표 의석을 채우면 승점 +goalHit, 순위는 '승점 − 기준 승점'(목표 대비)으로 매긴다.
+  // 값은 AI끼리 자동 대전한 결과로 맞춘다: node tools/jeildang/calibrate.js (아래 표를 다시 쓴다)
+  // 사이 분기 수는 직선으로 잇고, 마지막보다 길면(한 임기 더 하기를 여러 번) 마지막 구간을 늘려 쓴다.
+  const GOAL_ROUNDS=[6,12,18,24];
+  const GOALS=/*GOALS-START*/{
+    kr:{dem:[161,131,99,118,125,113,158,110,192],ppp:[109,106,77,107,99,105,117,105,136],rebuild:[12,27,68,30,109,33,151,35,190],reform:[3,12,28,13,42,14,54,14,66],jinbo:[4,15,45,20,76,23,114,24,148]},
+    jp:{ldp:[315,260,124,230,142,222,170,218,201],sansei:[15,43,67,50,117,54,155,56,196],ishin:[36,49,62,54,107,55,141,56,172],komeito:[27,37,37,45,58,45,76,45,96],dpp:[28,27,26,28,30,28,34,28,37],cdp:[20,25,28,29,40,30,50,31,61],mirai:[11,12,15,14,21,16,25,16,32]},
+    us:{gop:[218,216,93,210,112,208,123,210,142],dem:[214,218,100,225,125,226,156,224,179]},
+    uk:{lab:[404,333,134,299,154,298,189,298,227],con:[118,149,81,151,101,140,118,130,135],green:[5,11,44,18,95,23,144,27,190],snp:[8,14,34,14,62,14,85,13,105],reform:[8,33,30,46,43,52,57,55,73],ld:[71,58,69,70,113,72,144,74,178],plaid:[4,7,25,6,46,5,62,5,78]},
+    fr:{ps:[67,82,58,68,77,65,99,65,124],rn:[118,115,68,95,79,90,98,88,113],eco:[38,57,46,68,80,73,109,74,140],dr:[47,68,49,72,70,73,82,73,96],dem:[71,52,25,48,35,46,43,45,51],lfi:[70,74,50,82,89,84,123,87,157],epr:[90,64,38,70,50,71,62,67,69]}}/*GOALS-END*/;
   let TOTAL=400,DISTRICT=280,PR=120,U=1,UNIT='억',MEMBER_NAME='당원';
   const HAERAM=[
     {id:'hanbyeol',name:'한별 수도권',seats:90,eco:.1,soc:.35,tag:'청년·사무직'},
@@ -1092,8 +1105,8 @@ const E=(function(){
     g.report={round:g.round,bills,pm:pmReport,pres:presReport,event:{title:ev.title,text:ev.text},news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
     // 이번 분기에 승점이 어디서 얼마나 바뀌었는지 남긴다.
     const sc1=scoreRows(g);
-    g.report.score=Object.fromEntries(sc1.map((x,i)=>{const a=sc0[x.id];return[x.id,{total:x.score,rank:i+1,d:x.score-a.score,
-      parts:{elec:x.elec+x.minor-a.elec-a.minor,law:x.law-a.law,ideo:x.ideo-a.ideo,gov:x.gov-a.gov,end:x.end-a.end,rep:x.rep-a.rep}}]}));
+    g.report.score=Object.fromEntries(sc1.map((x,i)=>{const a=sc0[x.id];return[x.id,{total:x.score,rank:i+1,d:x.score-a.score,vs:x.vs,
+      parts:{elec:x.elec+x.minor-a.elec-a.minor,law:x.law-a.law,ideo:x.ideo-a.ideo,gov:x.gov-a.gov,end:x.end-a.end,rep:x.rep-a.rep,goal:(x.goal||0)-(a.goal||0)}}]}));
     g.history.push({round:g.round,shares:roundShares(g),score:Object.fromEntries(sc1.map(x=>[x.id,x.score]))});
     if(isFinal){g.status='over';g.result=finalResult(g);g.deadline=0;g.agenda=[];g.botDeals=[]}
     else{
@@ -1157,6 +1170,27 @@ const E=(function(){
   // 표결 영향력: 의회의 10% 이상이면 1, 그보다 작으면 줄어든다(최소 0.3).
   const sway=p=>clamp(Math.sqrt(p.seats/(TOTAL*.1)),.3,1);
   // 승점표. 게임 중에는 '지금 끝나면' 기준으로 보여 주고, 마지막 분기 뒤 같은 식으로 확정한다.
+  // 정당의 목표: {seats:목표 의석, par:기준 승점}. 가상 공화국과 무소속 묶음은 목표가 없다.
+  // 표에 없는 당(새로 만든 당 등)은 시작 의석이 가까운 두 당 값으로 보간한다.
+  function goalOf(g,p){
+    if(!g.country||p.fixed)return null;
+    const T=GOALS[g.country];if(!T)return null;
+    const R=Math.max(1,(g.maxRounds|0)||12),K=GOAL_ROUNDS;
+    let j=K.findIndex(k=>k>=R);j=j<=0?1:j;if(R>K[K.length-1])j=K.length-1;
+    const t=(R-K[j-1])/(K[j]-K[j-1]),at=(v,o)=>v[1+2*(j-1)+o]+(v[1+2*j+o]-v[1+2*(j-1)+o])*t;
+    const pt=v=>({s0:v[0],seats:at(v,0),par:at(v,1)});
+    let o;
+    if(own(T,p.pick))o=pt(T[p.pick]);
+    else{
+      const xs=Object.values(T).map(pt).sort((a,b)=>a.s0-b.s0);if(!xs.length)return null;
+      const s0=p.startSeats||0;let i=xs.findIndex(x=>x.s0>=s0);
+      if(i<0)i=xs.length-1;if(i===0)i=Math.min(1,xs.length-1);
+      const a=xs[Math.max(0,i-1)],b=xs[i],t=b.s0===a.s0?0:(s0-a.s0)/(b.s0-a.s0);
+      o={seats:a.seats+(b.seats-a.seats)*t,par:a.par+(b.par-a.par)*t};
+      o.seats=Math.max(o.seats,s0*.8);
+    }
+    return{seats:Math.max(1,Math.round(o.seats)),par:Math.max(0,Math.round(o.par))};
+  }
   function scoreRows(g){
     const majority=Math.floor(TOTAL/2)+1;const k=400/TOTAL;
     const rows=g.parties.map(p=>{const s=p.pts||{law:0,ideo:0,gov:0,nLaw:0,nIdeo:0};
@@ -1178,9 +1212,15 @@ const E=(function(){
       else{const t=live.slice().sort((x,y)=>y.seats-x.seats)[0];if(t){t.end=PTS.minority;t.label='원내 1당'}}
     }
     if(g.system==='semi'&&g.presParty){const t=row(g.presParty);t.end+=PTS.semiPres;t.label=t.label?t.label+'·대통령':'대통령'}
-    rows.forEach(x=>x.score=x.elec+x.minor+x.law+x.ideo+x.gov+x.end+x.rep);
+    for(const x of rows){
+      const G=goalOf(g,party(g,x.id));x.goal=0;
+      if(G){x.goalSeats=G.seats;x.par=G.par;x.hit=x.seats>=G.seats;x.goal=x.hit?PTS.goalHit:0}
+    }
+    rows.forEach(x=>{x.score=x.elec+x.minor+x.law+x.ideo+x.gov+x.end+x.rep+x.goal;if(x.par!=null)x.vs=x.score-x.par});
     const out=id=>party(g,id).fixed?1:0;
-    rows.sort((a,b)=>out(a.id)-out(b.id)||b.score-a.score||b.seats-a.seats);
+    // 국가 모드는 목표 대비(승점 − 기준 승점)로, 가상 공화국은 승점으로 순위를 매긴다.
+    const key=x=>x.vs!=null?x.vs:x.score;
+    rows.sort((a,b)=>out(a.id)-out(b.id)||key(b)-key(a)||b.score-a.score||b.seats-a.seats);
     return rows;
   }
   function finalResult(g){const rows=scoreRows(g);return{rows,winner:rows[0].id}}
@@ -1201,6 +1241,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,GOALS,GOAL_ROUNDS,goalOf,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

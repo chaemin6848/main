@@ -91,6 +91,7 @@ details>summary{cursor:pointer;font-weight:700}
 .pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.78rem;white-space:nowrap}
 .pill.hot{border-color:var(--stamp);color:var(--stamp);font-weight:700}
 .mybar{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(70px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.mybar.goal{grid-template-columns:minmax(0,1.3fr) repeat(6,minmax(70px,1fr))}
 .mybar>div{background:var(--card);padding:8px 12px;min-width:0}
 .mybar .k{font-size:.75rem;color:var(--ink2);display:block}
 .mybar .v{font:500 1.15rem/1.3 var(--mono)}
@@ -170,6 +171,7 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
   .game-grid>[data-col]{display:none}
   .game-grid>[data-col][data-on="1"]{display:grid}
   .mybar{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .mybar.goal{grid-template-columns:repeat(3,minmax(0,1fr))}
   .mybar .who{grid-column:1/-1}
   .mybar>div{padding:6px 8px}
   .mybar .v{font-size:1rem}
@@ -344,7 +346,7 @@ function partyPicksHtml(country){
   const found=pool?`<button type="button" class="ideo" data-a="pick" data-v="new" aria-pressed="${isFounding()}"><b>+ 새 정당 창당</b><span>${esc(pool.name)} ${pool.seats}석 가운데 원하는 만큼 의원을 데려와 당을 만듭니다. 이름과 노선은 직접 정합니다.</span></button>`:'';
   return C.parties.slice().sort((a,b)=>b.seats-a.seats).map(x=>{
     const off=x.fixed||t[x.id];
-    return`<button type="button" class="ideo" data-a="pick" data-v="${x.id}" aria-pressed="${!isFounding()&&mine.id===x.id}" ${off?'disabled':''}><b><span class="chip" style="--c:${pColor(x)};display:inline-grid;min-width:12px;height:12px;padding:0;margin-right:5px"></span>${esc(x.name)} ${x.seats}석</b><span>${esc(x.idea)}${x.income?`<br>${esc(C.money.members)} ${members(x.members)} · 연 수입 ${x.income}${esc(C.money.unit)}`:''}<br>${x.fixed?'선택할 수 없음 · AI가 맡습니다':t[x.id]?'다른 플레이어가 골랐습니다':x.seats>=C.total*.07?'대형정당':'군소정당'}${!x.fixed&&C.pr?` · 지역구 ${x.district} · 비례 ${x.pr}`:''}</span></button>`;
+    return`<button type="button" class="ideo" data-a="pick" data-v="${x.id}" aria-pressed="${!isFounding()&&mine.id===x.id}" ${off?'disabled':''}><b><span class="chip" style="--c:${pColor(x)};display:inline-grid;min-width:12px;height:12px;padding:0;margin-right:5px"></span>${esc(x.name)} ${x.seats}석</b><span>${esc(x.idea)}${x.income?`<br>${esc(C.money.members)} ${members(x.members)} · 연 수입 ${x.income}${esc(C.money.unit)}`:''}<br>${x.fixed?'선택할 수 없음 · AI가 맡습니다':t[x.id]?'다른 플레이어가 골랐습니다':x.seats>=C.total*.07?'대형정당':'군소정당'}${!x.fixed&&C.pr?` · 지역구 ${x.district} · 비례 ${x.pr}`:''}${(()=>{const G=!x.fixed&&E.goalOf({country,maxRounds:(S.game&&S.game.settings&&S.game.settings.rounds)||12},{pick:x.id,startSeats:x.seats});return G?`<br>목표 ${G.seats}석 · 기준 승점 ${G.par}`:''})()}</span></button>`;
   }).join('')+found;
 }
 // 고른 정당의 이름·노선 바꾸기, 또는 창당 설정.
@@ -494,6 +496,7 @@ function rulesHtml(){return`
       <li>집권·견제: 분기마다 집권당 +${E.PTS.pmRound}, 연립 상대 +${E.PTS.partnerRound}, 정부에 들지 않은 당 가운데 의석이 가장 많은 제1야당 +${E.PTS.oppRound}. 집권당은 대신 신뢰가 매 분기 깎이고 오래 집권할수록 표가 줄어듭니다. 제1야당은 정권 견제 여론으로 분기마다 표가 조금씩 붙습니다.</li>
       <li>정부: 끝났을 때 단독 과반 +${E.PTS.solo}, 연맹 합산 과반이면 그 당들 각 +${E.PTS.coalition}, 둘 다 없으면 원내 1당 +${E.PTS.minority}, 대통령제의 대통령 여당 +${E.PTS.president}, 이원집정부제의 대통령 당 +${E.PTS.semiPres}.</li>
       <li>신뢰·결속: 끝났을 때 신뢰가 50에서 1 오를 때마다 +${E.PTS.trust}, 결속은 +${E.PTS.unity}(내려가면 감점).</li>
+      <li>국가 모드 목표: 실제 정당은 출발점이 크게 달라 정당마다 목표 의석과 기준 승점을 따로 줍니다. 마지막 총선 뒤 목표 의석 이상이면 +${E.PTS.goalHit}, 순위는 승점에서 기준 승점을 뺀 '목표 대비'로 매깁니다. 큰 여당은 목표가 높고 작은 당은 낮아 어느 당을 맡아도 이길 수 있습니다. 목표는 맨 위 우리 당 칸과 승점 현황에 나옵니다.</li>
     </ul></li>
   </ul>`}
 function canResume(g,me,mode){
@@ -792,8 +795,8 @@ function renderTop(){
   $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
     <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}<button class="btn ghost" data-a="exit">나가기</button></div>`;
   const stat=(k,v,d)=>`<div><span class="k">${k}</span><span class="v">${v}</span>${d!=null&&d!==0?` <span class="small muted">${fmtD(d)}</span>`:''}</div>`;
-  $('#mybar').innerHTML=me?`<div class="mybar"><div class="who">${chip(me)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
-    ${stat('의석',me.seats,me.delta&&me.delta.seats)}${stat(`자금 (${E.UNIT})`,Math.round(me.funds*100)/100,me.delta&&me.delta.funds)}${stat(`${E.MEMBER_NAME} (만 명)`,Math.round(me.members*100)/100,me.delta&&me.delta.members)}${stat('신뢰',Math.round(me.trust),me.delta&&me.delta.trust)}${stat('결속',Math.round(me.unity),me.delta&&me.delta.unity)}</div>`:'';
+  $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${chip(me)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
+    ${stat('의석',me.seats,me.delta&&me.delta.seats)}${stat(`자금 (${E.UNIT})`,Math.round(me.funds*100)/100,me.delta&&me.delta.funds)}${stat(`${E.MEMBER_NAME} (만 명)`,Math.round(me.members*100)/100,me.delta&&me.delta.members)}${stat('신뢰',Math.round(me.trust),me.delta&&me.delta.trust)}${stat('결속',Math.round(me.unity),me.delta&&me.delta.unity)}${(()=>{const G=E.goalOf(g,me);return G?`<div title="마지막 총선 뒤 ${G.seats}석 이상이면 승점 +${E.PTS.goalHit}. 순위는 승점에서 기준 승점 ${G.par}을 뺀 목표 대비로 매깁니다."><span class="k">목표 의석</span><span class="v">${G.seats}${me.seats>=G.seats?' ✓':''}</span><span class="small muted" style="display:block">기준 ${G.par}점</span></div>`:''})()}</div>`:'';
 }
 function renderHouse(){
   const g=S.game,me=myParty();const nat=E.nationalShares(g);
@@ -844,14 +847,14 @@ function renderHouse(){
   </section>`}`;
 }
 // 지난 분기 승점 변화: 우리 당은 항목별로, 다른 당은 합계만.
-const SCORE_PARTS={elec:'선거',law:'입법',ideo:'이념',gov:'집권',end:'정부',rep:'신뢰·결속'};
+const SCORE_PARTS={elec:'선거',law:'입법',ideo:'이념',gov:'집권',end:'정부',rep:'신뢰·결속',goal:'목표 의석'};
 function scoreDeltaHtml(g,me){
   const S0=g.report&&g.report.score;if(!S0)return'';
   const sign=n=>n>0?'+'+n:String(n);
   const mine=me&&S0[me.id];
   const parts=mine?Object.entries(mine.parts).filter(([,v])=>v).map(([k,v])=>`${SCORE_PARTS[k]} ${sign(v)}`).join(' · '):'';
   const others=g.parties.filter(p=>!p.fixed&&(!me||p.id!==me.id)&&S0[p.id]).sort((a,b)=>S0[b.id].d-S0[a.id].d).map(p=>`${esc(p.name)} ${sign(S0[p.id].d)}`).join(' · ');
-  return`<div>${mine?`<b>우리 당 승점 ${mine.total}점 (${sign(mine.d)}) · ${mine.rank}위</b><p class="small muted">${parts||'이번 분기에는 변동이 없었습니다.'}</p>`:''}<p class="small muted">다른 당 변동: ${others}</p></div>`;
+  return`<div>${mine?`<b>${mine.vs!=null?`우리 당 승점 ${mine.total}점 (${sign(mine.d)}) · 목표 대비 ${sign(mine.vs)} · ${mine.rank}위`:`우리 당 승점 ${mine.total}점 (${sign(mine.d)}) · ${mine.rank}위`}</b><p class="small muted">${parts||'이번 분기에는 변동이 없었습니다.'}</p>`:''}<p class="small muted">다른 당 변동: ${others}</p></div>`;
 }
 function reportHtml(g){
   const R=g.report;if(!R)return'';
@@ -1223,13 +1226,14 @@ function scoreLine(g,x){
   if(x.elec==null)return x.startSeats!=null?`${x.startSeats}석에서 ${x.seats}석`:`${x.seats}석`;
   const seat=x.startSeats!=null&&g.country?`${x.startSeats}→${x.seats}석`:`${x.seats}석`;
   const part=(n,t)=>n?`${t} ${n>0?'+':'−'}${Math.abs(n)}`:'';
-  return[part(x.elec,`선거(${seat})`)||`선거(${seat}) 0`,part(x.minor,'군소정당'),part(x.law,`입법 ${x.nLaw}건`),part(x.ideo,`이념 실현 ${x.nIdeo}건`),part(x.gov,'집권'),part(x.end,x.label),part(x.rep,'신뢰·결속')].filter(Boolean).join(' · ');
+  return[part(x.elec,`선거(${seat})`)||`선거(${seat}) 0`,part(x.minor,'군소정당'),part(x.law,`입법 ${x.nLaw}건`),part(x.ideo,`이념 실현 ${x.nIdeo}건`),part(x.gov,'집권'),part(x.end,x.label),part(x.rep,'신뢰·결속'),part(x.goal,'목표 의석 달성')].filter(Boolean).join(' · ');
 }
 function scoreBoard(g){
-  const me=myParty();const rows=E.scoreRows(g).filter(x=>!E.party(g,x.id).fixed);
-  return`<section class="panel"><h3>승점 현황</h3><p class="small muted">지금 게임이 끝나면 받을 점수입니다. 마지막 총선 뒤 같은 식으로 확정합니다.</p>
-    <div class="scroll"><table class="ptable score"><thead><tr><th>정당</th><th>선거</th><th>입법</th><th>이념</th><th>집권</th><th>정부</th><th>신뢰</th><th>합계</th></tr></thead><tbody>
-    ${rows.map(x=>{const p=E.party(g,x.id);return`<tr class="${me&&p.id===me.id?'me':''}"><td>${chip(p)} ${esc(p.name)}</td><td>${x.elec+x.minor}</td><td title="입법 성공 ${x.nLaw}건">${x.law} <span class="small muted">${x.nLaw}건</span></td><td title="노선에 맞는 법 ${x.nIdeo}건">${x.ideo} <span class="small muted">${x.nIdeo}건</span></td><td>${x.gov}</td><td title="${esc(x.label)}">${x.end}</td><td>${x.rep}</td><td><b>${x.score}</b></td></tr>`}).join('')}
+  const me=myParty();const rows=E.scoreRows(g).filter(x=>!E.party(g,x.id).fixed);const goals=rows.some(x=>x.par!=null);
+  const sg=n=>n>0?'+'+n:n<0?'−'+Math.abs(n):'0';
+  return`<section class="panel"><h3>승점 현황</h3><p class="small muted">지금 게임이 끝나면 받을 점수입니다. 마지막 총선 뒤 같은 식으로 확정합니다.</p>${goals?`<p class="small muted">국가 모드는 정당마다 출발점이 달라, 순위를 승점이 아니라 목표 대비(승점 − 기준 승점)로 매깁니다. 목표 의석을 채우면 승점 +${E.PTS.goalHit}.</p>`:''}
+    <div class="scroll"><table class="ptable score"><thead><tr><th>정당</th><th>선거</th><th>입법</th><th>이념</th><th>집권</th><th>정부</th><th>신뢰</th>${goals?'<th>목표 의석</th>':''}<th>합계</th>${goals?'<th>기준</th><th>목표 대비</th>':''}</tr></thead><tbody>
+    ${rows.map(x=>{const p=E.party(g,x.id);return`<tr class="${me&&p.id===me.id?'me':''}"><td>${chip(p)} ${esc(p.name)}</td><td>${x.elec+x.minor}</td><td title="입법 성공 ${x.nLaw}건">${x.law} <span class="small muted">${x.nLaw}건</span></td><td title="노선에 맞는 법 ${x.nIdeo}건">${x.ideo} <span class="small muted">${x.nIdeo}건</span></td><td>${x.gov}</td><td title="${esc(x.label)}">${x.end}</td><td>${x.rep}</td>${goals?`<td title="${x.seats}석 / 목표 ${x.goalSeats}석">${x.seats}/${x.goalSeats}${x.hit?' ✓':''}</td>`:''}${goals?`<td>${x.score}</td><td class="muted">${x.par}</td><td><b>${sg(x.vs)}</b></td>`:`<td><b>${x.score}</b></td>`}</tr>`}).join('')}
     </tbody></table></div></section>`;
 }
 function finalHtml(g){
@@ -1237,7 +1241,7 @@ function finalHtml(g){
   return`<section class="panel">
     <div class="row">${stamp('big-stamp')}<div><span class="small muted">${(g.terms||[]).length?`${g.terms.length+1}번째 총선 결과 · 승점은 첫 분기부터 누적`:'총선 결과'}</span><h2 style="font-size:1.3rem;color:var(--ink);overflow-wrap:anywhere">${esc(w.name)} 승리</h2>${w.slogan?`<p class="muted">“${esc(w.slogan)}”</p>`:''}</div></div>
     ${me?`<p>${me.id===w.id?'축하합니다. 제1당 대표가 되셨습니다.':`${esc(me.name)}: ${R.rows.findIndex(x=>x.id===me.id)+1}위`}</p>`:''}
-    <div>${R.rows.map((x,i)=>{const p=E.party(g,x.id);return`<div class="res-row"><span class="muted">${i+1}</span><div style="min-width:0">${chip(p)} <strong>${esc(p.name)}</strong><span class="small muted" style="display:block">${scoreLine(g,x)}</span></div><span class="code">${x.score}</span><span class="small muted">승점</span></div>`}).join('')}</div>
+    <div>${R.rows.map((x,i)=>{const p=E.party(g,x.id);return`<div class="res-row"><span class="muted">${i+1}</span><div style="min-width:0">${chip(p)} <strong>${esc(p.name)}</strong><span class="small muted" style="display:block">${scoreLine(g,x)}</span></div>${x.vs!=null?`<span class="code">${x.vs>0?'+':x.vs<0?'−':''}${Math.abs(x.vs)}</span><span class="small muted">목표 대비<br>${x.score} / 기준 ${x.par}</span>`:`<span class="code">${x.score}</span><span class="small muted">승점</span>`}</div>`}).join('')}</div>
     <div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:12px">
       <h2>한 판 더 하시겠어요?</h2>
       ${me?`<p class="small muted">한 임기 더 하면 지금 의석과 승점을 그대로 이어 ${g.term||g.maxRounds}분기를 더 합니다${g.cycle?`(${g.cycle/2}분기째 재보궐, ${g.cycle}분기째 총선)`:''}. 몇 번이든 이어 갈 수 있습니다.</p>`:''}

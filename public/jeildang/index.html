@@ -177,7 +177,11 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 @media (max-width:760px){
   .hero,.home-grid,.lobby-grid{grid-template-columns:minmax(0,1fr)}
 }
-@media (prefers-reduced-motion:reduce){.big-stamp{animation:none}}
+@keyframes slide-l{from{opacity:.3;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes slide-r{from{opacity:.3;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.game-grid>[data-col].slide-l{animation:slide-l .18s ease-out}
+.game-grid>[data-col].slide-r{animation:slide-r .18s ease-out}
+@media (prefers-reduced-motion:reduce){.big-stamp{animation:none}.game-grid>[data-col].slide-l,.game-grid>[data-col].slide-r{animation:none}}
 </style>
 </head>
 <body>
@@ -1937,6 +1941,39 @@ function mountGame(){
   renderChat();
 }
 function setTab(t){S.tab=t;document.querySelectorAll('[data-col]').forEach(c=>c.dataset.on=c.dataset.col===t?'1':'0');document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===t))}
+/* ---------- 모바일: 결재·국회·규칙(협상)을 좌우로 밀어 넘기기 ---------- */
+// 탭이 보이는 좁은 화면에서만 쓴다. 입력칸·가로로 스크롤되는 표에서 시작한 터치는 그 칸의 몫으로 둔다.
+const TAB_ORDER=['decide','house','talk'];
+const narrow=matchMedia('(max-width:1100px)');
+let swipe=null;
+function scrollsX(el){
+  for(let n=el;n&&n!==document.body;n=n.parentElement){
+    if(n.matches('input,select,textarea,[contenteditable],[data-noswipe]'))return true;
+    const o=getComputedStyle(n).overflowX;
+    if((o==='auto'||o==='scroll')&&n.scrollWidth>n.clientWidth+2)return true;
+  }
+  return false;
+}
+document.addEventListener('touchstart',ev=>{
+  swipe=null;
+  if(!narrow.matches||S.screen!=='game'||ev.touches.length!==1||$('#modal').innerHTML)return;
+  const grid=ev.target.closest&&ev.target.closest('.game-grid');if(!grid||scrollsX(ev.target))return;
+  const t=ev.touches[0];swipe={x:t.clientX,y:t.clientY,at:Date.now()};
+},{passive:true});
+document.addEventListener('touchmove',ev=>{if(swipe&&ev.touches.length>1)swipe=null},{passive:true});
+document.addEventListener('touchend',ev=>{
+  const s0=swipe;swipe=null;if(!s0||!ev.changedTouches.length)return;
+  const t=ev.changedTouches[0],dx=t.clientX-s0.x,dy=t.clientY-s0.y;
+  // 충분히 옆으로, 세로보다 확실히 옆으로, 빠르게 민 경우만
+  if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.8||Date.now()-s0.at>800)return;
+  const i=TAB_ORDER.indexOf(S.tab),j=i+(dx<0?1:-1);
+  if(i<0||j<0||j>=TAB_ORDER.length)return;
+  setTab(TAB_ORDER[j]);
+  const col=document.querySelector(`.game-grid>[data-col="${TAB_ORDER[j]}"]`);
+  if(col){col.classList.remove('slide-l','slide-r');void col.offsetWidth;col.classList.add(dx<0?'slide-l':'slide-r')}
+  // 탭 줄이 화면 위로 지나가 있으면 새 탭의 맨 위가 보이게 올린다
+  const bar=document.querySelector('.tabs');if(bar&&bar.getBoundingClientRect().top<0)bar.scrollIntoView({block:'start'});
+},{passive:true});
 function ensureDraft(){
   const g=S.game;
   if(!S.draft||S.draft.round!==g.round){S.draft={round:g.round,votes:{},pm:'',actions:[],gov:[],bill:null,submitted:false};syncDraftFromMoves()}

@@ -3,666 +3,85 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Pokémon FireRed / LeafGreen Kanto Pokédex checklist and trade & evolution helper · 파이어레드·리프그린 관동도감 도우미 · ファイアレッド・リーフグリーン カントー図鑑ヘルパー">
-<title>FRLG 관동도감 도우미</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c8323c'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E図%3C/text%3E%3C/svg%3E">
+<title>포켓몬 도감 채우기 도우미 | 파이어레드·리프그린·루비·사파이어·블랙·화이트·블랙2·화이트2</title>
+<meta name="description" content="포켓몬 3세대·5세대 도감을 두 세이브로 채우는 순서를 정리해 주는 무료 도우미. 파이어레드·리프그린 관동도감, 루비·사파이어 호연도감, 블랙·화이트와 블랙2·화이트2 하나도감의 버전 전용 포켓몬, 교환 진화, 진화 방법, 입수처를 한 번에 확인하세요.">
+<link rel="canonical" href="https://nihongodic.com/pokemon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="포켓몬 도감 채우기 도우미">
+<meta property="og:title" content="포켓몬 도감 채우기 도우미 | 파이어레드·리프그린·루비·사파이어·블랙·화이트·블랙2·화이트2">
+<meta property="og:description" content="포켓몬 3세대·5세대 도감을 두 세이브로 채우는 순서를 정리해 주는 무료 도우미. 파이어레드·리프그린 관동도감, 루비·사파이어 호연도감, 블랙·화이트와 블랙2·화이트2 하나도감의 버전 전용 포켓몬, 교환 진화, 진화 방법, 입수처를 한 번에 확인하세요.">
+<meta property="og:url" content="https://nihongodic.com/pokemon/">
+<meta property="og:image" content="https://nihongodic.com/pokemon/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 도감 채우기 도우미 | 파이어레드·리프그린·루비·사파이어·블랙·화이트·블랙2·화이트2">
+<meta name="twitter:description" content="포켓몬 3세대·5세대 도감을 두 세이브로 채우는 순서를 정리해 주는 무료 도우미. 파이어레드·리프그린 관동도감, 루비·사파이어 호연도감, 블랙·화이트와 블랙2·화이트2 하나도감의 버전 전용 포켓몬, 교환 진화, 진화 방법, 입수처를 한 번에 확인하세요.">
+<meta name="twitter:image" content="https://nihongodic.com/pokemon/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2326221f'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E図%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+KR:wght@400;600&family=Noto+Sans+JP:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="dex.css">
 <style>
-/* Layout: one column; sticky header with two version meters, save + language switches; tabs for plan and full dex */
-:root{
-  --bg:#f5f3ef; --surface:#ffffff; --fg:#26221f; --muted:#776f68; --line:#e4ddd5;
-  --fr:#c8323c; --fr-soft:#f7dcdd; --lg:#2f8a4e; --lg-soft:#d8eedf; --done:#2f8a4e;
-  --f-display:"DotGothic16","IBM Plex Sans KR",monospace;
-  --f-body:"IBM Plex Sans KR","Noto Sans JP",system-ui,sans-serif;
-  --f-jp:"Noto Sans JP","Hiragino Sans",sans-serif;
-}
-html[lang="ja"]{--f-body:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif}
-html[lang="en"]{--f-body:"IBM Plex Sans KR",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#181614; --surface:#22201d; --fg:#eee8e2; --muted:#a39a92; --line:#38332e;
-  --fr:#ff6b72; --fr-soft:#40242a; --lg:#62c487; --lg-soft:#1f3a29; --done:#62c487; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#181614; --surface:#22201d; --fg:#eee8e2; --muted:#a39a92; --line:#38332e;
-  --fr:#ff6b72; --fr-soft:#40242a; --lg:#62c487; --lg-soft:#1f3a29; --done:#62c487; color-scheme:dark}
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.5}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 48px}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px 0;border-bottom:1px solid var(--line)}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-h1{font-family:var(--f-display);font-weight:400;font-size:1.3rem;margin:0;text-wrap:balance}
-.meters{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-.meter{display:grid;gap:4px}
-.mrow{display:flex;justify-content:space-between;font-size:.8rem}
-.mrow b{font-family:var(--f-display);font-weight:400;font-variant-numeric:tabular-nums}
-.bar{height:8px;background:var(--line);border-radius:2px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;transition:width .25s}
-.fr .bar i{background:var(--fr)} .lg .bar i{background:var(--lg)}
-.fr .mrow span{color:var(--fr)} .lg .mrow span{color:var(--lg)}
-.ctrl{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
-.seg button{font:inherit;font-size:.85rem;border:0;background:none;color:var(--muted);padding:6px 12px;cursor:pointer}
-.seg button[aria-pressed="true"]{color:#fff}
-#saveSeg button[data-v="fr"][aria-pressed="true"]{background:var(--fr)}
-#saveSeg button[data-v="lg"][aria-pressed="true"]{background:var(--lg)}
-#langSeg button{font-size:.78rem;padding:4px 9px}
-#langSeg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-.tabs{display:flex;gap:4px;margin-top:10px}
-.tabs button{font:inherit;font-size:.9rem;border:0;background:none;color:var(--muted);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}
-.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
-button:focus-visible,input:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
-.lbl{font-size:.8rem;color:var(--muted)}
-section{margin-top:22px}
-.gh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-h2{font-size:1rem;margin:0}
-.gc{font-family:var(--f-display);font-size:.85rem;color:var(--muted)}
-.note{font-size:.8rem;color:var(--muted);margin:4px 0 8px}
-ul{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px}
-li{border-top:1px solid var(--line);display:grid;grid-template-columns:3em 1fr auto;gap:10px;align-items:center;padding:9px 12px}
-li:first-child{border-top:0}
-.no{font-family:var(--f-display);font-variant-numeric:tabular-nums;color:var(--muted)}
-.nm{min-width:0}
-.pn{font-weight:600}
-.sn{color:var(--muted);font-size:.82rem;margin-left:6px}
-.sn:lang(ja){font-family:var(--f-jp)}
-.how{display:block;font-size:.8rem;color:var(--muted)}
-.tag{display:inline-block;font-size:.68rem;padding:0 5px;border-radius:3px;margin-left:6px;vertical-align:1px;font-weight:600}
-.tag.F{background:var(--fr-soft);color:var(--fr)} .tag.L{background:var(--lg-soft);color:var(--lg)}
-.tag.T{background:var(--line);color:var(--fg)}
-.pills{display:flex;gap:6px}
-.pill{font:inherit;font-family:var(--f-display);font-size:.78rem;min-width:2.6em;padding:4px 6px;border-radius:4px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
-.pill.fr.on{background:var(--fr);border-color:var(--fr);color:#fff}
-.pill.lg.on{background:var(--lg);border-color:var(--lg);color:#fff}
-.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
-input[type=search]{font:inherit;flex:1 1 180px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font:inherit;font-size:.8rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
-.chip[aria-pressed="true"]{border-color:var(--fg);color:var(--fg);font-weight:600}
-.empty{padding:28px 12px;text-align:center;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-top:22px}
-.foot{margin-top:32px;display:grid;gap:8px}
-.foot textarea{font-family:var(--f-display);font-size:.8rem;width:100%;min-height:3.2em;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);resize:vertical}
-.btns{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:inherit;font-size:.8rem;background:none;border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:4px;cursor:pointer}
-.btn.arm{border-color:var(--fr);color:var(--fr)}
-.msg{font-size:.8rem;color:var(--done);min-height:1.2em}
-.legal{margin-top:24px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
-.legal a,.legal button{font:inherit;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
-.support{margin-top:14px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.support p{margin:0;font-size:.82rem;color:var(--muted);flex:1 1 220px;min-width:0}
-.support .btns{flex:0 0 auto}
-.support a.btn{text-decoration:none;color:var(--fg);border-color:var(--fg);font-size:.82rem;padding:5px 12px}
-.support .x{font:inherit;font-size:1.1rem;line-height:1;width:28px;height:28px;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:4px;flex:0 0 auto}
-.support .x:hover{background:var(--line)}
-.credit{font-size:.75rem;color:var(--muted);margin-top:8px}
-#cookie{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.08);padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-#cookie .in{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:14px;display:grid;gap:10px}
-#cookie h2{font-size:.95rem}
-#cookie p{margin:0;font-size:.85rem;color:var(--muted)}
-#cookie p a{color:var(--fg)}
-#cookie .btns .btn{font-size:.85rem;padding:8px 14px}
-#cookie .btn.pri{background:var(--fg);border-color:var(--fg);color:var(--bg)}
-body.has-banner .wrap{padding-bottom:240px}
-@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
-.ndc-home{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;width:max-content;text-decoration:none;font-size:12px;letter-spacing:.06em;padding:4px 0;margin:0 0 10px;font-family:var(--f-body);color:var(--muted)}.ndc-home:hover{color:var(--fg)}.ndc-home:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:4px}
+/* Layout: one column — title + language switch, then one card per game with both save meters */
+.hub{display:grid;gap:28px;padding-top:12px}
+.hub .top{align-items:flex-start}
+.hub h1{font-size:1.7rem}
+.lead{margin:6px 0 0;color:var(--muted);font-size:.9rem;max-width:46ch}
+.games{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.game{display:grid;gap:12px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:inherit;text-decoration:none;
+  border-left:6px solid var(--v0);transition:border-color .15s,transform .15s}
+.game:hover{border-color:var(--fg);border-left-color:var(--v0);transform:translateY(-1px)}
+.game:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.gtitle{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.gtitle h2{font-family:var(--f-display);font-weight:400;font-size:1.15rem}
+.gtitle h2 b{font-weight:400;color:var(--v0)} .gtitle h2 i{font-style:normal;color:var(--v1)}
+.gtitle span{font-size:.8rem;color:var(--muted)}
+.game p{margin:0;font-size:.85rem;color:var(--muted)}
+.game .meters{margin-top:0}
+.go{font-size:.85rem;font-weight:600}
+.go span{display:inline-block;transition:transform .15s}
+.game:hover .go span{transform:translateX(3px)}
+.steps{font-size:.85rem;color:var(--muted);margin:8px 0 0;padding-left:1.2em}
+.steps li{margin:4px 0}
+@media (prefers-reduced-motion:reduce){.game,.go span{transition:none}}
 </style>
 </head>
 <body>
-<script src="/shared/nav.js"></script>
-<div class="wrap">
-  <header>
-    <div class="top">
+<div class="wrap hub">
+  <div class="top">
+    <div>
       <h1 data-i="h1"></h1>
-      <div class="seg" id="langSeg" role="group" aria-label="Language">
-        <button type="button" data-l="ko" lang="ko">한국어</button>
-        <button type="button" data-l="ja" lang="ja">日本語</button>
-        <button type="button" data-l="en" lang="en">English</button>
-      </div>
+      <p class="lead" data-i="lead"></p>
     </div>
-    <div class="meters">
-      <div class="meter fr"><div class="mrow"><span data-i="FR"></span><b id="mFr">0 / 150</b></div><div class="bar"><i id="bFr"></i></div></div>
-      <div class="meter lg"><div class="mrow"><span data-i="LG"></span><b id="mLg">0 / 150</b></div><div class="bar"><i id="bLg"></i></div></div>
+    <div class="seg" id="langSeg" role="group" aria-label="Language">
+      <button type="button" data-l="ko" lang="ko">한국어</button>
+      <button type="button" data-l="ja" lang="ja">日本語</button>
+      <button type="button" data-l="en" lang="en">English</button>
     </div>
-    <div class="ctrl">
-      <span class="lbl" data-i="saveLbl"></span>
-      <div class="seg" id="saveSeg" role="group">
-        <button type="button" data-v="fr" data-i="FR"></button>
-        <button type="button" data-v="lg" data-i="LG"></button>
-      </div>
-    </div>
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" id="tabPlan" data-i="tabPlan"></button>
-      <button type="button" role="tab" id="tabDex" data-i="tabDex"></button>
-    </div>
-  </header>
-
-  <div class="support" id="support" hidden>
-    <p data-i="supP"></p>
-    <div class="btns" id="supBtns"></div>
-    <button type="button" class="x" id="supX" data-i-aria="supHide">×</button>
   </div>
 
-  <main id="plan"></main>
+  <ul class="games">
+    <li><a class="game" href="frlg/" data-game="frlg"></a></li>
+    <li><a class="game" href="rs/" data-game="rs"></a></li>
+    <li><a class="game" href="bw/" data-game="bw"></a></li>
+    <li><a class="game" href="b2w2/" data-game="b2w2"></a></li>
+  </ul>
 
-  <main id="dex" hidden>
-    <div class="tools">
-      <input type="search" id="q">
-    </div>
-    <div class="tools chips" id="filt">
-      <button type="button" class="chip" data-f="all" data-i="fAll"></button>
-      <button type="button" class="chip" data-f="need" data-i="fNeed"></button>
-      <button type="button" class="chip" data-f="F" data-i="tagF"></button>
-      <button type="button" class="chip" data-f="L" data-i="tagL"></button>
-      <button type="button" class="chip" data-f="T" data-i="tagT"></button>
-    </div>
-    <section><ul id="dexList"></ul></section>
-  </main>
+  <section>
+    <h2 data-i="howT"></h2>
+    <ul class="steps" id="how"></ul>
+  </section>
 
-  <div class="foot">
-    <span class="lbl" data-i="backupLbl"></span>
-    <textarea id="code" spellcheck="false" aria-label="Backup code"></textarea>
-    <div class="btns">
-      <button type="button" class="btn" id="copy" data-i="copy"></button>
-      <button type="button" class="btn" id="load" data-i="load"></button>
-      <button type="button" class="btn" id="reset" data-i="reset"></button>
-    </div>
-    <span class="msg" id="msg" aria-live="polite"></span>
-  </div>
   <div class="legal">
-    <span id="where"></span>
     <a href="/privacy.html" id="privLink" data-i="privacy"></a>
-    <button type="button" id="cookieSet" data-i="cookieSet"></button>
-    <button type="button" id="supShow" data-i="supShow" hidden></button>
   </div>
   <p class="credit" data-i="credit"></p>
 </div>
-
-<div id="cookie" role="dialog" aria-labelledby="ckT" hidden>
-  <div class="in">
-    <h2 id="ckT" data-i="ckT"></h2>
-    <p><span data-i="ckP"></span> <a href="/privacy.html" id="ckMore" data-i="ckMore"></a></p>
-    <div class="btns">
-      <button type="button" class="btn pri" id="ckYes" data-i="ckYes"></button>
-      <button type="button" class="btn" id="ckNo" data-i="ckNo"></button>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ===== 후원 링크 =====
-   url을 채우면 버튼이 나타나요. 비워 두면 후원 영역 전체가 숨겨져요. */
-const DONATE=[
-  {label:"Buy Me a Coffee",url:"https://buymeacoffee.com/attl6848"},
-  {label:"투네이션",url:"",only:"ko"}
-];
-
-/* ===== 데이터 =====
-   [번호, 한국어, 일본어, 영어, 전단계, 진화(숫자=레벨 | thunder/moon/fire/water/leaf/trade), 입수처 토큰, 버전전용 F/L, 선택지 S/C]
-   입수처 토큰: 숫자=도로 번호, 문자열=장소 키, "T:장소:주는번호"=게임 내 교환 */
-const D=[
-[1,"이상해씨","フシギダネ","Bulbasaur",0,0,["lab"],"","S"],[2,"이상해풀","フシギソウ","Ivysaur",1,16],[3,"이상해꽃","フシギバナ","Venusaur",2,32],
-[4,"파이리","ヒトカゲ","Charmander",0,0,["lab"],"","S"],[5,"리자드","リザード","Charmeleon",4,16],[6,"리자몽","リザードン","Charizard",5,36],
-[7,"꼬부기","ゼニガメ","Squirtle",0,0,["lab"],"","S"],[8,"어니부기","カメール","Wartortle",7,16],[9,"거북왕","カメックス","Blastoise",8,36],
-[10,"캐터피","キャタピー","Caterpie",0,0,["vforest",25]],[11,"단데기","トランセル","Metapod",10,7],[12,"버터플","バタフリー","Butterfree",11,10],
-[13,"뿔충이","ビードル","Weedle",0,0,["vforest",2]],[14,"딱충이","コクーン","Kakuna",13,7],[15,"독침붕","スピアー","Beedrill",14,10],
-[16,"구구","ポッポ","Pidgey",0,0,[1,2,"etc"]],[17,"피죤","ピジョン","Pidgeotto",16,18],[18,"피죤투","ピジョット","Pidgeot",17,36],
-[19,"꼬렛","コラッタ","Rattata",0,0,[1,2,"etc"]],[20,"레트라","ラッタ","Raticate",19,20],
-[21,"깨비참","オニスズメ","Spearow",0,0,[3,4,"etc"]],[22,"깨비드릴조","オニドリル","Fearow",21,20],
-[23,"아보","アーボ","Ekans",0,0,[4,8,11],"F"],[24,"아보크","アーボック","Arbok",23,22,0,"F"],
-[25,"피카츄","ピカチュウ","Pikachu",0,0,["vforest","plant"]],[26,"라이츄","ライチュウ","Raichu",25,"thunder"],
-[27,"모래두지","サンド","Sandshrew",0,0,[4,8,11],"L"],[28,"고지","サンドパン","Sandslash",27,22,0,"L"],
-[29,"니드런♀","ニドラン♀","Nidoran♀",0,0,[3,"safari"]],[30,"니드리나","ニドリーナ","Nidorina",29,16],[31,"니드퀸","ニドクイン","Nidoqueen",30,"moon"],
-[32,"니드런♂","ニドラン♂","Nidoran♂",0,0,[3,"safari"]],[33,"니드리노","ニドリーノ","Nidorino",32,16],[34,"니드킹","ニドキング","Nidoking",33,"moon"],
-[35,"삐삐","ピッピ","Clefairy",0,0,["mtmoon"]],[36,"픽시","ピクシー","Clefable",35,"moon"],
-[37,"식스테일","ロコン","Vulpix",0,0,[7,8],"L"],[38,"나인테일","キュウコン","Ninetales",37,"fire",0,"L"],
-[39,"푸린","プリン","Jigglypuff",0,0,[3]],[40,"푸크린","プクリン","Wigglytuff",39,"moon"],
-[41,"주뱃","ズバット","Zubat",0,0,["mtmoon","caves"]],[42,"골뱃","ゴルバット","Golbat",41,22],
-[43,"뚜벅쵸","ナゾノクサ","Oddish",0,0,[5,6,7,12,13,14,15,24,25],"F"],[44,"냄새꼬","クサイハナ","Gloom",43,21,0,"F"],[45,"라플레시아","ラフレシア","Vileplume",44,"leaf",0,"F"],
-[46,"파라스","パラス","Paras",0,0,["mtmoon"]],[47,"파라섹트","パラセクト","Parasect",46,24],
-[48,"콘팡","コンパン","Venonat",0,0,[12,13,14,15,24,25]],[49,"도나리","モルフォン","Venomoth",48,31],
-[50,"디그다","ディグダ","Diglett",0,0,["diglett"]],[51,"닥트리오","ダグトリオ","Dugtrio",50,26],
-[52,"나옹","ニャース","Meowth",0,0,[5,6,7,8]],[53,"페르시온","ペルシアン","Persian",52,28],
-[54,"고라파덕","コダック","Psyduck",0,0,["seafoam","water"],"F"],[55,"골덕","ゴルダック","Golduck",54,33,0,"F"],
-[56,"망키","マンキー","Mankey",0,0,[22]],[57,"성원숭","オコリザル","Primeape",56,28],
-[58,"가디","ガーディ","Growlithe",0,0,[7,8,"mansion"],"F"],[59,"윈디","ウインディ","Arcanine",58,"fire",0,"F"],
-[60,"발챙이","ニョロモ","Poliwag",0,0,["goodrod"]],[61,"슈륙챙이","ニョロゾ","Poliwhirl",60,25],[62,"강챙이","ニョロボン","Poliwrath",61,"water"],
-[63,"캐이시","ケーシィ","Abra",0,0,[24,25,"gamecorner"]],[64,"윤겔라","ユンゲラー","Kadabra",63,16],[65,"후딘","フーディン","Alakazam",64,"trade"],
-[66,"알통몬","ワンリキー","Machop",0,0,["rocktunnel","victory"]],[67,"근육몬","ゴーリキー","Machoke",66,28],[68,"괴력몬","カイリキー","Machamp",67,"trade"],
-[69,"모다피","マダツボミ","Bellsprout",0,0,[5,6,7,12,13,14,15,24,25],"L"],[70,"우츠동","ウツドン","Weepinbell",69,21,0,"L"],[71,"우츠보트","ウツボット","Victreebel",70,"leaf",0,"L"],
-[72,"왕눈해","メノクラゲ","Tentacool",0,0,["surf"]],[73,"독파리","ドククラゲ","Tentacruel",72,30],
-[74,"꼬마돌","イシツブテ","Geodude",0,0,["mtmoon","rocktunnel"]],[75,"데구리","ゴローン","Graveler",74,25],[76,"딱구리","ゴローニャ","Golem",75,"trade"],
-[77,"포니타","ポニータ","Ponyta",0,0,["ember"]],[78,"날쌩마","ギャロップ","Rapidash",77,40],
-[79,"야돈","ヤドン","Slowpoke",0,0,["seafoam"],"L"],[80,"야도란","ヤドラン","Slowbro",79,37,0,"L"],
-[81,"코일","コイル","Magnemite",0,0,["plant"]],[82,"레어코일","レアコイル","Magneton",81,30],
-[83,"파오리","カモネギ","Farfetch'd",0,0,["T:vermilion:21"]],
-[84,"두두","ドードー","Doduo",0,0,[16,17,18]],[85,"두트리오","ドードリオ","Dodrio",84,31],
-[86,"쥬쥬","パウワウ","Seel",0,0,["seafoam"]],[87,"쥬레곤","ジュゴン","Dewgong",86,34],
-[88,"질퍽이","ベトベター","Grimer",0,0,["mansion"]],[89,"질뻐기","ベトベトン","Muk",88,38],
-[90,"셀러","シェルダー","Shellder",0,0,["superrod"],"F"],[91,"파르셀","パルシェン","Cloyster",90,"water",0,"F"],
-[92,"고오스","ゴース","Gastly",0,0,["tower"]],[93,"고우스트","ゴースト","Haunter",92,25],[94,"팬텀","ゲンガー","Gengar",93,"trade"],
-[95,"롱스톤","イワーク","Onix",0,0,["rocktunnel","victory"]],
-[96,"슬리프","スリープ","Drowzee",0,0,[11]],[97,"슬리퍼","スリーパー","Hypno",96,26],
-[98,"크랩","クラブ","Krabby",0,0,["fish"]],[99,"킹크랩","キングラー","Kingler",98,28],
-[100,"찌리리공","ビリリダマ","Voltorb",0,0,["plant"]],[101,"붐볼","マルマイン","Electrode",100,30],
-[102,"아라리","タマタマ","Exeggcute",0,0,["safari"]],[103,"나시","ナッシー","Exeggutor",102,"leaf"],
-[104,"탕구리","カラカラ","Cubone",0,0,["tower","rocktunnel"]],[105,"텅구리","ガラガラ","Marowak",104,28],
-[106,"시라소몬","サワムラー","Hitmonlee",0,0,["dojo"],"","C"],
-[107,"홍수몬","エビワラー","Hitmonchan",0,0,["dojo"],"","C"],
-[108,"내루미","ベロリンガ","Lickitung",0,0,["T:18:55F/80L"]],
-[109,"또가스","ドガース","Koffing",0,0,["mansion"]],[110,"또도가스","マタドガス","Weezing",109,35],
-[111,"뿔카노","サイホーン","Rhyhorn",0,0,["safari","victory"]],[112,"코뿌리","サイドン","Rhydon",111,42],
-[113,"럭키","ラッキー","Chansey",0,0,["safari"]],
-[114,"덩쿠리","モンジャラ","Tangela",0,0,[21]],
-[115,"캥카","ガルーラ","Kangaskhan",0,0,["safari"]],
-[116,"쏘드라","タッツー","Horsea",0,0,["superrod"]],[117,"시드라","シードラ","Seadra",116,32],
-[118,"콘치","トサキント","Goldeen",0,0,["fish"]],[119,"왕콘치","アズマオウ","Seaking",118,33],
-[120,"별가사리","ヒトデマン","Staryu",0,0,["superrod"],"L"],[121,"아쿠스타","スターミー","Starmie",120,"water",0,"L"],
-[122,"마임맨","バリヤード","Mr. Mime",0,0,["T:2:63"]],
-[123,"스라크","ストライク","Scyther",0,0,["safari"],"F"],
-[124,"루주라","ルージュラ","Jynx",0,0,["T:cerulean:61"]],
-[125,"에레브","エレブー","Electabuzz",0,0,["plant"],"F"],
-[126,"마그마","ブーバー","Magmar",0,0,["mtember"],"L"],
-[127,"쁘사이저","カイロス","Pinsir",0,0,["safari"],"L"],
-[128,"켄타로스","ケンタロス","Tauros",0,0,["safari"]],
-[129,"잉어킹","コイキング","Magikarp",0,0,["oldrod"]],[130,"갸라도스","ギャラドス","Gyarados",129,20],
-[131,"라프라스","ラプラス","Lapras",0,0,["silph"]],
-[132,"메타몽","メタモン","Ditto",0,0,[13,14,15]],
-[133,"이브이","イーブイ","Eevee",0,0,["celmansion","breed"]],
-[134,"샤미드","シャワーズ","Vaporeon",133,"water"],[135,"쥬피썬더","サンダース","Jolteon",133,"thunder"],[136,"부스터","ブースター","Flareon",133,"fire"],
-[137,"폴리곤","ポリゴン","Porygon",0,0,["gamecorner"]],
-[138,"암나이트","オムナイト","Omanyte",0,0,["fossil"],"","C"],[139,"암스타","オムスター","Omastar",138,40],
-[140,"투구","カブト","Kabuto",0,0,["fossil"],"","C"],[141,"투구푸스","カブトプス","Kabutops",140,40],
-[142,"프테라","プテラ","Aerodactyl",0,0,["amber"]],
-[143,"잠만보","カビゴン","Snorlax",0,0,[12,16,"x2"]],
-[144,"프리져","フリーザー","Articuno",0,0,["seafoam"]],[145,"썬더","サンダー","Zapdos",0,0,["plant"]],[146,"파이어","ファイヤー","Moltres",0,0,["mtember"]],
-[147,"미뇽","ミニリュウ","Dratini",0,0,["safarifish","gamecorner"]],[148,"신뇽","ハクリュー","Dragonair",147,30],[149,"망나뇽","カイリュー","Dragonite",148,55],
-[150,"뮤츠","ミュウツー","Mewtwo",0,0,["ccave"]],
-[151,"뮤","ミュウ","Mew",0,0,["event"]]
-];
-
-/* ===== 번역 ===== */
-const PLACE={
- lab:["오박사 연구소 스타팅","オーキド研究所で最初に選ぶ","Starter at Oak's Lab"],
- vforest:["상록숲","トキワのもり","Viridian Forest"],
- mtmoon:["달맞이산","おつきみやま","Mt. Moon"],
- rocktunnel:["바위산터널","イワヤマトンネル","Rock Tunnel"],
- victory:["빅토리로드","チャンピオンロード","Victory Road"],
- plant:["무인발전소","むじんはつでんしょ","Power Plant"],
- safari:["사파리존","サファリゾーン","Safari Zone"],
- safarifish:["사파리존 낚시","サファリゾーンで釣り","Safari Zone (fishing)"],
- seafoam:["쌍둥이섬","ふたごじま","Seafoam Islands"],
- mansion:["포켓몬 저택","ポケモンやしき","Pokémon Mansion"],
- tower:["보라타운 포켓몬타워","シオンタウン ポケモンタワー","Pokémon Tower, Lavender Town"],
- diglett:["디그다굴","ディグダのあな","Diglett's Cave"],
- caves:["동굴 전반","各地の洞窟","most caves"],
- water:["물가","水辺","near water"],
- etc:["등","など","etc."],
- x2:["(2마리)","（2匹）","(2 of them)"],
- gamecorner:["무지개시티 게임코너 경품","タマムシ ゲームコーナーの景品","Celadon Game Corner prize"],
- ember:["불씨길 · 불의산 (1섬)","1のしま ともしびやま周辺","Kindle Road · Mt. Ember (One Island)"],
- mtember:["불의산 (1섬)","ともしびやま（1のしま）","Mt. Ember (One Island)"],
- surf:["파도타기 (바다)","なみのり（海）","Surfing (sea)"],
- fish:["낚시","釣り","Fishing"],
- oldrod:["낚시 (낡은낚싯대)","ボロのつりざお","Old Rod"],
- goodrod:["낚시 (좋은낚싯대)","いいつりざお","Good Rod"],
- superrod:["낚시 (대단한낚싯대)","すごいつりざお","Super Rod"],
- silph:["실프주식회사 선물","シルフカンパニーでもらう","Gift at Silph Co."],
- celmansion:["무지개시티 맨션 선물","タマムシマンションでもらう","Gift in Celadon Mansion"],
- breed:["메타몽 교배","メタモンとタマゴ","Breed with Ditto"],
- dojo:["노랑시티 격투도장 (시라소몬·홍수몬 택1)","ヤマブキ かくとう道場（サワムラー・エビワラーから1匹）","Saffron Fighting Dojo (Hitmonlee or Hitmonchan)"],
- fossil:["달맞이산 화석 택1 → 홍련섬 복원","おつきみやまで化石を1つ選び、グレンタウンで復元","Pick one fossil at Mt. Moon, revive on Cinnabar"],
- amber:["비밀의호박 → 홍련섬 복원","ひみつのコハク → グレンタウンで復元","Old Amber, revived on Cinnabar"],
- ccave:["미지의동굴 (엔딩 후)","ハナダのどうくつ（殿堂入り後）","Cerulean Cave (post-game)"],
- event:["이벤트 배포 한정 · 목표에서 제외","イベント配布のみ・目標から除外","Event only · not counted"],
- vermilion:["갈색시티","クチバシティ","Vermilion City"],
- cerulean:["블루시티","ハナダシティ","Cerulean City"]
-};
-const EVO={
- thunder:["천둥의돌","かみなりのいし","Thunder Stone"],moon:["문스톤","つきのいし","Moon Stone"],
- fire:["불꽃의돌","ほのおのいし","Fire Stone"],water:["물의돌","みずのいし","Water Stone"],
- leaf:["리프의돌","リーフのいし","Leaf Stone"],trade:["교환","通信交換","Trade"]
-};
-const LI={ko:0,ja:1,en:2};
-// 받침 유무로 조사 고르기 (을/를, 은/는)
-const jo=(w,a,b)=>{const c=w.charCodeAt(w.length-1);return w+((c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?a:b)};
-const T={
- ko:{
-  title:"FRLG 관동도감 도우미",h1:"FRLG 관동도감 도우미",FR:"파이어레드",LG:"리프그린",
-  saveLbl:"완성할 세이브",tabPlan:"할 일",tabDex:"전체 도감",
-  q:"번호나 이름으로 검색 (한·일·영)",fAll:"전체",fNeed:"미등록",tagF:"FR 전용",tagL:"LG 전용",tagT:"교환 진화",
-  noMatch:"조건에 맞는 포켓몬이 없어요.",
-  backupLbl:"백업 코드 · 다른 기기에서 붙여넣으면 체크 상태를 옮길 수 있어요",
-  copy:"코드 복사",load:"붙여넣은 코드 불러오기",reset:"체크 전부 지우기",resetArm:"한 번 더 누르면 초기화",
-  mCopied:"복사했어요",mSelected:"선택했어요. 길게 눌러 복사하세요",mBad:"코드 형식이 달라요. FR….LG… 전체를 붙여넣어 주세요",
-  mFail:"코드를 읽지 못했어요",mLoaded:"불러왔어요",mReset:"초기화했어요",mCkOn:"쿠키 저장을 켰어요",mCkOff:"기본 저장만 사용해요",
-  where0:"저장 위치: 이 기기 브라우저",where1:"저장 위치: 이 기기 브라우저 + 쿠키",
-  privacy:"개인정보처리방침",cookieSet:"쿠키 설정",
-  ckT:"체크 기록을 쿠키에도 저장할까요?",
-  ckP:"체크 상태는 기본으로 이 기기 브라우저 저장소에 남아요. 허용하면 같은 내용을 쿠키(frlg_dex, 1년)에도 저장해서, 브라우저 저장소가 지워져도 기록을 되살릴 수 있어요. 서버로 보내는 정보는 없어요.",
-  ckMore:"자세히 보기",ckYes:"쿠키 허용",ckNo:"거부 (기본 저장만)",
-  supHide:"후원 안내 닫기",supShow:"후원하기",mSupHid:"후원 안내를 닫았어요. 맨 아래 '후원하기'를 누르면 다시 보여요",
-  supP:"이 도우미가 도감 채우는 데 도움이 됐다면 후원으로 응원해 주세요. 후원은 외부 사이트에서 진행돼요.",
-  credit:"비공식 팬 제작 도구입니다. 포켓몬 관련 권리는 Nintendo · Creatures · GAME FREAK에 있습니다.",
-  pillFR:"파이어레드 등록",pillLG:"리프그린 등록",
-  lv:n=>`Lv${n}`,
-  route:ns=>`${ns.join("·")}번도로`,
-  trade:(pl,give)=>`${pl} NPC 교환 (${give} 주기)`,
-  sep:" · ",
-  recvT:O=>`${O} 세이브에서 받기`,recvN:O=>`${O}에 이미 등록된 포켓몬이에요. 교환으로 보냈다가 돌려받으면 둘 다 등록돼요.`,
-  recvTE:"받기만 해도 등록 (교환 진화형)",recvReg:"상대 세이브에 등록됨",
-  tradeT:"교환 진화",tradeN:"전 단계를 상대 세이브로 보냈다가 돌려받으면 진화해요.",
-  tradeHow:(f,inT,O)=>inT?`${jo(f,"을","를")} 교환`:`${f}(${O}에 있음) 교환`,
-  evoT:"진화시키기",evoN:"전 단계를 갖고 있어요. 레벨업이나 진화의 돌이면 끝나요.",
-  evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · ${jo(f,"은","는")} ${O}에서 받아오기`}`,
-  exclT:O=>`${O}에서 잡아 받기`,exclN:T=>`${T}에서는 야생으로 안 나오는 버전 전용이에요.`,
-  catchT:"직접 잡기",
-  choiceT:"선택지 (택1)",choiceN:"스타팅은 처음 고를 때만, 화석과 격투는 한쪽만 받아요. 다른 쪽은 상대 세이브에서 고르세요. 스타팅 세 번째 계열은 새 세이브나 친구 교환이 필요해요.",
-  preT:"전 단계부터",preN:"전 단계가 양쪽 세이브 모두에 없어요. 아래 진행 순서대로 채우면 돼요.",
-  preHow:(f,m,b,bl)=>`${f} ${m} · 시작: ${b}, ${bl}`,
-  intro:(T,n)=>`${T}에 남은 ${n}종을 지금 할 수 있는 순서로 묶었어요. FR·LG 버튼을 누르면 해당 세이브에 등록돼요.`,
-  count:n=>`${n}종`,
-  done:T=>`${T} 관동도감 150종 완성! 뮤는 이벤트 배포 한정이라 목표에서 뺐어요.`
- },
- ja:{
-  title:"FRLG カントー図鑑ヘルパー",h1:"FRLG カントー図鑑ヘルパー",FR:"ファイアレッド",LG:"リーフグリーン",
-  saveLbl:"完成させるセーブ",tabPlan:"やること",tabDex:"図鑑一覧",
-  q:"番号・名前で検索（日・韓・英）",fAll:"すべて",fNeed:"未登録",tagF:"FR限定",tagL:"LG限定",tagT:"通信進化",
-  noMatch:"条件に合うポケモンがいません。",
-  backupLbl:"バックアップコード・別の端末に貼り付けるとチェック状態を移せます",
-  copy:"コードをコピー",load:"貼り付けたコードを読み込む",reset:"チェックをすべて消す",resetArm:"もう一度押すとリセット",
-  mCopied:"コピーしました",mSelected:"選択しました。長押しでコピーしてください",mBad:"コードの形式が違います。FR….LG… を丸ごと貼り付けてください",
-  mFail:"コードを読み込めませんでした",mLoaded:"読み込みました",mReset:"リセットしました",mCkOn:"クッキー保存をオンにしました",mCkOff:"基本の保存のみ使います",
-  where0:"保存先：この端末のブラウザ",where1:"保存先：この端末のブラウザ＋クッキー",
-  privacy:"プライバシーポリシー",cookieSet:"クッキー設定",
-  ckT:"チェック記録をクッキーにも保存しますか？",
-  ckP:"チェック状態は基本的にこの端末のブラウザ内に保存されます。許可すると同じ内容をクッキー（frlg_dex、1年間）にも保存し、ブラウザの保存データが消えても記録を復元できます。サーバーに送信される情報はありません。",
-  ckMore:"詳しく見る",ckYes:"クッキーを許可",ckNo:"拒否（基本の保存のみ）",
-  supHide:"支援の案内を閉じる",supShow:"支援する",mSupHid:"支援の案内を閉じました。いちばん下の「支援する」を押すとまた表示されます",
-  supP:"このヘルパーが図鑑埋めの役に立ったら、応援していただけるとうれしいです。支援は外部サイトで行われます。",
-  credit:"非公式のファン制作ツールです。ポケモンに関する権利は Nintendo・Creatures・GAME FREAK に帰属します。",
-  pillFR:"ファイアレッドに登録",pillLG:"リーフグリーンに登録",
-  lv:n=>`Lv${n}`,
-  route:ns=>`${ns.join("・")}番道路`,
-  trade:(pl,give)=>`${pl}のゲーム内交換（${give}を渡す）`,
-  sep:"・",
-  recvT:O=>`${O}のセーブから受け取る`,recvN:O=>`${O}ですでに登録済みのポケモンです。交換で送って返してもらえば両方に登録されます。`,
-  recvTE:"受け取るだけで登録（通信進化後）",recvReg:"相手のセーブに登録済み",
-  tradeT:"通信進化",tradeN:"進化前を相手のセーブに送って返してもらうと進化します。",
-  tradeHow:(f,inT,O)=>`${f}${inT?"":`（${O}にいる）`}を通信交換`,
-  evoT:"進化させる",evoN:"進化前を持っています。レベルアップか進化の石で完了です。",
-  evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":`・${f}は${O}から受け取る`}`,
-  exclT:O=>`${O}で捕まえて受け取る`,exclN:T=>`${T}では野生で出ないバージョン限定です。`,
-  catchT:"自分で捕まえる",
-  choiceT:"選択（どちらか1つ）",choiceN:"御三家は最初に選ぶときだけ、化石とかくとうポケモンは片方だけもらえます。もう片方は相手のセーブで選びましょう。御三家の3系統目には新しいセーブか友だちとの交換が必要です。",
-  preT:"進化前から",preN:"進化前がどちらのセーブにもいません。下の順番で埋めていきましょう。",
-  preHow:(f,m,b,bl)=>`${f} ${m}・スタート：${b}／${bl}`,
-  intro:(T,n)=>`${T}に残っている${n}匹を、今できる順にまとめました。FR・LGボタンを押すとそのセーブに登録されます。`,
-  count:n=>`${n}匹`,
-  done:T=>`${T}のカントー図鑑150匹コンプリート！ミュウはイベント配布限定なので目標から除いています。`
- },
- en:{
-  title:"FRLG Kanto Dex Helper",h1:"FRLG Kanto Dex Helper",FR:"FireRed",LG:"LeafGreen",
-  saveLbl:"Save to complete",tabPlan:"To do",tabDex:"Full Dex",
-  q:"Search by number or name (EN · JA · KO)",fAll:"All",fNeed:"Missing",tagF:"FR only",tagL:"LG only",tagT:"Trade evo",
-  noMatch:"No Pokémon match these filters.",
-  backupLbl:"Backup code · paste it on another device to move your checks",
-  copy:"Copy code",load:"Load pasted code",reset:"Clear all checks",resetArm:"Press again to clear",
-  mCopied:"Copied",mSelected:"Selected. Long-press to copy",mBad:"That code doesn't look right. Paste the whole FR….LG… code",
-  mFail:"Couldn't read that code",mLoaded:"Loaded",mReset:"Cleared",mCkOn:"Cookie saving is on",mCkOff:"Using browser storage only",
-  where0:"Saved in: this browser",where1:"Saved in: this browser + cookie",
-  privacy:"Privacy Policy",cookieSet:"Cookie settings",
-  ckT:"Also save your checks in a cookie?",
-  ckP:"Your checks are always kept in this browser's storage. If you allow it, the same data is also saved in a cookie (frlg_dex, 1 year), so it can be restored if browser storage gets cleared. Nothing is sent to a server.",
-  ckMore:"Learn more",ckYes:"Allow cookie",ckNo:"Decline (browser storage only)",
-  supHide:"Hide tip banner",supShow:"Support",mSupHid:"Tip banner hidden. Use \"Support\" at the bottom to show it again",
-  supP:"If this helper saved you some time, you can support it with a tip. Tips are handled on an external site.",
-  credit:"Unofficial fan-made tool. Pokémon and related names are trademarks of Nintendo, Creatures and GAME FREAK.",
-  pillFR:"Registered in FireRed",pillLG:"Registered in LeafGreen",
-  lv:n=>`Lv. ${n}`,
-  route:ns=>ns.length>1?`Routes ${ns.join(", ")}`:`Route ${ns[0]}`,
-  trade:(pl,give)=>`In-game trade at ${pl} (give ${give})`,
-  sep:" · ",
-  recvT:O=>`Get from your ${O} save`,recvN:O=>`Already registered in ${O}. Trade it over and back to register it in both.`,
-  recvTE:"Registers on receipt (already trade-evolved)",recvReg:"Registered in the other save",
-  tradeT:"Trade evolutions",tradeN:"Send the previous stage to the other save and trade it back to evolve.",
-  tradeHow:(f,inT,O)=>`Trade ${f}${inT?"":` (in ${O})`}`,
-  evoT:"Evolve",evoN:"You already have the previous stage. Just level it or use a stone.",
-  evoHow:(f,m,inT,O)=>`${f} → ${m}${inT?"":` · get ${f} from ${O}`}`,
-  exclT:O=>`Catch in ${O} and trade over`,exclN:T=>`Version exclusives that don't appear in the wild in ${T}.`,
-  catchT:"Catch",
-  choiceT:"Choices (pick one)",choiceN:"You only get one starter, one fossil and one Dojo fighter per save. Pick the other one in the other save. The third starter line needs a new save or a friend.",
-  preT:"Start from earlier stages",preN:"Neither save has the previous stage yet. Work through them in this order.",
-  preHow:(f,m,b,bl)=>`${f} ${m} · start: ${b}, ${bl}`,
-  intro:(T,n)=>`${n} Pokémon left in ${T}, grouped by what you can do now. Tap FR or LG to mark it in that save.`,
-  count:n=>`${n}`,
-  done:T=>`${T} Kanto Dex complete: all 150! Mew is event-only, so it isn't counted.`
- }
-};
-
-const P={};
-D.forEach(r=>P[r[0]]={no:r[0],ko:r[1],ja:r[2],en:r[3],from:r[4]||0,evo:r[5]||0,loc:r[6]||[],ver:r[7]||"",ch:r[8]||""});
-D.forEach(r=>{const p=P[r[0]];if(!p.ver&&p.from&&P[p.from].ver)p.ver=P[p.from].ver});
-
-/* ===== 저장 ===== */
-const KEY="frlg-dex-helper-v1", CKEY="frlg-cookie-consent", CNAME="frlg_dex";
-const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-function getCookie(n){const m=document.cookie.match(new RegExp("(?:^|; )"+n+"=([^;]*)"));return m?decodeURIComponent(m[1]):null}
-function setCookie(n,v,days){const sec=location.protocol==="https:"?"; Secure":"";document.cookie=`${n}=${encodeURIComponent(v)}; Max-Age=${days*86400}; Path=/; SameSite=Lax${sec}`}
-const delCookie=n=>{document.cookie=`${n}=; Max-Age=0; Path=/; SameSite=Lax`};
-const LANGS=["ko","ja","en"];
-function detectLang(){const l=(navigator.language||"").toLowerCase();return l.startsWith("ko")?"ko":l.startsWith("ja")?"ja":"en"}
-let consent=lsGet(CKEY)||(getCookie(CKEY)==="yes"?"yes":null);
-const fresh=()=>({fr:{},lg:{},save:"fr",tab:"plan",f:"all",lang:detectLang()});
-let S=null;
-try{S=JSON.parse(lsGet(KEY)||"null")}catch(e){}
-// 쿠키 형식: FR<hex>.LG<hex>|세이브|탭|필터|언어
-function fromCookie(){
-  const c=getCookie(CNAME);if(!c)return null;
-  const [code,sv,tab,f,lang]=c.split("|");const m=code&&code.match(/^FR([0-9a-f]+)\.LG([0-9a-f]+)$/i);
-  if(!m)return null;
-  try{return{fr:dec(m[1]),lg:dec(m[2]),save:sv==="lg"?"lg":"fr",tab:tab==="dex"?"dex":"plan",f:["all","need","F","L","T"].includes(f)?f:"all",lang:LANGS.includes(lang)?lang:detectLang()}}catch(e){return null}
-}
-if(!S||!S.fr){S=(consent==="yes"&&fromCookie())||fresh()}
-if(!LANGS.includes(S.lang))S.lang=detectLang();
-// 언어는 사이트 공통 메뉴(/shared/nav.js)의 선택을 따른다
-if(window.ND&&LANGS.includes(ND.lang))S.lang=ND.lang;
-delete S.hideSup;
-const save=()=>{
-  lsSet(KEY,JSON.stringify(S));
-  if(consent==="yes")setCookie(CNAME,[encode(),S.save,S.tab,S.f,S.lang].join("|"),365);
-};
-const has=(v,n)=>!!S[v][n];
-const other=v=>v==="fr"?"lg":"fr";
-
-/* ===== 표시 도우미 ===== */
-const L=()=>T[S.lang];
-const li=()=>LI[S.lang];
-const nm=n=>P[n][S.lang];
-const secLang=()=>S.lang==="ja"?"en":"ja";
-const VN=v=>L()[v==="fr"?"FR":"LG"];
-const pad=n=>String(n).padStart(3,"0");
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const evoTxt=e=>typeof e==="number"?L().lv(e):EVO[e][li()];
-function locTxt(p){
-  const out=[];let nums=[];
-  const flush=()=>{if(nums.length){out.push(L().route(nums));nums=[]}};
-  p.loc.forEach(t=>{
-    if(typeof t==="number"){nums.push(t);return}
-    flush();
-    if(t.startsWith("T:")){
-      const [,pl,give]=t.split(":");
-      const place=/^\d+$/.test(pl)?L().route([+pl]):PLACE[pl][li()];
-      const gv=give.split("/").map(g=>{const m=g.match(/^(\d+)([FL]?)$/);return nm(+m[1])+(m[2]?` (${m[2]==="F"?"FR":"LG"})`:"")}).join(" / ");
-      out.push(L().trade(place,gv));return;
-    }
-    if(t==="etc"||t==="x2"){const last=out.pop()||"";out.push(last+(S.lang==="en"?" ":S.lang==="ja"?"":" ")+PLACE[t][li()]);return}
-    out.push(PLACE[t][li()]);
-  });
-  flush();
-  return out.join(L().sep);
-}
-function tagHtml(p){
-  let t="";
-  if(p.ver)t+=`<span class="tag ${p.ver}">${L()[p.ver==="F"?"tagF":"tagL"]}</span>`;
-  if(p.evo==="trade")t+=`<span class="tag T">${L().tagT}</span>`;
-  return t;
-}
-function pills(n){
-  return `<span class="pills"><button type="button" class="pill fr${has("fr",n)?" on":""}" data-v="fr" data-n="${n}" aria-pressed="${has("fr",n)}" aria-label="${L().pillFR}">FR</button><button type="button" class="pill lg${has("lg",n)?" on":""}" data-v="lg" data-n="${n}" aria-pressed="${has("lg",n)}" aria-label="${L().pillLG}">LG</button></span>`;
-}
-function row(p,how){
-  const sl=secLang();
-  return `<li><span class="no">${pad(p.no)}</span><span class="nm"><span class="pn">${esc(p[S.lang])}</span><span class="sn" lang="${sl}">${esc(p[sl])}</span>${tagHtml(p)}<span class="how">${esc(how)}</span></span>${pills(p.no)}</li>`;
-}
-function baseOf(p){while(p.from)p=P[p.from];return p}
-
-/* ===== 할 일 ===== */
-function plan(){
-  const t=L(),Tv=S.save,O=other(Tv),tv=Tv==="fr"?"F":"L",ON=VN(O),TN=VN(Tv);
-  const G=[
-    {k:"recv",t:t.recvT(ON),n:t.recvN(ON),d:[]},
-    {k:"trade",t:t.tradeT,n:t.tradeN,d:[]},
-    {k:"evo",t:t.evoT,n:t.evoN,d:[]},
-    {k:"excl",t:t.exclT(ON),n:t.exclN(TN),d:[]},
-    {k:"catch",t:t.catchT,n:"",d:[]},
-    {k:"choice",t:t.choiceT,n:t.choiceN,d:[]},
-    {k:"pre",t:t.preT,n:t.preN,d:[]}
-  ];
-  const g=k=>G.find(x=>x.k===k).d;
-  for(let n=1;n<=150;n++){
-    if(has(Tv,n))continue;
-    const p=P[n];
-    if(has(O,n)){g("recv").push([p,p.evo==="trade"?t.recvTE:(p.from?t.recvReg:locTxt(p))]);continue}
-    if(p.from){
-      const f=P[p.from],inT=has(Tv,f.no),inO=has(O,f.no);
-      if(p.evo==="trade"&&(inT||inO)){g("trade").push([p,t.tradeHow(nm(f.no),inT,ON)]);continue}
-      if(inT||inO){g("evo").push([p,t.evoHow(nm(f.no),evoTxt(p.evo),inT,ON)]);continue}
-      const b=baseOf(p);
-      g("pre").push([p,t.preHow(nm(f.no),evoTxt(p.evo),nm(b.no),locTxt(b))]);continue;
-    }
-    if(p.ch){g("choice").push([p,locTxt(p)]);continue}
-    if(p.ver&&p.ver!==tv){g("excl").push([p,`${ON}: ${locTxt(p)}`]);continue}
-    g("catch").push([p,locTxt(p)]);
-  }
-  const total=G.reduce((a,x)=>a+x.d.length,0);
-  const el=document.getElementById("plan");
-  if(!total){el.innerHTML=`<div class="empty">${t.done(TN)}</div>`;return}
-  el.innerHTML=`<p class="note" style="margin-top:16px">${t.intro(TN,total)}</p>`+
-    G.filter(x=>x.d.length).map(x=>`<section><div class="gh"><h2>${x.t}</h2><span class="gc">${t.count(x.d.length)}</span></div>${x.n?`<p class="note">${x.n}</p>`:""}<ul>${x.d.map(([p,h])=>row(p,h)).join("")}</ul></section>`).join("");
-}
-
-/* ===== 전체 도감 ===== */
-function dex(){
-  const q=document.getElementById("q").value.trim().toLowerCase();
-  const f=S.f,Tv=S.save;
-  const list=D.map(r=>P[r[0]]).filter(p=>{
-    if(f==="need"&&(has(Tv,p.no)||p.no===151))return false;
-    if((f==="F"||f==="L")&&p.ver!==f)return false;
-    if(f==="T"&&p.evo!=="trade")return false;
-    if(q&&!(String(p.no).includes(q)||pad(p.no).includes(q)||p.ko.includes(q)||p.ja.includes(q)||p.en.toLowerCase().includes(q)))return false;
-    return true;
-  });
-  const ul=document.getElementById("dexList");
-  if(!list.length){ul.innerHTML=`<li style="display:block;color:var(--muted)">${L().noMatch}</li>`;return}
-  ul.innerHTML=list.map(p=>{
-    let how=p.from?`${nm(p.from)} → ${evoTxt(p.evo)}`:locTxt(p);
-    if(p.ver&&!p.from)how=`${VN(p.ver==="F"?"fr":"lg")}: ${locTxt(p)}`;
-    return row(p,how);
-  }).join("");
-}
-
-/* ===== 공통 렌더 ===== */
-function applyLang(){
-  const t=L();
-  document.documentElement.lang=S.lang;
-  document.title=t.title;
-  document.querySelectorAll("[data-i]").forEach(el=>{const v=t[el.dataset.i];if(typeof v==="string")el.textContent=v});
-  document.getElementById("q").placeholder=t.q;
-  document.getElementById("saveSeg").setAttribute("aria-label",t.saveLbl);
-  document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===S.lang));
-  document.getElementById("privLink").href="/privacy.html?lang="+S.lang;
-  document.getElementById("ckMore").href="/privacy.html?lang="+S.lang;
-  whereText();
-  const links=DONATE.filter(d=>d.url&&(!d.only||d.only===S.lang));
-  document.getElementById("support").hidden=!links.length||supHidden;
-  document.getElementById("supShow").hidden=!links.length;
-  document.getElementById("supX").setAttribute("aria-label",t.supHide);document.getElementById("supX").title=t.supHide;
-  document.getElementById("supBtns").innerHTML=links.map(d=>`<a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.label)}</a>`).join("");
-  if(!armed)rb.textContent=t.reset;
-}
-function meters(){
-  ["fr","lg"].forEach(v=>{
-    let c=0;for(let n=1;n<=150;n++)if(has(v,n))c++;
-    const id=v==="fr"?"Fr":"Lg";
-    document.getElementById("m"+id).textContent=`${c} / 150`;
-    document.getElementById("b"+id).style.width=(c/150*100)+"%";
-  });
-  document.getElementById("code").value=encode();
-}
-function render(){
-  meters();
-  document.querySelectorAll("#saveSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.save));
-  document.getElementById("tabPlan").setAttribute("aria-selected",S.tab==="plan");
-  document.getElementById("tabDex").setAttribute("aria-selected",S.tab==="dex");
-  document.getElementById("plan").hidden=S.tab!=="plan";
-  document.getElementById("dex").hidden=S.tab!=="dex";
-  document.querySelectorAll("#filt .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===S.f));
-  if(S.tab==="plan")plan();else dex();
-}
-
-/* ===== 백업 코드: 세이브별 151비트를 16진수로 ===== */
-function enc(v){let s="";for(let i=0;i<152;i+=4){let x=0;for(let j=0;j<4;j++){const n=i+j+1;if(n<=151&&has(v,n))x|=1<<j}s+=x.toString(16)}return s}
-function dec(h){const o={};for(let i=0;i<h.length;i++){const x=parseInt(h[i],16);if(isNaN(x))throw 0;for(let j=0;j<4;j++){const n=i*4+j+1;if(n<=151&&(x>>j&1))o[n]=1}}return o}
-function encode(){return `FR${enc("fr")}.LG${enc("lg")}`}
-function msg(k){const m=document.getElementById("msg");m.textContent=L()[k];clearTimeout(msg.t);msg.t=setTimeout(()=>m.textContent="",3000)}
-
-/* ===== 쿠키 동의 ===== */
-const banner=document.getElementById("cookie");
-function showBanner(){banner.hidden=false;document.body.classList.add("has-banner")}
-function hideBanner(){banner.hidden=true;document.body.classList.remove("has-banner")}
-function whereText(){document.getElementById("where").textContent=consent==="yes"?L().where1:L().where0}
-function setConsent(v){
-  consent=v;lsSet(CKEY,v);
-  if(v==="yes"){setCookie(CKEY,"yes",365);save()}else{delCookie(CNAME);delCookie(CKEY)}
-  hideBanner();whereText();
-}
-
-/* ===== 이벤트 ===== */
-const rb=document.getElementById("reset");let armed=false;
-let supHidden=false; // 닫아도 새로 들어오면 다시 보여요
-document.addEventListener("click",e=>{
-  const pl=e.target.closest(".pill");
-  if(pl){const v=pl.dataset.v,n=pl.dataset.n;if(S[v][n])delete S[v][n];else S[v][n]=1;save();render();return}
-  const lb=e.target.closest("#langSeg button");if(lb){S.lang=lb.dataset.l;save();if(window.ND&&ND.lang!==S.lang){ND.setLang(S.lang);return}applyLang();render();return}
-  const sb=e.target.closest("#saveSeg button");if(sb){S.save=sb.dataset.v;save();render();return}
-  if(e.target.id==="tabPlan"){S.tab="plan";save();render();return}
-  if(e.target.id==="tabDex"){S.tab="dex";save();render();return}
-  const ch=e.target.closest("#filt .chip");if(ch){S.f=ch.dataset.f;save();render();return}
-});
-document.getElementById("q").addEventListener("input",dex);
-document.getElementById("copy").addEventListener("click",()=>{
-  const t=document.getElementById("code");
-  navigator.clipboard.writeText(t.value).then(()=>msg("mCopied")).catch(()=>{t.select();msg("mSelected")});
-});
-document.getElementById("load").addEventListener("click",()=>{
-  const m=document.getElementById("code").value.trim().match(/^FR([0-9a-f]+)\.LG([0-9a-f]+)$/i);
-  if(!m){msg("mBad");return}
-  try{S.fr=dec(m[1]);S.lg=dec(m[2]);save();render();msg("mLoaded")}catch(e){msg("mFail")}
-});
-rb.addEventListener("click",()=>{
-  if(!armed){armed=true;rb.classList.add("arm");rb.textContent=L().resetArm;setTimeout(()=>{armed=false;rb.classList.remove("arm");rb.textContent=L().reset},3000);return}
-  S.fr={};S.lg={};save();render();armed=false;rb.classList.remove("arm");rb.textContent=L().reset;msg("mReset");
-});
-document.getElementById("ckYes").addEventListener("click",()=>{setConsent("yes");msg("mCkOn")});
-document.getElementById("ckNo").addEventListener("click",()=>{setConsent("no");msg("mCkOff")});
-document.getElementById("cookieSet").addEventListener("click",showBanner);
-document.getElementById("supX").addEventListener("click",()=>{supHidden=true;applyLang();msg("mSupHid")});
-document.getElementById("supShow").addEventListener("click",()=>{supHidden=false;applyLang();window.scrollTo({top:0,behavior:"smooth"})});
-
-applyLang();
-if(!consent)showBanner();
-render();
-</script>
+<script src="hub.js"></script>
 </body>
 </html>

@@ -13,3 +13,8 @@
 /jeildang/*
   ! Content-Security-Policy
   Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.googleapis.com https://www.gstatic.com
+
+# 도감 도우미: 외부 스크립트 없음 (Cloudflare가 넣는 분석 스크립트만 허용)
+/pokemon/*
+  ! Content-Security-Policy
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; form-action 'none'

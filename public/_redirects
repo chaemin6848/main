@@ -7,6 +7,10 @@
 /politics  /politics/  301
 /jeildang  /jeildang/  301
 /pokemon   /pokemon/   301
+/pokemon/frlg  /pokemon/frlg/  301
+/pokemon/rs    /pokemon/rs/    301
+/pokemon/bw    /pokemon/bw/    301
+/pokemon/b2w2  /pokemon/b2w2/  301
 /game      /jeildang/  301
 /game/*    /jeildang/:splat  301
 

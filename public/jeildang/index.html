@@ -158,6 +158,9 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 .bill-opts{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
 .bill-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--mine)}
 .bill-opt[aria-pressed="true"] b{color:var(--accent)}
+.react-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--mine);box-shadow:inset 0 0 0 1px var(--accent)}
+.react-opt[aria-pressed="true"] b{color:var(--accent)}
+.react-opt[aria-pressed="true"] b::before{content:"✓ "}
 .reg-seats{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;color:var(--ink2)}
 .reg-seats span{display:inline-flex;align-items:center;gap:4px}
 .reg-seats .me{color:var(--ink);font-weight:700}
@@ -938,7 +941,7 @@ function eventHtml(g,me){
   const opts=me?E.reactOpts(g,me):[];
   const pick=opts.includes(S.draft.react)?S.draft.react:'';
   const left=me?remainingFunds(me,true):0;
-  const btn=(k,label,desc,cost)=>`<button class="act" data-a="react" data-v="${k}" aria-pressed="${pick===k}" ${cost>left?'disabled':''}><b>${label}${cost?`<em>${money(cost)}</em>`:''}</b><span>${desc}</span></button>`;
+  const btn=(k,label,desc,cost)=>`<button class="act react-opt" data-a="react" data-v="${k}" aria-pressed="${pick===k}" ${cost>left?'disabled':''}><b>${label}${cost?`<em>${money(cost)}</em>`:''}</b><span>${desc}</span></button>`;
   return`<section class="panel"><div class="row between"><h2>이번 분기 사건</h2>${ev.follow?'<span class="pill hot">번질 수 있음</span>':''}</div>
     <div><b>${esc(ev.title)}</b>${t?` <span class="pill">대상: ${esc(t.name)}</span>`:''}<p class="small muted">${esc(ev.text)}</p>
     ${ev.follow&&top?`<p class="small muted">책임지는 쪽: ${esc(top.name)}</p>`:''}</div>

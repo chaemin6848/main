@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>일본 판례 노트</title>
+<meta name="description" content="일본 헌법·민법·형법·행정법 주요 판례를 사건명·쟁점·판지로 정리하고 암기 카드와 4지선다 퀴즈로 복습하는 페이지">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  --paper:#f5f4f0; --sheet:#ffffff; --ink:#1c1b19; --muted:#6a665e; --rule:#e2dfd7;
+  --acc:#7a3b1e; --acc-soft:#f6ece6;
+  --ok:#1f7a55; --ok-soft:#e3f3ea; --bad:#b3261e; --bad-soft:#fbe7e5;
+  --f-jp:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-ui:"IBM Plex Sans KR","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#151412; --sheet:#1e1c1a; --ink:#ece9e3; --muted:#a49f95; --rule:#34312c;
+  --acc:#e0a383; --acc-soft:#3a2a21; --ok:#5ccf98; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3b1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#151412; --sheet:#1e1c1a; --ink:#ece9e3; --muted:#a49f95; --rule:#34312c;
+  --acc:#e0a383; --acc-soft:#3a2a21; --ok:#5ccf98; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3b1d1b; color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:max(18px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+header h1{font-size:22px;margin:0 0 2px}
+header p{margin:0;color:var(--muted);font-size:13.5px}
+.tabs{display:flex;gap:6px;margin:16px 0 12px;border-bottom:1px solid var(--rule)}
+.tab{font:500 14.5px var(--f-ui);background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 10px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--acc);font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font:500 13px var(--f-ui);border:1px solid var(--rule);background:var(--sheet);color:var(--ink);padding:5px 11px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--paper)}
+.chip small{font-family:var(--f-num);opacity:.75;margin-left:3px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+input[type=search]{flex:1;min-width:0;font:15px var(--f-ui);padding:9px 12px;border:1px solid var(--rule);border-radius:8px;background:var(--sheet);color:var(--ink)}
+label.ck{font-size:13px;color:var(--muted);display:flex;gap:5px;align-items:center;white-space:nowrap}
+.stat{font-family:var(--f-num);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.list{display:grid;gap:8px}
+.case{background:var(--sheet);border:1px solid var(--rule);border-radius:10px}
+.case summary{list-style:none;cursor:pointer;padding:11px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:baseline}
+.case summary::-webkit-details-marker{display:none}
+.fld{font-size:11.5px;font-weight:700;color:var(--acc);border:1px solid var(--acc);border-radius:4px;padding:0 5px;white-space:nowrap}
+.nm{font-family:var(--f-jp);font-weight:700;font-size:15.5px}
+.dt{grid-column:2/4;font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.done{font-size:12px;color:var(--ok);font-weight:700}
+.body{padding:0 14px 14px;border-top:1px dashed var(--rule)}
+.body dl{margin:10px 0 0;display:grid;gap:8px}
+.body dt{font-size:12px;color:var(--muted);font-weight:700}
+.body dd{margin:0;font-family:var(--f-jp);line-height:1.75}
+.body dd.ko{font-family:var(--f-ui)}
+.res{display:inline-block;font-weight:700}
+.res.v{color:var(--bad)}
+.btn{font:500 14px var(--f-ui);border:1px solid var(--rule);background:var(--sheet);color:var(--ink);padding:9px 14px;border-radius:8px;cursor:pointer}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--paper);font-weight:700}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px}
+.card .q{font-family:var(--f-jp);font-size:16px;line-height:1.8}
+.card .lbl{font-size:12px;color:var(--muted);font-weight:700;margin:12px 0 2px}
+.card .lbl:first-child{margin-top:0}
+.prog{display:flex;align-items:center;gap:10px;font-family:var(--f-num);font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.rail{flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.rail i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.chs{display:grid;gap:8px;margin-top:12px}
+.ch{text-align:left;font:15px/1.6 var(--f-jp);color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:9px;padding:10px 12px;cursor:pointer}
+.ch:hover:not(:disabled){border-color:var(--acc);background:var(--acc-soft)}
+.ch:disabled{cursor:default}
+.ch.right{border-color:var(--ok);background:var(--ok-soft)}
+.ch.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.ch small{display:block;font-family:var(--f-num);font-size:11.5px;color:var(--muted)}
+.fb{margin-top:12px;padding:10px 12px;border-radius:9px;font-size:14px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.empty{color:var(--muted);text-align:center;padding:28px 0}
+footer{margin-top:28px;font-size:12px;color:var(--muted)}
+footer a{color:inherit}
+@media (max-width:480px){.case summary{grid-template-columns:auto 1fr}.done{grid-column:1/3}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>일본 판례 노트 <span style="font-family:var(--f-jp);font-weight:500;font-size:15px;color:var(--muted)">重要判例</span></h1>
+  <p>헌법·민법·형법·행정법 주요 판례를 쟁점과 판지로 정리했습니다. 목록으로 읽고, 카드와 퀴즈로 복습하세요.</p>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" data-v="list" aria-selected="true">판례 목록</button>
+  <button class="tab" role="tab" data-v="card" aria-selected="false">암기 카드</button>
+  <button class="tab" role="tab" data-v="quiz" aria-selected="false">4지선다</button>
+</nav>
+
+<div class="chips" id="chips"></div>
+
+<section id="v-list">
+  <div class="bar">
+    <input type="search" id="q" placeholder="사건명·조문·키워드 검색 (예: 目的効果, 177条, 처분성)">
+    <label class="ck"><input type="checkbox" id="hideDone"> 외운 것 숨기기</label>
+  </div>
+  <div class="stat" id="stat"></div>
+  <div class="list" id="list" style="margin-top:8px"></div>
+</section>
+
+<section id="v-card" hidden>
+  <div class="prog"><span id="cPos"></span><div class="rail"><i id="cRail"></i></div><span id="cScore"></span></div>
+  <div class="card" id="cBox"></div>
+  <div class="row" id="cBtns"></div>
+</section>
+
+<section id="v-quiz" hidden>
+  <div class="prog"><span id="zPos"></span><div class="rail"><i id="zRail"></i></div><span id="zScore"></span></div>
+  <div class="card" id="zBox"></div>
+  <div class="row" id="zBtns"></div>
+</section>
+
+<footer>
+  판지는 학습용으로 요약·정리한 것이며 판결문 원문이 아닙니다. 정확한 문언은 裁判所 판례검색(courts.go.jp)에서 확인하세요.
+  · 외운 표시는 이 브라우저에만 저장됩니다. <a href="/">nihongodic.com</a>
+</footer>
+</div>
+
+<script>
+// f: 분야, n: 사건명, c: 재판소·형식, d: 날짜, a: 관련 조문, q: 쟁점, h: 판지 요약, r: 결론, k: 한국어 포인트
+const CASES = [
+// ── 憲法 ──
+{f:"憲法",n:"マクリーン事件",c:"最大判",d:"昭和53.10.4",a:"憲法21条・22条",q:"外国人にも基本的人権の保障は及ぶか。在留期間更新の判断で政治活動を考慮できるか。",h:"権利の性質上日本国民のみを対象とすると解されるものを除き、外国人にも人権保障は等しく及ぶ。ただしその保障は外国人在留制度の枠内で与えられるにすぎず、在留中の政治活動を更新拒否の消極的事情として考慮することも許される。",r:"上告棄却（更新不許可は適法）",k:"외국인 인권 = 권리성질설. 다만 '재류제도의 틀 안에서'라는 한정이 핵심."},
+{f:"憲法",n:"八幡製鉄政治献金事件",c:"最大判",d:"昭和45.6.24",a:"憲法第3章",q:"法人にも人権が保障されるか。会社による政治献金は許されるか。",h:"憲法第3章の権利は性質上可能な限り内国の法人にも適用され、会社も自然人と同様に政治的行為の自由を有する。政治資金の寄附もその一環であり、会社の権利能力の範囲内である。",r:"献金は有効",k:"법인 인권 = 성질상 가능한 한 적용. 회사의 정치헌금 긍정."},
+{f:"憲法",n:"三菱樹脂事件",c:"最大判",d:"昭和48.12.12",a:"憲法14条・19条、民法90条",q:"憲法の人権規定は私人間に直接適用されるか。思想を理由とする本採用拒否は許されるか。",h:"人権規定は国家と個人の関係を規律するもので、私人相互の関係を直接規律するものではない。私人間の人権侵害は民法1条・90条等の私法の一般条項の適切な運用によって調整される（間接適用）。企業には雇入れの自由がある。",r:"破棄差戻し",k:"사인 간 효력 = 간접적용설의 대표 판례."},
+{f:"憲法",n:"京都府学連事件",c:"最大判",d:"昭和44.12.24",a:"憲法13条",q:"警察官による無断の写真撮影は許されるか。",h:"何人も、承諾なしにみだりにその容ぼう・姿態を撮影されない自由を有し、これは13条の趣旨から保障される。ただし、現に犯罪が行われ又は行われた後間がなく、証拠保全の必要性・緊急性があり、方法が相当な場合は、承諾なしの撮影も許される。",r:"撮影は適法",k:"초상권(용모를 함부로 촬영당하지 않을 자유)을 13조에서 인정한 리딩케이스."},
+{f:"憲法",n:"尊属殺重罰規定違憲判決",c:"最大判",d:"昭和48.4.4",a:"憲法14条1項、旧刑法200条",q:"尊属殺を死刑・無期懲役に限る刑法200条は平等原則に反するか。",h:"尊属に対する尊重報恩という立法目的自体は合理的だが、法定刑を死刑・無期懲役に限る点は目的達成の手段として甚だしく均衡を失し、著しく不合理な差別的取扱いとして14条1項に違反する。",r:"違憲（法令違憲）",k:"목적은 합리적, 수단(형의 과중)이 위헌. 최초의 법령위헌 판결."},
+{f:"憲法",n:"非嫡出子相続分規定違憲決定",c:"最大決",d:"平成25.9.4",a:"憲法14条1項、民法900条4号ただし書",q:"嫡出でない子の相続分を嫡出子の2分の1とする規定は平等原則に反するか。",h:"家族形態の多様化や国民意識の変化等を総合すると、遅くとも平成13年7月当時には、父母が婚姻関係になかったという子が選択の余地のない事柄を理由に不利益を及ぼすことは許されず、規定は14条1項に違反していた。ただし既に確定した法律関係には影響を及ぼさない。",r:"違憲",k:"판례변경. 시대 변화에 따른 위헌 판단 + 소급효 제한."},
+{f:"憲法",n:"再婚禁止期間違憲判決",c:"最大判",d:"平成27.12.16",a:"憲法14条1項・24条2項、民法733条",q:"女性のみ6か月の再婚禁止期間を設ける規定は合憲か。",h:"父性推定の重複回避という目的は合理的であり、100日の再婚禁止期間は合理性がある。しかし100日を超える部分は、医療・科学技術の発達等により目的達成に必要とはいえず、14条1項・24条2項に違反する。",r:"100日超過部分違憲（国賠は棄却）",k:"100일까지는 합헌, 초과부분 위헌. 같은 날 부부동성(750조)은 합헌."},
+{f:"憲法",n:"夫婦同氏制合憲判決",c:"最大判",d:"平成27.12.16",a:"憲法13条・14条・24条、民法750条",q:"夫婦同氏を定める民法750条は合憲か。",h:"氏の変更を強制されない自由は憲法上の権利として保障される人格権の一内容とはいえない。規定は夫婦がいずれの氏を称するかを協議に委ねており文言上男女の不平等はなく、家族の呼称を一つに定めることには合理性があり、24条にも違反しない。",r:"合憲",k:"부부동성 합헌. 제도의 존재방식은 국회에서 논의될 사항이라는 취지."},
+{f:"憲法",n:"国籍法違憲判決",c:"最大判",d:"平成20.6.4",a:"憲法14条1項、旧国籍法3条1項",q:"出生後認知された子について父母の婚姻（準正）を国籍取得要件とする規定は合憲か。",h:"立法当時は合理的関連性があったが、その後の家族生活・親子関係の意識の変化等により、遅くとも上告人が届出をした当時には、準正を要件とすることは立法目的との合理的関連性を欠き、14条1項に違反する。",r:"違憲（国籍取得を認める）",k:"준정 요건 위헌. 위헌부분만 제외하고 국적취득을 인정한 구제방법이 포인트."},
+{f:"憲法",n:"謝罪広告事件",c:"最大判",d:"昭和31.7.4",a:"憲法19条、民法723条",q:"名誉毀損の救済として謝罪広告を強制することは良心の自由に反するか。",h:"単に事態の真相を告白し陳謝の意を表明するにとどまる程度の謝罪広告であれば、代替執行によって強制しても、倫理的な意思・良心の自由を侵害するものではない。",r:"合憲",k:"'단순히 진상을 고백하고 사죄의 뜻을 표명하는 정도'면 합헌."},
+{f:"憲法",n:"津地鎮祭事件",c:"最大判",d:"昭和52.7.13",a:"憲法20条3項",q:"市が公金で神式の地鎮祭を行ったことは政教分離に反するか。",h:"政教分離は国家と宗教の関わり合いを全く許さないものではない。行為の目的が宗教的意義をもち、その効果が宗教に対する援助・助長・促進又は圧迫・干渉等になるような行為が禁止される（目的効果基準）。本件地鎮祭は世俗的行事であり違反しない。",r:"合憲",k:"목적효과기준의 출발점."},
+{f:"憲法",n:"愛媛玉串料訴訟",c:"最大判",d:"平成9.4.2",a:"憲法20条3項・89条",q:"県が靖国神社等に玉串料を公金から支出したことは政教分離に反するか。",h:"目的効果基準に照らし、玉串料の奉納は社会的儀礼とはいえず、県が特定の宗教団体を特別に支援している印象を与え、宗教への関心を呼び起こすものであって、20条3項の宗教的活動に当たり、89条にも違反する。",r:"違憲",k:"목적효과기준을 적용해 위헌을 낸 사례."},
+{f:"憲法",n:"剣道実技拒否事件",c:"最判",d:"平成8.3.8",a:"憲法20条、学校教育法",q:"信仰を理由に剣道実技を拒否した学生に対する退学処分は適法か。",h:"信仰上の理由による拒否であることを考慮せず、代替措置を何ら検討することなく原級留置・退学処分をしたことは、考慮すべき事項を考慮しない等、社会観念上著しく妥当を欠き、裁量権の範囲を超える違法なものである。",r:"処分違法",k:"신앙의 자유 + 행정재량 통제(판단과정 심사)가 결합된 판례."},
+{f:"憲法",n:"北方ジャーナル事件",c:"最大判",d:"昭和61.6.11",a:"憲法21条",q:"名誉毀損を理由とする出版物の事前差止めは許されるか。",h:"事前差止めは事前抑制として厳格かつ明確な要件の下でのみ許される。公務員・公職候補者に関する表現は原則として許されないが、表現内容が真実でなく又は専ら公益を図る目的でないことが明白で、被害者が重大かつ著しく回復困難な損害を被るおそれがあるときは例外的に許される。",r:"差止めは適法",k:"사전억제 원칙 금지 + 예외 요건. 21조2항의 '검열'과는 구별."},
+{f:"憲法",n:"泉佐野市民会館事件",c:"最判",d:"平成7.3.7",a:"憲法21条、地方自治法244条",q:"公の施設の使用不許可は集会の自由を侵害するか。",h:"「公の秩序をみだすおそれ」は、集会の自由を保障することの重要性よりも人の生命・身体・財産が侵害される危険を回避する必要性が優越する場合に限られ、その危険は単に危険な事態を生ずる蓋然性があるだけでは足りず、明らかな差し迫った危険の発生が具体的に予見されることが必要である。",r:"不許可は合憲・適法",k:"'명백하고 임박한 위험의 구체적 예견'이라는 엄격한 기준."},
+{f:"憲法",n:"猿払事件",c:"最大判",d:"昭和49.11.6",a:"憲法21条、国家公務員法102条",q:"公務員の政治的行為を一律に禁止し刑罰を科すことは合憲か。",h:"禁止の目的は行政の中立的運営とこれに対する国民の信頼の確保であり正当である。目的と禁止との間に合理的関連性があり、禁止により得られる利益と失われる利益とが均衡している（合理的関連性の基準）。",r:"合憲（有罪）",k:"합리적 관련성 기준. 이후 堀越事件에서 사실상 한정."},
+{f:"憲法",n:"堀越事件",c:"最判",d:"平成24.12.7",a:"憲法21条、国家公務員法102条",q:"管理職でない公務員が休日に政党機関紙を配布した行為は処罰されるか。",h:"禁止される「政治的行為」とは、公務員の職務遂行の政治的中立性を損なうおそれが、観念的なものにとどまらず現実的に起こり得るものとして実質的に認められるものをいう。管理職的地位になく、職務と無関係に公務員と分からない態様で行った本件配布はこれに当たらない。",r:"無罪",k:"구성요건을 한정해석. 같은 날 관리직 사안(世田谷事件)은 유죄."},
+{f:"憲法",n:"小売市場事件",c:"最大判",d:"昭和47.11.22",a:"憲法22条1項",q:"小売市場開設の許可制（距離制限）は職業選択の自由に反するか。",h:"社会経済の調和的発展のための積極的な規制措置については立法府の裁量を尊重し、当該措置が著しく不合理であることが明白である場合に限って違憲とする（明白性の原則）。本件規制は中小小売商の保護を目的とし、著しく不合理とはいえない。",r:"合憲",k:"적극목적 규제 → 명백성 원칙. 규제목적 이분론의 한 축."},
+{f:"憲法",n:"薬事法距離制限違憲判決",c:"最大判",d:"昭和50.4.30",a:"憲法22条1項",q:"薬局開設の適正配置規制（距離制限）は合憲か。",h:"許可制は重要な公共の利益のために必要かつ合理的な措置であることを要し、消極的・警察的措置の場合は、より緩やかな規制では目的を十分に達成できないことを要する。不良医薬品の供給防止という目的と距離制限との関連は観念上の想定にすぎず、必要性・合理性を肯定できない。",r:"違憲",k:"소극목적 규제 → 엄격한 합리성 기준. 小売市場와 세트로 암기."},
+{f:"憲法",n:"森林法共有林分割制限違憲判決",c:"最大判",d:"昭和62.4.22",a:"憲法29条2項、旧森林法186条",q:"持分2分の1以下の共有者の分割請求を否定する規定は財産権を侵害するか。",h:"森林経営の安定という立法目的は公共の福祉に合致するが、持分2分の1以下の共有者に分割請求を一律に否定することは、目的との間に合理的関連性がなく、必要な限度を超えた不必要な規制であって29条2項に違反する。",r:"違憲",k:"재산권 규제의 법령위헌. 공유물분할청구권(민법256조)과의 관계."},
+{f:"憲法",n:"朝日訴訟",c:"最大判",d:"昭和42.5.24",a:"憲法25条",q:"生活保護基準の設定に関する厚生大臣の判断は司法審査の対象となるか。",h:"25条1項は国の責務を宣言したにとどまり、直接個々の国民に具体的権利を賦与したものではない。何が健康で文化的な最低限度の生活かの判断は厚生大臣の合目的的な裁量に委ねられ、著しく低い基準の設定など裁量権の限界を超え又は濫用した場合にのみ違法となる（傍論）。",r:"訴訟終了（原告死亡）",k:"원고 사망으로 종료, 판단은 '念のため' 방론. 25조의 법적 성격."},
+{f:"憲法",n:"堀木訴訟",c:"最大判",d:"昭和57.7.7",a:"憲法25条・14条",q:"障害福祉年金と児童扶養手当の併給禁止は合憲か。",h:"25条の具体化にどのような立法措置を講ずるかは立法府の広い裁量に委ねられ、それが著しく合理性を欠き明らかに裁量の逸脱・濫用と見ざるを得ない場合を除き、裁判所の審査判断に適しない。",r:"合憲",k:"생존권 입법재량 → '현저히 합리성을 결여하여 명백히 재량 일탈·남용'일 때만."},
+{f:"憲法",n:"旭川学力テスト事件",c:"最大判",d:"昭和51.5.21",a:"憲法23条・26条",q:"教育内容を決定する権能は誰にあるか（国家教育権説か国民教育権説か）。",h:"両説はいずれも極端・一方的である。普通教育の教師にも一定の範囲で教授の自由が認められるが、完全な教授の自由は認められない。国は必要かつ相当と認められる範囲で教育内容を決定する権能を有する。",r:"学テは適法",k:"절충설. 보통교육 교사의 교수의 자유는 '일정 범위'에서만."},
+{f:"憲法",n:"在外日本人選挙権制限違憲判決",c:"最大判",d:"平成17.9.14",a:"憲法15条・43条・44条",q:"在外国民の選挙権行使を制限していた公職選挙法は合憲か。立法不作為の国家賠償は認められるか。",h:"選挙権の制限は、そのような制限をすることがやむを得ないと認められる事由がなければ許されない。本件制限は違憲であり、国会が正当な理由なく長期にわたり立法措置を怠った場合は、立法不作為も国賠法上違法となる。",r:"違憲（国賠認容）",k:"'부득이한 사유' 기준 + 입법부작위 국가배상 인정."},
+{f:"憲法",n:"衆議院議員定数不均衡訴訟",c:"最大判",d:"昭和51.4.14",a:"憲法14条1項、公職選挙法",q:"議員定数配分の不均衡は違憲か。違憲の場合、選挙は無効となるか。",h:"投票価値の平等は憲法の要求であり、約1対5の較差は違憲状態にあり、合理的期間内に是正されなかったので配分規定全体が違憲となる。ただし選挙を無効とすると憲法の所期しない結果を生ずるため、事情判決の法理により選挙は無効とせず違法を宣言するにとどめる。",r:"違憲（選挙は有効）",k:"합리적 기간론 + 사정판결의 법리. 배분규정은 불가분 일체."},
+{f:"憲法",n:"砂川事件",c:"最大判",d:"昭和34.12.16",a:"憲法9条・81条",q:"日米安保条約は司法審査の対象となるか。",h:"安保条約のような高度の政治性を有する条約が違憲か否かの判断は、一見極めて明白に違憲無効であると認められない限り、裁判所の司法審査権の範囲外にある。",r:"原判決破棄差戻し",k:"통치행위론(변형). '一見極めて明白'이라는 유보 문구."},
+// ── 民法 ──
+{f:"民法",n:"177条の第三者の範囲",c:"大連判",d:"明治41.12.15",a:"民法177条",q:"登記がなければ対抗できない「第三者」とは誰か。",h:"177条の第三者とは、当事者及びその包括承継人以外の者で、不動産に関する物権の得喪・変更の登記欠缺を主張する正当な利益を有する者をいう（制限説）。",r:"—",k:"제3자 제한설. 불법점유자·무권리자는 포함되지 않음."},
+{f:"民法",n:"背信的悪意者排除",c:"最判",d:"昭和43.8.2",a:"民法177条",q:"二重譲渡の第二譲受人が悪意の場合、登記を備えれば第一譲受人に優先するか。",h:"実体上物権変動があった事実を知る者が、その物権変動について登記の欠缺を主張することが信義に反すると認められる事情がある場合（背信的悪意者）には、登記の欠缺を主張する正当な利益を有する第三者に当たらない。",r:"背信的悪意者は第三者に当たらない",k:"단순악의자는 제3자 O, 배신적 악의자는 X."},
+{f:"民法",n:"取消後の第三者",c:"大判",d:"昭和17.9.30",a:"民法96条・121条・177条",q:"詐欺による取消しの後に登場した第三者と取消権者の関係は。",h:"取消しにより物権が復帰することは一種の物権変動であり、取消後に現れた第三者との関係は対抗問題として、登記の先後で決する。",r:"—",k:"취소 '전' 제3자는 96조3항, 취소 '후' 제3자는 177조 대항문제."},
+{f:"民法",n:"取得時効完成後の第三者",c:"最判",d:"昭和33.8.28",a:"民法162条・177条",q:"時効完成後に原所有者から譲り受けた第三者に、時効取得者は登記なしで対抗できるか。",h:"取得時効による権利取得を、時効完成後に原所有者から権利を取得し登記を経た第三者に対抗するには登記を要する。",r:"登記が必要",k:"시효완성 '전' 제3자에게는 등기 불요, '후' 제3자에게는 등기 필요."},
+{f:"民法",n:"共同相続と登記",c:"最判",d:"昭和38.2.22",a:"民法177条・898条",q:"共同相続人の一人が単独名義で登記し第三者に譲渡した場合、他の相続人は自己の持分を対抗できるか。",h:"他の共同相続人の持分に関する限り、単独名義の登記も第三者の取得登記も無権利の登記であり、登記に公信力がない以上、他の共同相続人は自己の持分を登記なくして第三者に対抗できる。",r:"登記なく対抗可",k:"(※ 2018년 개정 899조의2로 법정상속분 초과분은 등기 필요)."},
+{f:"民法",n:"94条2項類推適用（不実登記の放置）",c:"最判",d:"昭和45.9.22",a:"民法94条2項",q:"真の所有者が不実の登記を知りながら放置した場合、善意の第三者は保護されるか。",h:"不実の所有権移転登記がされたことを知りながら、所有者がこれを存続させることを明示又は黙示に承認していたときは、94条2項を類推適用し、所有者は登記名義人が所有権を取得していないことをもって善意の第三者に対抗できない。",r:"第三者保護",k:"권리외관법리. 허위외관 + 진정권리자의 귀책 + 제3자 선의."},
+{f:"民法",n:"大阪アルカリ事件",c:"大判",d:"大正5.12.22",a:"民法709条",q:"化学工場の排煙による農作物被害について、過失はどのように判断されるか。",h:"事業の性質に従い損害を予防するに相当な設備を施していれば、損害が生じても過失はない（相当な設備論）。",r:"破棄差戻し",k:"과실 = 결과회피의무 위반이라는 객관적 과실론의 원류."},
+{f:"民法",n:"富喜丸事件",c:"大連判",d:"大正15.5.22",a:"民法416条・709条",q:"不法行為による損害賠償の範囲はどう定まるか。",h:"416条は相当因果関係の範囲を定めたもので、不法行為による損害賠償にも類推適用される。特別事情による損害は予見可能であった場合に限り賠償される。中間最高価格の賠償も予見可能性があり、かつ転売等による利益取得が確実であった場合に限る。",r:"—",k:"불법행위에도 416조 유추적용(상당인과관계설)."},
+{f:"民法",n:"名誉毀損の免責（真実相当性）",c:"最判",d:"昭和41.6.23",a:"民法709条・710条",q:"事実を摘示して名誉を毀損した場合、どのようなときに不法行為が成立しないか。",h:"公共の利害に関する事実に係り、専ら公益を図る目的に出た場合において、摘示事実が真実であると証明されたときは違法性がない。真実の証明がなくても、真実と信ずるについて相当の理由があるときは故意・過失がなく不法行為は成立しない。",r:"—",k:"공공성·공익목적·진실성 + 진실상당성. 형법 230조의2와 병행."},
+{f:"民法",n:"安全配慮義務",c:"最判",d:"昭和50.2.25",a:"民法1条2項・415条・167条",q:"国は公務員に対して安全配慮義務を負うか。その損害賠償請求権の消滅時効は。",h:"国は公務員に対し、公務遂行のための場所・施設等の管理等において生命・健康等を危険から保護するよう配慮すべき義務（安全配慮義務）を負う。これはある法律関係に基づく特別な社会的接触関係に入った当事者間で信義則上負う義務であり、その違反による損害賠償請求権の消滅時効は（当時の）10年である。",r:"破棄差戻し",k:"안전배려의무를 최고재판소가 처음 인정(自衛隊車両整備工場事件)."},
+{f:"民法",n:"「相続させる」旨の遺言",c:"最判",d:"平成3.4.19",a:"民法908条・985条",q:"特定の遺産を特定の相続人に「相続させる」旨の遺言の性質と効力は。",h:"遺贈と解すべき特段の事情がない限り遺産分割方法の指定であり、何らの行為を要せずして、被相続人の死亡時に直ちに当該遺産が当該相続人に相続により承継される。",r:"—",k:"'상속시킨다' 유언 = 분할방법 지정, 사망 시 즉시 승계(香川判決)."},
+{f:"民法",n:"預貯金債権と遺産分割",c:"最大決",d:"平成28.12.19",a:"民法898条・907条",q:"共同相続された預貯金債権は相続開始と同時に当然分割されるか。",h:"共同相続された普通預金債権・通常貯金債権・定期貯金債権は、相続開始と同時に当然に相続分に応じて分割されることはなく、遺産分割の対象となる。",r:"判例変更",k:"종전 당연분할설 변경. 이후 909조의2(예금 일부 인출) 신설."},
+// ── 刑法 ──
+{f:"刑法",n:"練馬事件",c:"最大判",d:"昭和33.5.28",a:"刑法60条",q:"実行行為を分担しない共謀者も共同正犯として処罰されるか。",h:"二人以上の者が特定の犯罪を行うため共同意思の下に一体となって互いに他人の行為を利用し各自の意思を実行に移すことを内容とする謀議をなし、これにより犯罪を実行した事実が認められれば、直接実行行為に関与しない者も共同正犯の刑責を負う。",r:"共謀共同正犯を肯定",k:"공모공동정범의 리딩케이스. '공모'는 엄격한 증명의 대상."},
+{f:"刑法",n:"空気注射事件",c:"最判",d:"昭和37.3.23",a:"刑法43条・199条",q:"静脈に空気を注射して殺害しようとしたが量が致死量に足りなかった場合、不能犯か。",h:"注射された空気の量が致死量以下であっても、被注射者の身体的条件その他の事情いかんによっては死の結果発生の危険が絶対にないとはいえないから、不能犯ではなく殺人未遂罪が成立する。",r:"殺人未遂",k:"불능범 부정. 위험성 판단."},
+{f:"刑法",n:"大阪南港事件",c:"最決",d:"平成2.11.20",a:"刑法205条",q:"被告人の暴行後、第三者の暴行で死期が早められた場合も因果関係は認められるか。",h:"犯人の暴行により被害者の死因となった傷害が形成された場合には、仮にその後第三者により加えられた暴行によって死期が早められたとしても、犯人の暴行と被害者の死亡との間の因果関係を肯定できる。",r:"傷害致死",k:"사인 형성형. 개입사정이 있어도 인과관계 긍정."},
+{f:"刑法",n:"クロロホルム事件",c:"最決",d:"平成16.3.22",a:"刑法43条・199条",q:"第一行為（クロロホルムで失神）で死亡した可能性がある場合、殺人既遂となるか（早すぎた構成要件実現）。",h:"第一行為は第二行為（溺死させる行為）を確実かつ容易に行うために必要不可欠で、第一行為に成功すれば障害となる特段の事情がなく、両行為は時間的場所的に近接している。第一行為開始時点で殺人に至る客観的な危険性が明らかに認められ、実行の着手があり、殺人既遂の故意に欠けるところはない。",r:"殺人既遂",k:"실행의 착수 판단 3요소(필요불가결성·장애 부존재·시간적 장소적 근접성)."},
+{f:"刑法",n:"びょう打ち銃事件",c:"最判",d:"昭和53.7.28",a:"刑法38条1項・199条",q:"狙った警察官を貫通した鋲が通行人にも当たった場合（方法の錯誤）、通行人に対する故意は認められるか。",h:"犯罪の故意があるとするには、犯人が認識した内容と発生した事実とが法定の範囲内で一致することで足りる。人を殺す意思で殺害行為に出た以上、予想外の人に結果が生じても、その人に対する殺人未遂罪の故意も認められる。",r:"両者に強盗殺人未遂",k:"법정적 부합설 + 수고의범설."},
+{f:"刑法",n:"英国騎士道事件",c:"最決",d:"昭和62.3.26",a:"刑法36条2項・38条1項",q:"急迫不正の侵害があると誤信して相当性を超える防衛行為をした場合（誤想過剰防衛）の扱いは。",h:"誤信した侵害に対する防衛手段として相当性を逸脱している場合には、傷害致死罪が成立し、刑法36条2項により刑を減軽することができる。",r:"傷害致死（36条2項準用で減軽可）",k:"오상과잉방위 → 고의범 성립 + 36조2항 적용."},
+{f:"刑法",n:"自招侵害事件",c:"最決",d:"平成20.5.20",a:"刑法36条1項",q:"自ら先に暴行を加えて相手の攻撃を招いた場合、正当防衛は成立するか。",h:"被告人の不正の行為により自ら侵害を招いた場合で、相手の攻撃が被告人の暴行の程度を大きく超えるものでないなどの事情の下では、被告人の反撃行為は何らかの反撃行為に出ることが正当とされる状況における行為とはいえない。",r:"正当防衛不成立",k:"자초침해. 급박성이 아니라 '정당화되는 상황'으로 부정."},
+{f:"刑法",n:"保険金詐欺目的の承諾",c:"最決",d:"昭和55.11.13",a:"刑法35条・204条",q:"保険金詐取目的で被害者の承諾を得て傷害を負わせた場合、違法性は阻却されるか。",h:"承諾が保険金を騙取する違法な目的に利用するために得られたものであるときは、そのような承諾は傷害行為の違法性を阻却しない。",r:"傷害罪成立",k:"피해자 승낙의 한계 — 승낙의 목적·수단·방법 등을 종합 고려."},
+{f:"刑法",n:"死者の占有",c:"最判",d:"昭和41.4.8",a:"刑法235条",q:"人を殺害した後に財物奪取の意思を生じて持ち去った場合、窃盗罪か占有離脱物横領罪か。",h:"被害者からその財物の占有を離脱させた自己の行為を利用して財物を奪取した一連の行為を全体的に評価し、被害者が生前に有していた占有を保護するのが法の目的にかなうから、窃盗罪が成立する。",r:"窃盗罪",k:"살해 직후 '살해한 자'와의 관계에서만 생전 점유를 보호."},
+// ── 行政法 ──
+{f:"行政法",n:"大田区ごみ焼却場事件",c:"最判",d:"昭和39.10.29",a:"行政事件訴訟法3条2項",q:"取消訴訟の対象となる「処分」とは何か。",h:"行政庁の処分とは、公権力の主体たる国又は公共団体が行う行為のうち、その行為によって直接国民の権利義務を形成し又はその範囲を確定することが法律上認められているものをいう。ごみ焼却場の設置行為はこれに当たらない。",r:"処分性否定",k:"처분성 공식의 출발점."},
+{f:"行政法",n:"浜松市土地区画整理事業計画",c:"最大判",d:"平成20.9.10",a:"行政事件訴訟法3条2項",q:"土地区画整理事業計画の決定は抗告訴訟の対象となる処分か。",h:"事業計画の決定により施行地区内の宅地所有者等は換地処分を受けるべき地位に立たされ、その法的地位に直接的な影響が生ずる。換地処分等を待って争うのでは実効的な権利救済が図れないから、計画決定は処分に当たる。",r:"処分性肯定（判例変更）",k:"'青写真判決'(昭和41) 변경. 실효적 권리구제의 관점."},
+{f:"行政法",n:"小田急線連続立体交差事業",c:"最大判",d:"平成17.12.7",a:"行政事件訴訟法9条1項・2項",q:"鉄道事業認可について周辺住民に原告適格はあるか。",h:"都市計画法・環境影響評価条例等の趣旨・目的を考慮すると、事業に伴う騒音・振動等によって健康又は生活環境に係る著しい被害を直接的に受けるおそれのある者は、認可の取消しを求める原告適格を有する。",r:"原告適格一部肯定（判例変更）",k:"2004년 신설 9조2항을 적용해 원고적격 확대."},
+{f:"行政法",n:"主婦連ジュース事件",c:"最判",d:"昭和53.3.14",a:"旧景表法、行政不服審査",q:"一般消費者団体は公正取引委員会の認定に対する不服申立適格を有するか。",h:"不服申立てができる者は、処分により自己の権利若しくは法律上保護された利益を侵害され又は必然的に侵害されるおそれのある者に限られる。一般消費者の利益は公益保護の結果として生ずる反射的な利益にすぎない。",r:"不服申立適格否定",k:"'법률상 보호된 이익'설. 반사적 이익과 구별."},
+{f:"行政法",n:"個人タクシー事件",c:"最判",d:"昭和46.10.28",a:"道路運送法、憲法31条",q:"多数の申請者から少数を選ぶ免許の審査には、どのような手続が求められるか。",h:"行政庁は法の趣旨を具体化した審査基準を設定し、これを公正かつ合理的に適用すべきであり、基準の内容が微妙・高度な認定を要する場合には、その適用上必要とされる事項について申請人に主張と証拠の提出の機会を与えなければならない。",r:"却下処分違法",k:"공정한 절차 요청. 행정절차법 이전의 리딩케이스."},
+{f:"行政法",n:"品川区マンション事件",c:"最判",d:"昭和60.7.16",a:"建築基準法6条、国家賠償法1条",q:"行政指導が継続中であることを理由に建築確認を留保することは違法か。",h:"建築主が行政指導に協力できないとの意思を真摯かつ明確に表明し、確認申請に対し直ちに応答すべきことを求めているときは、指導への不協力が社会通念上正義の観念に反するといえるような特段の事情がない限り、確認処分を留保することは違法である。",r:"留保は違法（国賠認容）",k:"'진지하고 명확한 불협력 의사표명' → 행정절차법 33조로 명문화."},
+{f:"行政法",n:"宝塚市パチンコ条例事件",c:"最判",d:"平成14.7.9",a:"裁判所法3条1項",q:"市が条例上の中止命令の履行を求めて民事訴訟を提起できるか。",h:"国又は地方公共団体が専ら行政権の主体として国民に対して行政上の義務の履行を求める訴訟は、法規の適用の適正ないし一般公益の保護を目的とするものであって、自己の権利利益の保護救済を目的とするものではないから、法律上の争訟に当たらず、法律に特別の規定がない限り提起できない。",r:"訴え却下",k:"행정상 의무의 사법적 집행 부정. 학설의 비판이 많은 판례."},
+{f:"行政法",n:"高知落石事件",c:"最判",d:"昭和45.8.20",a:"国家賠償法2条1項",q:"道路の設置・管理の瑕疵による責任に過失は必要か。予算不足は免責事由となるか。",h:"営造物の設置又は管理の瑕疵とは、営造物が通常有すべき安全性を欠いていることをいい、これに基づく国・公共団体の賠償責任については過失の存在を必要としない。防護柵設置の予算措置に困却することが推察できても、それにより直ちに責任を免れるものではない。",r:"賠償責任肯定",k:"국배법 2조 = 무과실책임, 예산부족은 면책사유 X."}
+];
+
+// ---- 상태 ----
+const FIELDS = ["전체","憲法","民法","刑法","行政法"];
+const KEY = "judge-done-v1";
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ done = {}; }
+const saveDone = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e){} };
+CASES.forEach((c,i)=>{ c.id = c.f + ":" + c.n; c.i = i; });
+let field = "전체", view = "list";
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const pool = () => CASES.filter(c => field === "전체" || c.f === field);
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const court = c => `${c.c} ${c.d}`;
+
+// ---- 분야 칩 ----
+function renderChips(){
+  $("#chips").innerHTML = FIELDS.map(f => {
+    const n = f === "전체" ? CASES.length : CASES.filter(c=>c.f===f).length;
+    return `<button class="chip" data-f="${f}" aria-pressed="${f===field}">${f}<small>${n}</small></button>`;
+  }).join("");
+}
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  field = b.dataset.f; renderChips(); refresh();
+});
+
+// ---- 목록 ----
+function renderList(){
+  const q = $("#q").value.trim().toLowerCase();
+  const hide = $("#hideDone").checked;
+  const p = pool();
+  const items = p.filter(c => (!hide || !done[c.id]) &&
+    (!q || [c.n,c.a,c.q,c.h,c.k,c.d,c.r].join(" ").toLowerCase().includes(q)));
+  const nd = p.filter(c=>done[c.id]).length;
+  $("#stat").textContent = `${items.length}건 표시 · 외움 ${nd}/${p.length}`;
+  $("#list").innerHTML = items.length ? items.map(c => `
+    <details class="case" data-id="${esc(c.id)}">
+      <summary><span class="fld">${c.f}</span><span class="nm">${esc(c.n)}</span><span class="done">${done[c.id]?"✓ 외움":""}</span><span class="dt">${court(c)} · ${esc(c.a)}</span></summary>
+      <div class="body"><dl>
+        <div><dt>争点 쟁점</dt><dd>${esc(c.q)}</dd></div>
+        <div><dt>判旨 판지 요약</dt><dd>${esc(c.h)}</dd></div>
+        <div><dt>結論 결론</dt><dd><span class="res ${c.r.startsWith("違憲")?"v":""}">${esc(c.r)}</span></dd></div>
+        <div><dt>포인트</dt><dd class="ko">${esc(c.k)}</dd></div>
+      </dl>
+      <div class="row"><button class="btn sm" data-toggle>${done[c.id]?"외움 해제":"외웠음 ✓"}</button></div></div>
+    </details>`).join("") : `<div class="empty">조건에 맞는 판례가 없습니다.</div>`;
+}
+$("#q").addEventListener("input", renderList);
+$("#hideDone").addEventListener("change", renderList);
+$("#list").addEventListener("click", e => {
+  const b = e.target.closest("[data-toggle]"); if (!b) return;
+  const id = b.closest(".case").dataset.id;
+  if (done[id]) delete done[id]; else done[id] = 1;
+  saveDone(); renderList();
+});
+
+// ---- 암기 카드: 앞면 사건명+쟁점, 뒷면 판지 ----
+let cd = null;
+function startCards(){
+  const p = pool(); const rest = p.filter(c=>!done[c.id]);
+  cd = { deck: shuffle(rest.length ? rest : p), i: 0, flip: false, know: 0 };
+  renderCard();
+}
+function renderCard(){
+  const {deck,i} = cd, n = deck.length;
+  $("#cRail").style.width = (i/n*100)+"%";
+  $("#cPos").textContent = `${Math.min(i+1,n)}/${n}`;
+  $("#cScore").textContent = `안다 ${cd.know}`;
+  if (i >= n){
+    $("#cBox").innerHTML = `<div class="lbl">끝</div><div class="q">${n}장 중 ${cd.know}장을 안다고 표시했습니다.</div>`;
+    $("#cBtns").innerHTML = `<button class="btn pri" data-a="again">다시 섞기</button>`; return;
+  }
+  const c = deck[i];
+  $("#cBox").innerHTML = `
+    <div class="lbl">${c.f} · ${court(c)}</div><div class="q" style="font-weight:700">${esc(c.n)}</div>
+    <div class="lbl">争点</div><div class="q">${esc(c.q)}</div>
+    ${cd.flip ? `<div class="lbl">判旨</div><div class="q">${esc(c.h)}</div>
+      <div class="lbl">結論 · 포인트</div><div><b>${esc(c.r)}</b> — ${esc(c.k)}</div>` : ""}`;
+  $("#cBtns").innerHTML = cd.flip
+    ? `<button class="btn pri" data-a="know">알았다 (외움 표시)</button><button class="btn" data-a="skip">아직 모르겠다</button>`
+    : `<button class="btn pri" data-a="flip">판지 보기</button><button class="btn" data-a="skip">건너뛰기</button>`;
+}
+$("#cBtns").addEventListener("click", e => {
+  const a = e.target.closest("[data-a]")?.dataset.a; if (!a) return;
+  if (a === "again") return startCards();
+  if (a === "flip"){ cd.flip = true; return renderCard(); }
+  if (a === "know"){ done[cd.deck[cd.i].id] = 1; saveDone(); cd.know++; }
+  cd.i++; cd.flip = false; renderCard();
+});
+
+// ---- 4지선다: 판지를 보고 사건 고르기 ----
+let qz = null;
+function startQuiz(){
+  const p = pool();
+  qz = { deck: shuffle(p).slice(0, Math.min(10, p.length)), i: 0, ok: 0, picked: null };
+  makeChoices(); renderQuiz();
+}
+function makeChoices(){
+  const c = qz.deck[qz.i]; if (!c) return;
+  const same = CASES.filter(x => x.f === c.f && x !== c);
+  const other = CASES.filter(x => x.f !== c.f);
+  const wrong = shuffle(same).concat(shuffle(other)).slice(0,3);
+  qz.choices = shuffle([c, ...wrong]); qz.picked = null;
+}
+function renderQuiz(){
+  const {deck,i} = qz, n = deck.length;
+  $("#zRail").style.width = (i/n*100)+"%";
+  $("#zPos").textContent = `${Math.min(i+1,n)}/${n}`;
+  $("#zScore").textContent = `정답 ${qz.ok}`;
+  if (i >= n){
+    $("#zBox").innerHTML = `<div class="lbl">결과</div><div class="q"><b style="font-size:28px;font-family:var(--f-num)">${qz.ok}/${n}</b></div>`;
+    $("#zBtns").innerHTML = `<button class="btn pri" data-a="again">새 10문제</button>`; return;
+  }
+  const c = deck[i], p = qz.picked;
+  $("#zBox").innerHTML = `
+    <div class="lbl">다음 판지는 어느 판례일까요? (${c.f})</div>
+    <div class="q">${esc(c.h)}</div>
+    <div class="chs">${qz.choices.map((x,k) => {
+      const cls = p == null ? "" : x === c ? "right" : k === p ? "wrong" : "";
+      return `<button class="ch ${cls}" data-k="${k}" ${p!=null?"disabled":""}>${esc(x.n)}${p!=null?`<small>${court(x)}</small>`:""}</button>`;
+    }).join("")}</div>
+    ${p != null ? `<div class="fb ${qz.choices[p]===c?"ok":"bad"}"><b>${qz.choices[p]===c?"정답":"오답"}</b> — ${esc(c.n)} (${court(c)})<br>${esc(c.k)}</div>` : ""}`;
+  $("#zBtns").innerHTML = p != null ? `<button class="btn pri" data-a="next">다음</button>` : "";
+}
+$("#zBox").addEventListener("click", e => {
+  const b = e.target.closest(".ch"); if (!b || qz.picked != null) return;
+  qz.picked = +b.dataset.k;
+  if (qz.choices[qz.picked] === qz.deck[qz.i]) qz.ok++;
+  renderQuiz();
+});
+$("#zBtns").addEventListener("click", e => {
+  const a = e.target.closest("[data-a]")?.dataset.a; if (!a) return;
+  if (a === "again") return startQuiz();
+  qz.i++; makeChoices(); renderQuiz();
+});
+
+// ---- 탭 ----
+function refresh(){
+  if (view === "list") renderList();
+  else if (view === "card") startCards();
+  else startQuiz();
+}
+document.querySelector(".tabs").addEventListener("click", e => {
+  const t = e.target.closest(".tab"); if (!t) return;
+  view = t.dataset.v;
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
+  ["list","card","quiz"].forEach(v => $("#v-"+v).hidden = v !== view);
+  refresh();
+});
+renderChips(); renderList();
+</script>
+</body>
+</html>

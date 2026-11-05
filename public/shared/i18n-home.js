@@ -40,6 +40,17 @@ ND.add({
   "방 코드": ["ルームコード", "Room code"],
   "총선 300석": ["総選挙300議席", "300-seat election"],
   "게임하러 가기": ["ゲームをする", "Play the game"],
+  "종합과목 플래시 카드": ["総合科目フラッシュカード（韓国語解説）", "EJU General Subjects Flashcards (Korean)"],
+  "EJU 종합과목에서 자주 틀리는 고난도 개념만 골라, 묻는 각도를 바꿔 새로 만든 62문항. 일본어 4지선다로 풀고 한국어 해설로 바로 확인해요.": ["EJU総合科目で間違えやすい高難度の論点だけを選び、問い方を変えて作り直した62問。日本語の4択で解き、韓国語の解説ですぐ確認できます。", "62 hard EJU General Subjects questions rebuilt from a new angle. Answer in Japanese multiple choice and check the Korean explanation right away."],
+  "EJU 総合科目": ["EJU 総合科目", "EJU General Subjects"],
+  "경제·정치·역사·지리": ["経済・政治・歴史・地理", "Economics · Politics · History · Geography"],
+  "틀린 문제 다시": ["間違えた問題だけ再挑戦", "Retry misses"],
+  "문제 풀러 가기": ["問題を解く", "Start practicing"],
+  "직접 만들어 쓰던 도구를 한곳에 모았습니다. 단어 암기, EJU 종합과목 복습, 출원 일정 확인까지 필요한 곳으로 바로 이동하세요.": ["自分で作って使っていたツールを一か所に集めました。単語の暗記、EJU総合科目の復習、出願日程の確認まで、必要なページへすぐ移動できます。", "Tools I built for my own use, gathered in one place: vocabulary drills, EJU General Subjects review and application dates. Jump straight to the one you need."],
+  "바로 가기": ["ジャンプ", "Jump to"],
+  "단어": ["単語", "Vocabulary"],
+  "EJU · 유학": ["EJU・留学", "EJU · Study in Japan"],
+  "일본 정치": ["日本政治", "Japanese politics"],
   "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"]
 });
 
@@ -47,5 +58,13 @@ ND.add({
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".tools a.tool").forEach(function (a) {
     if (!ND.toolShown(a.getAttribute("href"))) a.closest("li").hidden = true;
+  });
+  // 카드가 모두 숨겨진 묶음은 제목째 숨기고, 바로 가기에서도 뺀다
+  document.querySelectorAll("section.group").forEach(function (g) {
+    if (!g.querySelector("li:not([hidden])")) {
+      g.hidden = true;
+      var j = document.querySelector('.jump a[href="#' + g.getAttribute("aria-labelledby") + '"]');
+      if (j) j.hidden = true;
+    }
   });
 });

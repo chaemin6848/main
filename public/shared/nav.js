@@ -246,6 +246,14 @@
   // 후원 링크 (모든 페이지 공통 메뉴 오른쪽 끝)
   var COFFEE_URL = "https://buymeacoffee.com/attl6848";
   var COFFEE_LABEL = { ko: "Buy Me a Coffee로 후원하기", ja: "Buy Me a Coffeeで支援する", en: "Support on Buy Me a Coffee" };
+  // 사이트 공통 계정 (Google 로그인) — 실제 로그인 코드는 /shared/account.js
+  var ACC = {
+    login: { ko: "로그인", ja: "ログイン", en: "Log in" },
+    google: { ko: "Google 계정으로 로그인", ja: "Googleアカウントでログイン", en: "Sign in with Google" },
+    me: { ko: "내 계정", ja: "アカウント", en: "Account" },
+    out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
+    wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" }
+  };
 
   ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
   var here = location.pathname;
@@ -287,6 +295,21 @@
     ".lang:hover{border-color:var(--ink)}" +
     ".lang:focus-within{outline:2px solid var(--ink);outline-offset:2px}" +
     ".lang select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0}" +
+    ".acct{position:relative;flex:none;margin-left:4px}" +
+    ".acct>button{display:grid;place-items:center;min-width:34px;height:30px;padding:0 9px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);" +
+    "font:inherit;font-size:12px;font-weight:800;cursor:pointer;box-sizing:border-box;white-space:nowrap}" +
+    ".acct>button:hover{border-color:var(--ink)}" +
+    ".acct>button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}" +
+    ".acct>button.me{padding:0;width:30px;min-width:30px;border-radius:50%;overflow:hidden;background:var(--line)}" +
+    ".acct>button.me img{width:100%;height:100%;object-fit:cover;display:block}" +
+    ".acct-pop{position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(280px,calc(100vw - 24px));padding:12px;background:var(--paper);color:var(--ink);" +
+    "border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:grid;gap:4px;font-size:13px;box-sizing:border-box}" +
+    ".acct-pop[hidden]{display:none}" +
+    ".acct-pop b{font-size:14px;overflow-wrap:anywhere}" +
+    ".acct-pop span{color:var(--muted);overflow-wrap:anywhere}" +
+    ".acct-pop button{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
+    ".acct-pop button:hover{border-color:var(--ink)}" +
+    ".acct-pop .err{color:#c0392b}" +
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
@@ -300,6 +323,8 @@
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
+    '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '">' + ACC.login[lang] + "</button>" +
+    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
@@ -307,6 +332,57 @@
 
   if (me && me.parentNode) me.parentNode.insertBefore(host, me);
   else document.body.insertBefore(host, document.body.firstChild);
+
+  /* ---------- 계정 버튼 ---------- */
+  var accBtn = root.querySelector(".acct>button"), pop = root.querySelector(".acct-pop");
+  var popName = pop.querySelector("b"), popMail = pop.querySelector("span"), popErr = pop.querySelector(".err");
+  var me = null, busy = false;
+  function showErr(text) {
+    popErr.textContent = text; popErr.hidden = !text;
+    if (text) { popName.textContent = ""; popMail.textContent = ""; pop.querySelector(".out").hidden = true; pop.hidden = false; }
+  }
+  function paint(u) {
+    me = u;
+    accBtn.textContent = "";
+    if (!u) {
+      accBtn.className = "in"; accBtn.textContent = ACC.login[lang]; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
+      pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); return;
+    }
+    accBtn.className = "me"; accBtn.title = (u.name || u.email); accBtn.setAttribute("aria-label", ACC.me[lang] + ": " + (u.name || u.email));
+    var initial = function () { accBtn.textContent = (u.name || u.email || "?").trim().charAt(0).toUpperCase(); };
+    if (u.photo) {
+      var img = document.createElement("img"); img.alt = ""; img.referrerPolicy = "no-referrer"; img.src = u.photo;
+      img.onerror = function () { accBtn.textContent = ""; initial(); };
+      accBtn.appendChild(img);
+    } else initial();
+    popName.textContent = u.name || ""; popMail.textContent = u.email || ""; pop.querySelector(".out").hidden = false; popErr.hidden = true;
+  }
+  function withAccount(fn) {
+    if (window.ND.account) return fn(window.ND.account);
+    document.addEventListener("nd:account-ready", function once() { document.removeEventListener("nd:account-ready", once); fn(window.ND.account); });
+    loadAccount();
+  }
+  var accLoaded = false;
+  function loadAccount() {
+    if (accLoaded) return; accLoaded = true;
+    var sc = document.createElement("script"); sc.type = "module"; sc.src = "/shared/account.js";
+    document.head.appendChild(sc);
+  }
+  accBtn.addEventListener("click", function () {
+    if (me) { var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open)); return; }
+    if (busy) return;
+    if (!window.ND.account) { accBtn.textContent = ACC.wait[lang]; }
+    busy = true;
+    withAccount(function (A) {
+      A.signIn().then(function () { busy = false; }, function (e) { busy = false; paint(me); showErr(A.errorText(e, lang)); });
+    });
+  });
+  pop.querySelector(".out").addEventListener("click", function () { withAccount(function (A) { A.signOut(); }); });
+  document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) { pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { pop.hidden = true; accBtn.focus(); } });
+  // 페이지가 다 뜬 뒤에 로그인 상태를 확인한다 (첫 화면 속도에 영향 없게)
+  var startAcc = function () { withAccount(function (A) { A.onUser(paint); }); };
+  if (document.readyState === "complete") setTimeout(startAcc, 0); else window.addEventListener("load", startAcc);
 
   var sel = root.querySelector("select");
   if (sel) sel.addEventListener("change", function () { setLang(sel.value); });

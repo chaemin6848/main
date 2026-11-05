@@ -30,7 +30,8 @@ export function watchUser(cb) {
   let stopProfile = null;
   onAuthStateChanged(auth, u => {
     if (stopProfile) { stopProfile(); stopProfile = null; }
-    if (!u) { cb(null, null); return; }
+    // 제1당의 익명 로그인은 같은 사이트라 여기에도 보인다 → 나가타초 노트에서는 로그인하지 않은 것으로 본다
+    if (!u || u.isAnonymous) { cb(null, null); return; }
     stopProfile = onSnapshot(doc(db, "users", u.uid),
       s => cb(u, s.exists() ? s.data() : null),
       () => cb(u, null));

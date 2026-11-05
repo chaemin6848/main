@@ -50,6 +50,22 @@ h1{font-family:var(--f-display);font-weight:400;font-size:1.3rem;margin:0;text-w
 #saveSeg button[data-v="0"][aria-pressed="true"]{background:var(--v0)}
 #saveSeg button[data-v="1"][aria-pressed="true"]{background:var(--v1)}
 #langSeg button{font-size:.78rem;padding:4px 9px}
+/* 계정 (Google 로그인 → 체크 기록 기기 간 동기화, cloud.js) */
+.topr{display:flex;align-items:center;gap:8px;margin-left:auto}
+.acct{position:relative;flex:none}
+.acct-btn{font:inherit;font-size:.78rem;font-weight:600;min-width:30px;height:30px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer;display:grid;place-items:center;white-space:nowrap}
+.acct-btn:hover{border-color:var(--fg)}
+.acct-btn.me{width:30px;padding:0;border-radius:50%;overflow:hidden;background:var(--line)}
+.acct-btn.me img{width:100%;height:100%;object-fit:cover;display:block}
+.acct-btn.warn{box-shadow:0 0 0 2px var(--v0)}
+.acct-pop{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:max-content;max-width:min(300px,calc(100vw - 32px));padding:12px;background:var(--surface);color:var(--fg);
+  border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:grid;gap:4px;font-size:.82rem;line-height:1.45}
+.acct-pop b{font-size:.9rem;overflow-wrap:anywhere}
+.acct-pop .mail{color:var(--muted);overflow-wrap:anywhere}
+.acct-pop .st{color:var(--muted);margin-top:4px}
+.acct-pop .st.bad,.acct-pop .err{color:var(--v0)}
+.acct-pop .out{justify-self:start;margin-top:6px;font:inherit;font-size:.8rem;padding:5px 12px;border:1px solid var(--line);border-radius:6px;background:none;color:var(--fg);cursor:pointer}
+.acct-pop .out:hover{border-color:var(--fg)}
 #langSeg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .tabs{display:flex;gap:4px;margin-top:10px}
 .tabs button{font:inherit;font-size:.9rem;border:0;background:none;color:var(--muted);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}

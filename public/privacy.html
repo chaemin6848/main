@@ -51,7 +51,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <p class="eyebrow">PRIVACY POLICY</p>
 <h1>개인정보처리방침</h1>
 <p class="date">시행일: 2026년 11월 5일</p>
-<div class="summary"><p>nihongodic(이하 “이 사이트”)은 「개인정보 보호법」에 따라 이용자의 정보를 다음과 같이 처리합니다. 계정은 모든 페이지 위쪽 메뉴의 <b>Google 로그인</b>(선택)과 <b>나가타초 노트</b> 회원가입으로 만들 수 있으며, 그 밖의 도구의 학습·체크 기록은 이용자 기기 안에만 저장됩니다.</p></div>
+<div class="summary"><p>nihongodic(이하 “이 사이트”)은 「개인정보 보호법」에 따라 이용자의 정보를 다음과 같이 처리합니다. 계정은 모든 페이지 위쪽 메뉴의 <b>Google 로그인</b>(선택)과 <b>나가타초 노트</b> 회원가입으로 만들 수 있으며, 그 밖의 도구의 학습·체크 기록은 이용자 기기 안에만 저장됩니다. 다만 포켓몬 도감 채우기 도우미는 로그인한 경우에만 체크 기록을 계정에 저장해 기기 사이에 동기화합니다.</p></div>
 <p>이 방침은 nihongodic.com의 다음 도구 모두에 적용됩니다.</p>
 <ul class="tools">
 <li>단어 한 장 <code>/japanese</code></li><li>単語一枚 (단어 한 장 일본어판) <code>/korean</code></li><li>Wordcard Japanese <code>/en/japanese</code></li><li>Wordcard Korean <code>/en/korean</code></li><li>일유알리미 <code>/alarm</code></li><li>나가타초 노트 <code>/politics</code></li><li>제1당 <code>/jeildang</code></li><li>포켓몬 도감 채우기 도우미 (파이어레드·리프그린, 루비·사파이어, 블랙·화이트, 블랙2·화이트2) <code>/pokemon</code></li>
@@ -62,6 +62,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <div class="tbl"><table>
 <tr><th>도구</th><th>항목</th><th>목적</th><th>보유 기간</th></tr>
 <tr><td>사이트 공통 Google 로그인(선택)</td><td>Google 계정의 이름, 이메일, 프로필 사진 주소, 계정 식별값</td><td>로그인과 로그인 상태 유지, 메뉴에 계정 표시, 나가타초 노트 회원 식별·가입 승인</td><td>계정 삭제 요청 시까지</td></tr>
+<tr><td>포켓몬 도감 채우기 도우미 (로그인한 경우만)</td><td>게임별 도감 체크 상태, 마지막 저장 시각, Google 계정 식별값</td><td>같은 계정으로 로그인한 기기 사이의 체크 기록 동기화</td><td>계정 삭제 요청 시까지</td></tr>
 <tr><td>나가타초 노트 회원가입(필수)</td><td>이메일, 비밀번호, 이름(활동명)</td><td>회원 식별, 로그인, 가입 승인, 비밀번호 재설정</td><td>탈퇴 요청 시까지</td></tr>
 <tr><td>나가타초 노트 글 작성</td><td>글 내용, 작성일, 활동명, 회원 식별값</td><td>글 승인과 게재, 작성자 표시</td><td>삭제 또는 탈퇴 요청 시까지</td></tr>
 <tr><td>제1당</td><td>익명 식별값, 정당 이름·대표 이름·구호 등 게임 설정, 게임 진행 기록, 대화</td><td>멀티 게임 진행, 같은 방 참가자에게 표시</td><td>방이 삭제되거나 삭제 요청 시까지</td></tr>
@@ -84,7 +85,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><td>일유알리미</td><td><code>jw_consent</code>, <code>jw_sel</code>, <code>jw_disc</code> (쿠키, 동의한 경우에만)</td><td>쿠키 동의 여부, 고른 학부, 안내문 닫음</td><td>1년 (<code>jw_disc</code>는 30일)</td></tr>
 <tr><td>나가타초 노트</td><td>Firebase 인증 정보, <code>fold:*</code></td><td>로그인 상태 유지, 접어 둔 섹션</td><td>로그아웃하거나 지울 때까지</td></tr>
 <tr><td>제1당</td><td>Firebase 인증 정보, <code>party1:*</code>, <code>jd-house-view</code></td><td>익명 로그인 유지, 정당 설정, 최근 참가한 방, 혼자 하기 게임 기록, 화면 설정</td><td>지울 때까지</td></tr>
-<tr><td>포켓몬 도감 채우기 도우미</td><td><code>frlg-dex-helper-v1</code>, <code>rs-dex-helper-v1</code>, <code>bw-dex-helper-v1</code>, <code>b2w2-dex-helper-v1</code>, <code>dex-lang</code>, <code>dex-cookie-consent</code>, <code>frlg_dex</code>·<code>rs_dex</code>·<code>bw_dex</code>·<code>b2w2_dex</code> (쿠키, 동의한 경우에만)</td><td>도감 체크와 화면 설정, 쿠키 동의 여부, 체크 기록 백업</td><td>지울 때까지 (쿠키는 1년)</td></tr>
+<tr><td>포켓몬 도감 채우기 도우미</td><td><code>frlg-dex-helper-v1</code>, <code>rs-dex-helper-v1</code>, <code>bw-dex-helper-v1</code>, <code>b2w2-dex-helper-v1</code>, <code>dex-lang</code>, <code>dex-cookie-consent</code>, <code>frlg_dex</code>·<code>rs_dex</code>·<code>bw_dex</code>·<code>b2w2_dex</code> (쿠키, 동의한 경우에만), <code>dex-cloud-base:*</code> (로그인한 경우), Firebase 인증 정보</td><td>도감 체크와 화면 설정, 쿠키 동의 여부, 체크 기록 백업, 계정과 마지막으로 맞춘 체크 상태</td><td>지울 때까지 (쿠키는 1년)</td></tr>
 </table></div>
 <p>일유알리미와 포켓몬 도감 채우기 도우미는 처음 방문할 때 쿠키 저장 여부를 묻고, 거부해도 모든 기능을 쓸 수 있습니다. 각 화면의 쿠키 설정에서 언제든 바꿀 수 있습니다.</p>
 
@@ -94,7 +95,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. 처리 위탁과 외부 서비스(국외 이전 포함)</h2>
 <div class="tbl"><table>
 <tr><th>받는 곳</th><th>업무·이용 도구</th><th>전달되는 정보</th></tr>
-<tr><td>Google LLC (Firebase)</td><td>사이트 공통 Google 로그인, 나가타초 노트 로그인·회원 정보·글 저장·비밀번호 재설정 메일, 제1당 익명 로그인·게임 저장</td><td>1번의 항목 전체</td></tr>
+<tr><td>Google LLC (Firebase)</td><td>사이트 공통 Google 로그인, 포켓몬 도감 채우기 도우미 체크 기록 동기화, 나가타초 노트 로그인·회원 정보·글 저장·비밀번호 재설정 메일, 제1당 익명 로그인·게임 저장</td><td>1번의 항목 전체</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>사이트 전체 호스팅과 보안</td><td>IP 주소, 접속 시각 등 접속 기록</td></tr>
 <tr><td>Google LLC (AdSense)</td><td>단어 한 장·単語一枚·Wordcard 광고</td><td>쿠키, IP 주소, 브라우저 정보</td></tr>
 <tr><td>MyMemory (Translated srl)</td><td>단어 한 장·単語一枚·Wordcard에서 사전과 다른 답의 뜻 확인</td><td>입력한 답</td></tr>
@@ -127,7 +128,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <p class="eyebrow">PRIVACY POLICY</p>
 <h1>プライバシーポリシー</h1>
 <p class="date">施行日：2026年11月5日</p>
-<div class="summary"><p>nihongodic（以下「本サイト」）における利用者情報の取り扱いを以下のとおり定めます。アカウントは各ページ上部メニューの<b>Googleログイン</b>（任意）と<b>나가타초 노트（永田町ノート）</b>の会員登録で作成でき、そのほかのツールの学習・チェック記録は利用者の端末内にのみ保存されます。</p></div>
+<div class="summary"><p>nihongodic（以下「本サイト」）における利用者情報の取り扱いを以下のとおり定めます。アカウントは各ページ上部メニューの<b>Googleログイン</b>（任意）と<b>나가타초 노트（永田町ノート）</b>の会員登録で作成でき、そのほかのツールの学習・チェック記録は利用者の端末内にのみ保存されます。ただし、ポケモン図鑑埋めヘルパーはログインした場合に限り、チェック記録をアカウントに保存して端末間で同期します。</p></div>
 <p>このポリシーは、nihongodic.com の次のツールすべてに適用されます。</p>
 <ul class="tools">
 <li>단어 한 장 <code>/japanese</code></li><li>単語一枚（韓国語単語クイズ） <code>/korean</code></li><li>Wordcard Japanese <code>/en/japanese</code></li><li>Wordcard Korean <code>/en/korean</code></li><li>日留アラーム <code>/alarm</code></li><li>나가타초 노트 <code>/politics</code></li><li>第一党 <code>/jeildang</code></li><li>ポケモン図鑑埋めヘルパー（FRLG・ルビー・サファイア・BW・BW2） <code>/pokemon</code></li>
@@ -138,6 +139,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <div class="tbl"><table>
 <tr><th>ツール</th><th>項目</th><th>目的</th><th>保存期間</th></tr>
 <tr><td>サイト共通のGoogleログイン（任意）</td><td>Googleアカウントの名前、メールアドレス、プロフィール写真のURL、アカウント識別子</td><td>ログインとログイン状態の保持、メニューでのアカウント表示、나가타초 노트の会員識別・登録承認</td><td>アカウント削除の申し出まで</td></tr>
+<tr><td>ポケモン図鑑埋めヘルパー（ログインした場合のみ）</td><td>ゲームごとの図鑑チェック状態、最終保存日時、Googleアカウント識別子</td><td>同じアカウントでログインした端末間でのチェック記録の同期</td><td>アカウント削除の申し出まで</td></tr>
 <tr><td>나가타초 노트 会員登録（必須）</td><td>メールアドレス、パスワード、名前（活動名）</td><td>会員の識別、ログイン、登録承認、パスワード再設定</td><td>退会の申し出まで</td></tr>
 <tr><td>나가타초 노트 投稿</td><td>投稿内容、投稿日、活動名、会員識別子</td><td>投稿の承認と掲載、投稿者の表示</td><td>削除または退会の申し出まで</td></tr>
 <tr><td>第一党</td><td>匿名の識別子、政党名・代表名・スローガンなどのゲーム設定、ゲームの進行記録、チャット</td><td>マルチプレイの進行、同じルームの参加者への表示</td><td>ルームの削除または削除の申し出まで</td></tr>
@@ -160,7 +162,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><td>日留アラーム</td><td><code>jw_consent</code>、<code>jw_sel</code>、<code>jw_disc</code>（Cookie、同意した場合のみ）</td><td>Cookieの同意状況、選んだ学部、お知らせを閉じた記録</td><td>1年（<code>jw_disc</code>は30日）</td></tr>
 <tr><td>나가타초 노트</td><td>Firebaseの認証情報、<code>fold:*</code></td><td>ログイン状態の保持、折りたたんだセクション</td><td>ログアウトまたは削除するまで</td></tr>
 <tr><td>第一党</td><td>Firebaseの認証情報、<code>party1:*</code>、<code>jd-house-view</code></td><td>匿名ログインの保持、政党設定、最近参加したルーム、ひとりプレイの記録、表示設定</td><td>削除するまで</td></tr>
-<tr><td>ポケモン図鑑埋めヘルパー</td><td><code>frlg-dex-helper-v1</code>、<code>rs-dex-helper-v1</code>、<code>bw-dex-helper-v1</code>、<code>b2w2-dex-helper-v1</code>、<code>dex-lang</code>、<code>dex-cookie-consent</code>、<code>frlg_dex</code>・<code>rs_dex</code>・<code>bw_dex</code>・<code>b2w2_dex</code>（Cookie、同意した場合のみ）</td><td>図鑑のチェックと表示設定、Cookieの同意状況、チェック記録のバックアップ</td><td>削除するまで（Cookieは1年）</td></tr>
+<tr><td>ポケモン図鑑埋めヘルパー</td><td><code>frlg-dex-helper-v1</code>、<code>rs-dex-helper-v1</code>、<code>bw-dex-helper-v1</code>、<code>b2w2-dex-helper-v1</code>、<code>dex-lang</code>、<code>dex-cookie-consent</code>、<code>frlg_dex</code>・<code>rs_dex</code>・<code>bw_dex</code>・<code>b2w2_dex</code>（Cookie、同意した場合のみ）、<code>dex-cloud-base:*</code>（ログインした場合）、Firebaseの認証情報</td><td>図鑑のチェックと表示設定、Cookieの同意状況、チェック記録のバックアップ、アカウントと最後にそろえたチェック状態</td><td>削除するまで（Cookieは1年）</td></tr>
 </table></div>
 <p>日留アラームとポケモン図鑑埋めヘルパーは、初回訪問時にCookieを保存してよいか確認します。拒否してもすべての機能を利用できます。各画面のCookie設定からいつでも変更できます。</p>
 
@@ -170,7 +172,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. 委託先と外部サービス（国外移転を含む）</h2>
 <div class="tbl"><table>
 <tr><th>提供先</th><th>業務・利用ツール</th><th>送信される情報</th></tr>
-<tr><td>Google LLC（Firebase）</td><td>サイト共通のGoogleログイン、나가타초 노트のログイン・会員情報・投稿の保存・パスワード再設定メール、第一党の匿名ログイン・ゲームの保存</td><td>1の項目すべて</td></tr>
+<tr><td>Google LLC（Firebase）</td><td>サイト共通のGoogleログイン、ポケモン図鑑埋めヘルパーのチェック記録の同期、나가타초 노트のログイン・会員情報・投稿の保存・パスワード再設定メール、第一党の匿名ログイン・ゲームの保存</td><td>1の項目すべて</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>サイト全体のホスティングとセキュリティ</td><td>IPアドレス、アクセス日時などのアクセス記録</td></tr>
 <tr><td>Google LLC（AdSense）</td><td>단어 한 장・単語一枚・Wordcardの広告</td><td>Cookie、IPアドレス、ブラウザ情報</td></tr>
 <tr><td>MyMemory（Translated srl）</td><td>단어 한 장・単語一枚・Wordcardで、辞書と異なる答えの意味確認</td><td>入力した答え</td></tr>
@@ -203,7 +205,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <p class="eyebrow">PRIVACY POLICY</p>
 <h1>Privacy Policy</h1>
 <p class="date">Effective November 5, 2026</p>
-<div class="summary"><p>This policy explains how nihongodic (“this site”) handles information about its users. You can create an account with the optional <b>Google sign-in</b> in the menu at the top of every page or by signing up for <b>나가타초 노트 (Nagatacho Notes)</b>; every other tool keeps your progress and checks on your own device.</p></div>
+<div class="summary"><p>This policy explains how nihongodic (“this site”) handles information about its users. You can create an account with the optional <b>Google sign-in</b> in the menu at the top of every page or by signing up for <b>나가타초 노트 (Nagatacho Notes)</b>; every other tool keeps your progress and checks on your own device. The Pokédex Completion Helper also saves your checks to your account to sync them between devices, but only while you are signed in.</p></div>
 <p>It applies to every tool on nihongodic.com:</p>
 <ul class="tools">
 <li>단어 한 장 <code>/japanese</code></li><li>単語一枚 (Korean quiz) <code>/korean</code></li><li>Wordcard Japanese <code>/en/japanese</code></li><li>Wordcard Korean <code>/en/korean</code></li><li>Japan Admissions Tracker <code>/alarm</code></li><li>나가타초 노트 <code>/politics</code></li><li>First Party <code>/jeildang</code></li><li>Pokédex Completion Helper (FireRed/LeafGreen, Ruby/Sapphire, Black/White, Black 2/White 2) <code>/pokemon</code></li>
@@ -214,6 +216,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <div class="tbl"><table>
 <tr><th>Tool</th><th>Data</th><th>Purpose</th><th>Kept until</th></tr>
 <tr><td>Site-wide Google sign-in (optional)</td><td>Your Google account name, email address, profile photo URL and account ID</td><td>Signing in and staying signed in, showing your account in the menu, identifying and approving 나가타초 노트 members</td><td>Until you ask us to delete your account</td></tr>
+<tr><td>Pokédex Completion Helper (only when signed in)</td><td>Your Dex checks for each game, last saved time, Google account ID</td><td>Syncing your checks between devices signed in with the same account</td><td>Until you ask us to delete your account</td></tr>
 <tr><td>나가타초 노트 sign-up (required)</td><td>Email, password, display name</td><td>Identifying members, sign-in, approving accounts, password reset</td><td>You delete your account</td></tr>
 <tr><td>나가타초 노트 posts</td><td>Post content, date, display name, member ID</td><td>Reviewing and publishing posts, showing the author</td><td>The post or account is deleted</td></tr>
 <tr><td>First Party</td><td>Anonymous ID, game settings such as party name, leader name and slogan, game history, chat</td><td>Running multiplayer games and showing them to players in the same room</td><td>The room is deleted or you ask us to delete it</td></tr>
@@ -236,7 +239,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><td>Admissions Tracker</td><td><code>jw_consent</code>, <code>jw_sel</code>, <code>jw_disc</code> (cookies, only with consent)</td><td>Cookie choice, selected faculties, dismissed notice</td><td>1 year (<code>jw_disc</code>: 30 days)</td></tr>
 <tr><td>나가타초 노트</td><td>Firebase sign-in data, <code>fold:*</code></td><td>Keeping you signed in, collapsed sections</td><td>Until you sign out or clear it</td></tr>
 <tr><td>First Party</td><td>Firebase sign-in data, <code>party1:*</code>, <code>jd-house-view</code></td><td>Anonymous sign-in, party settings, recent rooms, solo game, view setting</td><td>Until you clear it</td></tr>
-<tr><td>Pokédex Completion Helper</td><td><code>frlg-dex-helper-v1</code>, <code>rs-dex-helper-v1</code>, <code>bw-dex-helper-v1</code>, <code>b2w2-dex-helper-v1</code>, <code>dex-lang</code>, <code>dex-cookie-consent</code>, <code>frlg_dex</code>/<code>rs_dex</code>/<code>bw_dex</code>/<code>b2w2_dex</code> (cookies, only with consent)</td><td>Dex checks and settings, cookie choice, backup of checks</td><td>Until you clear it (cookies: 1 year)</td></tr>
+<tr><td>Pokédex Completion Helper</td><td><code>frlg-dex-helper-v1</code>, <code>rs-dex-helper-v1</code>, <code>bw-dex-helper-v1</code>, <code>b2w2-dex-helper-v1</code>, <code>dex-lang</code>, <code>dex-cookie-consent</code>, <code>frlg_dex</code>/<code>rs_dex</code>/<code>bw_dex</code>/<code>b2w2_dex</code> (cookies, only with consent), <code>dex-cloud-base:*</code> (when signed in), Firebase sign-in data</td><td>Dex checks and settings, cookie choice, backup of checks, the check state last synced with your account</td><td>Until you clear it (cookies: 1 year)</td></tr>
 </table></div>
 <p>The Admissions Tracker and the Pokédex Completion Helper ask before setting cookies on your first visit. Every feature works if you decline, and you can change your choice anytime in each tool's cookie settings.</p>
 
@@ -246,7 +249,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. Service providers and external services (including transfers abroad)</h2>
 <div class="tbl"><table>
 <tr><th>Provider</th><th>Role / tools</th><th>Data sent</th></tr>
-<tr><td>Google LLC (Firebase)</td><td>Site-wide Google sign-in; 나가타초 노트 sign-in, member data, posts and password-reset emails; First Party anonymous sign-in and game storage</td><td>Everything listed in section 1</td></tr>
+<tr><td>Google LLC (Firebase)</td><td>Site-wide Google sign-in; Pokédex Completion Helper check sync; 나가타초 노트 sign-in, member data, posts and password-reset emails; First Party anonymous sign-in and game storage</td><td>Everything listed in section 1</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>Hosting and security for the whole site</td><td>IP address, access time and other access logs</td></tr>
 <tr><td>Google LLC (AdSense)</td><td>Ads on 단어 한 장, 単語一枚 and Wordcard</td><td>Cookies, IP address, browser information</td></tr>
 <tr><td>MyMemory (Translated srl)</td><td>Checking answers that differ from the dictionary in 단어 한 장, 単語一枚 and Wordcard</td><td>The answer you typed</td></tr>

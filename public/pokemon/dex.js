@@ -42,7 +42,7 @@ const BASE={
   mCopied:"복사했어요",mSelected:"선택했어요. 길게 눌러 복사하세요",mBad:(a,b)=>`코드 형식이 달라요. ${a}….${b}… 전체를 붙여넣어 주세요`,
   mFail:"코드를 읽지 못했어요",mLoaded:"불러왔어요",mReset:"초기화했어요",mCkOn:"쿠키 저장을 켰어요",mCkOff:"기본 저장만 사용해요",
   mImported:"이전 주소의 체크 기록을 옮겨 왔어요",mImportAsk:"이전 주소의 백업 코드를 아래 칸에 넣어 뒀어요. '붙여넣은 코드 불러오기'를 누르면 지금 기록을 덮어써요",
-  where0:"저장 위치: 이 기기 브라우저",where1:"저장 위치: 이 기기 브라우저 + 쿠키",
+  where0:"저장 위치: 이 기기 브라우저",where1:"저장 위치: 이 기기 브라우저 + 쿠키",whereAcc:" + Google 계정",login:"로그인",
   privacy:"개인정보처리방침",cookieSet:"쿠키 설정",
   ckT:"체크 기록을 쿠키에도 저장할까요?",
   ckP:c=>`체크 상태는 기본으로 이 기기 브라우저 저장소에 남아요. 허용하면 같은 내용을 쿠키(${c}, 1년)에도 저장해서, 브라우저 저장소가 지워져도 기록을 되살릴 수 있어요. 서버로 보내는 정보는 없어요.`,
@@ -81,7 +81,7 @@ const BASE={
   mCopied:"コピーしました",mSelected:"選択しました。長押しでコピーしてください",mBad:(a,b)=>`コードの形式が違います。${a}….${b}… を丸ごと貼り付けてください`,
   mFail:"コードを読み込めませんでした",mLoaded:"読み込みました",mReset:"リセットしました",mCkOn:"クッキー保存をオンにしました",mCkOff:"基本の保存のみ使います",
   mImported:"以前のアドレスのチェック記録を移しました",mImportAsk:"以前のアドレスのバックアップコードを下の欄に入れました。「貼り付けたコードを読み込む」を押すと今の記録を上書きします",
-  where0:"保存先：この端末のブラウザ",where1:"保存先：この端末のブラウザ＋クッキー",
+  where0:"保存先：この端末のブラウザ",where1:"保存先：この端末のブラウザ＋クッキー",whereAcc:"＋Googleアカウント",login:"ログイン",
   privacy:"プライバシーポリシー",cookieSet:"クッキー設定",
   ckT:"チェック記録をクッキーにも保存しますか？",
   ckP:c=>`チェック状態は基本的にこの端末のブラウザ内に保存されます。許可すると同じ内容をクッキー（${c}、1年間）にも保存し、ブラウザの保存データが消えても記録を復元できます。サーバーに送信される情報はありません。`,
@@ -120,7 +120,7 @@ const BASE={
   mCopied:"Copied",mSelected:"Selected. Long-press to copy",mBad:(a,b)=>`That code doesn't look right. Paste the whole ${a}….${b}… code`,
   mFail:"Couldn't read that code",mLoaded:"Loaded",mReset:"Cleared",mCkOn:"Cookie saving is on",mCkOff:"Using browser storage only",
   mImported:"Moved your checks over from the old address",mImportAsk:"Your backup code from the old address is in the box below. Press \"Load pasted code\" to replace your current checks with it",
-  where0:"Saved in: this browser",where1:"Saved in: this browser + cookie",
+  where0:"Saved in: this browser",where1:"Saved in: this browser + cookie",whereAcc:" + Google account",login:"Log in",
   privacy:"Privacy Policy",cookieSet:"Cookie settings",
   ckT:"Also save your checks in a cookie?",
   ckP:c=>`Your checks are always kept in this browser's storage. If you allow it, the same data is also saved in a cookie (${c}, 1 year), so it can be restored if browser storage gets cleared. Nothing is sent to a server.`,
@@ -175,6 +175,8 @@ const FILTERS=["all","need",V[0].tag,V[1].tag,"T"];
 const fresh=()=>({[K0]:{},[K1]:{},save:K0,tab:"plan",f:"all",lang:detectLang()});
 const CODE_RE=new RegExp(`^${V[0].code}([0-9a-f]+)\\.${V[1].code}([0-9a-f]+)$`,"i");
 let S=null;
+let cloud=null; // 계정 동기화 (아래 "계정" 부분에서 불러옴)
+const acctBtn=document.querySelector("#acct button");
 try{S=JSON.parse(lsGet(KEY)||"null")}catch(e){}
 // 쿠키 형식: <코드>|세이브|탭|필터|언어
 function fromCookie(){
@@ -187,10 +189,12 @@ if(!S||!S[K0]||!S[K1]){S=(consent==="yes"&&fromCookie())||fresh()}
 if(!LANGS.includes(S.lang))S.lang=detectLang();
 if(S.save!==K0&&S.save!==K1)S.save=K0;
 if(!FILTERS.includes(S.f))S.f="all";
+if(S.tab!=="dex")S.tab="plan";
 delete S.hideSup;
 const save=()=>{
   lsSet(KEY,JSON.stringify(S));lsSet(LKEY,S.lang);
   if(consent==="yes")setCookie(CNAME,[encode(),S.save,S.tab,S.f,S.lang].join("|"),365);
+  if(cloud)cloud.changed(G.id);
 };
 const has=(v,n)=>!!S[v][n];
 const other=v=>v===K0?K1:K0;
@@ -328,6 +332,7 @@ function applyLang(){
   document.getElementById("supX").setAttribute("aria-label",t.supHide);document.getElementById("supX").title=t.supHide;
   document.getElementById("supBtns").innerHTML=links.map(d=>`<a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.label)}</a>`).join("");
   if(!armed)rb.textContent=t.reset;
+  if(cloud)cloud.setLang();else acctBtn.textContent=t.login;
 }
 function meters(){
   V.forEach((v,i)=>{
@@ -359,7 +364,7 @@ function msg(k){const m=document.getElementById("msg");const v=L()[k];m.textCont
 const banner=document.getElementById("cookie");
 function showBanner(){banner.hidden=false;document.body.classList.add("has-banner")}
 function hideBanner(){banner.hidden=true;document.body.classList.remove("has-banner")}
-function whereText(){document.getElementById("where").textContent=consent==="yes"?L().where1:L().where0}
+function whereText(){document.getElementById("where").textContent=(consent==="yes"?L().where1:L().where0)+(cloud&&cloud.user?L().whereAcc:"")}
 function setConsent(v){
   consent=v;lsSet(CKEY,v);
   if(v==="yes"){setCookie(CKEY,"yes",365);save()}
@@ -406,6 +411,18 @@ function takeImport(){
   if(code.toLowerCase()===encode().toLowerCase())return;
   document.getElementById("code").value=code;msg("mImportAsk");
 }
+
+/* ===== 계정: Google 로그인하면 체크 기록을 기기 사이에 동기화 (cloud.js, 페이지가 다 뜬 뒤에 불러옴) ===== */
+function loadCloud(){
+  return loadCloud.p||(loadCloud.p=import("/pokemon/cloud.js").then(m=>{
+    cloud=m.mount({box:document.getElementById("acct"),lang:()=>S.lang,onState:whereText,
+      games:[{id:G.id,keys:[K0,K1],get:()=>[S[K0],S[K1]],set:([a,b])=>{S[K0]=a;S[K1]=b;save();render()}}]});
+    return cloud;
+  },e=>{loadCloud.p=null;throw e}));
+}
+acctBtn.addEventListener("click",()=>{if(cloud)return;acctBtn.textContent="…";loadCloud().then(c=>c.signIn(),()=>{acctBtn.textContent=L().login})});
+if(document.readyState==="complete")setTimeout(()=>loadCloud().catch(()=>{}),0);
+else window.addEventListener("load",()=>loadCloud().catch(()=>{}));
 
 applyLang();
 if(!consent)showBanner();

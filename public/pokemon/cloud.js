@@ -80,6 +80,7 @@ export function mount({ box, lang, games, onState }) {
     pop.setAttribute("aria-label", L("me"));
     btn.setAttribute("aria-haspopup", "dialog");
     $(".me").hidden = !user; $(".in").hidden = !!user;
+    pop.classList.toggle("wide", !user);
     if (!user) {
       btn.className = "acct-btn"; btn.textContent = L("login"); btn.title = L("loginT"); btn.setAttribute("aria-label", L("loginT"));
       $(".why").textContent = L("why");

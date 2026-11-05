@@ -1450,3 +1450,11 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 시민 혁명	市民革命	People power
 다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.	他党の非常体制が市民革命で崩壊するのを見届けます。	See another party's emergency rule collapse in a popular revolution.
 압도적 과반	圧倒的多数	Overwhelming majority
+멀티플레이는 Google 로그인이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.	マルチプレイにはGoogleログインが必要です。AI政党とのひとりプレイはログインなしで遊べます。	Multiplayer requires a Google sign-in. Solo play against AI parties works without one.
+Google로 로그인	Googleでログイン	Sign in with Google
+{0} 계정으로 멀티플레이합니다.	{0}のアカウントでマルチプレイします。	Playing multiplayer as {0}.
+로그아웃해서 멀티 방에서 나왔습니다.	ログアウトしたため、マルチの部屋から退出しました。	You signed out, so you've left the multiplayer room.
+다른 계정으로 바뀌어 멀티 방에서 나왔습니다.	別のアカウントに切り替わったため、マルチの部屋から退出しました。	You switched accounts, so you've left the multiplayer room.
+로그인하지 못했습니다.	ログインできませんでした。	Couldn't sign in.
+멀티플레이는 Google 로그인이 필요합니다.	マルチプレイにはGoogleログインが必要です。	Multiplayer requires a Google sign-in.
+멀티 서버에 연결되지 않았습니다.	マルチサーバーに接続されていません。	Not connected to the multiplayer server.

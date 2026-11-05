@@ -4640,6 +4640,34 @@ ND.add({
 "圧倒的多数",
 "Overwhelming majority"
 ],
+"멀티플레이는 Google 로그인이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.": [
+"マルチプレイにはGoogleログインが必要です。AI政党とのひとりプレイはログインなしで遊べます。",
+"Multiplayer requires a Google sign-in. Solo play against AI parties works without one."
+],
+"Google로 로그인": [
+"Googleでログイン",
+"Sign in with Google"
+],
+"로그아웃해서 멀티 방에서 나왔습니다.": [
+"ログアウトしたため、マルチの部屋から退出しました。",
+"You signed out, so you've left the multiplayer room."
+],
+"다른 계정으로 바뀌어 멀티 방에서 나왔습니다.": [
+"別のアカウントに切り替わったため、マルチの部屋から退出しました。",
+"You switched accounts, so you've left the multiplayer room."
+],
+"로그인하지 못했습니다.": [
+"ログインできませんでした。",
+"Couldn't sign in."
+],
+"멀티플레이는 Google 로그인이 필요합니다.": [
+"マルチプレイにはGoogleログインが必要です。",
+"Multiplayer requires a Google sign-in."
+],
+"멀티 서버에 연결되지 않았습니다.": [
+"マルチサーバーに接続されていません。",
+"Not connected to the multiplayer server."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -4775,6 +4803,7 @@ ND.pat([
 [/^(.*?),\ (.*?)의\ 초대로\ 「(.*?)」에\ 합류\.$/,"$1、$2の招待で「$3」に合流。","$1 joins “$3” at $2's invitation."],
 [/^우리가\ (.*?)에\ (.*?)을\ 약속했습니다\.$/,"自党は$1に$2を約束しました。","We promised $1 a $2 vote."],
 [/^비상\ 체제\ ·\ (.*?)\ ·\ 저항\ (.*?)%$/,"非常体制 · $1 · 抵抗 $2%","Emergency rule · $1 · resistance $2%"],
+[/^(.*?)\ 계정으로\ 멀티플레이합니다\.$/,"$1のアカウントでマルチプレイします。","Playing multiplayer as $1."],
 [/^검찰,\ (.*?)\ 관련\ 수사\ 착수\.$/,"検察、$1関連の捜査に着手。","Prosecutors open an investigation into $1."],
 [/^(.*?),\ 외부\ 인재\ 영입\ 발표\.$/,"$1、外部人材の登用を発表。","$1 announces new outside recruits."],
 [/^지금은\ 총리가\ 없습니다\.\ (.*?)$/,"いまは首相がいません。$1","There is no prime minister right now. $1"],

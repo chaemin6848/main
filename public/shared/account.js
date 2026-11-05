@@ -4,7 +4,7 @@
 //   u 는 { uid, name, email, photo } 또는 null (제1당의 익명 로그인은 '로그인 안 함'으로 본다)
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  getAuth, onIdTokenChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   linkWithPopup, signInWithCredential, signOut as fbSignOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
@@ -19,7 +19,17 @@ const pick = u => {
   return { uid: u.uid, name: u.displayName || g.displayName || u.email || "", email: u.email || g.email || "", photo: u.photoURL || g.photoURL || "" };
 };
 
-export function onUser(cb) { return onAuthStateChanged(auth, u => cb(pick(u))); }
+// onAuthStateChanged는 익명 계정을 Google로 승격할 때(uid가 같음) 울리지 않아 onIdTokenChanged로 듣는다.
+// 토큰 갱신(약 1시간마다)에도 울리므로 로그인 상태가 실제로 바뀔 때만 넘긴다.
+export function onUser(cb) {
+  let last;
+  return onIdTokenChanged(auth, u => {
+    const v = pick(u), key = v ? v.uid : null;
+    if (key === last) return;
+    last = key;
+    cb(v);
+  });
+}
 export const currentUser = () => pick(auth.currentUser);
 
 export async function signIn() {

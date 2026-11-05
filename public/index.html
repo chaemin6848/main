@@ -51,6 +51,8 @@ h1 .jp{font-family:var(--jp)}
 .jump a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .group{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
 .group-label{margin:0;display:flex;align-items:baseline;gap:10px;font-size:15px;font-weight:900;letter-spacing:-.01em}
+.group-label .more{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--muted);text-decoration:none}
+.group-label .more:hover{color:var(--ink);text-decoration:underline}
 .group-label span{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;color:var(--muted)}
 .tools{display:flex;flex-direction:column;gap:18px;list-style:none;margin:0;padding:0}
 .tool{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;align-items:start;padding:20px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;
@@ -106,7 +108,7 @@ footer a{color:var(--muted)}
   </section>
 
   <section class="group" aria-labelledby="g-word">
-  <h2 class="group-label" id="g-word"><span>01</span>단어</h2>
+  <h2 class="group-label" id="g-word"><span>01</span>단어<a class="more" href="/words/">모아 보기 →</a></h2>
   <ul class="tools">
     <li>
       <a class="tool" href="/japanese/" style="--accent:var(--lime)">
@@ -156,7 +158,7 @@ footer a{color:var(--muted)}
   </section>
 
   <section class="group" aria-labelledby="g-eju">
-  <h2 class="group-label" id="g-eju"><span>02</span>EJU · 유학</h2>
+  <h2 class="group-label" id="g-eju"><span>02</span>EJU · 유학<a class="more" href="/eju/">모아 보기 →</a></h2>
   <ul class="tools">
     <li>
       <a class="tool" href="/japanworld/" style="--accent:var(--rose)">
@@ -184,7 +186,7 @@ footer a{color:var(--muted)}
   </section>
 
   <section class="group" aria-labelledby="g-politics">
-  <h2 class="group-label" id="g-politics"><span>03</span>일본 정치</h2>
+  <h2 class="group-label" id="g-politics"><span>03</span>일본 정치<a class="more" href="/seiji/">모아 보기 →</a></h2>
   <ul class="tools">
     <li>
       <a class="tool" href="/politics/" style="--accent:var(--coral)">

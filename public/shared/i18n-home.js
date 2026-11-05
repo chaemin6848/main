@@ -51,6 +51,7 @@ ND.add({
   "단어": ["単語", "Vocabulary"],
   "EJU · 유학": ["EJU・留学", "EJU · Study in Japan"],
   "일본 정치": ["日本政治", "Japanese politics"],
+  "모아 보기 →": ["一覧へ →", "View group →"],
   "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"]
 });
 

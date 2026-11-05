@@ -241,6 +241,9 @@
   ];
   var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
+  var LANG_SHORT = { ko: "KO", ja: "JA", en: "EN" };
+  // 로그아웃 상태의 로그인 버튼: 넓은 화면은 글자, 휴대폰은 사람 아이콘
+  var PERSON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
   // 후원 링크 (모든 페이지 공통 메뉴 오른쪽 끝)
@@ -269,7 +272,7 @@
   }).join("");
 
   var picker = langs.length > 1
-    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span aria-hidden="true">' + LANG_NAME[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
+    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span class="full" aria-hidden="true">' + LANG_NAME[lang] + '</span><span class="short" aria-hidden="true">' + LANG_SHORT[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
       langs.map(function (l) { return '<option value="' + l + '"' + (l === lang ? " selected" : "") + ' lang="' + l + '">' + LANG_NAME[l] + "</option>"; }).join("") +
       "</select></label>"
     : "";
@@ -300,6 +303,9 @@
     "font:inherit;font-size:12px;font-weight:800;cursor:pointer;box-sizing:border-box;white-space:nowrap}" +
     ".acct>button:hover{border-color:var(--ink)}" +
     ".acct>button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}" +
+    ".acct>button svg{width:17px;height:17px;display:none}" +
+    ".acct>button.busy{opacity:.6;cursor:progress}" +
+    ".lang .short{display:none}" +
     ".acct>button.me{padding:0;width:30px;min-width:30px;border-radius:50%;overflow:hidden;background:var(--line)}" +
     ".acct>button.me img{width:100%;height:100%;object-fit:cover;display:block}" +
     ".acct-pop{position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(280px,calc(100vw - 24px));padding:12px;background:var(--paper);color:var(--ink);" +
@@ -313,17 +319,24 @@
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
-    // 휴대폰: 버튼 간격·크기를 줄여 도구 아이콘이 잘리지 않게. 그래도 넘치면 아래 fit()이 nihongodic 글자를 숨긴다
+    // 휴대폰: nihongodic 글자와 도구 아이콘이 모두 보이도록 언어는 약자, 로그인은 아이콘으로 줄이고 버튼을 30px 정사각형으로 맞춘다.
+    // 그래도 넘치면 fit()이 글자 크기와 간격을 한 번 더 줄인다 (글자는 숨기지 않는다)
     "@media (max-width:440px){nav{gap:4px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}" +
-    ".home{padding-right:4px}.tools{gap:2px}.tools a{width:28px;height:32px}" +
-    ".lang{padding:0 6px;margin-left:2px}.coffee{width:30px;margin-left:2px}}" +
-    "nav.tight .home b{display:none}" +
+    ".home{padding-right:2px;gap:6px}.tools{gap:2px}.tools a{width:30px;height:30px}" +
+    ".lang{min-width:30px;width:30px;padding:0;margin-left:2px;font-size:11px}.lang .full{display:none}.lang .short{display:inline}" +
+    ".acct{margin-left:2px}.acct>button.in{width:30px;min-width:30px;padding:0}.acct>button.in .t{display:none}.acct>button.in svg{display:block}" +
+    ".coffee{width:30px;margin-left:2px}}" +
+    "nav.tight{gap:2px;padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}" +
+    "nav.tight .tools{gap:1px}nav.tight .lang,nav.tight .acct,nav.tight .coffee{margin-left:1px}" +
+    "nav.tight .home{font-size:12.5px;gap:4px;padding-right:0;letter-spacing:-.05em}nav.tight .home i{width:22px;height:22px;font-size:11px}" +
+    "nav.tight .tools a{width:28px;height:28px}nav.tight .tools a i{width:22px;height:22px;font-size:12px}" +
+    "nav.tight .lang,nav.tight .acct>button.in,nav.tight .acct>button.me,nav.tight .coffee{width:28px;min-width:28px;height:28px}" +
     "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
-    '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '">' + ACC.login[lang] + "</button>" +
+    '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
     '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -345,7 +358,7 @@
     me = u;
     accBtn.textContent = "";
     if (!u) {
-      accBtn.className = "in"; accBtn.textContent = ACC.login[lang]; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
+      accBtn.className = "in"; accBtn.innerHTML = '<span class="t">' + ACC.login[lang] + "</span>" + PERSON; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
       pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); return;
     }
     accBtn.className = "me"; accBtn.title = (u.name || u.email); accBtn.setAttribute("aria-label", ACC.me[lang] + ": " + (u.name || u.email));
@@ -371,7 +384,7 @@
   accBtn.addEventListener("click", function () {
     if (me) { var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open)); return; }
     if (busy) return;
-    if (!window.ND.account) { accBtn.textContent = ACC.wait[lang]; }
+    if (!window.ND.account) { accBtn.title = ACC.wait[lang]; accBtn.classList.add("busy"); var tx = accBtn.querySelector(".t"); if (tx) tx.textContent = ACC.wait[lang]; }
     busy = true;
     withAccount(function (A) {
       A.signIn().then(function () { busy = false; }, function (e) { busy = false; paint(me); showErr(A.errorText(e, lang)); });
@@ -387,7 +400,7 @@
   var sel = root.querySelector("select");
   if (sel) sel.addEventListener("change", function () { setLang(sel.value); });
 
-  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 nihongodic 글자를 숨긴다 (폭이 넓어지면 다시 보인다)
+  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 메뉴 전체를 한 단계 더 촘촘하게 한다 (폭이 넓어지면 되돌린다)
   var navEl = root.querySelector("nav"), toolsEl = root.querySelector(".tools");
   function fit() {
     if (!navEl || !toolsEl) return;

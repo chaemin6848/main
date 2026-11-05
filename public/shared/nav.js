@@ -30,7 +30,10 @@
   var q = null;
   try { q = new URLSearchParams(location.search).get("lang"); } catch (e) {}
   if (q && SUPPORTED.indexOf(q) >= 0) { try { localStorage.setItem(KEY, q); } catch (e) {} }
-  var want = (q && SUPPORTED.indexOf(q) >= 0) ? q : (stored() || browserLang());
+  // 검색엔진·미리보기 봇은 브라우저 언어(대개 en-US)로 바꾸지 않고 페이지 원문 언어 그대로 읽게 한다.
+  // 그래야 검색 결과의 제목·요약이 원문(한국어 등)으로 나온다. 다른 언어는 ?lang= 으로 고른다.
+  var isBot = /bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || "");
+  var want = (q && SUPPORTED.indexOf(q) >= 0) ? q : (stored() || (isBot ? langs[0] : browserLang()));
   // 이 페이지가 고른 언어를 지원하지 않으면: 한국어가 아니면 영어, 그것도 없으면 첫 번째 언어
   var lang = langs.indexOf(want) >= 0 ? want : (want !== "ko" && langs.indexOf("en") >= 0 ? "en" : langs[0]);
   document.documentElement.lang = lang;

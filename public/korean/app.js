@@ -115,3 +115,6 @@ state.score = KO.readScore();
 els.score.textContent = state.score;
 pickWord();
 if (dialog && !KO.get(KO.TUTORIAL_KEY)) { dialog.showModal(); $("tutorial-start").focus(); }
+
+// ログインしたアカウントから新しい記録を受け取ったら(/shared/sync.js) 正解数と保存ボタンを描き直す
+window.addEventListener("nd:synced", () => { state.score = Math.max(state.score, KO.readScore()); els.score.textContent = state.score; if (state.current) updateSaveButton(); });

@@ -140,5 +140,6 @@ render();
 // 로그인한 계정에서 더 새 기록을 받으면(/shared/sync.js) 체크와 내 단어장을 다시 읽어 그린다
 window.addEventListener("nd:synced", () => {
   for (const [set, key] of [[checkedWords, CHECKED_WORDS_KEY], [savedWordKeys, SAVED_WORDS_KEY]]) { const next = readStoredSet(key); set.clear(); next.forEach((v) => set.add(v)); }
+  const n = Number.parseInt(readCookie("nihongodic_correct_answers"), 10); if (Number.isSafeInteger(n) && n >= 0) document.getElementById("score").textContent = n;
   render();
 });

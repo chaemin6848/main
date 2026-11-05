@@ -167,7 +167,7 @@ const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 function getCookie(n){const m=document.cookie.match(new RegExp("(?:^|; )"+n+"=([^;]*)"));return m?decodeURIComponent(m[1]):null}
 function setCookie(n,v,days){const sec=location.protocol==="https:"?"; Secure":"";document.cookie=`${n}=${encodeURIComponent(v)}; Max-Age=${days*86400}; Path=/; SameSite=Lax${sec}`}
 const delCookie=n=>{document.cookie=`${n}=; Max-Age=0; Path=/; SameSite=Lax`};
-function detectLang(){const s=lsGet(LKEY);if(LANGS.includes(s))return s;const l=(navigator.language||"").toLowerCase();return l.startsWith("ko")?"ko":l.startsWith("ja")?"ja":"en"}
+function detectLang(){const s=lsGet(LKEY);if(LANGS.includes(s))return s;if(/bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|embedly|preview/i.test(navigator.userAgent||""))return"ko";const l=(navigator.language||"").toLowerCase();return l.startsWith("ko")?"ko":l.startsWith("ja")?"ja":"en"}
 // 예전 FRLG 단독 시절 동의 기록(frlg-cookie-consent)도 이어받는다
 let consent=lsGet(CKEY)||lsGet("frlg-cookie-consent")||(getCookie(CKEY)==="yes"||getCookie("frlg-cookie-consent")==="yes"?"yes":null);
 const K0=V[0].k,K1=V[1].k;

@@ -34,7 +34,7 @@ const T={
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function detect(){const s=lsGet(LKEY);if(LANGS.includes(s))return s;const l=(navigator.language||"").toLowerCase();return l.startsWith("ko")?"ko":l.startsWith("ja")?"ja":"en"}
+function detect(){const s=lsGet(LKEY);if(LANGS.includes(s))return s;if(/bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|embedly|preview/i.test(navigator.userAgent||""))return"ko";const l=(navigator.language||"").toLowerCase();return l.startsWith("ko")?"ko":l.startsWith("ja")?"ja":"en"}
 let lang=detect();
 function counts(g){
   let s=null;try{s=JSON.parse(lsGet(g.key)||"null")}catch(e){}

@@ -252,7 +252,7 @@
   // 사이트 공통 계정 (Google 로그인) — 실제 로그인 코드는 /shared/account.js
   var ACC = {
     login: { ko: "로그인", ja: "ログイン", en: "Log in" },
-    google: { ko: "Google 계정으로 로그인", ja: "Googleアカウントでログイン", en: "Sign in with Google" },
+    google: { ko: "로그인 · 회원가입 (Google 또는 이메일)", ja: "ログイン・新規登録（Googleまたはメール）", en: "Log in or sign up (Google or email)" },
     me: { ko: "내 계정", ja: "アカウント", en: "Account" },
     out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
     wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" }
@@ -311,11 +311,27 @@
     ".acct-pop{position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(280px,calc(100vw - 24px));padding:12px;background:var(--paper);color:var(--ink);" +
     "border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:grid;gap:4px;font-size:13px;box-sizing:border-box}" +
     ".acct-pop[hidden]{display:none}" +
-    ".acct-pop b{font-size:14px;overflow-wrap:anywhere}" +
-    ".acct-pop span{color:var(--muted);overflow-wrap:anywhere}" +
-    ".acct-pop button{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
-    ".acct-pop button:hover{border-color:var(--ink)}" +
-    ".acct-pop .err{color:#c0392b}" +
+    ".acct-pop .me,.acct-pop .in{display:grid;gap:4px}.acct-pop .in{width:min(280px,calc(100vw - 50px))}" +
+    ".acct-pop .me b{font-size:14px;overflow-wrap:anywhere}" +
+    ".acct-pop .me span{color:var(--muted);overflow-wrap:anywhere}" +
+    ".acct-pop .out{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
+    ".acct-pop .out:hover{border-color:var(--ink)}" +
+    ".acct-pop .wait{color:var(--muted)}" +
+    // 로그인 상자 (/shared/account.js loginForm)
+    ".nd-login,.nd-form{display:grid;gap:8px}" +
+    ".nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}" +
+    ".nd-google{background:var(--ink);color:var(--paper)}.nd-submit{background:none;color:var(--ink)}" +
+    ".nd-google:disabled,.nd-submit:disabled{opacity:.6;cursor:default}" +
+    ".nd-or{margin:4px 0 0;font-size:12px;color:var(--muted);text-align:center}" +
+    ".nd-field{display:grid;gap:3px;font-size:12px;color:var(--muted)}" +
+    ".nd-field input{font:inherit;font-size:16px;padding:7px 9px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);min-width:0}" +
+    ".nd-field input:focus-visible{outline:2px solid var(--ink);outline-offset:1px}" +
+    ".nd-agree{display:flex;gap:6px;align-items:flex-start;font-size:12px}.nd-agree input{margin:2px 0 0;flex:none}.nd-agree a{color:inherit}" +
+    ".nd-links{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}" +
+    ".nd-link{font:inherit;font-size:12px;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}" +
+    ".nd-msg{margin:0;font-size:12px;color:#2f8a4e}.nd-msg:empty{display:none}.nd-msg.bad{color:#c0392b}" +
+    ".nd-note{margin:2px 0 0;font-size:11px;color:var(--muted)}" +
+    "[hidden]{display:none!important}" +
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
@@ -337,7 +353,7 @@
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
-    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
+    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><div class="in"><span class="wait">' + ACC.wait[lang] + "</span></div></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
@@ -348,18 +364,19 @@
 
   /* ---------- 계정 버튼 ---------- */
   var accBtn = root.querySelector(".acct>button"), pop = root.querySelector(".acct-pop");
-  var popName = pop.querySelector("b"), popMail = pop.querySelector("span"), popErr = pop.querySelector(".err");
-  var me = null, busy = false;
-  function showErr(text) {
-    popErr.textContent = text; popErr.hidden = !text;
-    if (text) { popName.textContent = ""; popMail.textContent = ""; pop.querySelector(".out").hidden = true; pop.hidden = false; }
-  }
+  var popMe = pop.querySelector(".me"), popIn = pop.querySelector(".in");
+  var popName = popMe.querySelector("b"), popMail = popMe.querySelector("span");
+  var me = null, form = null;
+  function setOpen(v) { pop.hidden = !v; accBtn.setAttribute("aria-expanded", String(v)); }
   function paint(u) {
+    var was = me && me.uid;
     me = u;
+    if ((u && u.uid) !== was) { setOpen(false); if (form) form.reset(); }
+    popMe.hidden = !u; popIn.hidden = !!u;
     accBtn.textContent = "";
     if (!u) {
       accBtn.className = "in"; accBtn.innerHTML = '<span class="t">' + ACC.login[lang] + "</span>" + PERSON; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
-      pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); return;
+      return;
     }
     accBtn.className = "me"; accBtn.title = (u.name || u.email); accBtn.setAttribute("aria-label", ACC.me[lang] + ": " + (u.name || u.email));
     var initial = function () { accBtn.textContent = (u.name || u.email || "?").trim().charAt(0).toUpperCase(); };
@@ -368,7 +385,7 @@
       img.onerror = function () { accBtn.textContent = ""; initial(); };
       accBtn.appendChild(img);
     } else initial();
-    popName.textContent = u.name || ""; popMail.textContent = u.email || ""; pop.querySelector(".out").hidden = false; popErr.hidden = true;
+    popName.textContent = u.name || ""; popMail.textContent = u.email || "";
   }
   function withAccount(fn) {
     if (window.ND.account) return fn(window.ND.account);
@@ -381,18 +398,19 @@
     var sc = document.createElement("script"); sc.type = "module"; sc.src = "/shared/account.js";
     document.head.appendChild(sc);
   }
+  // 로그인 전: 로그인 상자(Google + 이메일 로그인·회원가입) / 로그인 후: 이름·이메일·로그아웃
   accBtn.addEventListener("click", function () {
-    if (me) { var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open)); return; }
-    if (busy) return;
-    if (!window.ND.account) { accBtn.title = ACC.wait[lang]; accBtn.classList.add("busy"); var tx = accBtn.querySelector(".t"); if (tx) tx.textContent = ACC.wait[lang]; }
-    busy = true;
+    if (!pop.hidden) { setOpen(false); return; }
+    setOpen(true);
+    if (me) return;
     withAccount(function (A) {
-      A.signIn().then(function () { busy = false; }, function (e) { busy = false; paint(me); showErr(A.errorText(e, lang)); });
+      if (!form) { form = A.loginForm(lang); popIn.textContent = ""; popIn.appendChild(form.el); }
+      if (!pop.hidden && !me) form.focus();
     });
   });
   pop.querySelector(".out").addEventListener("click", function () { withAccount(function (A) { A.signOut(); }); });
-  document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) { pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); } });
-  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { pop.hidden = true; accBtn.focus(); } });
+  document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) setOpen(false); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { setOpen(false); accBtn.focus(); } });
   // 페이지가 다 뜬 뒤에 로그인 상태를 확인한다 (첫 화면 속도에 영향 없게)
   var startAcc = function () { withAccount(function (A) { A.onUser(paint); }); };
   if (document.readyState === "complete") setTimeout(startAcc, 0); else window.addEventListener("load", startAcc);

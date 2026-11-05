@@ -68,7 +68,7 @@ const adapters=GAMES.map(g=>{const keys=g.vers.map(v=>v[0]);return{id:g.id,keys,
 function loadCloud(){
   return loadCloud.p||(loadCloud.p=import("/pokemon/cloud.js").then(m=>(cloud=m.mount({box:document.getElementById("acct"),lang:()=>lang,games:adapters})),e=>{loadCloud.p=null;throw e}));
 }
-acctBtn.addEventListener("click",()=>{if(cloud)return;acctBtn.textContent="…";loadCloud().then(c=>c.signIn(),()=>{acctBtn.textContent=T[lang].login})});
+acctBtn.addEventListener("click",()=>{if(cloud)return;acctBtn.textContent="…";loadCloud().then(c=>c.open(),()=>{acctBtn.textContent=T[lang].login})});
 if(document.readyState==="complete")setTimeout(()=>loadCloud().catch(()=>{}),0);
 else window.addEventListener("load",()=>loadCloud().catch(()=>{}));
 document.getElementById("langSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;lang=b.dataset.l;lsSet(LKEY,lang);render()});

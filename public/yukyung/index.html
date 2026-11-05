@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>★★ 오답 플래시</title>
+<style>:root{box-sizing:border-box}body{margin:0;padding:0}[hidden]{display:none!important}
+.wrap{padding-top:max(18px,env(safe-area-inset-top,0px))!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one question card centered in a narrow column, like a single mark-sheet strip; a thin progress rail above it, the result sheet replaces the card at the end. */
+:root{
+  --paper:#f6f5f8; --sheet:#ffffff; --ink:#1d1a21; --muted:#6b6472; --rule:#e2dde6;
+  --omr:#c43d5c; --omr-soft:#fbe9ee;
+  --ok:#1f7a55; --ok-soft:#e3f3ea; --bad:#b3261e; --bad-soft:#fbe7e5;
+  --f-jp:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-ui:"IBM Plex Sans KR","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#141217; --sheet:#1d1a22; --ink:#ece8f0; --muted:#a39bab; --rule:#332e3a;
+  --omr:#ec7590; --omr-soft:#3a1f29; --ok:#5ccf98; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3b1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#141217; --sheet:#1d1a22; --ink:#ece8f0; --muted:#a39bab; --rule:#332e3a;
+  --omr:#ec7590; --omr-soft:#3a1f29; --ok:#5ccf98; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3b1d1b; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 48px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+.rail{flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.rail i{display:block;height:100%;width:0;background:var(--omr);transition:width .25s}
+.top b{color:var(--ink)}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 16px}
+.meta{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:8px}
+.qn{font-family:var(--f-jp);font-weight:700;color:var(--omr)}
+.tag{font-size:12px;color:var(--muted)}
+.neg{display:inline-block;font-size:12px;font-weight:700;color:var(--bad);border:1px solid var(--bad);border-radius:4px;padding:0 6px;margin-left:6px}
+.stem{font-family:var(--f-jp);font-size:16px;line-height:1.8}
+.stem p{margin:0 0 8px}
+.tw{overflow-x:auto;margin:6px 0 10px}
+table{border-collapse:collapse;font-family:var(--f-jp);font-size:14px;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--rule);padding:4px 10px;text-align:center;white-space:nowrap}
+th{background:var(--paper);font-weight:500}
+.chs{display:grid;gap:8px;margin-top:10px}
+.ch{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;font:15.5px/1.65 var(--f-jp);color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:9px;padding:10px 12px;cursor:pointer}
+.ch:hover:not(:disabled){border-color:var(--omr);background:var(--omr-soft)}
+.ch:disabled{cursor:default}
+.bub{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--omr);color:var(--omr);display:grid;place-items:center;font:600 13px var(--f-num)}
+.ch.sel{border-color:var(--omr);background:var(--omr-soft)} .ch.sel .bub{background:var(--omr);color:#fff}
+.ch.right{border-color:var(--ok);background:var(--ok-soft)} .ch.right .bub{background:var(--ok);border-color:var(--ok);color:#fff}
+.ch.wrong{border-color:var(--bad);background:var(--bad-soft)} .ch.wrong .bub{background:var(--bad);border-color:var(--bad);color:#fff}
+.ch.dim{opacity:.5}
+.fb{margin-top:14px;padding:12px 14px;border-radius:9px;font-size:14.5px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb h3{margin:0 0 4px;font-size:15px}
+.fb.ok h3{color:var(--ok)} .fb.bad h3{color:var(--bad)}
+.fb p{margin:0}
+.fb .src{display:block;margin-top:6px;font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{font:500 14px var(--f-ui);border:1px solid var(--rule);background:var(--sheet);color:var(--ink);padding:9px 14px;border-radius:8px;cursor:pointer}
+.btn.pri{background:var(--omr);border-color:var(--omr);color:#fff;font-weight:700}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.ch:focus-visible{outline:2px solid var(--omr);outline-offset:2px}
+.hint{font-size:12px;color:var(--muted);margin-top:10px}
+h1{font-size:22px;margin:0 0 4px;text-wrap:balance}
+h2{font-size:17px;margin:20px 0 8px}
+.lead{color:var(--muted);margin:0 0 4px}
+.big{font-family:var(--f-num);font-size:40px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.big small{font-size:16px;color:var(--muted);font-weight:500}
+.bars{display:grid;gap:8px}
+.br{display:grid;grid-template-columns:72px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.br .tr{height:10px;background:var(--rule);border-radius:5px;overflow:hidden}
+.br .tr i{display:block;height:100%;background:var(--ok)}
+.br .tr i.low{background:var(--bad)}
+.br .v{font-family:var(--f-num);font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
+.miss{display:grid;gap:8px}
+.mi{border:1px solid var(--rule);border-radius:9px;padding:10px 12px;background:var(--sheet);font-size:14px}
+.mi b{font-family:var(--f-num);font-size:12px;color:var(--muted);font-weight:500}
+.mi .rep{color:var(--bad);font-weight:700;font-size:12px;margin-left:6px}
+.mi p{margin:4px 0 0}
+.note{font-size:13px;color:var(--muted);margin-top:16px}
+.note.err{color:var(--bad)}
+.opts{display:grid;gap:8px;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.rail i{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="top" id="topbar" hidden><span><b id="pos">1</b> / <span id="tot">31</span></span><div class="rail"><i id="railfill"></i></div><span>맞힘 <b id="okc">0</b></span></div>
+  <main id="view"></main>
+</div>
+
+<script>
+const BANK = [{"id": "코치1 問1(1)", "set": "orig", "area": "경제", "neg": false, "exp": "EU는 마스트리흐트 조약(1993 발효)으로 출범. ECSC 원가맹은 영국이 아니라 이탈리아, EEC는 역내 관세 철폐, 유로 미도입국 있음.", "stem": "<p>ヨーロッパ統合に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["EC加盟国は通貨統合・政治統合を目指してマーストリヒト条約を結び、1993年にEUが発足した。", "ECSCの原加盟国は、フランス・西ドイツ・イギリス・ベネルクス3国の6か国である。", "EECは域内の関税率を引き上げ、域外諸国との貿易を拡大した。", "EU加盟国はすべて共通通貨ユーロを導入しており、ユーロ紙幣は1999年から流通している。"]}, {"id": "코치1 問2(1)", "set": "orig", "area": "경제", "neg": false, "exp": "바젤=유해폐기물, 람사르=습지, 몬트리올=오존층, 워싱턴=멸종위기 동식물 거래. 이름과 대상을 바꿔치기한 함정.", "stem": "<p>環境保護に関する条約についての記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["バーゼル条約は、有害廃棄物の国境を越える移動を規制している。", "ラムサール条約は、生物資源の持続可能な利用と、遺伝資源から生じる利益の公正な配分を目的としている。", "モントリオール議定書は、絶滅のおそれのある野生動植物の国際取引を規制している。", "ワシントン条約は、水鳥の生息地として国際的に重要な湿地の保全を目的としている。"]}, {"id": "코치1 問2(2)", "set": "orig", "area": "경제", "neg": false, "exp": "교토 메커니즘=공동이행·CDM·배출권거래. 감축의무는 선진국만, 목표는 일본6·미국7·EU8%, 이탈한 건 미국(러시아 비준으로 발효).", "stem": "<p>京都議定書に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["共同実施、クリーン開発メカニズム、排出量取引という京都メカニズムが導入された。", "先進国だけでなく、発展途上国にも温室効果ガスの削減義務が課された。", "温室効果ガスの削減目標は、先進国の中で日本が最も高く設定された。", "ロシアは批准せずに離脱したため、議定書の発効が大幅に遅れた。"]}, {"id": "코치1 問2(3)", "set": "orig", "area": "역사", "neg": false, "exp": "와트 증기기관 → 방적기·역직기 동력. 면공업 중심은 맨체스터, 기계 파괴는 러다이트, 제철 연료는 석탄(코크스).", "stem": "<p>イギリスの産業革命に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ワットが改良した蒸気機関が紡績機や力織機の動力に用いられ、綿工業の生産効率が大きく高まった。", "綿工業の中心地は、スコットランドのグラスゴーであった。", "機械化に反対する労働者たちは第1インターナショナルを結成し、機械の打ちこわしを行った。", "製鉄には、石油を燃料とする新しい製法が用いられた。"]}, {"id": "코치1 問7", "set": "orig", "area": "경제", "neg": false, "exp": "금리 자유화로 공정보합 역할 축소, 지금은 공개시장조작 중심. 일본은행은 정부에서 독립, 준비율은 1991년 이후 불변, 불황기엔 국채 매입.", "stem": "<p>日本銀行の金融政策に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["金利の自由化により預金金利が公定歩合に連動しなくなり、現在は公開市場操作が金融政策の中心となっている。", "日本銀行は、財務省の指揮・監督のもとで金融政策を決定している。", "日本銀行は近年、景気の状況に応じて預金準備率を頻繁に変更している。", "不況期には、日本銀行は保有する国債を売却して市場の資金量を増やす。"]}, {"id": "코치1 問11", "set": "orig", "area": "경제", "neg": false, "exp": "베버리지 보고서(1942) → '요람에서 무덤까지'. 구빈법은 영국(1601), 사회보험은 독일 비스마르크, 미국은 국민개보험 아님.", "stem": "<p>世界の社会保障制度の発展に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["イギリスではベバリッジ報告に基づき、第二次世界大戦後に「ゆりかごから墓場まで」の社会保障制度が整えられた。", "公的扶助の起源は、17世紀初めにドイツで制定された救貧法である。", "1880年代、イギリスのビスマルクが世界で初めて社会保険制度を創設した。", "アメリカはニューディール期に社会保障法を制定し、国民皆保険を実現した。"]}, {"id": "코치1 問18", "set": "orig", "area": "지리", "neg": false, "exp": "누적 가동 대수(스톡)는 일본 1위 → 미국 → 중국 → 한국 → 독일. 연간 판매 대수는 중국 1위라 헷갈림.", "stem": "<p>次の表は、2014年における産業用ロボットの稼働台数（ストック）の上位5か国を示したものである。A～Dに当てはまる国の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><div class=\"tw\"><table><thead><tr><th>順位</th><th>国</th><th>稼働台数</th></tr></thead><tbody><tr><td>1</td><td>A</td><td>約29.6万台</td></tr><tr><td>2</td><td>B</td><td>約21.9万台</td></tr><tr><td>3</td><td>C</td><td>約18.9万台</td></tr><tr><td>4</td><td>韓国</td><td>約17.7万台</td></tr><tr><td>5</td><td>D</td><td>約17.6万台</td></tr></tbody></table></div>", "ch": ["A 日本　B アメリカ　C 中国　D ドイツ", "A 中国　B 日本　C アメリカ　D ドイツ", "A 日本　B 中国　C アメリカ　D ドイツ", "A アメリカ　B 日本　C ドイツ　D 中国"]}, {"id": "코치1 問19", "set": "orig", "area": "정치", "neg": false, "exp": "코크가 브랙턴을 인용해 '국왕도 법 아래'. 보댕은 군주 절대지배 옹호, 법의 지배=영미 / 형식적 법치주의=독일.", "stem": "<p>「法の支配」に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["コークは、ブラクトンの「国王は何人の下にもないが、神と法の下にある」という言葉を引用し、国王も法に従うべきだと主張した。", "ボーダンは主権論を唱え、君主の絶対的な支配を否定した。", "マグナ・カルタは、統治者が自ら定めた法によって人民を支配するという考え方を示した文書である。", "法の支配はドイツで発達し、形式的法治主義はイギリスやアメリカで発達した。"]}, {"id": "코치1 問30(2)", "set": "orig", "area": "역사", "neg": false, "exp": "1880년대부터 생사 최대 수출국은 미국(견직물 원료). 초기엔 프랑스·영국, 중국은 경쟁국, 인도는 원면 수입처.", "stem": "<p>明治期の日本の最大の輸出品であった生糸について、1880年代以降の最大の輸出相手国として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["アメリカ", "フランス", "中国", "インド"]}, {"id": "코치2 問1(1)", "set": "orig", "area": "지리", "neg": false, "exp": "호쿠리쿠 신칸센: 다카사키에서 조에쓰와 갈라져 나가노→도야마→가나자와.", "stem": "<p>北陸新幹線の経路として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["東京 ― 高崎 ― 長野 ― 富山 ― 金沢", "東京 ― 宇都宮 ― 仙台 ― 盛岡 ― 新青森", "東京 ― 高崎 ― 越後湯沢 ― 長岡 ― 新潟", "新大阪 ― 岡山 ― 広島 ― 博多 ― 鹿児島中央"]}, {"id": "코치2 問1(2)", "set": "orig", "area": "지리", "neg": false, "exp": "가나자와=일본해 측. 겨울 북서 계절풍이 쓰시마 해류의 수증기로 눈 → 12~1월 강수 최대.", "stem": "<p>金沢の気候を説明したものとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["1月の平均気温は4℃前後で、12月・1月の降水量が1年のうちで最も多い。", "1月・2月の平均気温が氷点下となり、年降水量は少ない。", "夏の降水量が多く、冬は晴天が続いて乾燥する。", "夏の降水量が圧倒的に多く、冬の降水量は少ない。"]}, {"id": "코치2 問2(2)", "set": "orig", "area": "지리", "neg": false, "exp": "인도네시아·말레이시아 = 팜유 1·2위. 고무 상위는 태국·인도네시아, 베트남은 커피·쌀, 바나나는 필리핀 민다나오.", "stem": "<p>東南アジアの農業に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["インドネシアとマレーシアは、パーム油の生産量で世界の1位・2位を占めている。", "カンボジアは、天然ゴムの生産量が世界で最も多い。", "ベトナムでは、輸出向けのバナナのプランテーションが農業の中心となっている。", "マレーシアのミンダナオ島では、日本向けのバナナが大規模に栽培されている。"]}, {"id": "코치2 問3", "set": "orig", "area": "경제", "neg": false, "exp": "키친 40개월·재고 / 쥐글라 10년·설비투자 / 쿠즈네츠 20년·건설 / 콘드라티예프 50년·기술혁신.", "stem": "<p>景気循環の波の名称・周期・主な原因の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ジュグラーの波 ― 約10年 ― 設備投資の増減", "コンドラチェフの波 ― 約40か月 ― 在庫の調整", "キチンの波 ― 約20年 ― 建設需要の変動", "クズネッツの波 ― 約50年 ― 技術革新"]}, {"id": "코치2 問8", "set": "orig", "area": "경제", "neg": false, "exp": "외화준비는 금융수지. 무상원조=제2차 소득수지, 고용자보수·투자수익=제1차 소득수지, 여행=서비스수지.", "stem": "<p>国際収支に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["中央銀行などが保有する外貨や金の増減（外貨準備）は、金融収支に含まれる。", "対価を伴わない無償の資金援助は、第一次所得収支に計上される。", "雇用者報酬や投資収益の受け取り・支払いは、第二次所得収支に計上される。", "外国人旅行者が日本国内で支出した金額は、貿易収支に計上される。"]}, {"id": "코치2 問12", "set": "orig", "area": "경제", "neg": false, "exp": "스미소니언(1971) → 킹스턴(1976) → 플라자(1985) → 루브르(1987).", "stem": "<p>通貨・為替に関する国際的な合意を、古いものから順に並べたものとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><p>A キングストン合意　　B プラザ合意　　C スミソニアン協定　　D ルーブル合意</p>", "ch": ["C → A → B → D", "A → C → B → D", "C → B → A → D", "C → A → D → B"]}, {"id": "코치2 問13", "set": "orig", "area": "지리", "neg": false, "exp": "2015년 가채연수: 석탄 114년 > 천연가스 53년 > 석유 51년.", "stem": "<p>次のA～Cは、石油・石炭・天然ガスのいずれかの確認可採年数（2015年）である。A～Cに当てはまる資源の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><p>A 51年　　B 53年　　C 114年</p>", "ch": ["A 石油　B 天然ガス　C 石炭", "A 石炭　B 天然ガス　C 石油", "A 天然ガス　B 石油　C 石炭", "A 石油　B 石炭　C 天然ガス"]}, {"id": "코치2 問14", "set": "orig", "area": "지리", "neg": false, "exp": "레만호(제네바호)=스위스·프랑스 호수 국경. 태국·라오스는 메콩강, 루마니아·불가리아는 도나우강, 인도·방글라데시는 육상.", "stem": "<p>湖が国境の一部となっている例として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["スイスとフランスの国境", "タイとラオスの国境", "インドとバングラデシュの国境", "ルーマニアとブルガリアの国境"]}, {"id": "코치2 問15", "set": "orig", "area": "지리", "neg": false, "exp": "수반구 육지:해양 ≈ 1:9. 육반구 중심은 프랑스 서부(낭트), 육반구 육:해 ≈ 1:1, 수반구 중심은 뉴질랜드 남동쪽.", "stem": "<p>陸半球と水半球に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["水半球では、陸地と海洋の面積の比はおよそ1：9である。", "陸半球の中心は、イギリスのロンドン付近にある。", "陸半球では、陸地の面積が海洋の面積のおよそ2倍である。", "水半球の中心は、インド洋の中央付近にある。"]}, {"id": "코치2 問17", "set": "orig", "area": "지리", "neg": false, "exp": "남·북회귀선(23.4°) 사이 대부분은 열대. 본초자오선×남회귀선은 대서양, 야쿠시마는 북위 30°, 남회귀선은 뉴질랜드를 지나지 않음.", "stem": "<p>回帰線に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["北回帰線と南回帰線の間の地域は、その大部分が熱帯気候に属する。", "本初子午線と南回帰線の交点は、アフリカ大陸の内陸部にある。", "屋久島は、北回帰線より南に位置している。", "南回帰線は、ニュージーランドの北島を通過している。"]}, {"id": "코치2 問20", "set": "orig", "area": "정치", "neg": false, "exp": "입헌군주제와 함께 발전=의원내각제, 엄격한 삼권분립·고정임기=대통령제, 의원내각제는 입법권 우위.", "stem": "<p>次の文中の空欄a～cに当てはまる語の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><p>立憲君主制とともに発展したのは（ a ）である。行政府の長が厳格な三権分立と固定任期によって抑制されるのは（ b ）である。（ a ）では内閣が議会の信任に依存するため、（ c ）の傾向がみられる。</p>", "ch": ["a 議院内閣制　b 大統領制　c 立法権優位", "a 議院内閣制　b 大統領制　c 行政権優位", "a 大統領制　b 議院内閣制　c 立法権優位", "a 大統領制　b 議院内閣制　c 行政権優位"]}, {"id": "코치2 問24", "set": "orig", "area": "정치", "neg": false, "exp": "정당 = '공통 원리로 국민적 이익을 증진하려 결합한 집단' → 버크. 브라이스는 '지방자치는 민주주의의 학교'.", "stem": "<p>政党を「ある特定の原理に基づき、共同の努力によって国民的利益を増進するために結合した人々の集団」と定義した人物として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["バーク", "ブライス", "トクヴィル", "ロック"]}, {"id": "코치2 問26", "set": "orig", "area": "경제", "neg": false, "exp": "고도성장기(1955~73) = 국민소득배증계획(1960 이케다). 360엔 단일환율은 1949, 페이오프 해금 2002·05, 식관제 폐지 1995.", "stem": "<p>日本の高度経済成長期の出来事として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["池田内閣が国民所得倍増計画を発表した。", "1ドル＝360円の単一為替レートが設定された。", "ペイオフが解禁された。", "食糧管理制度が廃止された。"]}, {"id": "코치2 問29", "set": "orig", "area": "역사", "neg": false, "exp": "1924년 첫 노동당 내각 = 맥도널드(자유당과 연립). 월폴 18세기 휘그, 처칠 보수당, 블레어 1997.", "stem": "<p>1924年、自由党の協力を得てイギリス初の労働党内閣を組織した人物として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["マクドナルド", "ウォルポール", "チャーチル", "ブレア"]}, {"id": "코치2 問30", "set": "orig", "area": "역사", "neg": false, "exp": "관세자주권 없음 → 협정관세. 가나가와 개항 6개월 후 시모다 폐쇄, 거주는 거류지 제한, 영사재판권 인정.", "stem": "<p>日米修好通商条約（1858年）に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["日本には関税自主権がなく、関税率は両国の協定によって定められた。", "下田を開港し、その6か月後に神奈川を閉鎖することが定められた。", "アメリカ人は、日本国内のどこにでも自由に居住し、通商することができた。", "日本で罪を犯したアメリカ人は、日本の法律に基づいて日本の役人が裁いた。"]}, {"id": "코치3 問1(2)", "set": "orig", "area": "지리", "neg": false, "exp": "상하이·싱가포르 3천만 TEU 이상, 증가율로 구분(상하이 21.4% > 싱가포르 19.1%). 31.5% 급성장 = 두바이, 최소 = 도쿄.", "stem": "<p>次の表は、世界の4つの港のコンテナ取扱量（2014年）と、2010年からの増加率を示したものである。A～Dに当てはまる港の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><div class=\"tw\"><table><thead><tr><th>港</th><th>取扱量（万TEU）</th><th>増加率（％）</th></tr></thead><tbody><tr><td>A</td><td>約3,500</td><td>21.4</td></tr><tr><td>B</td><td>約3,400</td><td>19.1</td></tr><tr><td>C</td><td>約1,500</td><td>31.5</td></tr><tr><td>D</td><td>約500</td><td>―</td></tr></tbody></table></div>", "ch": ["A 上海　B シンガポール　C ドバイ　D 東京", "A シンガポール　B 上海　C ドバイ　D 東京", "A 上海　B シンガポール　C 東京　D ドバイ", "A ドバイ　B 上海　C シンガポール　D 東京"]}, {"id": "코치3 問1(3)", "set": "orig", "area": "지리", "neg": false, "exp": "케냐 = 차(茶) 수출 최상위 + 유럽행 절화. 원유는 나이지리아, 구리는 잠비아·콩고민주공화국.", "stem": "<p>ケニアの代表的な輸出品の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["茶 と 切り花", "原油 と 天然ガス", "銅 と コバルト", "衣類 と 電気機械"]}, {"id": "코치3 問2(3)", "set": "orig", "area": "정치", "neg": false, "exp": "지재권을 너무 강하게 보호하면 지식 확산을 막음 → 존속기간. 지재고재는 도쿄고재 특별지부(특별재판소 아님), 지식은 비경합성.", "stem": "<p>知的財産権に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["知的財産を長く強く保護しすぎると知識の普及や新技術の開発を妨げるため、特許権などには存続期間が定められている。", "知的財産高等裁判所は、憲法上の特別裁判所として設置された。", "知的財産を保護することを目的として、特定秘密保護法が制定された。", "知識は多くの人が同時に利用すると減ってしまうため、権利による保護が必要とされる。"]}, {"id": "코치3 問5", "set": "orig", "area": "경제", "neg": false, "exp": "주식 발행 = 직접금융·자기자본. 금융기관 차입은 간접금융, 은행도 주식·사채 보유 가능(상한만), 주식 장외거래 가능.", "stem": "<p>企業の資金調達に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["企業が株式を発行して資金を集めることは、直接金融による自己資本の調達にあたる。", "日本の銀行は、法律によって企業の株式や社債を保有することが一切禁止されている。", "株式は、証券取引所を通じてしか売買することができない。", "企業が金融機関から資金を借り入れることは、直接金融による他人資本の調達にあたる。"]}, {"id": "코치3 問11", "set": "orig", "area": "경제", "neg": false, "exp": "우루과이 라운드 → 1995 WTO 발족. GATT는 다자간, 관세는 교섭으로 인하, 일본은 1963년 12조국→11조국.", "stem": "<p>GATTに関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ウルグアイ・ラウンドの結果、GATTを発展させる形で1995年にWTOが発足した。", "GATTは、二国間の自由貿易協定（FTA）を推進することを目的として設立された。", "GATTは「自由・無差別・多角」を原則とし、加盟国間の関税をすべて撤廃した。", "日本は1970年代に、GATT11条国からGATT12条国へ移行した。"]}, {"id": "코치3 問12", "set": "orig", "area": "경제", "neg": false, "exp": "IMF 융자 조건 = 컨디셔널리티. 개도국 장기융자는 세계은행, 일본은 1952 가맹, 조세회피처 장려 안 함.", "stem": "<p>IMF（国際通貨基金）に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["IMFは融資を行う際に、財政の緊縮や構造改革などの条件（コンディショナリティ）を課すことがある。", "IMFは、発展途上国に開発のための長期資金を融資することを主な役割としている。", "日本は、1945年のIMF設立時からの原加盟国である。", "IMFは、加盟国に対してタックス・ヘイブンの活用を推奨している。"]}, {"id": "코치3 問14", "set": "orig", "area": "지리", "neg": false, "exp": "50~60°에서 편서풍과 극동풍이 만나 상승 → 아한대저압대. 무역풍은 동→서, 편서풍은 아열대고압대→아한대저압대, 20~30° 하강 = 아열대고압대.", "stem": "<p>大気の大循環に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["偏西風と極偏東風がぶつかる緯度50～60度付近では上昇気流が生じ、亜寒帯低圧帯が形成される。", "貿易風は、亜熱帯高圧帯から赤道に向かって西から東へ吹く。", "偏西風は、極高圧帯から亜寒帯低圧帯に向かって吹く。", "緯度20～30度付近の下降気流によって、熱帯収束帯が形成される。"]}, {"id": "코치3 問16(1)", "set": "orig", "area": "지리", "neg": false, "exp": "저위도 스텝(BS) = 연중 20℃ 이상, 대부분 무강수, 여름 3개월만 우기. 모든 달 거의 0이면 사막(BW).", "stem": "<p>低緯度のステップ気候（BS）の特徴として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["年中20℃以上で、ほとんどの月は降水がないが、夏の3か月ほどだけ雨季がある。", "年間を通じて降水があり、冬は月平均気温が氷点下になる。", "年中、ほぼすべての月の降水量がほとんど0である。", "夏は高温多雨で、冬は気温が下がる。"]}, {"id": "코치3 問19", "set": "orig", "area": "지리", "neg": false, "exp": "2013년 자급률: 쌀 96%, 채소 79%, 밀 12%, 대두 7%.", "stem": "<p>2013年度の日本の小麦の食料自給率に最も近いものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["12％", "7％", "79％", "96％"]}, {"id": "코치3 問20", "set": "orig", "area": "정치", "neg": false, "exp": "루소: 일반의지 → 대표될 수 없으므로 직접민주제. 자연권은 국가 이전, 홉스의 투쟁은 자연상태, 로크는 입법권 우위.", "stem": "<p>社会契約説に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ルソーは、公共の利益をめざす一般意志に基づく政治を主張し、一般意志は代表されえないとして直接民主制を求めた。", "社会契約説では、自然権は国家が成立して初めて人々に与えられると考える。", "ホッブズは、市民革命後の社会の状態を「万人の万人に対する闘争」と表現した。", "ロックは、立法権に対する執行権の優位を主張した。"]}, {"id": "코치3 問22", "set": "orig", "area": "정치", "neg": false, "exp": "참의원 부결 법률안 → 중의원 출석 2/3 재가결로 성립(59조 2항). 개헌 발의는 양원 각각 총의원 2/3.", "stem": "<p>与党が衆議院で3分の2以上の議席をもち、参議院では過半数をもたない場合に、与党だけで可能なこととして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["参議院で否決された法律案を、衆議院で再可決して成立させる。", "最高裁判所の裁判官を罷免する。", "衆議院の議決だけで内閣総理大臣を任命する。", "衆議院の議決だけで憲法改正を発議する。"]}, {"id": "코치3 問23", "set": "orig", "area": "정치", "neg": false, "exp": "재판원제도(2009) = 중대 형사사건 1심에서 시민이 사실인정·양형. 하급재판소 4종, 고등재판소 8곳, 행정재판소 없음.", "stem": "<p>日本の裁判所に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["裁判員制度では、一定の重大な刑事事件の第一審で、市民が裁判官とともに事実の認定と量刑を行う。", "下級裁判所は、高等裁判所・地方裁判所・簡易裁判所の3種類である。", "高等裁判所は、全国に10か所設置されている。", "行政事件を専門に扱う行政裁判所が設置されている。"]}, {"id": "코치3 問24", "set": "orig", "area": "정치", "neg": false, "exp": "절차/실질 구분 결정 자체가 실질사항 → 이중거부권. 실질사항은 상임 5 포함 9개국, 절차사항엔 거부권 없음, 비상임 임기 2년.", "stem": "<p>国際連合の安全保障理事会に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ある事項が手続事項か実質事項かを決める決定自体が実質事項とされるため、常任理事国は二重に拒否権を行使できる。", "実質事項の決定には、常任理事国5か国を含む12か国以上の賛成が必要である。", "手続事項の決定においても、常任理事国は拒否権を行使できる。", "非常任理事国の任期は3年で、毎年5か国ずつ改選される。"]}, {"id": "코치3 問25", "set": "orig", "area": "역사", "neg": false, "exp": "인지세법(1765)에 '대표 없이 과세 없다'. 차 사건 후 영국은 탄압 강화, 워싱턴은 제2회 대륙회의, 프랑스·스페인은 식민지 측.", "stem": "<p>アメリカ独立戦争に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["1765年の印紙法に対して、植民地側は「代表なくして課税なし」と主張して反発した。", "ボストン茶会事件の後、イギリスは植民地への課税を撤廃して融和を図った。", "ワシントンは、第1回大陸会議で植民地軍の総司令官に任命された。", "フランスとスペインは、イギリス側に立って参戦した。"]}, {"id": "코치3 問28", "set": "orig", "area": "역사", "neg": false, "exp": "1917 11월 혁명 직후 '평화에 관한 포고'. 러일전쟁 강화는 포츠머스, 발칸동맹은 러시아 주도·세르비아 회원, 피의 일요일은 1905.", "stem": "<p>20世紀前半のロシア・ソ連に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["十一月革命の直後、レーニン政権は「平和に関する布告」を出し、無併合・無賠償・民族自決による即時講和を呼びかけた。", "日露戦争の講和条約として、日露協約が結ばれた。", "バルカン同盟はオーストリアの主導で結成され、セルビアはこれに参加しなかった。", "第一次世界大戦の終結後、首都で「血の日曜日事件」が起こった。"]}, {"id": "코치4 問1(2)", "set": "orig", "area": "정치", "neg": false, "exp": "권리장전(1689) = 의회 동의 없는 과세·상비군 금지, 의회 우위. 마그나 카르타는 영국, 인권선언은 국민의회, 미국 독립선언이 먼저.", "stem": "<p>人権の歴史に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["1689年のイギリスの権利章典は、議会の同意のない課税や常備軍を禁止し、議会の優位を確立した。", "1215年、フランスでマグナ・カルタが出され、国王の権限が制限された。", "フランス人権宣言は、三部会がまとめた文書を国王が承認したもので、議会の同意のない課税を禁止した。", "フランス人権宣言は、アメリカ独立宣言に大きな影響を与えた。"]}, {"id": "코치4 問2(1)", "set": "orig", "area": "지리", "neg": false, "exp": "원통도법은 고위도일수록 확대 → 지도상 같은 길이면 확대가 가장 적은 적도 부근이 실제로 가장 김(60°는 cos60°=0.5).", "stem": "<p>経線と緯線が直交する円筒図法の世界地図上で、同じ長さに描かれた東西方向の線分のうち、実際の距離が最も長いものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["赤道付近の線分", "北緯60度付近の線分", "北緯30度付近の線分", "南緯45度付近の線分"]}, {"id": "코치4 問2(2)", "set": "orig", "area": "역사", "neg": false, "exp": "사할린·쿠릴 교환(1875) → 포츠머스(1905) → 일소기본조약(1925) → 일소공동선언(1956).", "stem": "<p>日本とロシア・ソ連の間で結ばれた条約・宣言を、古いものから順に並べたものとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><p>A 日ソ基本条約　　B ポーツマス条約　　C 樺太・千島交換条約　　D 日ソ共同宣言</p>", "ch": ["C → B → A → D", "B → C → A → D", "C → B → D → A", "C → A → B → D"]}, {"id": "코치4 問7", "set": "orig", "area": "경제", "neg": false, "exp": "플로 = 일정 기간의 흐름(소득·GDP). 토지·예저금·국채잔고는 시점의 축적량 = 스톡.", "stem": "<p>フローにあたるものとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["1年間の所得", "保有する土地", "預貯金", "国債の残高"]}, {"id": "코치4 問9", "set": "orig", "area": "경제", "neg": false, "exp": "대체재로 바꾸기 어려움 → 가격이 올라도 수요량 거의 불변 → 탄력성 작음 → 수직에 가깝게 가파른 수요곡선.", "stem": "<p>財Aには代わりとなる財Bがあるが、Bは非常に高価なため、AからBへの切り替えは難しい。財Aの需要曲線の形として最も適当なものを、次の①～④の中から一つ選びなさい（縦軸を価格、横軸を数量とする）。</p>", "ch": ["垂直に近い、傾きの急な右下がりの線", "水平な線", "右上がりの線", "傾きの緩やかな右下がりの線"]}, {"id": "코치4 問11", "set": "orig", "area": "경제", "neg": false, "exp": "소비자기본법(2004) = 소비자 권리 명기. PL법은 무과실책임·제조자 책임, 쿨링오프는 특정상거래법, 단체소송은 소비자계약법(법 이름 바꿔치기).", "stem": "<p>消費者保護に関する法律についての記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["2004年に消費者保護基本法が改正されて消費者基本法となり、消費者の権利が明記された。", "製造物責任法（PL法）では、消費者が製造者の過失を証明すれば、販売者に損害賠償を求めることができる。", "消費者契約法は、訪問販売などで一定期間内であれば無条件で契約を解除できるクーリング・オフを定めている。", "特定商取引法は、適格消費者団体が事業者に差し止めを請求できる団体訴訟制度を定めている。"]}, {"id": "코치4 問12", "set": "orig", "area": "경제", "neg": false, "exp": "일본 EPA: 스위스 2009, 오스트레일리아 2015, 몽골 2016 발효. 브라질은 EPA 없음.", "stem": "<p>日本がEPA（経済連携協定）を結んでいない国として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ブラジル", "スイス", "モンゴル", "オーストラリア"]}, {"id": "코치4 問16", "set": "orig", "area": "지리", "neg": false, "exp": "모두 일본 시간으로: 애틀랜타 16:00+14 = 다음날 6:00 → 12시간 30분 / 두바이 5:00+5 = 10:00 → 12시간. 날짜변경선 동쪽행은 현지 시각이 거꾸로 감.", "stem": "<p>成田を17時30分に出発し、同じ日の16時00分（現地時間）にアトランタに到着する便と、成田を22時00分に出発し、翌日の5時00分（現地時間）にドバイに到着する便がある。日本との時差はアトランタが−14時間、ドバイが−5時間である。それぞれの所要時間の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["アトランタ便 12時間30分　ドバイ便 12時間", "アトランタ便 8時間30分　ドバイ便 12時間", "アトランタ便 12時間30分　ドバイ便 2時間", "アトランタ便 22時間30分　ドバイ便 12時間"]}, {"id": "코치4 問20", "set": "orig", "area": "정치", "neg": false, "exp": "자문화 절대시 = 에스노센트리즘. 우열 없음 = 문화상대주의, 사이드가 비판 = 오리엔탈리즘, 다문화주의는 서로 존중하며 공존.", "stem": "<p>異文化理解に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["自民族・自文化の価値観を絶対視して他の文化を判断する考え方を、エスノセントリズムという。", "すべての文化に固有の価値があり優劣はないとする考え方を、ユニラテラリズムという。", "西洋が東洋を非合理的・後進的なものとみなす見方を、サイードは多文化主義と呼んで批判した。", "多文化主義とは、複数の文化が互いに関与せずに並存することをめざす考え方である。"]}, {"id": "코치4 問21", "set": "orig", "area": "정치", "neg": false, "exp": "법의 지배 = 권력도 법에 구속 ↔ 사람의 지배. 보편적으로 옳은 법 = 자연법, 권리청원은 노예 포함 아님, 코먼로 우위 주장은 코크(필머는 왕권신수설).", "stem": "<p>「法の支配」に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["法の支配とは、権力者も法に拘束されるという考え方であり、権力者の恣意による「人の支配」と対立する。", "法の支配とは、時代や社会をこえて普遍的に正しい法が存在するという考え方である。", "権利請願は、奴隷を含むすべての人の権利を国王に認めさせた文書である。", "フィルマーは、コモン・ローが王権に優越すると主張した。"]}, {"id": "코치4 問23", "set": "orig", "area": "정치", "neg": false, "exp": "환경권 = 일조권·혐연권 등, 13조·25조 근거. 정보공개법은 개인정보 제외, 액세스권은 매스미디어 반론권, 무단 촬영 금지는 초상권.", "stem": "<p>新しい人権に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["環境権には日照権や嫌煙権などが含まれ、憲法13条や25条を根拠に主張されている。", "情報公開法は、プライバシーの権利を制限して、個人情報の公開を義務づけている。", "アクセス権とは、インターネット上の情報を自由に閲覧する権利である。", "承諾なしに容貌や姿を撮影・公表されない権利を、請願権という。"]}, {"id": "메코1 問1(1)", "set": "orig", "area": "역사", "neg": false, "exp": "제네바 군축회의(1932~34) 중 일본·독일 연맹 탈퇴. 워싱턴은 해군·소련 불참, 1930 런던은 국제연맹 시대, 재군비 1935 / 체코 해체 1939.", "stem": "<p>戦間期の軍縮に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ジュネーブ軍縮会議の期間中に日本とドイツが国際連盟を脱退し、会議は成果をあげずに終わった。", "ワシントン会議では、ソ連を含む5か国が陸軍の軍備を制限した。", "1930年のロンドン海軍軍縮会議は、国際連合の主導のもとで開かれた。", "ドイツの再軍備宣言は、チェコスロバキア解体と同じ年に行われた。"]}, {"id": "메코1 問1(3)", "set": "orig", "area": "지리", "neg": false, "exp": "루르 = 독일 서부, 네덜란드 국경 바로 동쪽(에센·도르트문트). 프랑스 국경 쪽은 자르·알자스.", "stem": "<p>ルール地方の位置として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ドイツ西部、オランダとの国境のすぐ東側", "ドイツ南西部、フランスとの国境付近", "ドイツ北東部、ポーランドとの国境付近", "ドイツ南部、オーストリアとの国境付近"]}, {"id": "메코1 問2(2)", "set": "orig", "area": "정치", "neg": false, "exp": "ICJ는 헤이그. ILO·UNHCR·WTO(·WHO)는 제네바.", "stem": "<p>本部がジュネーブに置かれていない国際機関として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["国際司法裁判所（ICJ）", "国際労働機関（ILO）", "国連難民高等弁務官事務所（UNHCR）", "世界貿易機関（WTO）"]}, {"id": "메코1 問5", "set": "orig", "area": "경제", "neg": false, "exp": "주기 짧은 순: 키친(40개월) → 쥐글라(10년) → 쿠즈네츠(20년) → 콘드라티예프(50년). '키·쥐·쿠·콘'.", "stem": "<p>景気循環の波を、周期の短いものから順に並べたものとして最も適当なものを、次の①～④の中から一つ選びなさい。</p><p>A ジュグラーの波　　B コンドラチェフの波　　C キチンの波　　D クズネッツの波</p>", "ch": ["C → A → D → B", "C → D → A → B", "A → C → D → B", "C → A → B → D"]}, {"id": "메코1 問6", "set": "orig", "area": "경제", "neg": false, "exp": "세출 최대 = 사회보장관계비(약 1/3), 방위비 약 5%, 세입 최대 = 공채금(대부분 특례공채). 지방교부세는 세출 3위, 상속세는 세입 2%.", "stem": "<p>2018年度の日本の一般会計予算について、歳出で最大の項目をA、歳出のおよそ5％を占める項目をB、歳入の主要な税目の一つをC、歳入で最大の公債金の大部分を占めるものをDとする。A～Dの組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["A 社会保障関係費　B 防衛関係費　C 消費税　D 特例公債（赤字公債）", "A 防衛関係費　B 社会保障関係費　C 消費税　D 特例公債（赤字公債）", "A 公共事業関係費　B 防衛関係費　C 消費税　D 建設公債", "A 地方交付税交付金　B 防衛関係費　C 相続税　D 特例公債（赤字公債）"]}, {"id": "메코1 問9", "set": "orig", "area": "경제", "neg": false, "exp": "주식회사는 법인. 지주회사는 1997년 해금, 주주는 유한책임(지분과 무관), 최고 의사결정기관은 주주총회.", "stem": "<p>株式会社に関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["株式会社は法人であり、会社そのものが権利・義務の主体となる。", "独占禁止法により、現在も持株会社の設立は禁止されている。", "出資比率の高い株主ほど、会社の債務に対して大きな責任を負う。", "株式会社の最高意思決定機関は、取締役会である。"]}, {"id": "메코1 問13", "set": "orig", "area": "지리", "neg": false, "exp": "1월 0℃ 전후 + 연중 강수 적음 + 연교차 큼 = 중앙고지(마쓰모토). 홋카이도 내륙은 1월 −7℃, 호쿠리쿠는 겨울 강수 많음.", "stem": "<p>1月の平均気温が0℃前後で、年間を通して降水量が少なく（最も多い月でも150mm程度）、気温の年較差が大きい都市として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["松本（中央高地）", "旭川（北海道内陸）", "金沢（北陸）", "高知（四国の太平洋側）"]}, {"id": "메코1 問15", "set": "orig", "area": "지리", "neg": false, "exp": "A 일본(곡류 28%), B 미국(두류 171%), C 프랑스(곡류 189%·유제품 123%·어패류 30%), D 캐나다(두류 346%·과실 17%).", "stem": "<p>次の表は、日本・アメリカ・フランス・カナダの品目別食料自給率（％）の一部を示したものである。フランスに当てはまるものを、次の①～④の中から一つ選びなさい。</p><div class=\"tw\"><table><thead><tr><th>国</th><th>穀類</th><th>豆類</th><th>果実</th><th>牛乳・乳製品</th><th>魚介類</th></tr></thead><tbody><tr><td>A</td><td>28</td><td>9</td><td>―</td><td>―</td><td>―</td></tr><tr><td>B</td><td>―</td><td>171</td><td>―</td><td>―</td><td>―</td></tr><tr><td>C</td><td>189</td><td>―</td><td>―</td><td>123</td><td>30</td></tr><tr><td>D</td><td>202</td><td>346</td><td>17</td><td>―</td><td>―</td></tr></tbody></table></div>", "ch": ["C", "B", "A", "D"]}, {"id": "메코1 問18", "set": "orig", "area": "정치", "neg": true, "exp": "[적당하지 않은 것] 메이지 헌법에는 내각 규정이 없었음(국무대신이 각자 천황 보필). 69조·68조 과반수·66조 문민은 맞음.", "stem": "<p>日本の内閣に関する記述として適当でないものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["大日本帝国憲法には内閣についての規定があり、内閣は議会に対して連帯して責任を負った。", "内閣不信任決議案が可決されたとき、10日以内に衆議院が解散されない限り、内閣は総辞職しなければならない。", "国務大臣の過半数は、国会議員の中から選ばれなければならない。", "内閣総理大臣その他の国務大臣は、文民でなければならない。"]}, {"id": "메코1 問25", "set": "orig", "area": "정치", "neg": false, "exp": "2017년 분담률: 미국 22% > 일본 약 9.7% > 중국 약 7.9%. 2019년부터는 중국이 일본 추월.", "stem": "<p>2017年の国連通常予算の分担率で、アメリカ（22％）に次いで約10％を負担した国と、約8％を負担した国の組み合わせとして最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["約10％ 日本　約8％ 中国", "約10％ 中国　約8％ 日本", "約10％ ドイツ　約8％ 日本", "約10％ 日本　約8％ ドイツ"]}, {"id": "메코1 問26", "set": "orig", "area": "정치", "neg": false, "exp": "스웨덴은 EU 회원국이지만 유로 미도입. EU는 마스트리흐트(1993)로 출범, 영국 이탈은 2020년 1월, 터키는 후보국.", "stem": "<p>EUに関する記述として最も適当なものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["スウェーデンはEU加盟国であるが、ユーロを導入していない。", "EUは、1957年のローマ条約によって発足した。", "イギリスは2016年の国民投票の結果を受けて、2018年にEUを離脱した。", "トルコは、2004年にEUへの加盟が認められた。"]}, {"id": "메코1 問30", "set": "orig", "area": "역사", "neg": true, "exp": "[적당하지 않은 것] 포츠머스 조약 중재는 미국 시어도어 루스벨트. 영국은 영일동맹(1902) 상대.", "stem": "<p>日露戦争に関する記述として適当でないものを、次の①～④の中から一つ選びなさい。</p>", "ch": ["ポーツマス条約は、イギリスの仲介によって結ばれた。", "戦争中の1905年に血の日曜日事件が起こり、第1次ロシア革命につながった。", "東アジアでの南下を阻まれたロシアはバルカン半島へ関心を向け、これが第一次世界大戦の一因となった。", "日本の勝利は、アジアの民族運動を刺激した。"]}];
+const SETS = [["메코1 問5", "메코1 問9", "코치1 問11", "코치1 問2(2)", "코치2 問12", "코치2 問3", "코치3 問11", "코치3 問5", "코치4 問12", "코치4 問9", "메코1 問30", "코치1 問30(2)", "코치2 問30", "코치3 問28", "메코1 問18", "메코1 問25", "코치1 問19", "코치2 問24", "코치3 問20", "코치3 問23", "코치4 問1(2)", "코치4 問21", "메코1 問1(3)", "메코1 問15", "코치2 問1(1)", "코치2 問13", "코치2 問15", "코치2 問2(2)", "코치3 問1(3)", "코치3 問16(1)", "코치4 問16"], ["메코1 問6", "코치1 問1(1)", "코치1 問2(1)", "코치1 問7", "코치2 問26", "코치2 問8", "코치3 問12", "코치4 問11", "코치4 問7", "메코1 問1(1)", "코치1 問2(3)", "코치2 問29", "코치3 問25", "코치4 問2(2)", "메코1 問2(2)", "메코1 問26", "코치2 問20", "코치3 問2(3)", "코치3 問22", "코치3 問24", "코치4 問20", "코치4 問23", "메코1 問13", "코치1 問18", "코치2 問1(2)", "코치2 問14", "코치2 問17", "코치3 問1(2)", "코치3 問14", "코치3 問19", "코치4 問2(1)"]];
+const M = "①②③④";
+const MODE = {s1:"세트 1", s2:"세트 2", d62:"★★·★★★ 전체 62", orig:"원본", var:"변형", mix:"원본+변형", retry:"오답 재풀이", all:"원본", set1:"남은 문제 세트 1", set2:"남은 문제 세트 2", set3:"남은 문제 세트 3"};
+const LKEY = "eju-flash-d23-run";
+const byId = Object.fromEntries(BANK.map(q => [q.id, q]));
+let run = null; let sel = null;       // {aid, mode, order:[id], perm:{id:[idx]}, ans:{id:{pick,ok}}, i, started}
+let db = null, history = [], plan = null, dbState = "loading";
+const view = document.getElementById("view");
+
+function lsGet(){ try { return JSON.parse(localStorage.getItem(LKEY)); } catch(e){ return null; } }
+function lsSet(){ try { localStorage.setItem(LKEY, JSON.stringify(run)); } catch(e){} }
+function lsClear(){ try { localStorage.removeItem(LKEY); } catch(e){} }
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+
+// ---- history from db ----
+function lastWrongIds(){
+  const done = history.filter(h => h.finishedAt).sort((a,b)=>b.finishedAt.localeCompare(a.finishedAt));
+  if (!done.length) return null;
+  return Object.entries(done[0].answers||{}).filter(([,v])=>!v.ok).map(([k])=>k).filter(k=>byId[k]);
+}
+function missCount(id){ return history.reduce((n,h)=> n + (h.answers && h.answers[id] && !h.answers[id].ok ? 1 : 0), 0); }
+
+// ---- start screen ----
+function startScreen(){
+  document.getElementById("topbar").hidden = true;
+  let saved = lsGet();
+  if (saved && history.some(h => h._id === saved.aid && h.finishedAt)) { lsClear(); saved = null; }
+  const setBtns = SETS.map((ids,k)=>{ const done = history.filter(h => h.mode === "s"+(k+1) && h.finishedAt).sort((a,b)=>b.finishedAt.localeCompare(a.finishedAt))[0];
+    return `<button class="btn ${k===0 && !(saved && saved.i < saved.order.length) ? "pri" : ""}" id="set${k}">세트 ${k+1} · ${ids.length}문항${done ? ` · 최근 ${done.correct}/${done.total}` : ""}</button>`; }).join("");
+  const lw = lastWrongIds();
+  const runs = history.filter(h=>h.finishedAt).length;
+  view.innerHTML = `<div class="card">
+    <h1>★★ 오답 플래시</h1>
+    <p class="lead">오답노트 원본 문제 중 자체 난이도 ★★(개념 결합·연도·조문·자료 해석)와 ★★★(세부 통계·지엽 지식) 62문항. 영역이 고르게 섞이도록 31문항씩 두 세트로 나눴다. 문제와 선택지 순서는 시작할 때마다 새로 섞인다.</p>
+    <p class="hint">${dbState==="ok" ? `이 기기에 저장된 기록 ${runs}회` : dbState==="loading" ? "기록 불러오는 중…" : "이 화면에서는 기록이 저장되지 않는다. 끝나면 결과 요약을 복사해 채팅에 붙여 넣으면 된다."}</p>
+    <div class="opts">
+      ${saved && saved.i < saved.order.length ? `<button class="btn pri" id="resume">이어서 풀기 (${saved.i} / ${saved.order.length})</button>` : ""}
+      ${setBtns}
+      <button class="btn" id="all">62문항 전체</button>
+      <button class="btn" id="lw" ${lw && lw.length ? "" : "disabled"}>지난번 틀린 것만 (${lw ? lw.length : 0})</button>
+    </div>
+    <p class="hint">키보드: 1~4 선택 · Enter 채점, 한 번 더 Enter 다음 문제</p>
+  </div>`;
+  const r = document.getElementById("resume"); if (r) r.onclick = ()=>{ run = saved; show(); };
+  document.getElementById("all").onclick = ()=>begin(BANK.map(q=>q.id), "d62");
+  SETS.forEach((ids,k)=>{ document.getElementById("set"+k).onclick = ()=>begin(ids.filter(id=>byId[id]), "s"+(k+1)); });
+  document.getElementById("lw").onclick = ()=>{ const ids = lastWrongIds(); if (ids && ids.length) begin(ids, "retry"); };
+}
+
+async function begin(ids, mode){
+  const order = shuffle(ids);
+  const perm = {}; order.forEach(id => perm[id] = shuffle([0,1,2,3]));
+  run = { aid: new Date().toISOString().replace(/[^0-9]/g,"").slice(0,14) + "-" + Math.random().toString(36).slice(2,6),
+          mode, order, perm, ans:{}, i:0, started:new Date().toISOString() };
+  lsSet();
+  if (db){ try { await db.doc("attempts/" + run.aid).set({ mode, total: order.length, startedAt: run.started, answers:{}, correct:0, answered:0 }); } catch(e){ dbFail(e); } }
+  show();
+}
+
+// ---- question card ----
+function show(){
+  if (run.i >= run.order.length) return finish();
+  document.getElementById("topbar").hidden = false;
+  const id = run.order[run.i], q = byId[id], perm = run.perm[id], a = run.ans[id];
+  const okc = Object.values(run.ans).filter(v=>v.ok).length;
+  document.getElementById("pos").textContent = run.i + 1;
+  document.getElementById("tot").textContent = run.order.length;
+  document.getElementById("okc").textContent = okc;
+  document.getElementById("railfill").style.width = (run.i / run.order.length * 100) + "%";
+  view.innerHTML = `<div class="card">
+    <div class="meta"><span class="qn">問${run.i+1}${q.neg ? '<span class="neg">適当でない</span>' : ""}</span><span class="tag">${esc(q.area)}</span></div>
+    <div class="stem">${q.stem}</div>
+    <div class="chs" id="chs"></div>
+    <div id="fbx"></div>
+    <div class="row"><button class="btn" id="quit">그만두기</button><button class="btn" id="stop" ${Object.keys(run.ans).length ? "" : "hidden"}>여기까지 결과 보기</button><button class="btn pri" id="grade" disabled ${a ? "hidden" : ""}>채점</button><button class="btn pri" id="next" ${a ? "" : "hidden"}>${run.i+1===run.order.length ? "결과 보기" : "다음 문제"}</button></div>
+  </div>`;
+  const chs = document.getElementById("chs");
+  perm.forEach((orig, pos) => {
+    const b = document.createElement("button");
+    b.className = "ch"; b.type = "button"; b.id = "c" + pos;
+    b.innerHTML = `<span class="bub">${pos+1}</span><span></span>`;
+    b.lastChild.textContent = q.ch[orig];
+    b.onclick = ()=>pick(pos);
+    chs.appendChild(b);
+  });
+  sel = null;
+  if (a) reveal(); else chs.firstChild.focus({preventScroll:true});
+  document.getElementById("next").onclick = next;
+  document.getElementById("grade").onclick = ()=>{ if (sel !== null) answer(sel); };
+  document.getElementById("quit").onclick = ()=>{ lsSet(); startScreen(); };
+  document.getElementById("stop").onclick = ()=>finish(true);
+}
+function pick(pos){
+  if (run.ans[run.order[run.i]]) return;
+  sel = (sel === pos) ? null : pos;
+  document.querySelectorAll(".ch").forEach((b,i)=> b.classList.toggle("sel", i === sel));
+  document.getElementById("grade").disabled = sel === null;
+}
+async function answer(pos){
+  const id = run.order[run.i];
+  if (run.ans[id]) return;
+  const ok = run.perm[id][pos] === 0;
+  run.ans[id] = { pick: pos, ok };
+  lsSet(); reveal();
+  if (db){
+    const okc = Object.values(run.ans).filter(v=>v.ok).length;
+    try { await db.doc("attempts/" + run.aid).update({ answers: { [id]: { ok, chose: byId[id].ch[run.perm[id][pos]] } }, answered: Object.keys(run.ans).length, correct: okc }); } catch(e){ dbFail(e); }
+  }
+}
+function reveal(){
+  const id = run.order[run.i], q = byId[id], a = run.ans[id], perm = run.perm[id];
+  const rightPos = perm.indexOf(0);
+  document.querySelectorAll(".ch").forEach((b,i)=>{
+    b.disabled = true;
+    if (i === rightPos) b.classList.add("right");
+    else if (i === a.pick) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const prev = missCount(id);
+  document.getElementById("fbx").innerHTML = `<div class="fb ${a.ok?"ok":"bad"}">
+    <h3>${a.ok ? "○ 정답" : "× 오답 · 정답은 " + M[rightPos]}</h3>
+    <p>${esc(q.exp)}</p>
+    <span class="src">출처 ${esc(id)}${prev ? ` · 지난 기록에서 ${prev}번 틀림` : ""}</span></div>`;
+  document.getElementById("okc").textContent = Object.values(run.ans).filter(v=>v.ok).length;
+  document.getElementById("grade").hidden = true;
+  const nx = document.getElementById("next"); nx.hidden = false; nx.focus({preventScroll:true});
+}
+function next(){ const id = run.order[run.i]; if (!run.ans[id]) return; run.i++; lsSet(); window.scrollTo({top:0}); show(); }
+
+document.addEventListener("keydown", e=>{
+  if (!run || run.i >= run.order.length || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!document.getElementById("chs")) return;
+  if (/^[1-4]$/.test(e.key)) { pick(+e.key - 1); e.preventDefault(); }
+  else if (e.key === "Enter" && document.activeElement?.id !== "quit") {
+    if (run.ans[run.order[run.i]]) { next(); e.preventDefault(); }
+    else if (sel !== null) { answer(sel); e.preventDefault(); }
+  }
+});
+
+// ---- result & analysis ----
+async function finish(partial){
+  partial = partial || (run && run.partial);
+  document.getElementById("topbar").hidden = true;
+  const ans = run.ans; const ids = partial ? run.order.filter(id => ans[id]) : run.order;
+  if (partial){ run.partial = true; run.i = run.order.length; }
+  const ok = ids.filter(id => ans[id] && ans[id].ok);
+  const wrong = ids.filter(id => !ans[id] || !ans[id].ok);
+  const group = key => { const g = {}; ids.forEach(id => { const k = key(id); g[k] = g[k] || {t:0,o:0}; g[k].t++; if (ans[id]?.ok) g[k].o++; }); return Object.entries(g).sort((a,b)=> a[1].o/a[1].t - b[1].o/b[1].t); };
+  const bars = rows => `<div class="bars">${rows.map(([k,v])=>{ const p = Math.round(v.o/v.t*100); return `<div class="br"><span>${esc(k)}</span><div class="tr"><i class="${p<60?"low":""}" style="width:${p}%"></i></div><span class="v">${v.o}/${v.t}</span></div>`; }).join("")}</div>`;
+  const negIds = ids.filter(id => byId[id].neg), negOk = negIds.filter(id => ans[id]?.ok).length;
+  const repeat = wrong.filter(id => missCount(id) > 0);
+  const mins = Math.max(1, Math.round((Date.now() - new Date(run.started)) / 60000));
+  const pct = Math.round(ok.length / ids.length * 100);
+  const area = group(id => byId[id].area), src = group(id => id.split(" ")[0]);
+  const weakest = area[0];
+  const summary = `[오답 플래시 결과 ${run.started.slice(0,10)}] ${MODE[run.mode]||""} ${ok.length}/${ids.length} (${pct}%), ${mins}분\n영역: ${area.map(([k,v])=>`${k} ${v.o}/${v.t}`).join(", ")}\n부정형: ${negOk}/${negIds.length}\n틀린 문항: ${wrong.join(", ") || "없음"}`;
+
+  view.innerHTML = `<div class="card">
+    <h1>${MODE[run.mode]||""} 결과${partial ? ` (${ids.length}/${run.order.length}문항까지)` : ""}</h1>
+    <div class="big">${ok.length}<small> / ${ids.length} · ${pct}% · ${mins}분</small></div>
+    <h2>영역별</h2>${bars(area)}
+    <h2>원래 회차별</h2>${bars(src)}
+    <h2>분석</h2>
+    <p>${weakest ? `가장 약한 영역은 ${esc(weakest[0])} (${weakest[1].o}/${weakest[1].t})다.` : ""}
+    ${negIds.length ? ` 부정형(適当でない) 문항은 ${negOk}/${negIds.length}개 맞혔다.` : ""}
+    ${repeat.length ? ` 이번에 틀린 ${wrong.length}개 중 ${repeat.length}개는 지난 기록에서도 틀린 문항이라 개념 카드로 따로 외워야 한다.` : wrong.length ? ` 이번에 틀린 문항은 모두 이번이 처음 틀린 것이다.` : " 전부 맞혔다."}</p>
+    <h2>틀린 문항 ${wrong.length}개</h2>
+    <div class="miss">${wrong.map(id => `<div class="mi"><b>${esc(id)} · ${esc(byId[id].area)}</b>${missCount(id) ? `<span class="rep">반복 오답</span>` : ""}<p>${esc(byId[id].exp)}</p></div>`).join("") || "<p>없음</p>"}</div>
+    <div class="row">
+      <button class="btn pri" id="again" ${wrong.length ? "" : "disabled"}>틀린 것만 다시 (${wrong.length})</button>
+      <button class="btn" id="copy">결과 요약 복사</button>
+      <button class="btn" id="home">처음 화면</button>
+    </div>
+    <p class="note" id="savenote">${dbState==="ok" ? "결과가 이 기기에 저장됐다. '결과 요약 복사'를 눌러 채팅에 붙여 넣으면 오답노트에 반영한다." : "기록이 저장되지 않았다. '결과 요약 복사'를 눌러 채팅에 붙여 넣으면 오답노트에 반영한다."}</p>
+    <textarea id="sumtxt" readonly hidden style="width:100%;min-height:110px;margin-top:8px;font:13px var(--f-num);background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px"></textarea>
+  </div>`;
+  document.getElementById("sumtxt").value = summary;
+  document.getElementById("again").onclick = ()=> begin(wrong, "retry");
+  document.getElementById("home").onclick = ()=>{ lsClear(); run = null; startScreen(); };
+  document.getElementById("copy").onclick = async ()=>{
+    const t = document.getElementById("sumtxt"), b = document.getElementById("copy");
+    try { await navigator.clipboard.writeText(summary); b.textContent = "복사됨"; }
+    catch(e){ t.hidden = false; t.select(); b.textContent = "아래 글을 선택해 복사"; }
+  };
+  if (db && !run.saved){
+    try {
+      await db.doc("attempts/" + run.aid).update({ finishedAt: new Date().toISOString(), partial: !!partial, minutes: mins, correct: ok.length, answered: Object.keys(ans).length,
+        byArea: Object.fromEntries(area.map(([k,v])=>[k,v])), negative: { ok: negOk, total: negIds.length }, wrongIds: wrong });
+      run.saved = true;
+    } catch(e){ dbFail(e); }
+  }
+  lsSet();
+}
+function dbFail(e){
+  dbState = "fail";
+  const n = document.getElementById("savenote");
+  if (n){ n.classList.add("err"); n.textContent = "기록 저장에 실패했다. '결과 요약 복사'를 눌러 채팅에 붙여 넣으면 오답노트에 반영한다."; }
+}
+
+// ---- boot: 이 기기 브라우저(localStorage)에 기록 저장 ----
+function localDb(){
+  const K = "eju-flash-d23-attempts"; let subs = [];
+  const load = ()=>{ try { return JSON.parse(localStorage.getItem(K)) || {}; } catch(e){ return {}; } };
+  const save = m => { localStorage.setItem(K, JSON.stringify(m)); };
+  const emit = ()=>{ const m = load(); const snap = { docs: Object.entries(m).map(([id,d])=>({ id, data:()=>d })), metadata:{ fromCache:false } }; subs.forEach(f=>f(snap)); };
+  return {
+    doc(p){ const id = p.split("/")[1]; return {
+      async set(d){ const m = load(); m[id] = d; save(m); emit(); },
+      async update(d){ const m = load(); const cur = m[id] || {}; const ans = Object.assign({}, cur.answers, d.answers || {}); m[id] = Object.assign(cur, d, { answers: ans }); save(m); emit(); }
+    }; },
+    collection(){ return { onSnapshot(cb){ subs.push(cb); setTimeout(emit, 0); } }; }
+  };
+}
+startScreen();
+try { localStorage.setItem("__t","1"); localStorage.removeItem("__t");
+  db = localDb();
+  db.collection("attempts").onSnapshot(snap => { history = snap.docs.map(d => ({ ...d.data(), _id: d.id })); if (dbState !== "fail") dbState = "ok"; if (!run) startScreen(); });
+} catch(e){ db = null; dbState = "off"; startScreen(); }
+</script>
+</body>
+</html>

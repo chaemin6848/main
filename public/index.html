@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@700;900&family=DM+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one narrow column — wordmark hero with a quick-jump strip, then tool cards grouped by purpose (EJU·유학 first with a featured two-door card, then 단어 · 정치); borrows 단어 한 장's ink/paper/lime offset-shadow language */
+/* Layout: one narrow column — wordmark hero with a quick-jump strip, then tool cards grouped by purpose (단어 · EJU·유학 · 정치); borrows 단어 한 장's ink/paper/lime offset-shadow language */
 :root{
   --ink:#1c211d; --muted:#6c736b; --paper:#f8f7f2; --card:#ffffff; --line:#dcdcd3;
   --lime:#dfff70; --sky:#9fd8ff; --coral:#ffb4a2; --lilac:#cdb9ff; --rose:#ffb3c6; --on-accent:#1c211d;
@@ -51,6 +51,8 @@ h1 .jp{font-family:var(--jp)}
 .jump a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .group{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
 .group-label{margin:0;display:flex;align-items:baseline;gap:10px;font-size:15px;font-weight:900;letter-spacing:-.01em}
+.group-label .more{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--muted);text-decoration:none}
+.group-label .more:hover{color:var(--ink);text-decoration:underline}
 .group-label span{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;color:var(--muted)}
 .tool.feature{position:relative}
 .tool.feature h2 a{color:inherit;text-decoration:none}
@@ -82,18 +84,6 @@ h1 .jp{font-family:var(--jp)}
 .go{margin-top:6px;font-weight:700;font-size:14px}
 .go span{display:inline-block;transition:transform .15s ease}
 .tool:hover .go span{transform:translateX(4px)}
-/* 번외: 일본어·유학 도구와 다른 취미 사이트 — 점선 테두리, 그림자 없이 한 줄 */
-.extra{display:flex;flex-direction:column;gap:10px}
-.extra-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);margin:0}
-.side{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1.5px dashed var(--muted);border-radius:14px;color:inherit;text-decoration:none;transition:border-color .15s ease,background-color .15s ease}
-.side:hover{border-color:var(--ink);background:var(--card)}
-.side:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-.side-glyph{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--jp);font-size:16px;font-weight:900;line-height:1}
-.side-body{display:flex;flex-direction:column;min-width:0;flex:1}
-.side-body b{font-size:15px;font-weight:800;letter-spacing:-.02em}
-.side-body small{font-size:12.5px;color:var(--muted);line-height:1.45}
-.side-go{flex:none;font-size:18px;color:var(--muted);transition:transform .15s ease}
-.side:hover .side-go{transform:translateX(4px);color:var(--ink)}
 footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
 footer a{color:var(--muted)}
 @media (max-width:520px){
@@ -102,7 +92,7 @@ footer a{color:var(--muted)}
   .glyph{width:48px;height:48px;font-size:23px;border-radius:8px}
   .tool h2{font-size:19px}
 }
-@media (prefers-reduced-motion:reduce){.tool,.go span,.side,.side-go{transition:none}}
+@media (prefers-reduced-motion:reduce){.tool,.go span{transition:none}}
 </style>
 </head>
 <body>
@@ -110,46 +100,16 @@ footer a{color:var(--muted)}
 <script src="/shared/i18n-home.js"></script>
 <div class="shell">
   <section class="hero">
-    <p class="eyebrow">NIHONGO · EJU · RYUGAKU · SEIJI</p>
+    <p class="eyebrow">NIHONGO · EJU · RYUGAKU · GAME</p>
     <h1>일본어 공부부터<br><em>EJU·일본 유학</em>까지</h1>
     <p>직접 만들어 쓰던 도구를 한곳에 모았습니다. EJU 종합과목 개념과 문제, 출원 일정, 단어 암기까지 필요한 곳으로 바로 이동하세요.</p>
     <nav class="jump" aria-label="바로 가기">
-      <a href="#g-eju">EJU · 유학</a><a href="#g-word">단어</a><a href="#g-politics">일본 정치</a>
+      <a href="#g-word">단어</a><a href="#g-eju">EJU · 유학</a><a href="#g-game">게임</a>
     </nav>
   </section>
 
-  <section class="group" aria-labelledby="g-eju">
-  <h2 class="group-label" id="g-eju"><span>01</span>EJU · 유학</h2>
-  <ul class="tools">
-    <li>
-      <div class="tool feature" style="--accent:var(--rose)">
-        <span class="glyph" aria-hidden="true">総</span>
-        <div class="body">
-          <div class="row"><h2><a class="stretch" href="/japanworld/">EJU 종합과목</a></h2><span class="url">nihongodic.com/japanworld</span></div>
-          <p>정치·경제·국제·지리·역사 핵심 개념을 영역별로 정리하고, 같은 개념을 고난도 4지선다로 바로 확인해요. 문제 해설에서 개념 카드로, 개념 카드에서 관련 문제로 오갈 수 있어요.</p>
-          <div class="duo">
-            <a href="/japanworld/#concepts"><b>종합과목 개념</b><small>47개 · 검색·영역 필터</small></a>
-            <a href="/japanworld/#flash"><b>플래시 카드</b><small>62문항 · 틀린 문제 다시</small></a>
-          </div>
-        </div>
-      </div>
-    </li>
-    <li>
-      <a class="tool" href="/alarm/" style="--accent:var(--sky)">
-        <span class="glyph" aria-hidden="true">留</span>
-        <div class="body">
-          <div class="row"><h2>일유알리미</h2><span class="url">nihongodic.com/alarm</span></div>
-          <p>2027년 4월 입학 일본 대학 사비유학생전형 출원·면접·합격발표 일정. 지망 학부만 골라 캘린더로 볼 수 있어요.</p>
-          <span class="tags"><span>EJU</span><span>구제국·소케이·MARCH·칸칸도리츠</span><span>캘린더</span></span>
-          <span class="go">일정 확인하기 <span aria-hidden="true">→</span></span>
-        </div>
-      </a>
-    </li>
-  </ul>
-  </section>
-
   <section class="group" aria-labelledby="g-word">
-  <h2 class="group-label" id="g-word"><span>02</span>단어</h2>
+  <h2 class="group-label" id="g-word"><span>01</span>단어<a class="more" href="/words/">모아 보기 →</a></h2>
   <ul class="tools">
     <li>
       <a class="tool" href="/japanese/" style="--accent:var(--lime)">
@@ -197,10 +157,33 @@ footer a{color:var(--muted)}
     </li>
   </ul>
   </section>
-
-  <section class="group" aria-labelledby="g-politics">
-  <h2 class="group-label" id="g-politics"><span>03</span>일본 정치</h2>
+  <section class="group" aria-labelledby="g-eju">
+  <h2 class="group-label" id="g-eju"><span>02</span>EJU · 유학<a class="more" href="/eju/">모아 보기 →</a></h2>
   <ul class="tools">
+    <li>
+      <div class="tool feature" style="--accent:var(--rose)">
+        <span class="glyph" aria-hidden="true">総</span>
+        <div class="body">
+          <div class="row"><h2><a class="stretch" href="/japanworld/">EJU 종합과목</a></h2><span class="url">nihongodic.com/japanworld</span></div>
+          <p>정치·경제·국제·지리·역사 핵심 개념을 영역별로 정리하고, 같은 개념을 고난도 4지선다로 바로 확인해요. 문제 해설에서 개념 카드로, 개념 카드에서 관련 문제로 오갈 수 있어요.</p>
+          <div class="duo">
+            <a href="/japanworld/#concepts"><b>종합과목 개념</b><small>47개 · 검색·영역 필터</small></a>
+            <a href="/japanworld/#flash"><b>플래시 카드</b><small>62문항 · 틀린 문제 다시</small></a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <a class="tool" href="/alarm/" style="--accent:var(--sky)">
+        <span class="glyph" aria-hidden="true">留</span>
+        <div class="body">
+          <div class="row"><h2>일유알리미</h2><span class="url">nihongodic.com/alarm</span></div>
+          <p>2027년 4월 입학 일본 대학 사비유학생전형 출원·면접·합격발표 일정. 지망 학부만 골라 캘린더로 볼 수 있어요.</p>
+          <span class="tags"><span>EJU</span><span>구제국·소케이·MARCH·칸칸도리츠</span><span>캘린더</span></span>
+          <span class="go">일정 확인하기 <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </li>
     <li>
       <a class="tool" href="/politics/" style="--accent:var(--coral)">
         <span class="glyph" aria-hidden="true">政</span>
@@ -212,6 +195,13 @@ footer a{color:var(--muted)}
         </div>
       </a>
     </li>
+  </ul>
+  </section>
+
+
+  <section class="group" aria-labelledby="g-game">
+  <h2 class="group-label" id="g-game"><span>03</span>게임<a class="more" href="/games/">모아 보기 →</a></h2>
+  <ul class="tools">
     <li>
       <a class="tool" href="/jeildang/" style="--accent:var(--lilac)">
         <span class="glyph" aria-hidden="true">党</span>
@@ -223,19 +213,18 @@ footer a{color:var(--muted)}
         </div>
       </a>
     </li>
+    <li>
+      <a class="tool" href="/pokemon/" style="--accent:var(--mint, #a8e6c8)">
+        <span class="glyph" aria-hidden="true">図</span>
+        <div class="body">
+          <div class="row"><h2>포켓몬 도감 채우기 도우미</h2><span class="url">nihongodic.com/pokemon</span></div>
+          <p>파이어레드·리프그린, 루비·사파이어, 블랙·화이트, 블랙2·화이트2 도감을 두 세이브로 채우는 순서와 버전 전용 포켓몬, 교환 진화, 입수처를 정리해요.</p>
+          <span class="tags"><span>3·5세대</span><span>버전 전용</span><span>교환 진화</span></span>
+          <span class="go">도감 채우러 가기 <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </li>
   </ul>
-  </section>
-
-  <section class="extra" aria-labelledby="extra-label">
-    <p class="extra-label" id="extra-label">번외</p>
-    <a class="side" href="/pokemon/">
-      <span class="side-glyph" aria-hidden="true">図</span>
-      <span class="side-body">
-        <b>포켓몬 도감 채우기 도우미</b>
-        <small>3·5세대 도감을 두 세이브로 채우는 순서와 입수처 정리</small>
-      </span>
-      <span class="side-go" aria-hidden="true">→</span>
-    </a>
   </section>
 
   <footer>

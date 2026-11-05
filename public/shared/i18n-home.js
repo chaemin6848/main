@@ -1,5 +1,13 @@
 /* 메인(nihongodic.com/) 번역 — 키는 한국어 원문 그대로 */
 ND.add({
+  "게임": ["ゲーム", "Games"],
+  "도감 채우러 가기": ["図鑑を埋めに行く", "Fill the Pokédex"],
+  "파이어레드·리프그린, 루비·사파이어, 블랙·화이트, 블랙2·화이트2 도감을 두 세이브로 채우는 순서와 버전 전용 포켓몬, 교환 진화, 입수처를 정리해요.":
+    ["ファイアレッド・リーフグリーン、ルビー・サファイア、ブラック・ホワイト、ブラック2・ホワイト2の図鑑を2つのセーブで埋める手順、バージョン限定ポケモン、通信交換進化、入手場所をまとめます。",
+     "Plan how to complete the FireRed/LeafGreen, Ruby/Sapphire, Black/White and Black 2/White 2 Pokédex with two saves: version exclusives, trade evolutions and locations."],
+  "3·5세대": ["第3・第5世代", "Gen 3 & 5"],
+  "버전 전용": ["バージョン限定", "Version exclusives"],
+  "교환 진화": ["通信交換進化", "Trade evolutions"],
   "번외": ["番外編", "Bonus"],
   "포켓몬 도감 채우기 도우미": ["ポケモン図鑑うめヘルパー", "Pokédex Completion Helper"],
   "3·5세대 도감을 두 세이브로 채우는 순서와 입수처 정리": ["第3・第5世代の図鑑を2つのセーブで埋める手順と入手場所まとめ", "Order and locations for completing the Gen 3 and Gen 5 Pokédex with two saves"],
@@ -47,12 +55,14 @@ ND.add({
   "단어": ["単語", "Vocabulary"],
   "EJU · 유학": ["EJU・留学", "EJU · Study in Japan"],
   "일본 정치": ["日本政治", "Japanese politics"],
+  "모아 보기 →": ["一覧へ →", "View group →"],
   "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"]
 });
 
 // 고른 언어를 지원하지 않는 도구 카드는 숨긴다 (공통 메뉴와 같은 기준)
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".tools a.tool").forEach(function (a) {
+  // 두 입구 카드(.tool.feature)는 제목 링크(.stretch)의 주소로 판단한다
+  document.querySelectorAll(".tools a.tool, .tools .tool.feature a.stretch").forEach(function (a) {
     if (!ND.toolShown(a.getAttribute("href"))) a.closest("li").hidden = true;
   });
   // 카드가 모두 숨겨진 묶음은 제목째 숨기고, 바로 가기에서도 뺀다

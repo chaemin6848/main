@@ -10,6 +10,12 @@
 /yukyung   /yukyung/   301
 /japanworld  /japanworld/  301
 /judge     /judge/     301
+/words     /words/     301
+/eju       /eju/       301
+/games     /games/     301
+# 일본 정치 묶음은 없어졌다: 나가타초 노트는 EJU · 유학으로, 제1당은 게임으로 옮김
+/seiji     /eju/       301
+/seiji/    /eju/       301
 /pokemon/frlg  /pokemon/frlg/  301
 /pokemon/rs    /pokemon/rs/    301
 /pokemon/bw    /pokemon/bw/    301

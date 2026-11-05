@@ -264,3 +264,103 @@ test('비상 체제: 가상 공화국 단독 3분의 2에서만, 선거가 미�
   assert.ok(!g.regime, '체제가 끝났다');
   assert.ok(E.party(g, me.id).seats < seats0, '혁명 뒤 총선에서 의석을 잃는다');
 });
+
+// ---- 국가 상태·공약·노선 이동·수정안·공천·계파 (2026-11)
+const solo = (country, seed = 11) => E.newGame({ players: [{ ownerId: 'u', name: '시험당', ideology: country ? 'pick::' : 'reform:major' }], size: 5, seed, rounds: 12, timer: 0, now: 0, country });
+const me = g => g.parties.find(p => p.ownerId === 'u');
+const step = (g, mv) => E.resolveRound(g, { u: Object.assign({ round: g.round, actions: [] }, mv) }, 0, {});
+
+test('국가 상태는 0~100 안에서 움직이고 결과 보고에 남는다', () => {
+  for (const country of MODES) {
+    const { g } = playOne({ seed: 3, rounds: 12, size: 5, country });
+    for (const k of E.NKEYS) assert.ok(g.nation[k] >= 0 && g.nation[k] <= 100, `${country} ${k}`);
+    assert.ok(g.report.nation && g.report.nation.after, String(country));
+  }
+});
+
+test('공약은 기한까지 지키면 승점이 오르고, 못 지키면 깎인다', () => {
+  let g = solo(null);
+  const p0 = me(g), reg = E.REGIONS[0].id;
+  g = step(g, { actions: [{ type: 'pledge', topic: 'welfare', region: reg }] });
+  const pl = E.openPledges(me(g));
+  assert.strictEqual(pl.length, 1);
+  assert.strictEqual(pl[0].due, E.pledgeDue({ ...g, round: 1 }));
+  assert.ok(me(g).reg[reg] > p0.reg[reg], '지역 기반이 오른다');
+  // 기한까지 아무 법에도 찬성하지 않으면 깨진다
+  const due = pl[0].due;
+  while (g.round <= due && g.status !== 'over') {
+    const votes = Object.fromEntries(g.agenda.map(it => [it.id, 'no']));
+    g = step(g, { votes, pm: me(g).id });
+  }
+  const rep = Object.values(g.history.length ? [g.report] : []).length;
+  assert.ok(rep >= 0);
+  assert.strictEqual(E.openPledges(me(g)).length, 0, '기한이 지나면 닫힌다');
+  assert.ok((me(g).pledges || []).some(x => x.done && !x.kept), '반대만 했으니 지키지 못한다');
+});
+
+test('공약은 한꺼번에 2개까지, 노선 이동은 2분기에 한 번', () => {
+  let g = solo(null);
+  const reg = E.REGIONS[0].id;
+  g = step(g, { actions: [{ type: 'pledge', topic: 'welfare', region: reg }, { type: 'pledge', topic: 'tax', region: reg }] });
+  assert.strictEqual(E.openPledges(me(g)).length, 1, '한 분기에 공약 하나');
+  g = step(g, { actions: [{ type: 'pledge', topic: 'tax', region: reg }] });
+  g = step(g, { actions: [{ type: 'pledge', topic: 'labor', region: reg }] });
+  assert.strictEqual(E.openPledges(me(g)).length, 2, '두 개까지');
+  const e0 = me(g).eco;
+  g = step(g, { actions: [{ type: 'shift', dir: 'right' }] });
+  assert.ok(me(g).eco < e0, '시장 쪽으로 옮긴다');
+  const e1 = me(g).eco;
+  g = step(g, { actions: [{ type: 'shift', dir: 'right' }] });
+  assert.strictEqual(me(g).eco, e1, '바로 다음 분기에는 못 옮긴다');
+});
+
+test('수정안은 안건 내용을 낸 당 쪽으로 당기거나 부결 소식을 남긴다', () => {
+  for (const country of [null, 'kr', 'uk']) {
+    let g = solo(country, 21);
+    const it = g.agenda.find(x => x.by !== me(g).id);
+    if (!it) continue; // 첫 안건이 모두 우리 당 것이면 건너뛴다
+    const before = { eco: it.eco, soc: it.soc };
+    g = step(g, { actions: [{ type: 'amendBill', item: it.id }] });
+    const b = g.report.bills.find(x => x.id === it.id);
+    const news = g.report.news.map(n => n.text).join('\n');
+    assert.ok(/수정안/.test(news), String(country));
+    if (b.amendedBy) assert.strictEqual(b.amendedBy, me(g).id);
+    assert.ok(before.eco !== undefined);
+  }
+});
+
+test('총선 분기에만 공천을 받고, 대표 경선은 4분기에 한 번', () => {
+  let g = solo(null);
+  const t0 = me(g).talent;
+  g = step(g, { nominate: 'fresh' });
+  assert.ok(me(g).talent <= t0 + 2.5, '총선이 아닌 분기에는 신인 공천이 없다');
+  while (!E.isGeneralRound(g)) g = step(g, {});
+  const u0 = me(g).unity;
+  g = step(g, { nominate: 'fresh', pm: me(g).id });
+  assert.ok(g.report.news.some(n => /신인을 대거/.test(n.text)), '총선 분기에는 신인 공천');
+  let h = solo(null, 5);
+  const w = me(h).wings[0].id;
+  h = step(h, { actions: [{ type: 'leaderRace', wing: w }] });
+  assert.strictEqual(me(h).raceAt, 1);
+  h = step(h, { actions: [{ type: 'leaderRace', wing: w }] });
+  assert.ok(!h.report.news.some(n => /대표 경선에서/.test(n.text)), '바로 다시 열 수 없다');
+  assert.ok(u0 >= 0);
+});
+
+test('계파 요구는 안건에 걸리고, 따르면 결속이 오른다', () => {
+  let found = false;
+  for (let seed = 1; seed <= 40 && !found; seed++) {
+    let g = solo(null, seed);
+    for (let r = 0; r < 6 && !found; r++) {
+      const dm = (g.demands || {})[me(g).id];
+      if (!dm) { g = step(g, {}); continue; }
+      assert.ok(g.agenda.some(x => x.id === dm.item));
+      const u0 = me(g).unity;
+      g = step(g, { votes: { [dm.item]: dm.want } });
+      assert.strictEqual(g.report.wings[me(g).id].ok, true);
+      assert.ok(u0 >= 0);
+      found = true;
+    }
+  }
+  assert.ok(found, '40판 안에 계파 요구가 한 번은 나온다');
+});

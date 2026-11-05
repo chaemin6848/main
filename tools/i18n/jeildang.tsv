@@ -1450,3 +1450,95 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 시민 혁명	市民革命	People power
 다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.	他党の非常体制が市民革命で崩壊するのを見届けます。	See another party's emergency rule collapse in a popular revolution.
 압도적 과반	圧倒的多数	Overwhelming majority
+# 2026-11 국가 상태·공약·노선 이동·수정안·공천·계파
+선거 공약	選挙公約	Campaign pledge
+그 지역 기반이 바로 오릅니다. 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +3, 못 지키면 신뢰 −6·승점 −3. 한꺼번에 2개까지.	その地域の基盤がすぐ上がります。次の総選挙までにその分野の法案が私たちの賛成で可決されれば信頼 +4・勝ち点 +3、守れなければ信頼 −6・勝ち点 −3。同時に2つまで。	Your base in that region rises at once. If a law in that field passes with your vote before the next general election: trust +4, score +3. If not: trust −6, score −3. Up to 2 at a time.
+노선 이동	路線移動	Shift line
+노선을 한 걸음 옮깁니다. 결속 −8(대형 −10), 신뢰 −2, 멀어지는 지역 기반 −2. 한 번 옮기면 2분기 동안 다시 못 옮깁니다.	路線を一歩動かします。結束 −8(大政党 −10)、信頼 −2、遠ざかる地域の基盤 −2。一度動かすと2四半期は動かせません。	Move your line one step. Unity −8 (−10 for major parties), trust −2, base −2 in regions you move away from. Then you must wait 2 quarters.
+수정안 제출	修正案提出	Table an amendment
+다른 당이 낸 안건의 내용을 우리 노선 쪽으로 35% 당깁니다. 수정안을 더 낫게 보는 의석이 원안을 더 낫게 보는 의석보다 많으면 채택되고, 채택된 법이 우리 찬성으로 통과되면 승점 +1.	他党が出した議案の内容を私たちの路線へ35%引き寄せます。修正案を良しとする議席が原案を良しとする議席より多ければ採択され、採択された法案が私たちの賛成で可決されれば勝ち点 +1。	Pull another party's bill 35% toward your line. It is adopted if more seats prefer the amendment than the original; if the amended bill then passes with your vote, score +1.
+대표 경선	代表選	Leadership race
+밀어줄 계파를 골라 대표 경선을 엽니다. 그 계파 세력만큼 이길 확률이 오르고, 이긴 계파 쪽으로 노선이 옮겨 갑니다. 결속 +12·신뢰 +4(지면 +6·+2). 4분기에 한 번.	推す派閥を選んで代表選を開きます。その派閥の勢力が大きいほど勝ちやすく、勝った派閥の側へ路線が動きます。結束 +12・信頼 +4(負ければ +6・+2)。4四半期に一度。	Back a faction and call a leadership race. The bigger that faction, the likelier it wins; the line moves toward the winner. Unity +12, trust +4 (if your pick loses: +6, +2). Once every 4 quarters.
+국가 상태	国の状態	State of the nation
+국방	国防	Defense
+경제	経済	Economy
+민생	暮らし	Livelihoods
+사회 통합	社会統合	Social cohesion
+위기	危機	Crisis
+책임: {0}	責任: {0}	Accountable: {0}
+어떻게 움직이나요?	どう動くの?	How does it change?
+: 안보 법안과 안보 태세 강화로 오르고, 개방·감군 법안과 안보 위기로 내려갑니다. 35 미만이면 안보 중시 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	：安保法案と安保態勢強化で上がり、開放・軍縮法案と安保危機で下がります。35未満だと安保重視の政党の信頼が上がり、政府の信頼が削られます。	: Rises with security bills and tighter defense; falls with openness or arms-cut bills and security crises. Below 35, security-minded parties gain trust and the government loses it.
+: 시장·성장 법안과 세금 감면으로 오르고, 불황 사건과 지나친 분배 법안으로 내려갑니다. 35 미만이면 모든 당 분기 수입이 15% 줄고 정부 신뢰가 깎입니다.	：市場・成長法案と減税で上がり、不況の事件と行き過ぎた分配法案で下がります。35未満だと全政党の四半期収入が15%減り、政府の信頼が削られます。	: Rises with market and growth bills and tax cuts; falls with recessions and heavy redistribution. Below 35, every party's quarterly income drops 15% and the government loses trust.
+: 분배·복지 법안과 민생 지원금으로 오르고, 물가·재난 사건으로 내려갑니다. 35 미만이면 분배 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	：分配・福祉法案と生活支援金で上がり、物価・災害の事件で下がります。35未満だと分配政党の信頼が上がり、政府の信頼が削られます。	: Rises with redistribution and welfare bills and relief payments; falls with price and disaster events. Below 35, redistribution parties gain trust and the government loses it.
+: 개방·화합 법안과 협치로 오르고, 정치 공세와 갈등 사건으로 내려갑니다. 35 미만이면 모든 당 결속이 분기마다 흔들립니다.	：開放・融和法案と協治で上がり、政治攻勢と対立の事件で下がります。35未満だと全政党の結束が毎四半期揺らぎます。	: Rises with openness and reconciliation bills and cooperation; falls with political attacks and conflict. Below 35, every party's unity wobbles each quarter.
+가결된 법은 노선대로 움직입니다(분배→민생, 시장→경제, 안보·전통→국방, 개방→통합). 손대지 않으면 조금씩 닳습니다.	可決された法案は路線どおりに動かします(分配→暮らし、市場→経済、安保・伝統→国防、開放→統合)。手を入れなければ少しずつすり減ります。	Passed laws move them by their line (redistribution → livelihoods, market → economy, security/tradition → defense, openness → cohesion). Left alone they slowly wear down.
+정부 수반 당은 분기마다 네 지표 평균에 따라 신뢰가 오르내리고, 35 미만인 지표마다 신뢰 −1.5. 연립 상대는 그 절반입니다.	政府首班の党は毎四半期、4指標の平均に応じて信頼が上下し、35未満の指標ごとに信頼 −1.5。連立相手はその半分です。	Each quarter the governing party gains or loses trust with the average of the four, and −1.5 trust for each one below 35. Coalition partners get half.
+당내 사정	党内事情	Inside the party
+이번 분기 계파 요구는 없습니다.	今四半期は派閥の要求はありません。	No faction demands this quarter.
+혁신파	革新派	Reform wing
+안정파	安定派	Moderate wing
+분배·개방 쪽	分配・開放寄り	redistribution & openness
+시장·전통 쪽	市場・伝統寄り	market & tradition
+세력 {0}% · 불만 {1}/3	勢力 {0}% · 不満 {1}/3	Strength {0}% · grievances {1}/3
+{0} 세력 {1}%	{0} 勢力 {1}%	{0} · strength {1}%
+{0}의 요구: 「{1}」에 찬성. 들어주면 결속 +4, 무시하면 결속 −5. 불만이 3번 쌓이면 그 계파가 대표 경선을 겁니다.	{0}の要求: 「{1}」に賛成。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。	{0} demands a YES on "{1}". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race.
+{0}의 요구: 「{1}」에 반대. 들어주면 결속 +4, 무시하면 결속 −5. 불만이 3번 쌓이면 그 계파가 대표 경선을 겁니다.	{0}の要求: 「{1}」に反対。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。	{0} demands a NO on "{1}". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race.
+계파 요구: {0}의 찬성 요구	派閥の要求: {0}が賛成を要求	Faction demand: {0} wants YES
+계파 요구: {0}의 반대 요구	派閥の要求: {0}が反対を要求	Faction demand: {0} wants NO
+{0}의 요구를 들어줬습니다. 결속 +4	{0}の要求に応じました。結束 +4	You complied with the {0}. Unity +4
+{0}의 요구를 무시했습니다. 결속 −5	{0}の要求を無視しました。結束 −5	You ignored the {0}. Unity −5
+{0}분기 총선까지	第{0}四半期の総選挙まで	by the Q{0} general election
+지킴	達成	Kept
+아직	未達	Not yet
+걸어 둔 공약이 없습니다. 행동의 '선거 공약'으로 겁니다.	掲げた公約はありません。行動の「選挙公約」で掲げます。	No pledges yet. Make one with the "Campaign pledge" action.
+노선 이동 가능	路線移動できます	Line shift ready
+노선 이동 {0}분기부터	路線移動は第{0}四半期から	Line shift from Q{0}
+대표 경선 가능	代表選できます	Leadership race ready
+대표 경선 {0}분기부터	代表選は第{0}四半期から	Leadership race from Q{0}
+급선회(당 정보 바꾸기) 가능	急旋回(党の情報を変更)できます	Sharp turn (Edit party info) ready
+급선회(당 정보 바꾸기) {0}분기부터	急旋回(党の情報を変更)は第{0}四半期から	Sharp turn (Edit party info) from Q{0}
+· 노선 이동	· 路線移動	· shifted line
+총선 공천	総選挙の公認	Candidate selection
+이번 분기 말 총선 후보를 어떻게 정할지 고릅니다.	今四半期末の総選挙の候補をどう決めるか選びます。	Choose how to pick candidates for this quarter's general election.
+현역 우선	現職優先	Incumbents first
+현역 의원을 대부분 다시 공천합니다. 결속 +3.	現職議員をほぼそのまま公認します。結束 +3。	Re-nominate most sitting members. Unity +3.
+신인 공천	新人擁立	Fresh faces
+새 얼굴을 대거 내세웁니다. 이번 총선 후보 경쟁력이 크게 오르지만(인재 +5) 낙천자 반발로 결속 −10.	新しい顔を大量に立てます。今回の総選挙の候補競争力が大きく上がる(人材 +5)一方、公認漏れの反発で結束 −10。	Field a wave of newcomers. Candidate strength jumps this election (talent +5), but dropped members revolt: unity −10.
+국민 경선	国民予備選	Open primary
+후보를 경선으로 뽑습니다. 자금 2, 신뢰 +3, 결속 −3, 당원 +3%.	候補を予備選で選びます。資金 2、信頼 +3、結束 −3、党員 +3%。	Pick candidates in primaries. Costs 2, trust +3, unity −3, members +3%.
+분배 쪽으로	分配寄りに	toward redistribution
+시장 쪽으로	市場寄りに	toward the market
+개방 쪽으로	開放寄りに	toward openness
+전통·안보 쪽으로	伝統・安保寄りに	toward tradition & security
+중도 쪽으로	中道寄りに	toward the centre
+노선 급선회는 {0}분기부터 다시 할 수 있습니다.	路線の急旋回は第{0}四半期から再びできます。	You can make another sharp turn from Q{0}.
+노선을 통째로 바꾸는 급선회는 신뢰 −{0}, 결속 −{1}, 멀어지는 지역 기반 −3이고 4분기에 한 번입니다. 한 걸음씩 옮기려면 행동의 '노선 이동'을 쓰세요. 지금 노선: {2}	路線を丸ごと変える急旋回は信頼 −{0}、結束 −{1}、遠ざかる地域の基盤 −3で、4四半期に一度です。一歩ずつ動かすなら行動の「路線移動」を使ってください。今の路線: {2}	A sharp turn swaps your whole line: trust −{0}, unity −{1}, base −3 in regions you leave, once every 4 quarters. To move step by step, use the "Shift line" action. Current line: {2}
+{0}, {1}에 「{2}」 공약.	{0}、{1}で「{2}」を公約。	{0} pledges "{2}" in {1}.
+{0}, 「{1}」 공약을 「{2}」로 지켰습니다.	{0}、「{1}」の公約を「{2}」で果たしました。	{0} keeps its "{1}" pledge with "{2}".
+{0}, 「{1}」 공약을 「{2}」으로 지켰습니다.	{0}、「{1}」の公約を「{2}」で果たしました。	{0} keeps its "{1}" pledge with "{2}".
+{0}, 「{1}」 공약을 지키지 못했습니다.	{0}、「{1}」の公約を果たせませんでした。	{0} fails to keep its "{1}" pledge.
+{0}, 노선을 {1} 옮겼습니다.	{0}、路線を{1}移しました。	{0} shifts its line {1}.
+{0} 대표 경선에서 {1} 후보가 이겼습니다.	{0}の代表選で{1}の候補が勝ちました。	The {1} candidate wins {0}'s leadership race.
+{0} 대표 경선에서 밀어준 {1} 후보가 지고 {2} 후보가 대표가 됐습니다.	{0}の代表選で推した{1}の候補が敗れ、{2}の候補が代表になりました。	In {0}'s leadership race the backed {1} candidate lost; the {2} candidate is the new leader.
+{0} {1}가 대표 경선을 걸어 지도부를 바꿨습니다.	{0}の{1}が代表選を仕掛け、執行部を交代させました。	{0}'s {1} forces a leadership race and takes over.
+{0} {1}가 대표 경선에서 지고 지역구 의원 {2}명이 {3}로 집단 탈당했습니다.	{0}の{1}が代表選に敗れ、選挙区議員{2}人が{3}へ集団離党しました。	{0}'s {1} loses a leadership race; {2} district members defect to {3}.
+{0} {1}가 대표 경선에서 지고 지역구 의원 {2}명이 {3}으로 집단 탈당했습니다.	{0}の{1}が代表選に敗れ、選挙区議員{2}人が{3}へ集団離党しました。	{0}'s {1} loses a leadership race; {2} district members defect to {3}.
+{0} {1}가 대표 경선에서 졌습니다.	{0}の{1}が代表選に敗れました。	{0}'s {1} loses a leadership race.
+{0} 내분 끝에 대표 경선. {1}가 지도부를 잡았습니다.	{0}、内紛の末に代表選。{1}が執行部を握りました。	After infighting, {0} holds a leadership race; the {1} takes control.
+{0}, 이번 총선에 신인을 대거 공천했습니다. 낙천한 현역들이 반발합니다.	{0}、今回の総選挙で新人を大量擁立。公認漏れの現職が反発しています。	{0} fields a wave of new candidates; dropped incumbents are furious.
+{0}, 국민 경선으로 후보를 뽑았습니다.	{0}、国民予備選で候補を選びました。	{0} picks its candidates in open primaries.
+「{0}」에 {1} 수정안이 채택됐습니다(수정안 지지 {2}석 · 원안 지지 {3}석).	「{0}」に{1}の修正案が採択されました(修正案支持 {2}議席・原案支持 {3}議席)。	{1}'s amendment to "{0}" is adopted ({2} seats for it, {3} for the original).
+{0}이 낸 「{1}」 수정안이 부결됐습니다(수정안 지지 {2}석 · 원안 지지 {3}석).	{0}の「{1}」修正案は否決されました(修正案支持 {2}議席・原案支持 {3}議席)。	{0}'s amendment to "{1}" fails ({2} seats for it, {3} for the original).
+{0}, 노선을 「{1}」로 급선회했습니다. 신뢰 −{2}, 결속 −{3}.	{0}、路線を「{1}」に急旋回しました。信頼 −{2}、結束 −{3}。	{0} makes a sharp turn to "{1}". Trust −{2}, unity −{3}.
+{0}, 노선을 「{1}」으로 급선회했습니다. 신뢰 −{2}, 결속 −{3}.	{0}、路線を「{1}」に急旋回しました。信頼 −{2}、結束 −{3}。	{0} makes a sharp turn to "{1}". Trust −{2}, unity −{3}.
+{0} 수정안	{0}の修正案	{0} amendment
+: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색을 바로 바꿉니다. 노선을 통째로 바꾸는 급선회는 4분기에 한 번, 신뢰 −8·결속 −15.	：決裁タブの「党の情報を変更」で党名・代表名・スローガン・色をすぐ変えられます。路線を丸ごと変える急旋回は4四半期に一度、信頼 −8・結束 −15。	: Change your party name, leader, slogan and colour any time under "Edit party info" on the Decide tab. A sharp turn that swaps your whole line is allowed once every 4 quarters: trust −8, unity −15.
+: 국방·경제·민생·사회 통합 네 지표(0~100)가 있습니다. 가결된 법의 노선, 정부 행정, 사건이 움직이고, 손대지 않으면 조금씩 닳습니다. 정부 수반 당은 평균에 따라 신뢰가 오르내리고, 35 미만 위기마다 신뢰가 깎입니다. 경제 위기는 모든 당 수입을 줄이고, 국방·민생 위기는 안보·분배 정당에 표를 몰아 주며, 통합 위기는 모든 당 결속을 흔듭니다.	：国防・経済・暮らし・社会統合の4指標(0〜100)があります。可決された法案の路線、政府の行政、事件が動かし、手を入れなければ少しずつすり減ります。政府首班の党は平均に応じて信頼が上下し、35未満の危機ごとに信頼が削られます。経済危機は全政党の収入を減らし、国防・暮らしの危機は安保・分配政党に票を集め、統合危機は全政党の結束を揺さぶります。	: Four indicators (0–100): defense, economy, livelihoods and social cohesion. Passed laws, government actions and events move them, and they slowly wear down if ignored. The governing party gains or loses trust with their average and loses trust for each one in crisis (below 35). An economic crisis cuts every party's income, defense or livelihood crises push votes to security or redistribution parties, and a cohesion crisis shakes every party's unity.
+: 행동으로 분야와 지역을 골라 겁니다(한꺼번에 2개). 그 지역 기반이 바로 오르고, 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +3, 못 지키면 신뢰 −6·승점 -3.	：行動で分野と地域を選んで掲げます(同時に2つまで)。その地域の基盤がすぐ上がり、次の総選挙までにその分野の法案が私たちの賛成で可決されれば信頼 +4・勝ち点 +3、守れなければ信頼 −6・勝ち点 -3。	: Pick a field and a region with an action (up to 2 at once). Your base there rises at once. If a law in that field passes with your vote before the next general election: trust +4, score +3. If not: trust −6, score -3.
+: 행동으로 노선을 한 걸음(분배·시장·개방·전통 쪽, 또는 중도 쪽) 옮깁니다. 결속 −8(대형 −10), 신뢰 −2, 멀어지는 지역 기반 −2. 2분기에 한 번.	：行動で路線を一歩(分配・市場・開放・伝統寄り、または中道寄り)動かします。結束 −8(大政党 −10)、信頼 −2、遠ざかる地域の基盤 −2。2四半期に一度。	: Move your line one step with an action (toward redistribution, market, openness, tradition, or the centre). Unity −8 (−10 for major parties), trust −2, base −2 in regions you move away from. Once every 2 quarters.
+수정안	修正案	Amendments
+: 행동으로 다른 당이 낸 안건의 내용을 우리 노선 쪽으로 35% 당깁니다. 수정안을 더 낫게 보는 의석이 원안을 더 낫게 보는 의석보다 많으면 채택되고, 표결은 고친 안으로 합니다. 채택된 법이 우리 찬성으로 통과되면 승점 +1.	：行動で他党が出した議案の内容を私たちの路線へ35%引き寄せます。修正案を良しとする議席が原案を良しとする議席より多ければ採択され、採決は修正後の案で行います。採択された法案が私たちの賛成で可決されれば勝ち点 +1。	: Use an action to pull another party's bill 35% toward your line. It is adopted if more seats prefer the amendment than the original, and the vote is then on the amended text. If it passes with your vote, score +1.
+계파와 대표 경선	派閥と代表選	Factions and leadership races
+: 당마다 혁신파와 안정파가 있습니다. 분기마다 한 계파가 안건 하나에 당의 원래 표와 다른 표를 요구할 수 있습니다. 들어주면 결속 +4와 그 계파 세력이 오르고, 무시하면 결속 −5와 불만이 쌓입니다. 불만이 3번 쌓이면 그 계파가 경선을 걸어, 이기면 노선이 그쪽으로 옮겨 가고 지면 의원들이 집단 탈당합니다. 행동 '대표 경선'으로 직접 열 수도 있습니다(4분기에 한 번).	：各党に革新派と安定派があります。四半期ごとにどちらかの派閥が、議案ひとつで党の本来の票と違う票を要求することがあります。応じれば結束 +4とその派閥の勢力が上がり、無視すれば結束 −5と不満がたまります。不満が3回たまるとその派閥が代表選を仕掛け、勝てば路線がそちらへ動き、負ければ議員が集団離党します。行動「代表選」で自ら開くこともできます(4四半期に一度)。	: Every party has a reform wing and a moderate wing. Each quarter one wing may demand a different vote from your usual one on a bill. Comply and unity +4 and that wing grows; ignore it and unity −5 and a grievance builds. After three grievances the wing forces a leadership race: if it wins the line moves its way, if it loses its members defect en masse. You can also call a race with the "Leadership race" action (once every 4 quarters).
+: 총선 분기에는 현역 우선(결속 +3), 신인 공천(후보 경쟁력↑, 결속 −10), 국민 경선(자금 2, 신뢰 +3, 결속 −3) 가운데 하나를 고릅니다.	：総選挙の四半期には現職優先(結束 +3)、新人擁立(候補競争力↑、結束 −10)、国民予備選(資金 2、信頼 +3、結束 −3)のうちひとつを選びます。	: In a general-election quarter, choose incumbents first (unity +3), fresh faces (stronger candidates, unity −10) or open primaries (costs 2, trust +3, unity −3).
+이면 세력이 큰 계파가 대표 경선으로 당을 수습하고(4분기에 한 번), 그래도 무너지면 의원들이 탈당합니다.	だと勢力の大きい派閥が代表選で党を立て直し(4四半期に一度)、それでも崩れれば議員が離党します。	: the stronger wing takes over through a leadership race (once every 4 quarters); if the party still falls apart, members defect.

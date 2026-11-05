@@ -227,6 +227,7 @@
     "/korean/": ["単語一枚", "単語一枚（韓国語単語クイズ）", "単語一枚 (Korean quiz, Japanese UI)"],
     "/en/japanese/": ["Wordcard Japanese", "Wordcard Japanese（英語版）", "Wordcard Japanese"],
     "/en/korean/": ["Wordcard Korean", "Wordcard Korean（英語版）", "Wordcard Korean"],
+    "/japanworld/": ["종합과목 플래시 카드", "総合科目フラッシュカード（韓国語）", "EJU Flashcards (Korean)"],
     "/alarm/": ["일유알리미", "日留アラーム", "Japan Admissions Tracker"],
     "/politics/": ["나가타초 노트", "나가타초 노트（韓国語のみ）", "나가타초 노트 (Korean only)"],
     "/jeildang/": ["제1당", "第一党", "First Party"]
@@ -238,6 +239,7 @@
     { path: "/korean/", glyph: "가", accent: "#dfff70", langs: ["ja"] },
     { path: "/en/japanese/", glyph: "あ", accent: "#dfff70", langs: ["en"] },
     { path: "/en/korean/", glyph: "가", accent: "#ffe77b", langs: ["en"] },
+    { path: "/japanworld/", glyph: "総", accent: "#ffb3c6", langs: ["ko"] },
     { path: "/alarm/", glyph: "留", accent: "#9fd8ff", langs: ["ko", "en"] },
     { path: "/politics/", glyph: "政", accent: "#ffb4a2", langs: ["ko"] },
     { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] }

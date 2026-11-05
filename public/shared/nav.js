@@ -222,27 +222,29 @@
   window.ND = { lang: lang, want: want, langs: langs, add: add, pat: pat, fallback: fallback, terms: terms, t: t, apply: walk, setLang: setLang };
 
   /* ---------- 공통 메뉴 ---------- */
+  /* 메뉴에는 도구 하나하나 대신 용도별 묶음 페이지 세 개만 둔다. 어느 페이지에서나 같은 아이콘이 같은 자리에 있어서
+     휴대폰에서 메뉴 크기가 페이지마다 달라지지 않는다. 지금 보고 있는 도구가 속한 묶음에 표시가 붙는다. */
   var NAMES = {
-    "/japanese/": ["단어 한 장", "단어 한 장（韓国語のみ）", "단어 한 장 (Korean only)"],
-    "/korean/": ["単語一枚", "単語一枚（韓国語単語クイズ）", "単語一枚 (Korean quiz, Japanese UI)"],
-    "/en/japanese/": ["Wordcard Japanese", "Wordcard Japanese（英語版）", "Wordcard Japanese"],
-    "/en/korean/": ["Wordcard Korean", "Wordcard Korean（英語版）", "Wordcard Korean"],
-    "/japanworld/": ["종합과목 플래시 카드", "総合科目フラッシュカード（韓国語）", "EJU Flashcards (Korean)"],
-    "/alarm/": ["일유알리미", "日留アラーム", "Japan Admissions Tracker"],
-    "/politics/": ["나가타초 노트", "나가타초 노트（韓国語のみ）", "나가타초 노트 (Korean only)"],
-    "/jeildang/": ["제1당", "第一党", "First Party"]
+    "/words/": ["단어", "単語", "Vocabulary"],
+    "/eju/": ["EJU · 유학", "EJU・留学", "EJU · Study in Japan"],
+    "/seiji/": ["일본 정치", "日本政治", "Japanese politics"]
   };
   var LI = { ko: 0, ja: 1, en: 2 };
-  // langs: 그 도구가 지원하는 언어. 고른 언어를 지원하지 않는 도구는 메뉴에서 뺀다 (지금 보고 있는 도구는 남긴다)
+  var GROUPS = [
+    { path: "/words/", glyph: "語", accent: "#dfff70", tools: ["/japanese/", "/korean/", "/en/japanese/", "/en/korean/"] },
+    { path: "/eju/", glyph: "留", accent: "#ffb3c6", tools: ["/japanworld/", "/alarm/"] },
+    { path: "/seiji/", glyph: "政", accent: "#ffb4a2", tools: ["/politics/", "/jeildang/"] }
+  ];
+  // langs: 그 도구가 지원하는 언어. 묶음 페이지는 고른 언어를 지원하지 않는 도구 카드를 숨길 때 쓴다 (ND.toolShown)
   var TOOLS = [
-    { path: "/japanese/", glyph: "あ", accent: "#dfff70", langs: ["ko"] },
-    { path: "/korean/", glyph: "가", accent: "#dfff70", langs: ["ja"] },
-    { path: "/en/japanese/", glyph: "あ", accent: "#dfff70", langs: ["en"] },
-    { path: "/en/korean/", glyph: "가", accent: "#ffe77b", langs: ["en"] },
-    { path: "/japanworld/", glyph: "総", accent: "#ffb3c6", langs: ["ko"] },
-    { path: "/alarm/", glyph: "留", accent: "#9fd8ff", langs: ["ko", "en"] },
-    { path: "/politics/", glyph: "政", accent: "#ffb4a2", langs: ["ko"] },
-    { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] }
+    { path: "/japanese/", langs: ["ko"] },
+    { path: "/korean/", langs: ["ja"] },
+    { path: "/en/japanese/", langs: ["en"] },
+    { path: "/en/korean/", langs: ["en"] },
+    { path: "/japanworld/", langs: ["ko"] },
+    { path: "/alarm/", langs: ["ko", "en"] },
+    { path: "/politics/", langs: ["ko"] },
+    { path: "/jeildang/", langs: ["ko", "ja", "en"] }
   ];
   var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
@@ -250,6 +252,7 @@
   // 로그아웃 상태의 로그인 버튼: 넓은 화면은 글자, 휴대폰은 사람 아이콘
   var PERSON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
+  var ONLY_LANG = { ko: "이 페이지는 한국어로만 볼 수 있어요", ja: "このページは日本語のみです", en: "This page is available in English only" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
   // 후원 링크 (모든 페이지 공통 메뉴 오른쪽 끝)
   var COFFEE_URL = "https://buymeacoffee.com/attl6848";
@@ -270,18 +273,24 @@
   host.id = "nihongodic-nav";
   var root = host.attachShadow({ mode: "open" });
 
-  var links = TOOLS.filter(function (tl) { return toolOk(tl) || here.indexOf(tl.path) === 0; }).map(function (tl) {
-    var on = here.indexOf(tl.path) === 0;
-    var name = NAMES[tl.path][LI[lang]];
-    return '<a href="' + tl.path + '" style="--accent:' + tl.accent + '" aria-label="' + name + '" title="' + name + '"' + (on ? ' aria-current="page"' : "") + ">" +
-      '<i aria-hidden="true">' + tl.glyph + "</i></a>";
+  var inGroup = function (g) {
+    if (here.indexOf(g.path) === 0) return true;
+    for (var i = 0; i < g.tools.length; i++) if (here.indexOf(g.tools[i]) === 0) return true;
+    return false;
+  };
+  var links = GROUPS.map(function (g) {
+    var on = inGroup(g);
+    var name = NAMES[g.path][LI[lang]];
+    return '<a href="' + g.path + '" style="--accent:' + g.accent + '" aria-label="' + name + '" title="' + name + '"' + (on ? ' aria-current="' + (here === g.path ? "page" : "true") + '"' : "") + ">" +
+      '<i aria-hidden="true">' + g.glyph + "</i></a>";
   }).join("");
 
   var picker = langs.length > 1
     ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span class="full" aria-hidden="true">' + LANG_NAME[lang] + '</span><span class="short" aria-hidden="true">' + LANG_SHORT[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
       langs.map(function (l) { return '<option value="' + l + '"' + (l === lang ? " selected" : "") + ' lang="' + l + '">' + LANG_NAME[l] + "</option>"; }).join("") +
       "</select></label>"
-    : "";
+    // 한 언어만 있는 페이지도 같은 자리에 같은 크기로 언어를 보여 준다 (휴대폰에서 메뉴 폭이 페이지마다 달라지지 않게)
+    : '<span class="lang fixed" title="' + ONLY_LANG[lang] + '" aria-label="' + ONLY_LANG[lang] + '"><span class="full" aria-hidden="true">' + LANG_NAME[lang] + '</span><span class="short" aria-hidden="true">' + LANG_SHORT[lang] + "</span></span>";
 
   root.innerHTML =
     "<style>" +
@@ -302,6 +311,7 @@
     ".lang{position:relative;flex:none;display:grid;place-items:center;min-width:34px;height:30px;padding:0 8px;margin-left:4px;border:1.5px solid var(--line);border-radius:8px;" +
     "font-size:12px;font-weight:800;color:var(--ink);cursor:pointer;box-sizing:border-box;white-space:nowrap}" +
     ".lang:hover{border-color:var(--ink)}" +
+    ".lang.fixed{cursor:default;color:var(--muted)}.lang.fixed:hover{border-color:var(--line)}" +
     ".lang:focus-within{outline:2px solid var(--ink);outline-offset:2px}" +
     ".lang select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0}" +
     ".acct{position:relative;flex:none;margin-left:4px}" +
@@ -347,17 +357,19 @@
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
     // 휴대폰: nihongodic 글자와 도구 아이콘이 모두 보이도록 언어는 약자, 로그인은 아이콘으로 줄이고 버튼을 30px 정사각형으로 맞춘다.
-    // 그래도 넘치면 fit()이 글자 크기와 간격을 한 번 더 줄인다 (글자는 숨기지 않는다)
+    // 아주 좁은 화면(360px 미만)은 화면 폭만 보고 한 단계 더 촘촘하게 한다. 글꼴·페이지에 따라 달라지지 않게 재지 않고 폭으로만 정한다
     "@media (max-width:440px){nav{gap:4px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}" +
     ".home{padding-right:2px;gap:6px}.tools{gap:2px}.tools a{width:30px;height:30px}" +
     ".lang{min-width:30px;width:30px;padding:0;margin-left:2px;font-size:11px}.lang .full{display:none}.lang .short{display:inline}" +
     ".acct{margin-left:2px}.acct>button.in{width:30px;min-width:30px;padding:0}.acct>button.in .t{display:none}.acct>button.in svg{display:block}" +
     ".coffee{width:30px;margin-left:2px}}" +
-    "nav.tight{gap:2px;padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}" +
-    "nav.tight .tools{gap:1px}nav.tight .lang,nav.tight .acct,nav.tight .coffee{margin-left:1px}" +
-    "nav.tight .home{font-size:12.5px;gap:4px;padding-right:0;letter-spacing:-.05em}nav.tight .home i{width:22px;height:22px;font-size:11px}" +
-    "nav.tight .tools a{width:28px;height:28px}nav.tight .tools a i{width:22px;height:22px;font-size:12px}" +
-    "nav.tight .lang,nav.tight .acct>button.in,nav.tight .acct>button.me,nav.tight .coffee{width:28px;min-width:28px;height:28px}" +
+    "@media (max-width:359px){" +
+    "nav{gap:2px;padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}" +
+    "nav .tools{gap:1px}nav .lang,nav .acct,nav .coffee{margin-left:1px}" +
+    "nav .home{font-size:12.5px;gap:4px;padding-right:0;letter-spacing:-.05em}nav .home i{width:22px;height:22px;font-size:11px}" +
+    "nav .tools a{width:28px;height:28px}nav .tools a i{width:22px;height:22px;font-size:12px}" +
+    "nav .lang,nav .acct>button.in,nav .acct>button.me,nav .coffee{width:28px;min-width:28px;height:28px}" +
+    "}" +
     "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
@@ -445,17 +457,6 @@
 
   var sel = root.querySelector("select");
   if (sel) sel.addEventListener("change", function () { setLang(sel.value); });
-
-  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 메뉴 전체를 한 단계 더 촘촘하게 한다 (폭이 넓어지면 되돌린다)
-  var navEl = root.querySelector("nav"), toolsEl = root.querySelector(".tools");
-  function fit() {
-    if (!navEl || !toolsEl) return;
-    navEl.classList.remove("tight");
-    if (toolsEl.scrollWidth > toolsEl.clientWidth + 1) navEl.classList.add("tight");
-  }
-  fit();
-  window.addEventListener("resize", fit);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
   var cur = root.querySelector("[aria-current]");
   // 좁은 화면에서 현재 도구가 가로 스크롤 밖에 있으면 보이게 (페이지 세로 위치는 건드리지 않음)

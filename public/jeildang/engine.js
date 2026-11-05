@@ -106,6 +106,12 @@ const E=(function(){
     conservative:{name:'보수안정',eco:-.7,soc:-.6,desc:'시장 우선, 안보 중시. 접경과 신도시에서 강합니다.'},
     center:{name:'실용중도',eco:0,soc:0,desc:'어느 지역에서도 크게 밀리지 않고 표결 부담이 적습니다.'},
   };
+  // 정당 엠블럼: 그림은 화면(index.html)이 그린다. 엔진은 번호만 다룬다. 노선마다 기본 엠블럼이 있다.
+  const EMBLEMS=['횃불','새싹','화살표','방패','저울','별','해','산','물결','잎사귀'];
+  const EMB_DEF={reform:0,labor:1,liberal:2,conservative:3,center:4};
+  const embOk=v=>Number.isInteger(v)&&v>=0&&v<EMBLEMS.length;
+  // 엠블럼이 없는 당(예전 판·무소속)은 노선 기본값. 무소속(fixed)은 -1(무늬 없음)
+  const embOf=p=>!p?-1:embOk(p.emblem)?p.emblem:p.fixed?-1:(EMB_DEF[p.ideology]??4);
   const ACTIONS={
     rally:{label:'지역 유세',cost:3,spend:true,need:['region'],desc:'선택한 지역 지지 기반 +6. 기반이 이미 두터운 지역일수록, 당이 작을수록 효과가 줄어듭니다.'},
     recruit:{label:'당원 모집',cost:2,spend:true,need:[],desc:'당원이 늘어 수입이 오릅니다. 국가 모드에서는 득표력도 오릅니다.'},
@@ -814,6 +820,10 @@ const E=(function(){
       parties.push(mkParty('p'+n,n,null,b[0],b[1],'',key,c,true,kind));
       bi++;
     }
+    // 엠블럼: 플레이어가 고른 것 먼저, 나머지는 노선 기본값에서 시작해 겹치지 않게 민다.
+    {const used=new Set();
+      for(const p of parties){const pl=p.ownerId&&players.find(x=>x.ownerId===p.ownerId);if(pl&&embOk(pl.emblem)&&!used.has(pl.emblem)){p.emblem=pl.emblem;used.add(p.emblem)}}
+      for(const p of parties){if(p.fixed||embOk(p.emblem))continue;let e=EMB_DEF[p.ideology]??4;for(let k=0;k<EMBLEMS.length&&used.has(e);k++)e=(e+1)%EMBLEMS.length;p.emblem=e;used.add(e)}}
     // AI 정당마다 성격을 하나씩. 다섯 가지를 섞어 돌려 같은 성격이 몰리지 않게 한다.
     const pk=shuffle(Object.keys(PERSONAS),r);let pi=0;
     for(const p of parties)if(p.bot&&!p.fixed)p.persona=pk[pi++%pk.length];
@@ -1349,6 +1359,7 @@ const E=(function(){
       if(typeof e.leader==='string')p.leader=e.leader.trim().slice(0,10);
       if(typeof e.slogan==='string')p.slogan=e.slogan.trim().slice(0,30);
       if(Number.isInteger(e.colorIdx)&&e.colorIdx>=0&&e.colorIdx<NCOLORS&&(e.colorIdx!==p.colorIdx||p.color)){p.colorIdx=e.colorIdx;delete p.color}
+      if(embOk(e.emblem))p.emblem=e.emblem;
       if(p.name!==old)say(`${old}, 당 이름을 「${p.name}」${ro(p.name)} 바꿨습니다.`,p.id);
       // 급선회: 노선을 통째로 바꾼다. 한 걸음씩 옮기는 '노선 이동' 행동보다 대가가 크고 4분기에 한 번.
       if(own(IDEOLOGIES,e.ideology)&&e.ideology!==p.ideology&&canLeap(g,p)){
@@ -2184,6 +2195,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

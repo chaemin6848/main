@@ -95,12 +95,21 @@ details>summary{cursor:pointer;font-weight:700}
 .ballot{border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden}
 .b-row{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:stretch;border-top:1px solid var(--line)}
 .b-row:first-child{border-top:0}
-.b-no{display:grid;place-items:center;font:500 1rem/1 var(--mono);color:#fff;background:var(--c)}
+.b-no{display:grid;place-items:center;align-content:center;gap:2px;font:500 1rem/1 var(--mono);color:#fff;background:var(--c)}
+.b-no .emb{width:22px;height:22px}
 .b-name{padding:8px 12px;min-width:0;overflow-wrap:anywhere}
 .b-name strong{font-weight:700;display:block}
 .swatches{display:flex;gap:6px;flex-wrap:wrap}
 .swatch{width:30px;height:30px;border-radius:50%;border:2px solid transparent;background:var(--c);padding:0}
 .swatch[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:2px}
+/* 정당 엠블럼: 번호 칸·명부·결과에 정당 색 바탕의 흰 무늬로 그린다 */
+.emb{display:block;flex:none}
+.embpicks{display:flex;gap:6px;flex-wrap:wrap}
+.embpick{width:38px;height:38px;border-radius:8px;border:2px solid transparent;background:var(--c);color:#fff;padding:0;display:grid;place-items:center;cursor:pointer}
+.embpick .emb{width:24px;height:24px}
+.embpick[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:2px}
+.badge{display:grid;place-items:center;flex:none;width:var(--s,44px);height:var(--s,44px);border-radius:50%;background:var(--c);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 0 0 2px var(--c)}
+.badge .emb{width:62%;height:62%}
 .ideos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
 .ideo{border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:8px 10px;text-align:left;display:grid;gap:2px}
 .ideo[aria-pressed="true"]{border-color:var(--accent);background:var(--mine)}
@@ -120,7 +129,8 @@ details>summary{cursor:pointer;font-weight:700}
 .mybar .k{font-size:.75rem;color:var(--ink2);display:block}
 .mybar .v{font:500 1.15rem/1.3 var(--mono)}
 .mybar .who{display:flex;gap:10px;align-items:center}
-.chip{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:3px;background:var(--c);color:#fff;font:700 13px/1 var(--sans);flex:none}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-width:22px;height:22px;padding:0 5px;border-radius:3px;background:var(--c);color:#fff;font:700 13px/1 var(--sans);flex:none;vertical-align:middle}
+.chip .emb{width:14px;height:14px}
 .tabs{display:none;gap:3px;margin-bottom:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px}
 .tabs button{flex:1;padding:7px;border:0;border-radius:6px;background:transparent;font-weight:600;color:var(--ink2)}
 .tabs button[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
@@ -340,7 +350,29 @@ function memberColor(m){
   const C=E.COUNTRIES[roomCountry()],x=k==='pick'&&C?C.parties.find(y=>y.id===v):null;
   return x?pColor(x):COLORS[m.colorIdx]||COLORS[0];
 }
-const chip=p=>`<span class="chip" style="--c:${pColor(p)}">${p.no}</span>`;
+// 엠블럼 무늬 (24×24, 흰색). 순서는 engine.js 의 EMBLEMS 와 같다.
+const EMB_SVG=[
+  '<path d="M8.6 12.5h6.8l-2 9.5h-2.8z"/><path d="M12 1.5c3.6 2.9 5.8 5.6 5.8 8.2a5.8 5.8 0 0 1-11.6 0c0-2.4 1.3-4.2 2.9-5.6.2 2 1.1 3.4 2.6 3.9-.6-2.2-.4-4.3.3-6.5z"/>',
+  '<path d="M12 21v-9" fill="none" stroke-width="2.2" stroke-linecap="round"/><path d="M12 13.5C12 9 9 6.5 4 6.5c0 4.6 3 7 8 7z"/><path d="M12 11.5c0-4.6 3-8 8-8 0 4.8-3 8-8 8z"/>',
+  '<path d="M8.5 4H20v11.5l-4-4-8.3 8.3-3.5-3.5 8.3-8.3z"/>',
+  '<path d="M12 2.2 20 5.3v6c0 5.2-3.4 9-8 10.6-4.6-1.6-8-5.4-8-10.6v-6z"/>',
+  '<path d="M12 3.5v16M7.5 20h9M4.5 6.5h15" fill="none" stroke-width="2" stroke-linecap="round"/><path d="M4.5 7 1.8 13h5.4zM19.5 7l-2.7 6h5.4z" fill="none" stroke-width="1.4" stroke-linejoin="round"/><path d="M1.5 13.5h6a3 3 0 0 1-6 0zM16.5 13.5h6a3 3 0 0 1-6 0z"/><circle cx="12" cy="4" r="1.8"/>',
+  '<path d="M12 2.2l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.3l-6.2 3.6 1.6-6.9-5.3-4.7 7-.7z"/>',
+  '<circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4M4.8 4.8l2.4 2.4M16.8 16.8l2.4 2.4M4.8 19.2l2.4-2.4M16.8 7.2l2.4-2.4" fill="none" stroke-width="2" stroke-linecap="round"/>',
+  '<path d="M1.5 20.5 8.8 7.5l3.8 6.2 2.6-3.6 7.3 10.4z"/><path d="M8.8 7.5l-1.9 3.4 1.9-.9 1.6 1z" opacity=".55"/>',
+  '<path d="M2 8.5c2.5-2.6 5-2.6 7.5 0s5 2.6 7.5 0 3.6-2 5-1M2 14c2.5-2.6 5-2.6 7.5 0s5 2.6 7.5 0 3.6-2 5-1M2 19.5c2.5-2.6 5-2.6 7.5 0s5 2.6 7.5 0 3.6-2 5-1" fill="none" stroke-width="2" stroke-linecap="round"/>',
+  '<path d="M20.5 3.5C10 3.5 4 8.5 4 15.5c0 2 .7 3.8 1.3 5 1.3-.7 3-1.3 4.7-1.3 7.2 0 10.5-5.6 10.5-15.7z"/><path d="M5.3 20.5 15 9.5" fill="none" stroke="var(--c,#555)" stroke-width="1.4" stroke-linecap="round"/>',
+];
+const embSvg=i=>i>=0&&EMB_SVG[i]?`<svg class="emb" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0" aria-hidden="true">${EMB_SVG[i]}</svg>`:'';
+const chip=p=>`<span class="chip" style="--c:${pColor(p)}">${embSvg(E.embOf(p))}${p.no}</span>`;
+// 큰 원형 휘장 (내 정당 칸·결과 화면)
+const badge=(p,size)=>E.embOf(p)<0?chip(p):`<span class="badge" style="--c:${pColor(p)};--s:${size||44}px" title="${esc(p.name)}">${embSvg(E.embOf(p))}</span>`;
+// 프로필에서 고른 엠블럼 (안 골랐으면 노선 기본값)
+const myEmblem=()=>{const v=S.profile.emblem;return Number.isInteger(v)&&v>=0&&v<E.EMBLEMS.length?v:(E.EMB_DEF[S.profile.ideology]??4)};
+const embPicks=()=>`<div class="embpicks" role="group" aria-label="엠블럼">${E.EMBLEMS.map((n,i)=>`<button type="button" class="embpick" style="--c:${COLORS[S.profile.colorIdx]||COLORS[0]}" data-a="emblem" data-v="${i}" aria-pressed="${myEmblem()===i}" aria-label="${n}" title="${n}">${embSvg(i)}</button>`).join('')}</div>`;
+const paintEmbPicks=()=>document.querySelectorAll('.embpicks').forEach(x=>{x.outerHTML=embPicks()});
+// 대기실 명부: 멤버 문서의 엠블럼 (없으면 노선 기본값)
+const memberEmblem=m=>{if(Number.isInteger(m.emblem)&&m.emblem>=0&&m.emblem<E.EMBLEMS.length)return m.emblem;const k=String(m.ideology).split(':');return E.EMB_DEF[k[0]==='pick'?k[2]:k[0]]??-1};
 const fmtD=v=>(v>0?'+':'')+v;
 const money=n=>{if(window.ND&&ND.lang==='en')return ND.jdMoney(n,E.UNIT);const a=Math.abs(n);return`${Math.round(n*(a>=100?1:a>=10?10:100))/(a>=100?1:a>=10?10:100)}${window.ND?ND.t(E.UNIT):E.UNIT}`};
 const members=n=>n>=1?`${Math.round(n*10)/10}만 명`:`${Math.round(n*10000).toLocaleString('ko-KR')}명`;
@@ -460,6 +492,7 @@ function partyOptsHtml(country){
       <label for="pf-cideo" style="grid-column:1/-1">노선${ideos(P.cideo||'center')}</label>
     </div>
     <div class="swatches" role="group" aria-label="정당 색">${COLORS.map((c,i)=>`<button type="button" class="swatch" style="--c:${c}" data-a="color" data-v="${i}" aria-pressed="${P.colorIdx===i}" aria-label="색 ${i+1}"></button>`).join('')}</div>
+    <span class="small muted">엠블럼</span>${embPicks()}
     <p class="small muted">데려온 의원은 지역구 의원부터 옮깁니다. 0명으로 원외에서 시작할 수도 있습니다. 새 당은 당원과 재정이 작게 시작합니다.</p>`;
   }
   const x=myPick(country);
@@ -492,7 +525,8 @@ function profileForm(){
   </div>
   <div class="stack" style="gap:6px"><span class="small muted">정당 종류</span><div class="ideos">${Object.entries(E.KINDS).map(([k,v])=>`<button type="button" class="ideo" data-a="kind" data-v="${k}" aria-pressed="${(P.kind||'major')===k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join('')}</div></div>
   <div class="stack" style="gap:6px"><span class="small muted">노선</span><div class="ideos">${Object.entries(E.IDEOLOGIES).map(([k,v])=>`<button type="button" class="ideo" data-a="ideo" data-v="${k}" aria-pressed="${P.ideology===k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join('')}</div></div>
-  <div class="stack" style="gap:6px"><span class="small muted">정당 색</span><div class="swatches">${COLORS.map((c,i)=>`<button type="button" class="swatch" style="--c:${c}" data-a="color" data-v="${i}" aria-pressed="${P.colorIdx===i}" aria-label="색 ${i+1}"></button>`).join('')}</div></div>`;
+  <div class="stack" style="gap:6px"><span class="small muted">정당 색</span><div class="swatches">${COLORS.map((c,i)=>`<button type="button" class="swatch" style="--c:${c}" data-a="color" data-v="${i}" aria-pressed="${P.colorIdx===i}" aria-label="색 ${i+1}"></button>`).join('')}</div></div>
+  <div class="stack" style="gap:6px"><span class="small muted">엠블럼</span>${embPicks()}</div>`;
 }
 function saveProfile(){lsSet('party1:profile',S.profile)}
 function pushProfile(){
@@ -513,10 +547,10 @@ function memberBody(){const P=S.profile;
   if(C){
     const nm=String(P.cname||'').trim().slice(0,14);
     if(isFounding()&&poolOf(C)){const n=Math.max(0,Math.min(poolOf(C).seats,P.newSeats|0)),k=E.IDEOLOGIES[P.cideo]?P.cideo:'center';
-      return{uid:S.me,name:nm||(E.IDEOLOGIES[k].name+'신당').slice(0,14),leader:P.leader.trim().slice(0,10),slogan:P.slogan.trim().slice(0,30),ideology:`pick:new${n}:${k}`,colorIdx:P.colorIdx}}
+      return{uid:S.me,name:nm||(E.IDEOLOGIES[k].name+'신당').slice(0,14),leader:P.leader.trim().slice(0,10),slogan:P.slogan.trim().slice(0,30),ideology:`pick:new${n}:${k}`,colorIdx:P.colorIdx,emblem:myEmblem()}}
     const x=myPick(roomCountry());
     return{uid:S.me,name:nm||x.name.slice(0,14),leader:P.leader.trim().slice(0,10),slogan:P.slogan.trim().slice(0,30),ideology:`pick:${x.id}${E.IDEOLOGIES[P.cideo]?':'+P.cideo:''}`,colorIdx:x.colorIdx}}
-  return{uid:S.me,name:P.name.trim().slice(0,14),leader:P.leader.trim().slice(0,10),slogan:P.slogan.trim().slice(0,30),ideology:`${P.ideology}:${P.kind||'major'}`,colorIdx:P.colorIdx}}
+  return{uid:S.me,name:P.name.trim().slice(0,14),leader:P.leader.trim().slice(0,10),slogan:P.slogan.trim().slice(0,30),ideology:`${P.ideology}:${P.kind||'major'}`,colorIdx:P.colorIdx,emblem:myEmblem()}}
 
 /* ---------- 첫 화면 ---------- */
 function previewParties(){
@@ -805,7 +839,7 @@ function renderLobbyList(){
   const ms=memberList(),C=E.COUNTRIES[roomCountry()],size=C?C.parties.length:S.game.settings.size;
   const bots=Math.max(0,size-ms.length);
   const pp=$('#party-picks');if(pp&&C)pp.innerHTML=partyPicksHtml(roomCountry());
-  box.innerHTML=`<div class="ballot">${ms.map((m,i)=>`<div class="b-row"><div class="b-no" style="--c:${memberColor(m)}">${i+1}</div><div class="b-name"><strong>${esc(m.name||'이름 없는 정당')}</strong><span class="small muted">${[memberLabel(m),m.leader?'대표 '+esc(m.leader):'',m.uid===S.game.hostId?'방장':'',m.uid===S.me?'나':''].filter(Boolean).join(' · ')}</span></div></div>`).join('')}
+  box.innerHTML=`<div class="ballot">${ms.map((m,i)=>`<div class="b-row"><div class="b-no" style="--c:${memberColor(m)}">${embSvg(memberEmblem(m))}${i+1}</div><div class="b-name"><strong>${esc(m.name||'이름 없는 정당')}</strong><span class="small muted">${[memberLabel(m),m.leader?'대표 '+esc(m.leader):'',m.uid===S.game.hostId?'방장':'',m.uid===S.me?'나':''].filter(Boolean).join(' · ')}</span></div></div>`).join('')}
   ${bots?`<div class="b-row"><div class="b-no" style="--c:var(--ink2)">+${bots}</div><div class="b-name"><strong>AI 정당 ${bots}곳</strong><span class="small muted">${C?'플레이어가 맡지 않은 정당은 AI가 맡습니다.':'빈 자리는 시작할 때 채워집니다.'}</span></div></div>`:''}</div>`;
   const st=$('#btn-start');if(st)st.textContent=C?`${C.name} 모드 시작`:`총 ${Math.max(size,ms.length)}개 정당으로 시작`;
 }
@@ -833,7 +867,7 @@ async function startGame(){
     await S.store.doc(`games/${S.code}/members/${S.me}`).update(memberBody());
     const ms=memberList().map(m=>m.uid===S.me?{...m,...memberBody()}:m);
     const s=S.game.settings;
-    const g=E.newGame({players:ms.map(m=>({ownerId:m.uid,name:m.name,leader:m.leader,slogan:m.slogan,ideology:m.ideology,colorIdx:m.colorIdx})),size:s.size,seed:Math.floor(Math.random()*2**31),rounds:s.rounds,timer:s.timer,now:Date.now(),country:s.country||null,dict:!!s.dict});
+    const g=E.newGame({players:ms.map(m=>({ownerId:m.uid,name:m.name,leader:m.leader,slogan:m.slogan,ideology:m.ideology,colorIdx:m.colorIdx,emblem:m.emblem})),size:s.size,seed:Math.floor(Math.random()*2**31),rounds:s.rounds,timer:s.timer,now:Date.now(),country:s.country||null,dict:!!s.dict});
     await roomRef().set({...g,scenario:s.scenario||null,code:S.code,hostId:S.game.hostId,createdAt:S.game.createdAt,title:S.game.title,settings:s});
   }catch(e){toast('시작하지 못했습니다. 다시 눌러 주세요.');if(btn)btn.disabled=false}
 }
@@ -917,7 +951,7 @@ function renderTop(){
   $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span><span class="pill real-pill" title="${esc(E.COUNTRIES[g.country].asOf)} 기준 실제 의석에서 시작합니다. 이후 전개는 모두 게임 속 가상입니다.">출발 의석만 실제 기준</span>`:''}${scenarioPill(g,me)}${g.regime?`<span class="pill hot" title="저항이 100%가 되면 시민 혁명이 일어납니다.">비상 체제 · ${esc(E.party(g,g.regime.p).name)} · 저항 ${Math.min(100,g.regime.resist)}%</span>`:pm&&E.superBloc(g,pm)?`<span class="pill" title="재적 3분의 2(${E.superLine()}석). 헌법 개정안을 낼 수 있습니다.">개헌선 확보: ${esc(pm.name)}</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
     <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}${soundCtl()}<button class="btn ghost" data-a="exit">나가기</button></div>`;
   const stat=(k,v,d)=>`<div><span class="k">${k}</span><span class="v">${v}</span>${d!=null&&d!==0?` <span class="small muted">${fmtD(d)}</span>`:''}</div>`;
-  $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${chip(me)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
+  $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${badge(me,46)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
     ${stat('의석',me.seats,me.delta&&me.delta.seats)}${stat(`자금 (${E.UNIT})`,Math.round(me.funds*100)/100,me.delta&&me.delta.funds)}${stat(`${E.MEMBER_NAME} (만 명)`,Math.round(me.members*100)/100,me.delta&&me.delta.members)}${stat('신뢰',Math.round(me.trust),me.delta&&me.delta.trust)}${stat('결속',Math.round(me.unity),me.delta&&me.delta.unity)}${(()=>{const G=E.goalOf(g,me);return G?`<div title="마지막 총선 뒤 ${G.seats}석 이상이면 승점 +${E.PTS.goalHit}. 순위는 승점에서 기준 승점 ${G.par}을 뺀 목표 대비로 매깁니다."><span class="k">목표 의석</span><span class="v">${G.seats}${me.seats>=G.seats?' ✓':''}</span><span class="small muted" style="display:block">기준 ${G.par}점</span></div>`:''})()}</div>`:'';
 }
 function renderHouse(){
@@ -1338,13 +1372,14 @@ function fedRulesHtml(g,me,f){
 /* ---------- 당 정보 바꾸기 ---------- */
 function renderPartyEdit(){
   const box=$('#partyedit');const g=S.game;const me=myParty();if(!box||!g||!me||g.status!=='playing'||me.fixed)return;
-  if(!S.peDraft||S.peDraft.round!==g.round||S.peDraft.pid!==me.id)S.peDraft={pid:me.id,round:g.round,name:me.name,leader:me.leader||'',slogan:me.slogan||'',colorIdx:me.colorIdx||0,ideology:me.ideology};
+  if(!S.peDraft||S.peDraft.round!==g.round||S.peDraft.pid!==me.id)S.peDraft={pid:me.id,round:g.round,name:me.name,leader:me.leader||'',slogan:me.slogan||'',colorIdx:me.colorIdx||0,emblem:E.embOf(me),ideology:me.ideology};
   const d=S.peDraft,lineDone=!E.canLeap(g,me),open=box.querySelector('details')&&box.querySelector('details').open;
   box.innerHTML=`<details ${open?'open':''}><summary><h2 style="display:inline">당 정보 바꾸기</h2></summary><div class="deal-form" style="margin-top:10px">
     <label>당 이름<input data-pe="name" maxlength="14" value="${esc(d.name)}"></label>
     <label>대표 이름<input data-pe="leader" maxlength="10" value="${esc(d.leader)}"></label>
     <label>구호<input data-pe="slogan" maxlength="30" value="${esc(d.slogan)}"></label>
     <label>정당 색<select data-pe="colorIdx">${COLORS.map((c,i)=>`<option value="${i}" ${i===+d.colorIdx?'selected':''}>색 ${i+1}</option>`).join('')}</select></label>
+    <label>엠블럼<select data-pe="emblem">${E.EMBLEMS.map((n,i)=>`<option value="${i}" ${i===+d.emblem?'selected':''}>${n}</option>`).join('')}</select></label>
     <label>노선<select data-pe="ideology" ${lineDone?'disabled':''}>${Object.entries(E.IDEOLOGIES).map(([k,v])=>`<option value="${k}" ${k===d.ideology?'selected':''}>${esc(v.name)}</option>`).join('')}</select></label>
   </div><p class="small muted">${lineDone?`노선 급선회는 ${me.lineRound+E.LEAP_GAP}분기부터 다시 할 수 있습니다.`:`노선을 통째로 바꾸는 급선회는 신뢰 −${E.BAL.leapTrust}, 결속 −${E.BAL.leapUnity}, 멀어지는 지역 기반 −3이고 4분기에 한 번입니다. 한 걸음씩 옮기려면 행동의 '노선 이동'을 쓰세요. 지금 노선: ${esc(partyIdea(me))}`}</p>
   <div class="row"><button class="btn sm" data-a="pe-save">바꾸기</button></div></details>`;
@@ -1557,7 +1592,7 @@ function finalHtml(g){
   return`${st?`<section class="panel scen-result ${st.ok?'ok':'fail'}"><h2>${st.ok?'시나리오 성공':'시나리오 실패'}</h2><p><b>${esc(st.sc.title)}</b></p><p class="small">${esc(st.sc.desc)}</p><p class="small muted">우리 당 ${me.seats}석${g.pmParty===me.id||g.presParty===me.id?' · 정부를 맡음':''}</p></section>`:''}
   ${g.country?'<p class="small real-note">실제 선거 결과가 아닌 게임 속 가상 결과입니다. 출발 의석만 실제 기준입니다.</p>':''}
   <section class="panel">
-    <div class="row">${stamp('big-stamp')}<div><span class="small muted">${(g.terms||[]).length?`${g.terms.length+1}번째 총선 결과 · 승점은 첫 분기부터 누적`:'총선 결과'}</span><h2 style="font-size:1.3rem;color:var(--ink);overflow-wrap:anywhere">${esc(w.name)} 승리</h2>${w.slogan?`<p class="muted">“${esc(w.slogan)}”</p>`:''}</div></div>
+    <div class="row">${stamp('big-stamp')}${badge(w,64)}<div><span class="small muted">${(g.terms||[]).length?`${g.terms.length+1}번째 총선 결과 · 승점은 첫 분기부터 누적`:'총선 결과'}</span><h2 style="font-size:1.3rem;color:var(--ink);overflow-wrap:anywhere">${esc(w.name)} 승리</h2>${w.slogan?`<p class="muted">“${esc(w.slogan)}”</p>`:''}</div></div>
     ${me?`<p>${me.id===w.id?'축하합니다. 제1당 대표가 되셨습니다.':`${esc(me.name)}: ${R.rows.findIndex(x=>x.id===me.id)+1}위`}</p>`:''}
     <div>${R.rows.map((x,i)=>{const p=E.party(g,x.id);return`<div class="res-row"><span class="muted">${i+1}</span><div style="min-width:0">${chip(p)} <strong>${esc(p.name)}</strong><span class="small muted" style="display:block">${scoreLine(g,x)}</span></div>${x.vs!=null?`<span class="code">${x.vs>0?'+':x.vs<0?'−':''}${Math.abs(x.vs)}</span><span class="small muted">목표 대비<br>${x.score} / 기준 ${x.par}</span>`:`<span class="code">${x.score}</span><span class="small muted">승점</span>`}</div>`}).join('')}</div>
     <div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:12px">
@@ -1940,14 +1975,15 @@ document.addEventListener('click',async ev=>{
     case'tut-prev':tutGo(Math.max(0,S.tut.i-1));break;
     case'tut-end':S.tut=null;tutSave();tutPaint();break;
     case'skip-count':if(playCount.finish)playCount.finish();break;
-    case'ideo':S.profile.ideology=v;document.querySelectorAll('[data-a=ideo]').forEach(x=>x.setAttribute('aria-pressed',x===b));pushProfile();break;
+    case'ideo':S.profile.ideology=v;document.querySelectorAll('[data-a=ideo]').forEach(x=>x.setAttribute('aria-pressed',x===b));paintEmbPicks();pushProfile();break;
     case'country':S.profile.country=v;saveProfile();renderHome();break;
     case'pick':if(S.profile.pick!==v){S.profile.cname='';S.profile.cideo=''}S.profile.pick=v;document.querySelectorAll('[data-a=pick]').forEach(x=>x.setAttribute('aria-pressed',x===b));{const o=$('#party-opts');if(o)o.innerHTML=partyOptsHtml(roomCountry())}pushProfile();break;
     case'rematch':createRoom(S.mode,{...S.game.settings});break;
     case'continue':continueTerm();break;
     case'join-rematch':enterRoom(v,S.mode);break;
     case'kind':S.profile.kind=v;document.querySelectorAll('[data-a=kind]').forEach(x=>x.setAttribute('aria-pressed',x===b));pushProfile();break;
-    case'color':S.profile.colorIdx=+v;document.querySelectorAll('.swatch').forEach(x=>x.setAttribute('aria-pressed',x===b));pushProfile();break;
+    case'color':S.profile.colorIdx=+v;document.querySelectorAll('.swatch').forEach(x=>x.setAttribute('aria-pressed',x===b));paintEmbPicks();pushProfile();break;
+    case'emblem':S.profile.emblem=+v;paintEmbPicks();pushProfile();break;
     case'create':if(S.onlineState!=='on'){toast('멀티플레이는 로그인(Google 또는 이메일)이 필요합니다.');break}createRoom('online');break;
     case'login':openLogin();break;
     case'solo':createRoom('solo');break;
@@ -2026,7 +2062,7 @@ document.addEventListener('click',async ev=>{
     case'am-withdraw':saveTalk({amends:(myTalk().amends||[]).filter(x=>x&&x.id!==v)});break;
     case'pe-save':{
       const g=S.game,d=S.peDraft;if(!d||!myParty())break;
-      await saveTalk({edit:{id:Date.now().toString(36),round:g.round,name:d.name,leader:d.leader,slogan:d.slogan,colorIdx:+d.colorIdx,ideology:d.ideology}});
+      await saveTalk({edit:{id:Date.now().toString(36),round:g.round,name:d.name,leader:d.leader,slogan:d.slogan,colorIdx:+d.colorIdx,emblem:+d.emblem,ideology:d.ideology}});
       S.peDraft=null;toast('당 정보를 바꿨습니다.');applyDealsNow();break;
     }
     case'trade-reply':{const k=b.dataset.k;const rep={...(myTalk().replies||{})};rep[k]=rep[k]===v?null:v;if(!rep[k])delete rep[k];await saveTalk({replies:rep});if(rep[k]==='yes')applyDealsNow();break}

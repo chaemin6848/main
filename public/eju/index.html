@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@700;900&family=DM+Mono:wght@400;500&display=swap">
 <style>
-/* 묶음 페이지: 메인과 같은 카드 모양. 위쪽 메뉴의 세 아이콘(단어 · EJU·유학 · 일본 정치)이 이 페이지로 온다 */
+/* 묶음 페이지: 메인과 같은 카드 모양. 위쪽 메뉴의 세 아이콘(단어 · EJU·유학 · 게임)이 이 페이지로 온다 */
 :root{
   --ink:#1c211d; --muted:#6c736b; --paper:#f8f7f2; --card:#ffffff; --line:#dcdcd3;
   --lime:#dfff70; --sky:#9fd8ff; --coral:#ffb4a2; --lilac:#cdb9ff; --rose:#ffb3c6; --on-accent:#1c211d;
@@ -95,14 +95,14 @@ footer a{color:var(--muted)}
 <body>
 <script src="/shared/nav.js"></script>
 <script src="/shared/i18n-home.js"></script>
-<script>ND.add({"EJU 종합과목 복습과 일본 대학 출원 일정 확인을 위한 도구입니다.": ["EJU総合科目の復習と、日本の大学の出願日程の確認に使うツールです。", "Tools for reviewing EJU Japan and the World and checking Japanese university application dates."], "EJU · 일본 유학 도구 | nihongodic": ["EJU・日本留学ツール | nihongodic", "EJU & study in Japan tools | nihongodic"], "이 언어로 볼 수 있는 도구가 아직 없어요. 위쪽 메뉴에서 언어를 바꾸거나 다른 묶음을 둘러보세요.": ["この言語で使えるツールはまだありません。上のメニューで言語を変えるか、ほかのグループをご覧ください。", "No tools are available in this language yet. Change the language in the menu above or browse another group."], "묶음": ["グループ", "Groups"], "메인으로": ["トップへ", "Home"]});</script>
+<script>ND.add({"EJU 종합과목 복습, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.": ["EJU総合科目の復習、日本の大学の出願日程、日本政治のまとめまで、留学準備に使うツールです。", "Tools for study-abroad prep: EJU Japan and the World review, Japanese university application dates and a Japanese politics digest."], "EJU · 일본 유학 도구 | nihongodic": ["EJU・日本留学ツール | nihongodic", "EJU & study in Japan tools | nihongodic"], "이 언어로 볼 수 있는 도구가 아직 없어요. 위쪽 메뉴에서 언어를 바꾸거나 다른 묶음을 둘러보세요.": ["この言語で使えるツールはまだありません。上のメニューで言語を変えるか、ほかのグループをご覧ください。", "No tools are available in this language yet. Change the language in the menu above or browse another group."], "묶음": ["グループ", "Groups"], "메인으로": ["トップへ", "Home"]});</script>
 <div class="shell">
   <section class="hero">
     <p class="eyebrow">02 · EJU · RYUGAKU</p>
     <h1>EJU · 유학</h1>
-    <p>EJU 종합과목 복습과 일본 대학 출원 일정 확인을 위한 도구입니다.</p>
+    <p>EJU 종합과목 복습, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.</p>
     <nav class="jump" aria-label="묶음">
-      <a href="/words/">단어</a><a href="/eju/" aria-current="page">EJU · 유학</a><a href="/seiji/">일본 정치</a><a href="/">메인으로</a>
+      <a href="/words/">단어</a><a href="/eju/" aria-current="page">EJU · 유학</a><a href="/games/">게임</a><a href="/">메인으로</a>
     </nav>
   </section>
 
@@ -127,6 +127,17 @@ footer a{color:var(--muted)}
           <p>2027년 4월 입학 일본 대학 사비유학생전형 출원·면접·합격발표 일정. 지망 학부만 골라 캘린더로 볼 수 있어요.</p>
           <span class="tags"><span>EJU</span><span>구제국·소케이·MARCH·칸칸도리츠</span><span>캘린더</span></span>
           <span class="go">일정 확인하기 <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a class="tool" href="/politics/" style="--accent:var(--coral)">
+        <span class="glyph" aria-hidden="true">政</span>
+        <div class="body">
+          <div class="row"><h2>나가타초 노트</h2><span class="url">nihongodic.com/politics</span></div>
+          <p>일본 정치를 한눈에. 신문사별 내각 지지율 추이와 중의원·참의원 의석 수, 정치 개요와 최신 뉴스를 정리합니다.</p>
+          <span class="tags"><span>내각 지지율</span><span>중의원 · 참의원</span><span>정치 뉴스</span></span>
+          <span class="go">일본 정치 보러 가기 <span aria-hidden="true">→</span></span>
         </div>
       </a>
     </li>

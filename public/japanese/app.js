@@ -149,3 +149,5 @@ $("tutorial-start")?.addEventListener("click", closeTutorial);
 $("tutorial-close")?.addEventListener("click", closeTutorial);
 $("tutorial-dismiss")?.addEventListener("change", (event) => { if (event.target.checked) saveTutorialPreference(); });
 openTutorial();
+// 로그인한 계정에서 더 새 기록을 받으면(/shared/sync.js) 맞힌 개수와 저장 버튼을 다시 그린다
+window.addEventListener("nd:synced", () => { state.score = Math.max(state.score, readScoreCookie()); els.score.textContent = state.score; if (state.current) updateSaveButton(); });

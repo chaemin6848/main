@@ -137,3 +137,8 @@ search.addEventListener("input", () => { state.query = search.value; state.lesso
 const correctAnswers = Number.parseInt(readCookie("nihongodic_correct_answers"), 10);
 document.getElementById("score").textContent = Number.isSafeInteger(correctAnswers) && correctAnswers >= 0 ? correctAnswers : 0;
 render();
+// 로그인한 계정에서 더 새 기록을 받으면(/shared/sync.js) 체크와 내 단어장을 다시 읽어 그린다
+window.addEventListener("nd:synced", () => {
+  for (const [set, key] of [[checkedWords, CHECKED_WORDS_KEY], [savedWordKeys, SAVED_WORDS_KEY]]) { const next = readStoredSet(key); set.clear(); next.forEach((v) => set.add(v)); }
+  render();
+});

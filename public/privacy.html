@@ -63,6 +63,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><th>도구</th><th>항목</th><th>목적</th><th>보유 기간</th></tr>
 <tr><td>사이트 공통 로그인(선택, Google 또는 이메일)</td><td>Google 계정의 이름, 이메일, 프로필 사진 주소, 계정 식별값 / 이메일로 가입하면 이메일, 비밀번호, 이름(입력한 경우)</td><td>로그인과 로그인 상태 유지, 메뉴에 계정 표시, 나가타초 노트 회원 식별·가입 승인</td><td>계정 삭제 요청 시까지</td></tr>
 <tr><td>포켓몬 도감 채우기 도우미 (로그인한 경우만)</td><td>게임별 도감 체크 상태, 마지막 저장 시각, Google 계정 식별값</td><td>같은 계정으로 로그인한 기기 사이의 체크 기록 동기화</td><td>계정 삭제 요청 시까지</td></tr>
+<tr><td>단어 한 장 · 일유알리미 (로그인한 경우만)</td><td>단어 한 장: 내 단어장, 학습 완료 체크, 맞힌 개수, 튜토리얼 숨김 여부 / 일유알리미: 고른 지망 대학·학부 목록, 마지막 저장 시각, 계정 식별값</td><td>같은 계정으로 로그인한 기기 사이의 기록 동기화</td><td>계정 삭제 요청 시까지</td></tr>
 <tr><td>나가타초 노트 회원가입(필수)</td><td>이메일, 비밀번호, 이름(활동명)</td><td>회원 식별, 로그인, 가입 승인, 비밀번호 재설정</td><td>탈퇴 요청 시까지</td></tr>
 <tr><td>나가타초 노트 글 작성</td><td>글 내용, 작성일, 활동명, 회원 식별값</td><td>글 승인과 게재, 작성자 표시</td><td>삭제 또는 탈퇴 요청 시까지</td></tr>
 <tr><td>제1당</td><td>익명 식별값, 정당 이름·대표 이름·구호 등 게임 설정, 게임 진행 기록, 대화</td><td>멀티 게임 진행, 같은 방 참가자에게 표시</td><td>방이 삭제되거나 삭제 요청 시까지</td></tr>
@@ -95,7 +96,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. 처리 위탁과 외부 서비스(국외 이전 포함)</h2>
 <div class="tbl"><table>
 <tr><th>받는 곳</th><th>업무·이용 도구</th><th>전달되는 정보</th></tr>
-<tr><td>Google LLC (Firebase)</td><td>사이트 공통 Google 로그인, 포켓몬 도감 채우기 도우미 체크 기록 동기화, 나가타초 노트 로그인·회원 정보·글 저장·비밀번호 재설정 메일, 제1당 익명 로그인·게임 저장</td><td>1번의 항목 전체</td></tr>
+<tr><td>Google LLC (Firebase)</td><td>사이트 공통 Google 로그인, 포켓몬 도감 채우기 도우미 체크 기록 동기화, 단어 한 장·일유알리미 기록 동기화, 나가타초 노트 로그인·회원 정보·글 저장·비밀번호 재설정 메일, 제1당 익명 로그인·게임 저장</td><td>1번의 항목 전체</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>사이트 전체 호스팅과 보안</td><td>IP 주소, 접속 시각 등 접속 기록</td></tr>
 <tr><td>Google LLC (AdSense)</td><td>단어 한 장·単語一枚·Wordcard 광고</td><td>쿠키, IP 주소, 브라우저 정보</td></tr>
 <tr><td>MyMemory (Translated srl)</td><td>단어 한 장·単語一枚·Wordcard에서 사전과 다른 답의 뜻 확인</td><td>입력한 답</td></tr>
@@ -140,6 +141,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><th>ツール</th><th>項目</th><th>目的</th><th>保存期間</th></tr>
 <tr><td>サイト共通のログイン（任意、Googleまたはメール）</td><td>Googleアカウントの名前、メールアドレス、プロフィール写真のURL、アカウント識別子／メールで登録した場合はメールアドレス、パスワード、名前（入力した場合）</td><td>ログインとログイン状態の保持、メニューでのアカウント表示、나가타초 노트の会員識別・登録承認</td><td>アカウント削除の申し出まで</td></tr>
 <tr><td>ポケモン図鑑埋めヘルパー（ログインした場合のみ）</td><td>ゲームごとの図鑑チェック状態、最終保存日時、Googleアカウント識別子</td><td>同じアカウントでログインした端末間でのチェック記録の同期</td><td>アカウント削除の申し出まで</td></tr>
+<tr><td>단어 한 장・日留アラーム（ログインした場合のみ）</td><td>단어 한 장：マイ単語帳、学習済みチェック、正解数、チュートリアル非表示の設定 / 日留アラーム：選んだ志望大学・学部の一覧、最終保存日時、アカウント識別子</td><td>同じアカウントでログインした端末間での記録の同期</td><td>アカウント削除の申し出まで</td></tr>
 <tr><td>나가타초 노트 会員登録（必須）</td><td>メールアドレス、パスワード、名前（活動名）</td><td>会員の識別、ログイン、登録承認、パスワード再設定</td><td>退会の申し出まで</td></tr>
 <tr><td>나가타초 노트 投稿</td><td>投稿内容、投稿日、活動名、会員識別子</td><td>投稿の承認と掲載、投稿者の表示</td><td>削除または退会の申し出まで</td></tr>
 <tr><td>第一党</td><td>匿名の識別子、政党名・代表名・スローガンなどのゲーム設定、ゲームの進行記録、チャット</td><td>マルチプレイの進行、同じルームの参加者への表示</td><td>ルームの削除または削除の申し出まで</td></tr>
@@ -172,7 +174,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. 委託先と外部サービス（国外移転を含む）</h2>
 <div class="tbl"><table>
 <tr><th>提供先</th><th>業務・利用ツール</th><th>送信される情報</th></tr>
-<tr><td>Google LLC（Firebase）</td><td>サイト共通のGoogleログイン、ポケモン図鑑埋めヘルパーのチェック記録の同期、나가타초 노트のログイン・会員情報・投稿の保存・パスワード再設定メール、第一党の匿名ログイン・ゲームの保存</td><td>1の項目すべて</td></tr>
+<tr><td>Google LLC（Firebase）</td><td>サイト共通のGoogleログイン、ポケモン図鑑埋めヘルパーのチェック記録の同期、단어 한 장・日留アラームの記録の同期、나가타초 노트のログイン・会員情報・投稿の保存・パスワード再設定メール、第一党の匿名ログイン・ゲームの保存</td><td>1の項目すべて</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>サイト全体のホスティングとセキュリティ</td><td>IPアドレス、アクセス日時などのアクセス記録</td></tr>
 <tr><td>Google LLC（AdSense）</td><td>단어 한 장・単語一枚・Wordcardの広告</td><td>Cookie、IPアドレス、ブラウザ情報</td></tr>
 <tr><td>MyMemory（Translated srl）</td><td>단어 한 장・単語一枚・Wordcardで、辞書と異なる答えの意味確認</td><td>入力した答え</td></tr>
@@ -217,6 +219,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <tr><th>Tool</th><th>Data</th><th>Purpose</th><th>Kept until</th></tr>
 <tr><td>Site-wide sign-in (optional, Google or email)</td><td>Your Google account name, email address, profile photo URL and account ID / if you sign up with email: email, password and name (if given)</td><td>Signing in and staying signed in, showing your account in the menu, identifying and approving 나가타초 노트 members</td><td>Until you ask us to delete your account</td></tr>
 <tr><td>Pokédex Completion Helper (only when signed in)</td><td>Your Dex checks for each game, last saved time, Google account ID</td><td>Syncing your checks between devices signed in with the same account</td><td>Until you ask us to delete your account</td></tr>
+<tr><td>단어 한 장 · Japan Admissions Tracker (only when signed in)</td><td>단어 한 장: your word list, completed-word checks, correct-answer count, tutorial setting / Admissions Tracker: your selected universities and faculties, last saved time, account ID</td><td>Syncing your progress between devices signed in with the same account</td><td>Until you ask us to delete your account</td></tr>
 <tr><td>나가타초 노트 sign-up (required)</td><td>Email, password, display name</td><td>Identifying members, sign-in, approving accounts, password reset</td><td>You delete your account</td></tr>
 <tr><td>나가타초 노트 posts</td><td>Post content, date, display name, member ID</td><td>Reviewing and publishing posts, showing the author</td><td>The post or account is deleted</td></tr>
 <tr><td>First Party</td><td>Anonymous ID, game settings such as party name, leader name and slogan, game history, chat</td><td>Running multiplayer games and showing them to players in the same room</td><td>The room is deleted or you ask us to delete it</td></tr>
@@ -249,7 +252,7 @@ code{font-family:"DM Mono",monospace;font-size:.86em;background:var(--head);padd
 <h2>4. Service providers and external services (including transfers abroad)</h2>
 <div class="tbl"><table>
 <tr><th>Provider</th><th>Role / tools</th><th>Data sent</th></tr>
-<tr><td>Google LLC (Firebase)</td><td>Site-wide Google sign-in; Pokédex Completion Helper check sync; 나가타초 노트 sign-in, member data, posts and password-reset emails; First Party anonymous sign-in and game storage</td><td>Everything listed in section 1</td></tr>
+<tr><td>Google LLC (Firebase)</td><td>Site-wide Google sign-in; Pokédex Completion Helper check sync; 단어 한 장 and Admissions Tracker progress sync; 나가타초 노트 sign-in, member data, posts and password-reset emails; First Party anonymous sign-in and game storage</td><td>Everything listed in section 1</td></tr>
 <tr><td>Cloudflare, Inc.</td><td>Hosting and security for the whole site</td><td>IP address, access time and other access logs</td></tr>
 <tr><td>Google LLC (AdSense)</td><td>Ads on 단어 한 장, 単語一枚 and Wordcard</td><td>Cookies, IP address, browser information</td></tr>
 <tr><td>MyMemory (Translated srl)</td><td>Checking answers that differ from the dictionary in 단어 한 장, 単語一枚 and Wordcard</td><td>The answer you typed</td></tr>

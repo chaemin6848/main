@@ -6,6 +6,7 @@ rules_version = '2';
 //   users / news / submissions  나가타초 노트 (/politics)
 //   jeilGames/{방코드}/...       제1당 온라인 방 (/jeildang)
 //   dexSaves/{uid}               포켓몬 도감 도우미 체크 기록 동기화 (/pokemon)
+//   userData/{uid}               단어 한 장(/japanese)·일유알리미(/alarm) 기록 동기화
 //   그 밖의 경로는 모두 막는다.
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -130,6 +131,15 @@ service cloud.firestore {
       allow read, delete: if isMe(uid) && realUser();
       allow create, update: if isMe(uid) && realUser()
         && request.resource.data.keys().hasOnly(['frlg', 'rs', 'bw', 'b2w2']);
+    }
+
+    /* ---------- 단어 한 장 · 일유알리미 ---------- */
+    // 로그인한 본인만 자기 기록을 읽고 쓴다 (/shared/sync.js). 도구별 칸만 허용.
+    //   wordcard: 내 단어장·학습 완료 체크·맞힌 개수·튜토리얼 숨김 (/japanese)   alarm: 지망 대학·학부 목록 (/alarm)
+    match /userData/{uid} {
+      allow read, delete: if isMe(uid) && realUser();
+      allow create, update: if isMe(uid) && realUser()
+        && request.resource.data.keys().hasOnly(['wordcard', 'alarm']);
     }
 
     // 위에 없는 경로는 전부 거부

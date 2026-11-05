@@ -319,6 +319,8 @@
     ".acct-pop .out{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
     ".acct-pop .out:hover{border-color:var(--ink)}" +
     ".acct-pop .wait{color:var(--muted)}" +
+    ".acct-pop .me .sync{margin-top:6px;font-size:12px;color:var(--muted)}.acct-pop .me .sync.bad{color:#c0392b}" +
+    ".acct-pop .hint{margin:0 0 6px;font-size:12px;color:var(--muted)}" +
     // 로그인 상자 (/shared/account.js loginForm)
     ".nd-login,.nd-form{display:grid;gap:8px}.nd-login *{box-sizing:border-box}" +
     ".nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}" +
@@ -355,7 +357,7 @@
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
-    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><div class="in"><span class="wait">' + ACC.wait[lang] + "</span></div></div></div>" +
+    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + "</span></div></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
@@ -367,7 +369,10 @@
   /* ---------- 계정 버튼 ---------- */
   var accBtn = root.querySelector(".acct>button"), pop = root.querySelector(".acct-pop");
   var popMe = pop.querySelector(".me"), popIn = pop.querySelector(".in");
-  var popName = popMe.querySelector("b"), popMail = popMe.querySelector("span");
+  var popName = popMe.querySelector("b"), popMail = popMe.querySelector("span"), popSync = popMe.querySelector(".sync"), popHint = pop.querySelector(".hint");
+  // 기록 동기화(/shared/sync.js)를 쓰는 페이지가 계정 상자에 안내를 띄운다
+  ND.setSyncNote = function (t, bad) { popSync.textContent = t || ""; popSync.hidden = !t; popSync.classList.toggle("bad", !!bad); if (bad) accBtn.style.borderColor = "#c0392b"; else accBtn.style.borderColor = ""; };
+  ND.setSyncHint = function (t) { popHint.textContent = t || ""; popHint.hidden = !t || !!me; };
   var me = null, form = null;
   // 상자는 계정 버튼 오른쪽 끝에 맞춰 열고, 화면 왼쪽 밖으로 나가면 그만큼 오른쪽으로 민다
   function place() {
@@ -382,7 +387,7 @@
     var was = me && me.uid;
     me = u;
     if ((u && u.uid) !== was) { setOpen(false); if (form) form.reset(); }
-    popMe.hidden = !u; popIn.hidden = !!u;
+    popMe.hidden = !u; popIn.hidden = !!u; popHint.hidden = !!u || !popHint.textContent;
     pop.classList.toggle("wide", !u);
     accBtn.textContent = "";
     if (!u) {

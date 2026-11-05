@@ -185,6 +185,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <li>필착(도착 기준)과 소인유효(발송 기준)는 대학마다 다릅니다. 출원 전 반드시 각 대학 공식 요항으로 재확인하세요.</li>
 <li>모바일에서는 캘린더 날짜를 누르면 그날 일정만 아래에 표시됩니다.</li>
 <li>쿠키에는 고른 지망 대학 목록과 동의 여부만 저장되며, 이 브라우저 밖으로 보내지 않습니다. 보관 기간은 1년입니다.</li>
+<li>로그인하면 고른 지망 목록이 계정에도 저장되어 다른 기기에서도 이어집니다. 로그아웃해도 이 기기의 선택은 그대로입니다.</li>
 </ul>
 </details>
 
@@ -374,6 +375,13 @@ const pickedIn=id=>[...sel].filter(k=>k.startsWith(id+":")).length;
 
 /* ---------- storage (cookie, gated by consent) ---------- */
 let consent=null;let sel=new Set();let cookieOK=true;const openRows=new Set();
+// 로그인하면 지망 목록을 계정에도 저장한다 (/shared/sync.js). 쿠키 동의와는 따로, 계정에 저장한 목록은 다른 기기에서도 이어진다.
+let acctOn=false;
+window.ALARM_SYNC={
+  get:()=>[...sel],
+  set:arr=>{sel=new Set(arr.filter(k=>entry(k)));for(const k of sel)if(k.includes(":"))openRows.add(k.split(":")[0]);save();renderAll()},
+  user:u=>{acctOn=!!u;renderAll()}
+};
 function readCookie(k){try{const m=document.cookie.split("; ").find(x=>x.startsWith(k+"="));return m?decodeURIComponent(m.slice(k.length+1)):null}catch(e){return null}}
 function writeCookie(k,v,days){try{document.cookie=`${k}=${encodeURIComponent(v)}; max-age=${days*86400}; path=/; SameSite=Lax; Secure`;return readCookie(k)===v}catch(e){return false}}
 function delCookie(k){try{document.cookie=`${k}=; max-age=0; path=/; SameSite=Lax; Secure`}catch(e){}}
@@ -499,7 +507,7 @@ function renderCal(){
 
 function renderAll(){
   renderTables();renderPicker();renderCal();renderSoon();
-  document.getElementById("selcount").textContent=`지망 ${sel.size}개`+(consent==="yes"?(cookieOK?" · 쿠키 저장 중":" · 이 환경에서는 쿠키 저장 불가"):" · 저장 안 함");
+  document.getElementById("selcount").textContent=`지망 ${sel.size}개`+(acctOn?" · 계정에 저장 중":consent==="yes"?(cookieOK?" · 쿠키 저장 중":" · 이 환경에서는 쿠키 저장 불가"):" · 저장 안 함");
 }
 document.addEventListener("click",e=>{
   const dy=e.target.closest("[data-day]");
@@ -534,6 +542,13 @@ load();renderAll();setView("tbl");
 if(consent==="yes"&&readCookie("jw_disc")==="1")document.getElementById("disc").hidden=true;
 if(consent!=="yes")modal.hidden=false;
 
+</script>
+<script type="module">
+// 일유알리미: 로그인하면 지망 대학·학부 목록을 계정에 저장해 기기 사이에 맞춘다 (/shared/sync.js)
+import { syncTool } from "/shared/sync.js";
+import { onUser } from "/shared/account.js";
+syncTool("alarm", [{ name: "sel", type: "set", get: () => window.ALARM_SYNC.get(), set: v => window.ALARM_SYNC.set(v) }]);
+onUser(u => window.ALARM_SYNC.user(u));
 </script>
 
 </body></html>

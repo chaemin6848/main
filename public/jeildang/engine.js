@@ -164,6 +164,11 @@ const E=(function(){
   // 당내 계파: 당 노선과 직각 방향으로 양쪽에 떨어진 두 계파. 노선이 섞인 법안에서 갈린다.
   // 더 분배·개방 쪽 계파가 혁신파, 반대쪽이 안정파. 위치는 당 노선을 따라 움직인다.
   const WING_SPLIT=.7;
+  // 헌법 개정 확정 절차: 의회 3분의 2 뒤 국민투표(한국·일본·프랑스·가상 공화국), 주 비준(미국, 권역 4분의 3), 의회 의결로 끝(영국, 성문 헌법 없음)
+  const RATIFY={uk:'none',us:'states'};
+  const ratifyKind=g=>RATIFY[g.country]||'vote';
+  // 조항 여론: 권력을 키우는 조항일수록 찬성표가 덜 나온다
+  const CLAUSE_MOOD={threshold:-.06,winner:-.08,executive:-.12,noconf:-.08,delay:-.2};
   // 헌법 개정 조항. 한 판에 조항마다 한 번
   const CLAUSES={
     threshold:{label:'비례 봉쇄 조항 상향',desc:'정당 득표 7% 미만이고 지역구 5석 미만이면 비례 의석을 받지 못합니다(지금 3%).'},
@@ -525,6 +530,29 @@ const E=(function(){
   const reach=p=>clamp(Math.sqrt(Math.max(p.seats,1)/(TOTAL*.15)),.5,1.15);
   const fit=(p,reg)=>clamp(1-Math.hypot(p.eco-reg.eco,p.soc-reg.soc)/2.2,0,1);
   const party=(g,id)=>g.parties.find(p=>p.id===id);
+  // ---- 헌법 개정 확정
+  function applyClause(g,clause){
+    (g.consts=g.consts||[]).push(clause);
+    if(clause==='threshold')g.prTh=.07;
+    if(clause==='winner')g.distExp=2.6;
+    if(clause==='executive')g.execPlus=1;
+    if(clause==='noconf')g.noconfSuper=true;
+    if(clause==='delay'){const m=nextMid(g);if(m!=null)g.skipMid=m}
+  }
+  // 국민투표 예상 찬성률: 각 당 운동(찬성/반대/중립)을 그 당 지지율과 신뢰만큼 더하고, 조항 여론·발의 당 신뢰·사회 통합을 반영한다
+  function refPoll(g,R,sides){
+    R=R||g.pendingRef;if(!R)return null;sides=sides||R.sides;const nat=nationalShares(g);let lean=0;
+    for(const p of g.parties){const s=sides[p.id];if(!s||p.fixed)continue;const w=nat[p.id]*clamp(.5+p.trust/100,.6,1.4);lean+=s==='yes'?w:-w}
+    const head=party(g,R.by);
+    return clamp(.5+lean*.35+(CLAUSE_MOOD[R.clause]||0)+(head?(head.trust-50)/200:0)+(g.nation?(g.nation.cohesion-50)/400:0),.05,.95);
+  }
+  // 주 비준(미국): 권역마다 같은 식으로 찬성률을 내고, 권역 4분의 3 이상이 찬성해야 한다
+  function statePoll(g,R,sides){
+    R=R||g.pendingRef;if(!R)return null;sides=sides||R.sides;const regs={};let n=0;
+    for(const reg of REGIONS){const sh=regionShares(g,reg);let lean=0;for(const p of g.parties){const s=sides[p.id];if(!s||p.fixed)continue;lean+=s==='yes'?sh[p.id]:-sh[p.id]}
+      const y=clamp(.5+lean*.35+(CLAUSE_MOOD[R.clause]||0),.05,.95);regs[reg.id]=r2(y);if(y>.5)n++}
+    return{n,need:Math.ceil(REGIONS.length*.75),regs};
+  }
   // ---- 국가 상태
   const newNation=r=>Object.fromEntries(NKEYS.map(k=>[k,r?Math.round(48+r()*14):55]));
   const nbump=(g,k,v)=>{if(g.nation&&v)g.nation[k]=clamp(g.nation[k]+v,0,100)};
@@ -855,7 +883,7 @@ const E=(function(){
   const superLine=()=>Math.ceil(TOTAL*2/3);
   // 정부 수반 당이 혼자 또는 연맹으로 개헌선을 가졌는지
   const superBloc=(g,p)=>!!p&&(p.seats>=superLine()||(!!fedOf(g,p)&&fedSeats(g,fedOf(g,p))>=superLine()));
-  const canAmend=(g,p)=>!g.regime&&g.pmParty===p.id&&superBloc(g,p)&&!g.pendingConst&&Object.keys(CLAUSES).some(k=>!(g.consts||[]).includes(k));
+  const canAmend=(g,p)=>!g.regime&&g.pmParty===p.id&&superBloc(g,p)&&!g.pendingConst&&!g.pendingRef&&Object.keys(CLAUSES).some(k=>!(g.consts||[]).includes(k));
   const canRegime=(g,p)=>!g.country&&!g.regime&&g.pmParty===p.id&&p.seats>=superLine()&&g.round<g.maxRounds;
   const regimeOf=g=>g.regime?party(g,g.regime.p):null;
   function govAvail(g,p,k){
@@ -940,6 +968,8 @@ const E=(function(){
       out.actions.push(c);
     }
     if(react&&respCost(g,p,react)<=f)out.react=react;
+    // 국민투표 운동: 찬성·반대·중립. 고르지 않으면 의회 표결 때 입장을 그대로 따른다.
+    if(g.pendingRef&&g.pendingRef.round===g.round&&!p.fixed&&mv&&['yes','no','none'].includes(mv.refSide))out.refSide=mv.refSide==='none'?null:mv.refSide;
     // 공천: 총선 분기에만. 국민 경선은 남은 자금으로 낸다.
     if(isGeneralRound(g)&&!p.fixed){const n=mv&&own(NOMINATE,mv.nominate)?mv.nominate:'keep';out.nominate=n==='primary'&&(NOMINATE.primary.cost*U>f-(out.react?respCost(g,p,out.react):0))?'keep':n}
     const slots=govSlots(g,p);let tr=g.treasury;
@@ -1594,16 +1624,15 @@ const E=(function(){
       const author=it.by?party(g,it.by):null;
       if(it.kind==='const'){
         const C=CLAUSES[it.clause];
-        if(passed&&C){
-          (g.consts=g.consts||[]).push(it.clause);
-          if(it.clause==='threshold')g.prTh=.07;
-          if(it.clause==='winner')g.distExp=2.6;
-          if(it.clause==='executive')g.execPlus=1;
-          if(it.clause==='noconf')g.noconfSuper=true;
-          if(it.clause==='delay'){const m=nextMid(g);if(m!=null)g.skipMid=m}
+        if(passed&&C&&ratifyKind(g)==='none'){
+          applyClause(g,it.clause);
           if(author){author.trust-=3;pts(author).law+=PTS.ownLaw;pts(author).nLaw++}
           for(const q of g.parties)if(!q.fixed&&q.id!==it.by&&!isAlly(q,it.by))q.unity+=3;
-          say(`헌법 개정안 「${C.label}」 가결. 재적 3분의 2(${superLine()}석)를 넘겼습니다.`,it.by);
+          say(`헌법 개정안 「${C.label}」 가결. 성문 헌법이 없어 의회 의결로 바로 바뀝니다.`,it.by);
+        }else if(passed&&C){
+          // 의회를 넘으면 다음 분기 말 국민투표(미국은 주 비준). 마지막 분기면 이번 분기 말에 치른다.
+          g.pendingRef={clause:it.clause,by:it.by,round:Math.min(g.round+1,g.maxRounds),sides:Object.fromEntries(g.parties.filter(q=>!q.fixed).map(q=>[q.id,votes[q.id]==='yes'?'yes':'no']))};
+          say(`헌법 개정안 「${C.label}」 의회 통과(재적 3분의 2 ${superLine()}석). ${g.pendingRef.round>g.round?'다음 분기 말':'이번 분기 말'} ${ratifyKind(g)==='states'?'주 비준':'국민투표'}에 부칩니다.`,it.by);
         }else if(C)say(`헌법 개정안 「${C.label}」 부결. 찬성 ${yes}석으로 재적 3분의 2(${superLine()}석)에 못 미쳤습니다.`,it.by);
         continue;
       }
@@ -1767,6 +1796,31 @@ const E=(function(){
       if(ev.blameTop)top.trust-=ev.blameTop;
       evRep={title:ev.title,text:ev.text};
     }
+    // 국민투표·주 비준
+    let refRep=null;
+    if(g.pendingRef&&g.pendingRef.round<=g.round){
+      const R=g.pendingRef;g.pendingRef=null;const C=CLAUSES[R.clause],by=party(g,R.by),kind=ratifyKind(g);
+      const sides={...R.sides};
+      for(const p of g.parties){if(p.fixed||plans[p.id].refSide===undefined)continue;const s=plans[p.id].refSide;
+        if(s&&R.sides[p.id]&&s!==R.sides[p.id])p.trust-=2; // 의회 표결과 반대 운동은 말 바꾸기
+        sides[p.id]=s}
+      let passed,yes=null,st=null;
+      if(kind==='states'){st=statePoll(g,R,sides);passed=st.n>=st.need}
+      else{yes=r1(clamp(refPoll(g,R,sides)+(r()-.5)*.06,.02,.98)*100);passed=yes>50}
+      const tag=kind==='states'?'주 비준':'국민투표';
+      if(passed&&C&&!(g.consts||[]).includes(R.clause)){
+        applyClause(g,R.clause);
+        if(by){by.trust-=3;pts(by).law+=PTS.ownLaw;pts(by).nLaw++}
+        for(const q of g.parties)if(!q.fixed&&q.id!==R.by&&!isAlly(q,R.by))q.unity+=3;
+        for(const q of g.parties)if(!q.fixed&&sides[q.id]==='yes')q.trust+=1;
+        say(kind==='states'?`헌법 개정안 「${C.label}」 주 비준 통과(${st.n}/${REGIONS.length} 권역, 필요 ${st.need}). 헌법이 바뀝니다.`:`헌법 개정안 「${C.label}」 국민투표 가결(찬성 ${yes}%). 헌법이 바뀝니다.`,R.by);
+      }else if(C){
+        if(by){by.trust-=6;by.unity-=4}
+        for(const q of g.parties)if(!q.fixed&&sides[q.id]==='no')q.trust+=2;
+        say(kind==='states'?`헌법 개정안 「${C.label}」 주 비준 실패(${st.n}/${REGIONS.length} 권역, 필요 ${st.need}).`:`헌법 개정안 「${C.label}」 국민투표 부결(찬성 ${yes}%). 발의한 정부가 큰 타격을 입었습니다.`,R.by);
+      }
+      refRep={clause:R.clause,by:R.by,kind,passed:!!passed,yes,states:st,sides};
+    }
     // 국가 상태: 보통(50)으로 조금씩 돌아가고, 비상 체제는 통합을 갉아먹는다
     // 손대지 않으면 조금씩 닳는다(국방·경제·민생 −1.6, 통합 −0.7)
     for(const k of NKEYS)g.nation[k]=clamp(g.nation[k]+(50-g.nation[k])*.08-(k==='cohesion'?.7:1.6)+(r()-.5)*4,0,100);
@@ -1910,7 +1964,7 @@ const E=(function(){
       for(const k in p.reg)p.reg[k]=r1(p.reg[k]);
     }
     const tradeRep=judgeTrades(g,plans,bills,pmVoted,say);
-    g.report={nation:{before:Object.fromEntries(NKEYS.map(k=>[k,r1(nation0[k])])),after:Object.fromEntries(NKEYS.map(k=>[k,r1(g.nation[k])]))},wings:wingRep,pledges:pledgeRep,round:g.round,revolution,regime:g.regime?{...g.regime}:null,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
+    g.report={referendum:refRep,nation:{before:Object.fromEntries(NKEYS.map(k=>[k,r1(nation0[k])])),after:Object.fromEntries(NKEYS.map(k=>[k,r1(g.nation[k])]))},wings:wingRep,pledges:pledgeRep,round:g.round,revolution,regime:g.regime?{...g.regime}:null,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};
     // 이번 분기에 승점이 어디서 얼마나 바뀌었는지 남긴다.
     const sc1=scoreRows(g);
     g.report.score=Object.fromEntries(sc1.map((x,i)=>{const a=sc0[x.id];return[x.id,{total:x.score,rank:i+1,d:x.score-a.score,vs:x.vs,
@@ -2080,6 +2134,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

@@ -239,7 +239,14 @@ test('헌법 개정: 개헌선이 있어야 발의되고, 다음 분기 재적 3
   assert.ok(item && item.clause === 'executive', '다음 분기 안건에 개헌안');
   const slots0 = E.govSlots(g, E.party(g, me.id));
   g = quarter(g, E.party(g, me.id), []);
-  assert.ok((g.consts || []).includes('executive'), '가결');
+  assert.ok(!(g.consts || []).includes('executive'), '의회만 넘어서는 아직 바뀌지 않는다');
+  assert.ok(g.pendingRef && g.pendingRef.clause === 'executive' && g.pendingRef.round === g.round, '이번 분기 말 국민투표');
+  // 여야가 함께 찬성 운동하면 과반. 의석만 몰아 준 시험 판이라 정부 혼자서는 여론 과반이 안 될 수 있다.
+  for (const id in g.pendingRef.sides) g.pendingRef.sides[id] = 'yes';
+  assert.ok(E.refPoll(g) > 0.5, '모두 찬성 운동하면 예상 찬성이 과반');
+  g = quarter(g, E.party(g, me.id), [], { refSide: 'yes' });
+  assert.ok(g.report.referendum && g.report.referendum.kind === 'vote', '국민투표 결과 보고');
+  assert.ok((g.consts || []).includes('executive'), '국민투표 가결');
   assert.strictEqual(E.govSlots(g, E.party(g, me.id)), slots0 + 1, '행정 조치 +1');
   const small = superGame(null, Math.floor(E.TOTAL * 0.5));
   assert.ok(!E.govAvail(small.g, small.me, 'amend') || E.superBloc(small.g, small.me), '개헌선이 없으면 발의 못 함');
@@ -363,4 +370,25 @@ test('계파 요구는 안건에 걸리고, 따르면 결속이 오른다', () =
     }
   }
   assert.ok(found, '40판 안에 계파 요구가 한 번은 나온다');
+});
+
+test('헌법 개정 확정 절차: 영국은 의회 의결로 바로, 미국은 주 비준, 국민투표는 부결될 수 있다', () => {
+  { let { g, me } = superGame('uk', Math.ceil(650 * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'winner' }]); g = quarter(g, E.party(g, me.id), []);
+    assert.ok((g.consts || []).includes('winner') && !g.pendingRef, '영국은 의회에서 끝'); }
+  { let { g, me } = superGame('us', Math.ceil(435 * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'winner' }]); g = quarter(g, E.party(g, me.id), []);
+    assert.ok(g.pendingRef, '미국은 주 비준 대기');
+    const st = E.statePoll(g); assert.strictEqual(st.need, Math.ceil(E.REGIONS.length * 0.75));
+    g = quarter(g, E.party(g, me.id), [], { refSide: 'yes' });
+    assert.strictEqual(g.report.referendum.kind, 'states');
+    assert.strictEqual((g.consts || []).includes('winner'), g.report.referendum.passed); }
+  { let { g, me } = superGame(null, Math.ceil(E.TOTAL * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'delay' }]); g = quarter(g, E.party(g, me.id), []);
+    // 발의한 당이 중립이고 나머지 당이 모두 반대 운동이면 부결된다
+    const sides = Object.fromEntries(Object.keys(g.pendingRef.sides).map(id => [id, id === me.id ? null : 'no']));
+    assert.ok(E.refPoll(g, null, sides) < 0.5, '반대 운동만 있으면 과반 미달');
+    const t0 = E.party(g, me.id).trust;
+    g = E.resolveRound(g, { me: { round: g.round, votes: {}, pm: me.id, actions: [], gov: [], refSide: 'none' } }, 0, {});
+    if (!g.report.referendum.passed) assert.ok(!(g.consts || []).includes('delay'), '부결이면 그대로'); }
 });

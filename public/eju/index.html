@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>EJU · 일본 유학 도구 | nihongodic</title>
-<meta name="description" content="EJU 종합과목 고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.">
+<meta name="description" content="EJU 종합과목 개념 47개·고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.">
 <link rel="canonical" href="https://nihongodic.com/eju/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c211d'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E日%3C/text%3E%3C/svg%3E">
 <meta property="og:title" content="EJU · 일본 유학 도구 | nihongodic">
-<meta property="og:description" content="EJU 종합과목 고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.">
+<meta property="og:description" content="EJU 종합과목 개념 47개·고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.">
 <meta property="og:url" content="https://nihongodic.com/eju/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <meta property="og:site_name" content="nihongodic">
 <meta property="og:locale" content="ko_KR">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "EJU · 유학", "url": "https://nihongodic.com/eju/", "inLanguage": "ko", "description": "EJU 종합과목 고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.", "isPartOf": {"@type": "WebSite", "name": "nihongodic", "url": "https://nihongodic.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "EJU · 유학", "url": "https://nihongodic.com/eju/", "inLanguage": "ko", "description": "EJU 종합과목 개념 47개·고난도 62문항 플래시 카드와 2027년 4월 입학 일본 대학 사비유학생전형 일정표 일유알리미를 모았습니다.", "isPartOf": {"@type": "WebSite", "name": "nihongodic", "url": "https://nihongodic.com/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@700;900&family=DM+Mono:wght@400;500&display=swap">
@@ -50,6 +50,19 @@ h1 .jp{font-family:var(--jp)}
 .group{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
 .group-label{margin:0;display:flex;align-items:baseline;gap:10px;font-size:15px;font-weight:900;letter-spacing:-.01em}
 .group-label span{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;color:var(--muted)}
+.tool.feature{position:relative}
+.tool.feature h2 a{color:inherit;text-decoration:none}
+.tool.feature .stretch::after{content:"";position:absolute;inset:0;border-radius:10px}
+.tool.feature:has(.stretch:focus-visible){outline:3px solid var(--ink);outline-offset:3px}
+.tool.feature .stretch:focus-visible{outline:none}
+.duo{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.duo a{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border:1.5px solid var(--ink);border-radius:8px;background:var(--paper);color:var(--ink);text-decoration:none;transition:background-color .15s ease}
+.duo a:hover{background:var(--accent);color:var(--on-accent)}
+.duo a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.duo b{font-size:15px;font-weight:900;letter-spacing:-.02em}
+.duo small{font-size:12px;color:var(--muted)}
+.duo a:hover small{color:inherit}
+@media (max-width:380px){.duo{grid-template-columns:1fr}}
 .tools{display:flex;flex-direction:column;gap:18px;list-style:none;margin:0;padding:0}
 .tool{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;align-items:start;padding:20px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;
   color:inherit;text-decoration:none;box-shadow:4px 4px 0 var(--accent);transition:transform .15s ease,box-shadow .15s ease}
@@ -95,12 +108,12 @@ footer a{color:var(--muted)}
 <body>
 <script src="/shared/nav.js"></script>
 <script src="/shared/i18n-home.js"></script>
-<script>ND.add({"EJU 종합과목 복습, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.": ["EJU総合科目の復習、日本の大学の出願日程、日本政治のまとめまで、留学準備に使うツールです。", "Tools for study-abroad prep: EJU Japan and the World review, Japanese university application dates and a Japanese politics digest."], "EJU · 일본 유학 도구 | nihongodic": ["EJU・日本留学ツール | nihongodic", "EJU & study in Japan tools | nihongodic"], "이 언어로 볼 수 있는 도구가 아직 없어요. 위쪽 메뉴에서 언어를 바꾸거나 다른 묶음을 둘러보세요.": ["この言語で使えるツールはまだありません。上のメニューで言語を変えるか、ほかのグループをご覧ください。", "No tools are available in this language yet. Change the language in the menu above or browse another group."], "묶음": ["グループ", "Groups"], "메인으로": ["トップへ", "Home"]});</script>
+<script>ND.add({"EJU 종합과목 개념·문제, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.": ["EJU総合科目の復習、日本の大学の出願日程、日本政治のまとめまで、留学準備に使うツールです。", "Tools for study-abroad prep: EJU Japan and the World review, Japanese university application dates and a Japanese politics digest."], "EJU · 일본 유학 도구 | nihongodic": ["EJU・日本留学ツール | nihongodic", "EJU & study in Japan tools | nihongodic"], "이 언어로 볼 수 있는 도구가 아직 없어요. 위쪽 메뉴에서 언어를 바꾸거나 다른 묶음을 둘러보세요.": ["この言語で使えるツールはまだありません。上のメニューで言語を変えるか、ほかのグループをご覧ください。", "No tools are available in this language yet. Change the language in the menu above or browse another group."], "묶음": ["グループ", "Groups"], "메인으로": ["トップへ", "Home"]});</script>
 <div class="shell">
   <section class="hero">
     <p class="eyebrow">02 · EJU · RYUGAKU</p>
     <h1>EJU · 유학</h1>
-    <p>EJU 종합과목 복습, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.</p>
+    <p>EJU 종합과목 개념·문제, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.</p>
     <nav class="jump" aria-label="묶음">
       <a href="/words/">단어</a><a href="/eju/" aria-current="page">EJU · 유학</a><a href="/games/">게임</a><a href="/">메인으로</a>
     </nav>
@@ -109,15 +122,17 @@ footer a{color:var(--muted)}
   <section class="hub" aria-label="EJU · 유학">
   <ul class="tools">
     <li>
-      <a class="tool" href="/japanworld/" style="--accent:var(--rose)">
+      <div class="tool feature" style="--accent:var(--rose)">
         <span class="glyph" aria-hidden="true">総</span>
         <div class="body">
-          <div class="row"><h2>종합과목 플래시 카드</h2><span class="url">nihongodic.com/japanworld</span></div>
-          <p>EJU 종합과목에서 자주 틀리는 고난도 개념만 골라, 묻는 각도를 바꿔 새로 만든 62문항. 일본어 4지선다로 풀고 한국어 해설로 바로 확인해요.</p>
-          <span class="tags"><span>EJU 総合科目</span><span>경제·정치·역사·지리</span><span>틀린 문제 다시</span></span>
-          <span class="go">문제 풀러 가기 <span aria-hidden="true">→</span></span>
+          <div class="row"><h2><a class="stretch" href="/japanworld/">EJU 종합과목</a></h2><span class="url">nihongodic.com/japanworld</span></div>
+          <p>정치·경제·국제·지리·역사 핵심 개념을 영역별로 정리하고, 같은 개념을 고난도 4지선다로 바로 확인해요. 문제 해설에서 개념 카드로, 개념 카드에서 관련 문제로 오갈 수 있어요.</p>
+          <div class="duo">
+            <a href="/japanworld/#concepts"><b>종합과목 개념</b><small>47개 · 검색·영역 필터</small></a>
+            <a href="/japanworld/#flash"><b>플래시 카드</b><small>62문항 · 틀린 문제 다시</small></a>
+          </div>
         </div>
-      </a>
+      </div>
     </li>
     <li>
       <a class="tool" href="/alarm/" style="--accent:var(--sky)">

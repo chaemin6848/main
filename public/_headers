@@ -15,7 +15,7 @@
   ! Content-Security-Policy
   Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; frame-src 'self' https://nihongodic.firebaseapp.com
 
-# 도감 도우미: 외부 스크립트 없음 (Cloudflare가 넣는 분석 스크립트만 허용)
+# 도감 도우미: Cloudflare 분석 스크립트 + Google 로그인·체크 기록 동기화(Firebase, /pokemon/cloud.js)만 허용
 /pokemon/*
   ! Content-Security-Policy
-  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; form-action 'none'
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://lh3.googleusercontent.com; connect-src 'self' https://cloudflareinsights.com https://*.googleapis.com https://www.gstatic.com; frame-src 'self' https://nihongodic.firebaseapp.com; form-action 'none'

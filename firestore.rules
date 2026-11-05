@@ -1,0 +1,140 @@
+rules_version = '2';
+
+// nihongodic Firestore 보안 규칙 (Firebase 프로젝트 nihongodic)
+// 콘솔 → Firestore Database → 규칙 에 통째로 붙여넣고 '게시'한다.
+//
+//   users / news / submissions  나가타초 노트 (/politics)
+//   jeilGames/{방코드}/...       제1당 온라인 방 (/jeildang)
+//   dexSaves/{uid}               포켓몬 도감 도우미 체크 기록 동기화 (/pokemon)
+//   그 밖의 경로는 모두 막는다.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------- 공통 ---------- */
+    function signedIn() { return request.auth != null; }
+    // 제1당이 쓰는 익명 로그인은 '진짜 계정'으로 보지 않는다
+    function realUser() {
+      return signedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+
+    /* ---------- 나가타초 노트 ---------- */
+    // 권한 단계: pending → member(승인 요청) → editor(바로 게재·승인) → admin(회원 관리), blocked
+    function myRole() {
+      return realUser() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : 'none';
+    }
+    function canSubmit()  { return myRole() in ['member', 'editor', 'admin']; }
+    function canPublish() { return myRole() in ['editor', 'admin']; }
+    function isAdmin()    { return myRole() == 'admin'; }
+    function shortStr(v, n) { return v is string && v.size() <= n; }
+
+    // 글 한 건의 공통 검사 (news·submissions)
+    function validPost(d) {
+      return d.title is string && d.title.size() > 0 && d.title.size() <= 300
+        && shortStr(d.get('summary', ''), 20000)
+        && shortStr(d.get('source', ''), 200)
+        && shortStr(d.get('url', ''), 2000)
+        && shortStr(d.get('date', ''), 10)
+        && d.get('type', 'news') in ['news', 'column'];
+    }
+
+    match /users/{uid} {
+      // 내 프로필은 내가, 회원 목록은 관리자가 본다
+      allow read: if isMe(uid) || isAdmin();
+      // 가입: 본인 문서만, 반드시 '승인 대기'로 시작 (스스로 권한을 올릴 수 없음)
+      allow create: if isMe(uid) && realUser()
+        && request.resource.data.keys().hasOnly(['email', 'name', 'role', 'createdAt'])
+        && request.resource.data.role == 'pending'
+        && shortStr(request.resource.data.name, 30)
+        && shortStr(request.resource.data.email, 320)
+        && request.resource.data.createdAt == request.time;
+      // 승인·권한 변경·삭제는 관리자만. 관리자도 자기 권한은 못 바꾼다(실수로 관리자가 없어지는 것 방지)
+      allow update: if isAdmin() && !isMe(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role'])
+        && request.resource.data.role in ['pending', 'member', 'editor', 'admin', 'blocked'];
+      allow delete: if isAdmin() && !isMe(uid);
+    }
+
+    match /news/{id} {
+      allow read: if true; // 게재된 글은 누구나 본다
+      allow create, update: if canPublish() && validPost(request.resource.data);
+      allow delete: if canPublish();
+    }
+
+    match /submissions/{id} {
+      // 회원이 보낸 승인 요청: 작성자 본인 이름으로, 'pending' 상태로만
+      allow create: if canSubmit()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && validPost(request.resource.data);
+      allow read: if canPublish() || (signedIn() && resource.data.authorUid == request.auth.uid);
+      // 승인·거절은 편집자·관리자 (상태와 검토 기록만 바꾼다)
+      allow update: if canPublish()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedBy', 'reviewedAt'])
+        && request.resource.data.status in ['approved', 'rejected']
+        && request.resource.data.reviewedBy == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    /* ---------- 제1당 ---------- */
+    // 방 코드: 영문 대문자·숫자 4자리. 로그인(익명 포함)한 사람은 누구나 방을 보고 관전할 수 있다.
+    match /jeilGames/{code} {
+      function room() { return get(/databases/$(database)/documents/jeilGames/$(code)).data; }
+      function isHost() { return signedIn() && room().hostId == request.auth.uid; }
+      function isMember() {
+        return signedIn() && exists(/databases/$(database)/documents/jeilGames/$(code)/members/$(request.auth.uid));
+      }
+
+      allow get: if signedIn();
+      // 첫 화면의 '최근 방' 목록 (createdAt 순 30개)
+      allow list: if signedIn() && request.query.limit <= 50;
+      // 방 만들기: 내가 방장, 대기실 상태로
+      allow create: if signedIn() && code.matches('^[A-Z0-9]{4}$')
+        && request.resource.data.hostId == request.auth.uid
+        && request.resource.data.status == 'lobby'
+        && request.resource.data.code == code;
+      // 판 진행(시작·분기 처리·연맹 반영·한 임기 더)은 참가자 누구나, 방장은 바꿀 수 없다
+      allow update: if (isMember() || isHost())
+        && request.resource.data.hostId == resource.data.hostId
+        && request.resource.data.code == code;
+      allow delete: if isHost();
+
+      // 참가자: 본인 문서만. 새로 들어오는 건 대기실일 때만 (진행 중인 판은 관전)
+      match /members/{uid} {
+        allow read: if signedIn();
+        allow create: if isMe(uid) && room().status == 'lobby';
+        allow update: if isMe(uid);
+        allow delete: if isMe(uid) || isHost();
+      }
+      // 분기마다 내는 행동 (본인 것만, 참가자만)
+      match /moves/{uid} {
+        allow read: if signedIn();
+        allow write: if isMe(uid) && isMember();
+      }
+      // 대화·협상 문서 (본인 것만, 참가자만)
+      match /chat/{uid} {
+        allow read: if signedIn();
+        allow write: if isMe(uid) && isMember();
+      }
+      // 분기 처리를 한 사람만 하도록 잡는 짧은 임대
+      match /lease/{id} {
+        allow read, write: if isMember();
+      }
+    }
+
+    /* ---------- 포켓몬 도감 도우미 ---------- */
+    // Google 로그인한 본인만 자기 체크 기록을 읽고 쓴다. 게임별 칸만 허용.
+    match /dexSaves/{uid} {
+      allow read, delete: if isMe(uid) && realUser();
+      allow create, update: if isMe(uid) && realUser()
+        && request.resource.data.keys().hasOnly(['frlg', 'rs', 'bw', 'b2w2']);
+    }
+
+    // 위에 없는 경로는 전부 거부
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

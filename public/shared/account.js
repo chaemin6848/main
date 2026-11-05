@@ -2,11 +2,12 @@
 // 나가타초 노트·제1당과 같은 Firebase 프로젝트·같은 SDK 버전을 써서 로그인 상태를 함께 쓴다.
 // 다른 도구에서 쓰기: ND.account.onUser(u => ...), ND.account.signIn(), ND.account.signOut()
 //   이메일(아이디) 로그인: signInEmail(email, pw), signUpEmail(email, pw, name), resetPassword(email)
+//   마이페이지: linkGoogle() 로그인한 계정에 Google 로그인 추가, updateName(name)
 //   로그인 상자: loginForm(lang, { onDone }) → Google 버튼 + 이메일 로그인·회원가입·비밀번호 찾기 (클래스 nd-*, 스타일은 각 페이지가)
-//   u 는 { uid, name, email, photo } 또는 null (제1당의 익명 로그인은 '로그인 안 함'으로 본다)
+//   u 는 { uid, name, email, photo, providers } 또는 null (providers: ["google.com", "password"] 중 연결된 것) (제1당의 익명 로그인은 '로그인 안 함'으로 본다)
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  getAuth, onIdTokenChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   linkWithPopup, signInWithCredential, signOut as fbSignOut,
   EmailAuthProvider, linkWithCredential, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendPasswordResetEmail, updateProfile,
@@ -20,15 +21,22 @@ getRedirectResult(auth).catch(() => {}); // 팝업이 막혀 리디렉트로 로
 const pick = u => {
   if (!u || u.isAnonymous) return null;
   const g = (u.providerData || []).find(p => p.providerId === "google.com") || {};
-  return { uid: u.uid, name: u.displayName || g.displayName || u.email || "", email: u.email || g.email || "", photo: u.photoURL || g.photoURL || "" };
+  const providers = (u.providerData || []).map(p => p.providerId).filter(Boolean);
+  return { uid: u.uid, name: u.displayName || g.displayName || u.email || "", email: u.email || g.email || "", photo: u.photoURL || g.photoURL || "", providers };
 };
 
 const listeners = new Set();
+// onAuthStateChanged 는 익명 계정을 Google·이메일로 승격하거나 로그인 방법을 연동할 때(uid 그대로) 알려 주지 않는다.
+// 그래서 토큰이 바뀔 때마다 보고, 화면에 보이는 값(uid·이름·연동 방법)이 바뀐 경우에만 알린다.
+const sig = v => v ? [v.uid, v.name, v.email, v.photo, v.providers.join(",")].join("|") : "";
 export function onUser(cb) {
-  listeners.add(cb);
-  const stop = onAuthStateChanged(auth, u => cb(pick(u)));
-  return () => { listeners.delete(cb); stop(); };
+  let last;
+  const fire = v => { const k = sig(v); if (k === last) return; last = k; cb(v); };
+  listeners.add(fire);
+  const stop = onIdTokenChanged(auth, u => fire(pick(u)));
+  return () => { listeners.delete(fire); stop(); };
 }
+const notify = () => { const v = pick(auth.currentUser); listeners.forEach(cb => cb(v)); };
 export const currentUser = () => pick(auth.currentUser);
 
 export async function signIn() {
@@ -64,11 +72,39 @@ export async function signUpEmail(email, pw, name) {
   const res = cur && cur.isAnonymous ? await linkWithCredential(cur, cred) : await createUserWithEmailAndPassword(auth, email.trim(), pw);
   const dn = (name || "").trim().slice(0, 30) || email.trim().split("@")[0].slice(0, 30);
   try { await updateProfile(res.user, { displayName: dn }); await res.user.reload(); } catch (e) {}
-  // 이름을 바꾼 뒤 화면에 다시 알린다 (onAuthStateChanged 는 이름 변경을 알려 주지 않음)
-  listeners.forEach(cb => cb(pick(auth.currentUser)));
+  // 이름을 바꾼 뒤 화면에 다시 알린다 (토큰 변경 알림은 이름 변경을 알려 주지 않음)
+  notify();
   return res;
 }
 export function resetPassword(email) { return sendPasswordResetEmail(auth, email.trim()); }
+
+/* ---------- 마이페이지: 로그인 방법 연동·이름 ---------- */
+const notSignedIn = () => Object.assign(new Error("not signed in"), { code: "auth/not-signed-in" });
+// 이메일로 가입한 계정에 Google 로그인을 더한다 (uid 그대로, 어느 쪽으로 로그인해도 같은 계정)
+export async function linkGoogle() {
+  const cur = auth.currentUser;
+  if (!cur || cur.isAnonymous) throw notSignedIn();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  const res = await linkWithPopup(cur, provider);
+  // 이름·사진이 비어 있으면 Google 계정 것으로 채운다
+  const g = (res.user.providerData || []).find(p => p.providerId === "google.com") || {};
+  const fill = {};
+  if (!res.user.displayName && g.displayName) fill.displayName = g.displayName;
+  if (!res.user.photoURL && g.photoURL) fill.photoURL = g.photoURL;
+  if (Object.keys(fill).length) { try { await updateProfile(res.user, fill); } catch (e) {} }
+  try { await res.user.reload(); } catch (e) {}
+  notify();
+  return res;
+}
+export async function updateName(name) {
+  const cur = auth.currentUser;
+  if (!cur || cur.isAnonymous) throw notSignedIn();
+  const dn = String(name || "").trim().slice(0, 30);
+  if (!dn) return;
+  await updateProfile(cur, { displayName: dn });
+  notify();
+}
 
 // 사용자에게 보여 줄 오류 문구 (창을 닫은 경우 등은 빈 문자열 = 조용히 넘김)
 export function errorText(e, lang) {
@@ -84,7 +120,11 @@ export function errorText(e, lang) {
     "auth/missing-password": ["비밀번호를 입력해 주세요.", "パスワードを入力してください。", "Enter your password."],
     "auth/weak-password": ["비밀번호는 6자 이상이어야 해요.", "パスワードは6文字以上にしてください。", "Use at least 6 characters for your password."],
     "auth/email-already-in-use": ["이미 가입된 이메일이에요. 로그인해 주세요.", "すでに登録されているメールアドレスです。ログインしてください。", "That email is already registered. Please log in."],
-    "auth/credential-already-in-use": ["이미 가입된 이메일이에요. 로그인해 주세요.", "すでに登録されているメールアドレスです。ログインしてください。", "That email is already registered. Please log in."],
+    "auth/credential-already-in-use": ["이미 다른 계정에 연결된 로그인 정보예요. 그 방법으로 로그인해 주세요.", "すでに別のアカウントに連携されているログイン情報です。その方法でログインしてください。", "Those sign-in details already belong to another account. Sign in with them instead."],
+    "auth/account-exists-with-different-credential": ["이 이메일은 다른 로그인 방법으로 가입돼 있어요. 그 방법으로 로그인한 뒤 마이페이지에서 연동해 주세요.", "このメールアドレスは別のログイン方法で登録されています。その方法でログインしてからマイページで連携してください。", "This email is registered with another sign-in method. Sign in that way, then link it on My page."],
+    "auth/provider-already-linked": ["이미 연동돼 있어요.", "すでに連携されています。", "Already linked."],
+    "auth/requires-recent-login": ["보안을 위해 다시 로그인한 뒤 해 주세요.", "セキュリティのため、もう一度ログインしてからお試しください。", "For security, sign in again and retry."],
+    "auth/not-signed-in": ["먼저 로그인해 주세요.", "先にログインしてください。", "Please sign in first."],
     "auth/invalid-credential": ["이메일 또는 비밀번호가 맞지 않아요.", "メールアドレスまたはパスワードが違います。", "Wrong email or password."],
     "auth/wrong-password": ["이메일 또는 비밀번호가 맞지 않아요.", "メールアドレスまたはパスワードが違います。", "Wrong email or password."],
     "auth/user-not-found": ["가입되지 않은 이메일이에요.", "登録されていないメールアドレスです。", "No account uses that email."],
@@ -174,5 +214,5 @@ export function loginForm(lang, { onDone } = {}) {
 
 // nav.js 가 기다리는 신호 (모듈이 늦게 떠도 상관없게 ND 에 걸어 두고 알린다)
 window.ND = window.ND || {};
-window.ND.account = { onUser, currentUser, signIn, signOut, errorText, signInEmail, signUpEmail, resetPassword, loginForm };
+window.ND.account = { onUser, currentUser, signIn, signOut, errorText, signInEmail, signUpEmail, resetPassword, loginForm, linkGoogle, updateName };
 document.dispatchEvent(new CustomEvent("nd:account-ready"));

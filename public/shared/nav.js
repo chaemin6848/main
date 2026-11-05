@@ -422,13 +422,18 @@
   // 로그인 전: 로그인 상자(Google + 이메일 로그인·회원가입) / 로그인 후: 이름·이메일·로그아웃
   accBtn.addEventListener("click", function () {
     if (!pop.hidden) { setOpen(false); return; }
+    openBox();
+  });
+  function openBox() {
     setOpen(true);
     if (me) return;
     withAccount(function (A) {
       if (!form) { form = A.loginForm(lang); popIn.textContent = ""; popIn.appendChild(form.el); place(); }
       if (!pop.hidden && !me) form.focus();
     });
-  });
+  }
+  // 다른 도구(제1당 멀티 등)가 로그인 상자를 열 때 쓴다. 클릭 이벤트가 문서까지 올라가 바로 닫히지 않게 다음 틱에 연다
+  ND.openLogin = function () { setTimeout(function () { try { host.scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {} if (pop.hidden) openBox(); }, 0); };
   pop.querySelector(".out").addEventListener("click", function () { withAccount(function (A) { A.signOut(); }); });
   document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) setOpen(false); });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { setOpen(false); accBtn.focus(); } });

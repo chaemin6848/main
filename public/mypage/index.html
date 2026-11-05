@@ -63,6 +63,12 @@ h1{margin:6px 0 0;font-size:clamp(26px,6vw,38px);font-weight:900;letter-spacing:
 .acct .btn{margin-left:auto}
 .note{font-size:12.5px;color:var(--muted);margin:0}
 .note.bad{color:var(--red)}
+.nm-edit{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;max-width:420px}.nm-edit .nd-field{flex:1;min-width:160px}
+.ways{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.ways>b{font-size:14px}
+.way{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.way .ok{color:var(--ok);font-weight:700;font-size:13px}.way .muted{color:var(--muted);font-size:13px}
+.note:empty{display:none}
 /* 로그인 상자 (/shared/account.js loginForm) */
 .nd-login,.nd-form{display:grid;gap:8px;max-width:360px}.nd-login *{box-sizing:border-box}
 .nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}

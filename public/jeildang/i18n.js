@@ -1608,9 +1608,9 @@ ND.add({
 "ルール3分まとめ",
 "The rules in 3 minutes"
 ],
-"회원가입 없이 익명으로 접속합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.": [
-"会員登録なしで匿名で接続します。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。",
-"You connect anonymously, no sign-up needed. Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details."
+"멀티플레이는 사이트 공통 로그인(Google 또는 이메일)이 필요합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.": [
+"マルチプレイにはサイト共通ログイン（Googleまたはメール）が必要です。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。",
+"Multiplayer requires the site-wide sign-in (Google or email). Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details."
 ],
 "대통령 선거는 중간 분기 말에 치릅니다.": [
 "大統領選挙は中間の四半期末に行います。",
@@ -4640,6 +4640,38 @@ ND.add({
 "圧倒的多数",
 "Overwhelming majority"
 ],
+"멀티플레이는 로그인(Google 또는 이메일)이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.": [
+"マルチプレイにはログイン（Googleまたはメール）が必要です。AI政党とのひとりプレイはログインなしで遊べます。",
+"Multiplayer requires signing in (Google or email). Solo play against AI parties works without it."
+],
+"로그인 · 회원가입": [
+"ログイン・新規登録",
+"Log in / Sign up"
+],
+"로그아웃해서 멀티 방에서 나왔습니다.": [
+"ログアウトしたため、マルチの部屋から退出しました。",
+"You signed out, so you've left the multiplayer room."
+],
+"다른 계정으로 바뀌어 멀티 방에서 나왔습니다.": [
+"別のアカウントに切り替わったため、マルチの部屋から退出しました。",
+"You switched accounts, so you've left the multiplayer room."
+],
+"로그인하지 못했습니다.": [
+"ログインできませんでした。",
+"Couldn't sign in."
+],
+"멀티플레이는 로그인(Google 또는 이메일)이 필요합니다.": [
+"マルチプレイにはログイン（Googleまたはメール）が必要です。",
+"Multiplayer requires signing in (Google or email)."
+],
+"멀티 서버에 연결되지 않았습니다.": [
+"マルチサーバーに接続されていません。",
+"Not connected to the multiplayer server."
+],
+"마이페이지": [
+"マイページ",
+"My page"
+],
 "선거 공약": [
 "選挙公約",
 "Campaign pledge"
@@ -5171,6 +5203,7 @@ ND.pat([
 [/^(.*?),\ (.*?)의\ 초대로\ 「(.*?)」에\ 합류\.$/,"$1、$2の招待で「$3」に合流。","$1 joins “$3” at $2's invitation."],
 [/^우리가\ (.*?)에\ (.*?)을\ 약속했습니다\.$/,"自党は$1に$2を約束しました。","We promised $1 a $2 vote."],
 [/^비상\ 체제\ ·\ (.*?)\ ·\ 저항\ (.*?)%$/,"非常体制 · $1 · 抵抗 $2%","Emergency rule · $1 · resistance $2%"],
+[/^(.*?)\ 계정으로\ 멀티플레이합니다\.$/,"$1のアカウントでマルチプレイします。","Playing multiplayer as $1."],
 [/^검찰,\ (.*?)\ 관련\ 수사\ 착수\.$/,"検察、$1関連の捜査に着手。","Prosecutors open an investigation into $1."],
 [/^(.*?),\ 외부\ 인재\ 영입\ 발표\.$/,"$1、外部人材の登用を発表。","$1 announces new outside recruits."],
 [/^지금은\ 총리가\ 없습니다\.\ (.*?)$/,"いまは首相がいません。$1","There is no prime minister right now. $1"],

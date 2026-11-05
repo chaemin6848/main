@@ -459,7 +459,7 @@ AI 정당과 혼자 하기	AI政党と一人で遊ぶ	Play solo against AI parti
 방 참가	ルームに参加	Join a room
 참가	参加	Join
 규칙 3분 요약	ルール3分まとめ	The rules in 3 minutes
-회원가입 없이 익명으로 접속합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.	会員登録なしで匿名で接続します。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。	You connect anonymously, no sign-up needed. Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details.
+멀티플레이는 사이트 공통 로그인(Google 또는 이메일)이 필요합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.	マルチプレイにはサイト共通ログイン（Googleまたはメール）が必要です。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。	Multiplayer requires the site-wide sign-in (Google or email). Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details.
 대통령 선거는 중간 분기 말에 치릅니다.	大統領選挙は中間の四半期末に行います。	The presidential election is held at the end of the middle quarter.
 의원내각제	議院内閣制	Parliamentary system
 : 첫 분기와 총선·해산·불신임 다음 분기에 의석수로 총리를 뽑습니다. 총리 당과 그 연대 상대가 여당입니다. 불신임이 가결되면 내각이 물러나고, 총리는 의회를 해산할 수 있습니다.	：最初の四半期と、総選挙・解散・不信任の次の四半期に議席数で首相を選びます。首相の党とその連携相手が与党です。不信任が可決されると内閣は退陣し、首相は議会を解散できます。	: The prime minister is chosen by seat count in the first quarter and in the quarter after an election, dissolution or no-confidence vote. The PM's party and its allies form the government. If no-confidence passes the cabinet resigns; the PM can dissolve parliament.
@@ -1450,6 +1450,15 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 시민 혁명	市民革命	People power
 다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.	他党の非常体制が市民革命で崩壊するのを見届けます。	See another party's emergency rule collapse in a popular revolution.
 압도적 과반	圧倒的多数	Overwhelming majority
+멀티플레이는 로그인(Google 또는 이메일)이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.	マルチプレイにはログイン（Googleまたはメール）が必要です。AI政党とのひとりプレイはログインなしで遊べます。	Multiplayer requires signing in (Google or email). Solo play against AI parties works without it.
+로그인 · 회원가입	ログイン・新規登録	Log in / Sign up
+{0} 계정으로 멀티플레이합니다.	{0}のアカウントでマルチプレイします。	Playing multiplayer as {0}.
+로그아웃해서 멀티 방에서 나왔습니다.	ログアウトしたため、マルチの部屋から退出しました。	You signed out, so you've left the multiplayer room.
+다른 계정으로 바뀌어 멀티 방에서 나왔습니다.	別のアカウントに切り替わったため、マルチの部屋から退出しました。	You switched accounts, so you've left the multiplayer room.
+로그인하지 못했습니다.	ログインできませんでした。	Couldn't sign in.
+멀티플레이는 로그인(Google 또는 이메일)이 필요합니다.	マルチプレイにはログイン（Googleまたはメール）が必要です。	Multiplayer requires signing in (Google or email).
+멀티 서버에 연결되지 않았습니다.	マルチサーバーに接続されていません。	Not connected to the multiplayer server.
+마이페이지	マイページ	My page
 # 2026-11 국가 상태·공약·노선 이동·수정안·공천·계파
 선거 공약	選挙公約	Campaign pledge
 그 지역 기반이 바로 오릅니다. 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +3, 못 지키면 신뢰 −6·승점 −3. 한꺼번에 2개까지.	その地域の基盤がすぐ上がります。次の総選挙までにその分野の法案が私たちの賛成で可決されれば信頼 +4・勝ち点 +3、守れなければ信頼 −6・勝ち点 −3。同時に2つまで。	Your base in that region rises at once. If a law in that field passes with your vote before the next general election: trust +4, score +3. If not: trust −6, score −3. Up to 2 at a time.

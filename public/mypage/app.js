@@ -1,7 +1,7 @@
 // 마이페이지: 사이트 전체 이용 현황.
 // 로그인하면 계정에 저장된 기록(userData·dexSaves·나가타초 노트 회원 정보)을, 로그인하지 않았거나 계정 기록이 없으면 이 기기의 기록을 보여 준다.
 // 제1당은 계정에 저장하지 않으므로 늘 이 기기 기록이다. 읽기만 하고 아무것도 쓰지 않는다.
-import { onUser, loginForm, signOut } from "/shared/account.js";
+import { onUser, loginForm, signOut, linkGoogle, updateName, errorText } from "/shared/account.js";
 import { getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -27,6 +27,18 @@ const T = {
   out: ["로그아웃", "ログアウト", "Log out"],
   google: ["Google 계정", "Googleアカウント", "Google account"],
   email: ["이메일 계정", "メールアカウント", "Email account"],
+  ways: ["로그인 방법", "ログイン方法", "Sign-in methods"],
+  wGoogle: ["Google", "Google", "Google"],
+  wEmail: ["이메일·비밀번호", "メール・パスワード", "Email and password"],
+  linked: ["연동됨", "連携済み", "Linked"],
+  unlinked: ["연동 안 됨", "未連携", "Not linked"],
+  doLink: ["Google 계정 연동", "Googleアカウントを連携", "Link Google account"],
+  linkHint: ["연동하면 이메일·Google 어느 쪽으로 로그인해도 같은 계정이에요.", "連携すると、メールとGoogleのどちらでログインしても同じアカウントです。", "Once linked, signing in with either email or Google opens this same account."],
+  linkedOk: ["Google 계정을 연동했어요.", "Googleアカウントを連携しました。", "Google account linked."],
+  nameL: ["이름", "名前", "Name"],
+  save: ["저장", "保存", "Save"],
+  savedOk: ["이름을 바꿨어요.", "名前を変更しました。", "Name updated."],
+  busy: ["잠시만요…", "お待ちください…", "One moment…"],
   acctNote: ["계정 기록을 불러오는 중이에요…", "アカウントの記録を読み込んでいます…", "Loading your account data…"],
   acctOk: ["계정에 저장된 기록을 보여 줘요. 계정 기록이 없는 도구는 이 기기 기록이에요.", "アカウントに保存された記録を表示しています。アカウントに記録がないツールはこの端末の記録です。", "Showing your account data. Tools with nothing in your account show this device's data."],
   acctBad: ["계정 기록을 읽지 못해서 이 기기 기록을 보여 줘요.", "アカウントの記録を読めなかったため、この端末の記録を表示しています。", "Couldn't read your account data, so this device's data is shown."],
@@ -205,13 +217,33 @@ function acctCard(user, state) {
     return;
   }
   const initial = esc((user.name || user.email || "?").trim().charAt(0).toUpperCase());
-  const how = user.photo ? L("google") : L("email");
+  const pv = user.providers || [], hasG = pv.includes("google.com"), hasE = pv.includes("password");
+  const how = hasG ? L("google") : L("email");
   box.innerHTML = `<div class="acct"><span class="avatar">${user.photo ? `<img alt="" referrerpolicy="no-referrer" src="${esc(user.photo)}">` : initial}</span>
     <span class="who"><b>${esc(user.name || user.email)}</b><span>${esc(user.email)} · ${how}</span></span><button type="button" class="btn" id="out">${L("out")}</button></div>
+    <form class="nm-edit" id="nm-form"><label class="nd-field"><span>${L("nameL")}</span><input id="nm" maxlength="30" autocomplete="nickname" value="${esc(user.name || "")}"></label><button type="submit" class="btn">${L("save")}</button></form>
+    <div class="ways"><b>${L("ways")}</b>
+      <div class="way"><span>${L("wGoogle")}</span>${hasG ? `<span class="ok">${L("linked")}</span>` : `<button type="button" class="btn pri" id="link-g">${L("doLink")}</button>`}</div>
+      <div class="way"><span>${L("wEmail")}</span><span class="${hasE ? "ok" : "muted"}">${L(hasE ? "linked" : "unlinked")}</span></div>
+      ${hasG ? "" : `<p class="note">${L("linkHint")}</p>`}
+      <p class="note" id="acct-msg" role="status"></p>
+    </div>
     <p class="note${state === "bad" ? " bad" : ""}">${L(state === "load" ? "acctNote" : state === "bad" ? "acctBad" : "acctOk")}</p>`;
   const img = box.querySelector("img"); if (img) img.onerror = () => { img.parentNode.textContent = initial; };
   $("out").onclick = () => signOut();
+  const msg = $("acct-msg"), say = (t, bad) => { msg.textContent = t || ""; msg.classList.toggle("bad", !!bad); };
+  // 성공 문구는 다시 그린 뒤에도 남긴다 (연동·이름 변경은 계정 알림 → 카드 다시 그리기로 이어진다)
+  if (acctFlash && Date.now() < acctFlash.until) say(acctFlash.t);
+  const run = async (btn, fn, ok) => {
+    btn.disabled = true; say(L("busy"));
+    try { acctFlash = { t: ok, until: Date.now() + 6000 }; await fn(); say(ok); }
+    catch (e) { acctFlash = null; say(errorText(e, lang), true); }
+    finally { btn.disabled = false; }
+  };
+  const lg = $("link-g"); if (lg) lg.onclick = () => run(lg, () => linkGoogle(), L("linkedOk"));
+  $("nm-form").onsubmit = ev => { ev.preventDefault(); const v = $("nm").value.trim(); if (!v || v === user.name) return; run(ev.submitter || $("nm-form").querySelector("button"), () => updateName(v), L("savedOk")); };
 }
+let acctFlash = null;
 
 function renderAll(user, cloud, state) {
   document.title = L("title"); $("t-h1").textContent = L("h1"); $("t-lead").textContent = L("lead");

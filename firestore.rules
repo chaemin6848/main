@@ -80,19 +80,20 @@ service cloud.firestore {
     }
 
     /* ---------- 제1당 ---------- */
-    // 방 코드: 영문 대문자·숫자 4자리. 로그인(익명 포함)한 사람은 누구나 방을 보고 관전할 수 있다.
+    // 방 코드: 영문 대문자·숫자 4자리. 로그인한 사람은 누구나 방을 보고 관전할 수 있다.
+    // 멀티플레이는 Google·이메일로 로그인한 계정만 (익명 로그인은 막는다)
     match /jeilGames/{code} {
       function room() { return get(/databases/$(database)/documents/jeilGames/$(code)).data; }
-      function isHost() { return signedIn() && room().hostId == request.auth.uid; }
+      function isHost() { return realUser() && room().hostId == request.auth.uid; }
       function isMember() {
-        return signedIn() && exists(/databases/$(database)/documents/jeilGames/$(code)/members/$(request.auth.uid));
+        return realUser() && exists(/databases/$(database)/documents/jeilGames/$(code)/members/$(request.auth.uid));
       }
 
-      allow get: if signedIn();
+      allow get: if realUser();
       // 첫 화면의 '최근 방' 목록 (createdAt 순 30개)
-      allow list: if signedIn() && request.query.limit <= 50;
+      allow list: if realUser() && request.query.limit <= 50;
       // 방 만들기: 내가 방장, 대기실 상태로
-      allow create: if signedIn() && code.matches('^[A-Z0-9]{4}$')
+      allow create: if realUser() && code.matches('^[A-Z0-9]{4}$')
         && request.resource.data.hostId == request.auth.uid
         && request.resource.data.status == 'lobby'
         && request.resource.data.code == code;
@@ -104,20 +105,20 @@ service cloud.firestore {
 
       // 참가자: 본인 문서만. 새로 들어오는 건 대기실일 때만 (진행 중인 판은 관전)
       match /members/{uid} {
-        allow read: if signedIn();
-        allow create: if isMe(uid) && room().status == 'lobby';
-        allow update: if isMe(uid);
-        allow delete: if isMe(uid) || isHost();
+        allow read: if realUser();
+        allow create: if (isMe(uid) && realUser()) && room().status == 'lobby';
+        allow update: if (isMe(uid) && realUser());
+        allow delete: if (isMe(uid) && realUser()) || isHost();
       }
       // 분기마다 내는 행동 (본인 것만, 참가자만)
       match /moves/{uid} {
-        allow read: if signedIn();
-        allow write: if isMe(uid) && isMember();
+        allow read: if realUser();
+        allow write: if (isMe(uid) && realUser()) && isMember();
       }
       // 대화·협상 문서 (본인 것만, 참가자만)
       match /chat/{uid} {
-        allow read: if signedIn();
-        allow write: if isMe(uid) && isMember();
+        allow read: if realUser();
+        allow write: if (isMe(uid) && realUser()) && isMember();
       }
       // 분기 처리를 한 사람만 하도록 잡는 짧은 임대
       match /lease/{id} {

@@ -50,6 +50,45 @@ h1{font-family:var(--f-display);font-weight:400;font-size:1.3rem;margin:0;text-w
 #saveSeg button[data-v="0"][aria-pressed="true"]{background:var(--v0)}
 #saveSeg button[data-v="1"][aria-pressed="true"]{background:var(--v1)}
 #langSeg button{font-size:.78rem;padding:4px 9px}
+/* 계정 (Google 로그인 → 체크 기록 기기 간 동기화, cloud.js) */
+.topr{display:flex;align-items:center;gap:8px;margin-left:auto}
+.acct{position:relative;flex:none}
+.acct-btn{font:inherit;font-size:.78rem;font-weight:600;min-width:30px;height:30px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer;display:grid;place-items:center;white-space:nowrap}
+.acct-btn:hover{border-color:var(--fg)}
+.acct-btn.me{width:30px;padding:0;border-radius:50%;overflow:hidden;background:var(--line)}
+.acct-btn.me img{width:100%;height:100%;object-fit:cover;display:block}
+.acct-btn.warn{box-shadow:0 0 0 2px var(--v0)}
+.acct-pop{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:max-content;max-width:min(300px,calc(100vw - 32px));padding:12px;background:var(--surface);color:var(--fg);
+  border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:grid;gap:4px;font-size:.82rem;line-height:1.45}
+.acct-pop b{font-size:.9rem;overflow-wrap:anywhere}
+.acct-pop .mail{color:var(--muted);overflow-wrap:anywhere}
+.acct-pop .st{color:var(--muted);margin-top:4px}
+.acct-pop .st.bad,.acct-pop .err{color:var(--v0)}
+.acct-pop .out{justify-self:start;margin-top:6px;font:inherit;font-size:.8rem;padding:5px 12px;border:1px solid var(--line);border-radius:6px;background:none;color:var(--fg);cursor:pointer}
+.acct-pop .out:hover{border-color:var(--fg)}
+.acct-pop .me,.acct-pop .in{display:grid;gap:4px}
+.acct-pop.wide{width:min(300px,calc(100vw - 32px));max-width:none}
+.acct-pop .me,.acct-pop .in{min-width:0}
+.acct-pop .why{margin:0 0 6px;color:var(--muted)}
+/* 로그인 상자 (/shared/account.js loginForm) */
+.nd-login{display:grid;gap:8px}
+.nd-google,.nd-submit{font:inherit;font-size:.85rem;font-weight:600;padding:8px 12px;border-radius:6px;cursor:pointer}
+.nd-google{border:1px solid var(--fg);background:var(--fg);color:var(--bg)}
+.nd-submit{border:1px solid var(--fg);background:none;color:var(--fg)}
+.nd-google:disabled,.nd-submit:disabled{opacity:.6;cursor:default}
+.nd-or{margin:4px 0 0;font-size:.75rem;color:var(--muted);text-align:center}
+.nd-form{display:grid;gap:8px}
+.nd-field{display:grid;gap:3px;font-size:.75rem;color:var(--muted)}
+.nd-field input{font:inherit;font-size:16px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:0}
+.nd-agree{display:flex;gap:6px;align-items:flex-start;font-size:.75rem;color:var(--fg)}
+.nd-agree input{margin:2px 0 0;flex:none}
+.nd-agree a{color:inherit}
+.nd-links{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.nd-link{font:inherit;font-size:.75rem;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+.nd-msg{margin:0;font-size:.78rem;color:var(--done);min-height:1em}
+.nd-msg:empty{display:none}
+.nd-msg.bad{color:var(--v0)}
+.nd-note{margin:2px 0 0;font-size:.72rem;color:var(--muted)}
 #langSeg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .tabs{display:flex;gap:4px;margin-top:10px}
 .tabs button{font:inherit;font-size:.9rem;border:0;background:none;color:var(--muted);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}

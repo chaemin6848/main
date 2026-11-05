@@ -198,6 +198,8 @@
     $("tutorial-close").addEventListener("click", close);
     $("tutorial-dismiss").addEventListener("change", (e) => { if (e.target.checked) set(KEYS.tutorial, "1"); });
     els.score.textContent = state.score;
+    // 로그인한 계정에서 더 새 기록을 받으면(/shared/sync.js) 맞힌 개수와 저장 버튼을 다시 그린다
+    window.addEventListener("nd:synced", () => { state.score = Math.max(state.score, readScore()); els.score.textContent = state.score; if (state.current) updateSave(); });
     pick();
     if (dialog && !get(KEYS.tutorial)) { dialog.showModal(); $("tutorial-start").focus(); }
   }
@@ -287,6 +289,11 @@
     buttons.forEach((b) => b.addEventListener("click", () => { state.level = b.dataset.level; state.lesson = 0; state.savedLevel = ""; buttons.forEach((x) => x.classList.toggle("active", x === b)); render(); }));
     search.addEventListener("input", () => { state.query = search.value; state.lesson = 0; state.savedLevel = ""; render(); });
     $("score").textContent = readScore();
+    // 로그인한 계정에서 더 새 기록을 받으면(/shared/sync.js) 체크와 My words를 다시 읽어 그린다
+    window.addEventListener("nd:synced", () => {
+      for (const [s, k] of [[checked, KEYS.checked], [saved, KEYS.saved]]) { const next = readSet(k); s.clear(); next.forEach((v) => s.add(v)); }
+      $("score").textContent = readScore(); render();
+    });
     render();
   }
 

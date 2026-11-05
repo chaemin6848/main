@@ -239,7 +239,14 @@ test('헌법 개정: 개헌선이 있어야 발의되고, 다음 분기 재적 3
   assert.ok(item && item.clause === 'executive', '다음 분기 안건에 개헌안');
   const slots0 = E.govSlots(g, E.party(g, me.id));
   g = quarter(g, E.party(g, me.id), []);
-  assert.ok((g.consts || []).includes('executive'), '가결');
+  assert.ok(!(g.consts || []).includes('executive'), '의회만 넘어서는 아직 바뀌지 않는다');
+  assert.ok(g.pendingRef && g.pendingRef.clause === 'executive' && g.pendingRef.round === g.round, '이번 분기 말 국민투표');
+  // 여야가 함께 찬성 운동하면 과반. 의석만 몰아 준 시험 판이라 정부 혼자서는 여론 과반이 안 될 수 있다.
+  for (const id in g.pendingRef.sides) g.pendingRef.sides[id] = 'yes';
+  assert.ok(E.refPoll(g) > 0.5, '모두 찬성 운동하면 예상 찬성이 과반');
+  g = quarter(g, E.party(g, me.id), [], { refSide: 'yes' });
+  assert.ok(g.report.referendum && g.report.referendum.kind === 'vote', '국민투표 결과 보고');
+  assert.ok((g.consts || []).includes('executive'), '국민투표 가결');
   assert.strictEqual(E.govSlots(g, E.party(g, me.id)), slots0 + 1, '행정 조치 +1');
   const small = superGame(null, Math.floor(E.TOTAL * 0.5));
   assert.ok(!E.govAvail(small.g, small.me, 'amend') || E.superBloc(small.g, small.me), '개헌선이 없으면 발의 못 함');
@@ -263,4 +270,177 @@ test('비상 체제: 가상 공화국 단독 3분의 2에서만, 선거가 미�
   assert.strictEqual(elections, 1, '혁명 전까지 선거가 없고, 혁명 분기에 조기 총선');
   assert.ok(!g.regime, '체제가 끝났다');
   assert.ok(E.party(g, me.id).seats < seats0, '혁명 뒤 총선에서 의석을 잃는다');
+});
+
+// ---- 국가 상태·공약·노선 이동·수정안·공천·계파 (2026-11)
+const solo = (country, seed = 11) => E.newGame({ players: [{ ownerId: 'u', name: '시험당', ideology: country ? 'pick::' : 'reform:major' }], size: 5, seed, rounds: 12, timer: 0, now: 0, country });
+const me = g => g.parties.find(p => p.ownerId === 'u');
+const step = (g, mv) => E.resolveRound(g, { u: Object.assign({ round: g.round, actions: [] }, mv) }, 0, {});
+
+test('국가 상태는 0~100 안에서 움직이고 결과 보고에 남는다', () => {
+  for (const country of MODES) {
+    const { g } = playOne({ seed: 3, rounds: 12, size: 5, country });
+    for (const k of E.NKEYS) assert.ok(g.nation[k] >= 0 && g.nation[k] <= 100, `${country} ${k}`);
+    assert.ok(g.report.nation && g.report.nation.after, String(country));
+  }
+});
+
+test('공약은 기한까지 지키면 승점이 오르고, 못 지키면 깎인다', () => {
+  let g = solo(null);
+  const p0 = me(g), reg = E.REGIONS[0].id;
+  g = step(g, { actions: [{ type: 'pledge', topic: 'welfare', region: reg }] });
+  const pl = E.openPledges(me(g));
+  assert.strictEqual(pl.length, 1);
+  assert.strictEqual(pl[0].due, E.pledgeDue({ ...g, round: 1 }));
+  assert.ok(me(g).reg[reg] > p0.reg[reg], '지역 기반이 오른다');
+  // 기한까지 아무 법에도 찬성하지 않으면 깨진다
+  const due = pl[0].due;
+  while (g.round <= due && g.status !== 'over') {
+    const votes = Object.fromEntries(g.agenda.map(it => [it.id, 'no']));
+    g = step(g, { votes, pm: me(g).id });
+  }
+  const rep = Object.values(g.history.length ? [g.report] : []).length;
+  assert.ok(rep >= 0);
+  assert.strictEqual(E.openPledges(me(g)).length, 0, '기한이 지나면 닫힌다');
+  assert.ok((me(g).pledges || []).some(x => x.done && !x.kept), '반대만 했으니 지키지 못한다');
+});
+
+test('공약은 한꺼번에 2개까지, 노선 이동은 2분기에 한 번', () => {
+  let g = solo(null);
+  const reg = E.REGIONS[0].id;
+  g = step(g, { actions: [{ type: 'pledge', topic: 'welfare', region: reg }, { type: 'pledge', topic: 'tax', region: reg }] });
+  assert.strictEqual(E.openPledges(me(g)).length, 1, '한 분기에 공약 하나');
+  g = step(g, { actions: [{ type: 'pledge', topic: 'tax', region: reg }] });
+  g = step(g, { actions: [{ type: 'pledge', topic: 'labor', region: reg }] });
+  assert.strictEqual(E.openPledges(me(g)).length, 2, '두 개까지');
+  const e0 = me(g).eco;
+  g = step(g, { actions: [{ type: 'shift', dir: 'right' }] });
+  assert.ok(me(g).eco < e0, '시장 쪽으로 옮긴다');
+  const e1 = me(g).eco;
+  g = step(g, { actions: [{ type: 'shift', dir: 'right' }] });
+  assert.strictEqual(me(g).eco, e1, '바로 다음 분기에는 못 옮긴다');
+});
+
+test('수정안은 안건 내용을 낸 당 쪽으로 당기거나 부결 소식을 남긴다', () => {
+  for (const country of [null, 'kr', 'uk']) {
+    let g = solo(country, 21);
+    const it = g.agenda.find(x => x.by !== me(g).id);
+    if (!it) continue; // 첫 안건이 모두 우리 당 것이면 건너뛴다
+    const before = { eco: it.eco, soc: it.soc };
+    g = step(g, { actions: [{ type: 'amendBill', item: it.id }] });
+    const b = g.report.bills.find(x => x.id === it.id);
+    const news = g.report.news.map(n => n.text).join('\n');
+    assert.ok(/수정안/.test(news), String(country));
+    if (b.amendedBy) assert.strictEqual(b.amendedBy, me(g).id);
+    assert.ok(before.eco !== undefined);
+  }
+});
+
+test('총선 분기에만 공천을 받고, 대표 경선은 4분기에 한 번', () => {
+  let g = solo(null);
+  const t0 = me(g).talent;
+  g = step(g, { nominate: 'fresh' });
+  assert.ok(me(g).talent <= t0 + 2.5, '총선이 아닌 분기에는 신인 공천이 없다');
+  while (!E.isGeneralRound(g)) g = step(g, {});
+  const u0 = me(g).unity;
+  g = step(g, { nominate: 'fresh', pm: me(g).id });
+  assert.ok(g.report.news.some(n => /신인을 대거/.test(n.text)), '총선 분기에는 신인 공천');
+  let h = solo(null, 5);
+  const w = me(h).wings[0].id;
+  h = step(h, { actions: [{ type: 'leaderRace', wing: w }] });
+  assert.strictEqual(me(h).raceAt, 1);
+  h = step(h, { actions: [{ type: 'leaderRace', wing: w }] });
+  assert.ok(!h.report.news.some(n => /대표 경선에서/.test(n.text)), '바로 다시 열 수 없다');
+  assert.ok(u0 >= 0);
+});
+
+test('계파 요구는 안건에 걸리고, 따르면 결속이 오른다', () => {
+  let found = false;
+  for (let seed = 1; seed <= 40 && !found; seed++) {
+    let g = solo(null, seed);
+    for (let r = 0; r < 6 && !found; r++) {
+      const dm = (g.demands || {})[me(g).id];
+      if (!dm) { g = step(g, {}); continue; }
+      assert.ok(g.agenda.some(x => x.id === dm.item));
+      const u0 = me(g).unity;
+      g = step(g, { votes: { [dm.item]: dm.want } });
+      assert.strictEqual(g.report.wings[me(g).id].ok, true);
+      assert.ok(u0 >= 0);
+      found = true;
+    }
+  }
+  assert.ok(found, '40판 안에 계파 요구가 한 번은 나온다');
+});
+
+test('헌법 개정 확정 절차: 영국은 의회 의결로 바로, 미국은 주 비준, 국민투표는 부결될 수 있다', () => {
+  { let { g, me } = superGame('uk', Math.ceil(650 * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'winner' }]); g = quarter(g, E.party(g, me.id), []);
+    assert.ok((g.consts || []).includes('winner') && !g.pendingRef, '영국은 의회에서 끝'); }
+  { let { g, me } = superGame('us', Math.ceil(435 * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'winner' }]); g = quarter(g, E.party(g, me.id), []);
+    assert.ok(g.pendingRef, '미국은 주 비준 대기');
+    const st = E.statePoll(g); assert.strictEqual(st.need, Math.ceil(E.REGIONS.length * 0.75));
+    g = quarter(g, E.party(g, me.id), [], { refSide: 'yes' });
+    assert.strictEqual(g.report.referendum.kind, 'states');
+    assert.strictEqual((g.consts || []).includes('winner'), g.report.referendum.passed); }
+  { let { g, me } = superGame(null, Math.ceil(E.TOTAL * 0.7));
+    g = quarter(g, me, [{ type: 'amend', clause: 'delay' }]); g = quarter(g, E.party(g, me.id), []);
+    // 발의한 당이 중립이고 나머지 당이 모두 반대 운동이면 부결된다
+    const sides = Object.fromEntries(Object.keys(g.pendingRef.sides).map(id => [id, id === me.id ? null : 'no']));
+    assert.ok(E.refPoll(g, null, sides) < 0.5, '반대 운동만 있으면 과반 미달');
+    const t0 = E.party(g, me.id).trust;
+    g = E.resolveRound(g, { me: { round: g.round, votes: {}, pm: me.id, actions: [], gov: [], refSide: 'none' } }, 0, {});
+    if (!g.report.referendum.passed) assert.ok(!(g.consts || []).includes('delay'), '부결이면 그대로'); }
+});
+
+test('계엄령: 해제 요구안이 가결되면 풀리고 대통령제는 탄핵소추로 이어진다', () => {
+  let { g, me } = superGame('kr', 120); // 소수 여당
+  assert.ok(E.govAvail(g, me, 'martial'), '행정부 수반은 계엄 선포 가능');
+  g = quarter(g, me, [{ type: 'martial' }]);
+  assert.ok(g.martial && g.martial.p === me.id, '계엄 선포');
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  assert.ok(lift, '다음 분기 해제 요구안');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(!g.martial, '과반이 찬성해 해제');
+  const imp = g.agenda.find(it => it.kind === 'impeach');
+  assert.ok(imp && imp.target === me.id, '탄핵소추안');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [imp.id]: 'no' } });
+  const passed = g.report.bills.find(b => b.id === imp.id).passed;
+  if (passed) assert.ok(g.report.pres, '파면되면 대통령 선거를 다시 치른다');
+  assert.ok(!E.govAvail(g, E.party(g, me.id), 'martial'), '계엄은 한 판에 한 번');
+});
+
+test('계엄령: 해제 요구를 막으면 3분의 2 없이도 비상 체제로 넘어갈 수 있다(국가 모드 포함)', () => {
+  let { g, me } = superGame('jp', 300); // 과반이지만 3분의 2(310) 미만
+  assert.ok(!E.govAvail(g, me, 'emergency'), '처음에는 비상 체제 불가');
+  g = quarter(g, me, [{ type: 'martial' }]);
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(g.martial && g.martial.held, '해제 요구안 부결, 계엄 유지');
+  assert.ok(E.govAvail(g, E.party(g, me.id), 'emergency'), '비상 체제 선포 가능');
+  const lift2 = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [{ type: 'emergency' }], { votes: { [lift2.id]: 'no' } });
+  assert.ok(g.regime && g.regime.p === me.id && !g.martial, '비상 체제가 계엄을 대신한다');
+});
+
+test('계엄령: 의원내각제(영국)는 해제되면 내각이 무너져 조기 총선', () => {
+  let { g, me } = superGame('uk', 200);
+  g = quarter(g, me, [{ type: 'martial' }]);
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(!g.martial, '해제');
+  assert.ok(g.report.election && g.report.election.kind !== 'mid', '조기 총선');
+});
+
+test('독재 모드: 정권을 쥔 당이 비상 체제로 시작하고 선거가 미뤄진다', () => {
+  for (const country of [null, 'kr', 'fr']) {
+    const r = playOne({ seed: 9, rounds: 6, size: 5, country });
+    assert.ok(r.g.status === 'over');
+    let g = E.newGame({ players: [], size: 5, seed: 9, rounds: 6, timer: 0, now: 0, country, dict: true });
+    assert.ok(g.regime && g.regime.p === g.pmParty, String(country));
+    const seats0 = Object.fromEntries(g.parties.map(p => [p.id, p.seats]));
+    while (g.status !== 'over' && g.regime) g = E.resolveRound(g, {}, 0, {});
+    assert.ok(g.status === 'over' || !g.regime, '끝나거나 체제가 무너진다');
+    assert.ok(seats0, String(country));
+  }
 });

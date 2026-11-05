@@ -29,6 +29,7 @@
     "필착(도착 기준)과 소인유효(발송 기준)는 대학마다 다릅니다. 출원 전 반드시 각 대학 공식 요항으로 재확인하세요.": "Whether documents must arrive by the deadline (必着) or be postmarked by it (消印有効) differs by university. Always double-check each university's official guidelines before applying.",
     "모바일에서는 캘린더 날짜를 누르면 그날 일정만 아래에 표시됩니다.": "On mobile, tap a calendar date to list only that day's events below.",
     "쿠키에는 고른 지망 대학 목록과 동의 여부만 저장되며, 이 브라우저 밖으로 보내지 않습니다. 보관 기간은 1년입니다.": "The cookie stores only your selected universities and your consent choice, and never leaves this browser. It is kept for one year.",
+    "로그인하면 고른 지망 목록이 계정에도 저장되어 다른 기기에서도 이어집니다. 로그아웃해도 이 기기의 선택은 그대로입니다.": "If you log in, your selection is also saved to your account and carries over to other devices. Logging out keeps the selection on this device.",
     "출원": "Apply",
     "면접·시험": "Interview / exam",
     "합격발표": "Results",
@@ -157,7 +158,7 @@
   ND.add("en", EN);
   ND.pat("en", [
     [/^지망 (\d+)개( · .+)?$/, function (_, n, rest) {
-      var tail = { " · 쿠키 저장 중": " · saved in cookie", " · 이 환경에서는 쿠키 저장 불가": " · cookies unavailable here", " · 저장 안 함": " · not saved" };
+      var tail = { " · 쿠키 저장 중": " · saved in cookie", " · 이 환경에서는 쿠키 저장 불가": " · cookies unavailable here", " · 저장 안 함": " · not saved", " · 계정에 저장 중": " · saved to your account" };
       return n + " selected" + (rest ? (tail[rest] || rest) : "");
     }],
     [/^지망 (\d+)개 학부$/, "$1 faculties selected"],
@@ -172,4 +173,6 @@
   ]);
   // 낱말 바꿈 뒤에도 한글이 남으면(=사전에 없는 문장) 어설픈 섞어 쓰기 대신 원문을 둔다
   ND.fallback("en", function (s) { if (!/[\uac00-\ud7a3]/.test(s)) return null; var r = gloss(s); return /[\uac00-\ud7a3]/.test(r) ? null : r; });
+  // 일본어 화면(마이페이지 등)에서 일유알리미 일정을 보일 때 쓰는 영어 번역. 문장 사전 → 낱말 사전 순서, 못 바꾸면 원문
+  window.ALARM_EN = function (s) { if (EN[s] != null) return EN[s]; var r = gloss(String(s)); return /[\uac00-\ud7a3]/.test(r) ? s : r; };
 })();

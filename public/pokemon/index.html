@@ -30,6 +30,7 @@
 /* Layout: one column — title + language switch, then one card per game with both save meters */
 .hub{display:grid;gap:28px;padding-top:12px}
 .hub .top{align-items:flex-start}
+.hub .site-home{margin-bottom:-18px;justify-self:start}
 .hub h1{font-size:1.7rem}
 .lead{margin:6px 0 0;color:var(--muted);font-size:.9rem;max-width:46ch}
 .games{list-style:none;margin:0;padding:0;display:grid;gap:14px}
@@ -53,15 +54,19 @@
 </head>
 <body>
 <div class="wrap hub">
+  <a class="home site-home" href="/" data-i="site"></a>
   <div class="top">
     <div>
       <h1 data-i="h1"></h1>
       <p class="lead" data-i="lead"></p>
     </div>
-    <div class="seg" id="langSeg" role="group" aria-label="Language">
-      <button type="button" data-l="ko" lang="ko">한국어</button>
-      <button type="button" data-l="ja" lang="ja">日本語</button>
-      <button type="button" data-l="en" lang="en">English</button>
+    <div class="topr">
+      <div class="seg" id="langSeg" role="group" aria-label="Language">
+        <button type="button" data-l="ko" lang="ko">한국어</button>
+        <button type="button" data-l="ja" lang="ja">日本語</button>
+        <button type="button" data-l="en" lang="en">English</button>
+      </div>
+      <div class="acct" id="acct"><button type="button" class="acct-btn"></button></div>
     </div>
   </div>
 

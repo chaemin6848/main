@@ -459,7 +459,7 @@ AI 정당과 혼자 하기	AI政党と一人で遊ぶ	Play solo against AI parti
 방 참가	ルームに参加	Join a room
 참가	参加	Join
 규칙 3분 요약	ルール3分まとめ	The rules in 3 minutes
-회원가입 없이 익명으로 접속합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.	会員登録なしで匿名で接続します。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。	You connect anonymously, no sign-up needed. Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details.
+멀티플레이는 사이트 공통 로그인(Google 또는 이메일)이 필요합니다. 정당 이름과 대화는 게임 진행을 위해 Google Firebase에 저장되고 같은 게임의 참가자에게 보이니 실명이나 연락처는 적지 마세요.	マルチプレイにはサイト共通ログイン（Googleまたはメール）が必要です。政党名と会話はゲーム進行のためにGoogle Firebaseに保存され、同じゲームの参加者に見えるため、本名や連絡先は書かないでください。	Multiplayer requires the site-wide sign-in (Google or email). Party names and chat are stored in Google Firebase to run the game and are visible to other players in the same game, so don't use your real name or contact details.
 대통령 선거는 중간 분기 말에 치릅니다.	大統領選挙は中間の四半期末に行います。	The presidential election is held at the end of the middle quarter.
 의원내각제	議院内閣制	Parliamentary system
 : 첫 분기와 총선·해산·불신임 다음 분기에 의석수로 총리를 뽑습니다. 총리 당과 그 연대 상대가 여당입니다. 불신임이 가결되면 내각이 물러나고, 총리는 의회를 해산할 수 있습니다.	：最初の四半期と、総選挙・解散・不信任の次の四半期に議席数で首相を選びます。首相の党とその連携相手が与党です。不信任が可決されると内閣は退陣し、首相は議会を解散できます。	: The prime minister is chosen by seat count in the first quarter and in the quarter after an election, dissolution or no-confidence vote. The PM's party and its allies form the government. If no-confidence passes the cabinet resigns; the PM can dissolve parliament.
@@ -1450,13 +1450,176 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 시민 혁명	市民革命	People power
 다른 당의 비상 체제가 시민 혁명으로 무너지는 것을 지켜봅니다.	他党の非常体制が市民革命で崩壊するのを見届けます。	See another party's emergency rule collapse in a popular revolution.
 압도적 과반	圧倒的多数	Overwhelming majority
-멀티플레이는 Google 로그인이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.	マルチプレイにはGoogleログインが必要です。AI政党とのひとりプレイはログインなしで遊べます。	Multiplayer requires a Google sign-in. Solo play against AI parties works without one.
-Google로 로그인	Googleでログイン	Sign in with Google
+멀티플레이는 로그인(Google 또는 이메일)이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.	マルチプレイにはログイン（Googleまたはメール）が必要です。AI政党とのひとりプレイはログインなしで遊べます。	Multiplayer requires signing in (Google or email). Solo play against AI parties works without it.
+로그인 · 회원가입	ログイン・新規登録	Log in / Sign up
 {0} 계정으로 멀티플레이합니다.	{0}のアカウントでマルチプレイします。	Playing multiplayer as {0}.
 로그아웃해서 멀티 방에서 나왔습니다.	ログアウトしたため、マルチの部屋から退出しました。	You signed out, so you've left the multiplayer room.
 다른 계정으로 바뀌어 멀티 방에서 나왔습니다.	別のアカウントに切り替わったため、マルチの部屋から退出しました。	You switched accounts, so you've left the multiplayer room.
 로그인하지 못했습니다.	ログインできませんでした。	Couldn't sign in.
-멀티플레이는 Google 로그인이 필요합니다.	マルチプレイにはGoogleログインが必要です。	Multiplayer requires a Google sign-in.
+멀티플레이는 로그인(Google 또는 이메일)이 필요합니다.	マルチプレイにはログイン（Googleまたはメール）が必要です。	Multiplayer requires signing in (Google or email).
 멀티 서버에 연결되지 않았습니다.	マルチサーバーに接続されていません。	Not connected to the multiplayer server.
-이메일로 로그인	メールでログイン	Log in with email
 마이페이지	マイページ	My page
+# 2026-11 국가 상태·공약·노선 이동·수정안·공천·계파
+선거 공약	選挙公約	Campaign pledge
+그 지역 기반이 바로 오릅니다. 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +3, 못 지키면 신뢰 −6·승점 −3. 한꺼번에 2개까지.	その地域の基盤がすぐ上がります。次の総選挙までにその分野の法案が私たちの賛成で可決されれば信頼 +4・勝ち点 +3、守れなければ信頼 −6・勝ち点 −3。同時に2つまで。	Your base in that region rises at once. If a law in that field passes with your vote before the next general election: trust +4, score +3. If not: trust −6, score −3. Up to 2 at a time.
+노선 이동	路線移動	Shift line
+노선을 한 걸음 옮깁니다. 결속 −8(대형 −10), 신뢰 −2, 멀어지는 지역 기반 −2. 한 번 옮기면 2분기 동안 다시 못 옮깁니다.	路線を一歩動かします。結束 −8(大政党 −10)、信頼 −2、遠ざかる地域の基盤 −2。一度動かすと2四半期は動かせません。	Move your line one step. Unity −8 (−10 for major parties), trust −2, base −2 in regions you move away from. Then you must wait 2 quarters.
+수정안 제출	修正案提出	Table an amendment
+다른 당이 낸 안건의 내용을 우리 노선 쪽으로 35% 당깁니다. 수정안을 더 낫게 보는 의석이 원안을 더 낫게 보는 의석보다 많으면 채택되고, 채택된 법이 우리 찬성으로 통과되면 승점 +1.	他党が出した議案の内容を私たちの路線へ35%引き寄せます。修正案を良しとする議席が原案を良しとする議席より多ければ採択され、採択された法案が私たちの賛成で可決されれば勝ち点 +1。	Pull another party's bill 35% toward your line. It is adopted if more seats prefer the amendment than the original; if the amended bill then passes with your vote, score +1.
+대표 경선	代表選	Leadership race
+밀어줄 계파를 골라 대표 경선을 엽니다. 그 계파 세력만큼 이길 확률이 오르고, 이긴 계파 쪽으로 노선이 옮겨 갑니다. 결속 +12·신뢰 +4(지면 +6·+2). 4분기에 한 번.	推す派閥を選んで代表選を開きます。その派閥の勢力が大きいほど勝ちやすく、勝った派閥の側へ路線が動きます。結束 +12・信頼 +4(負ければ +6・+2)。4四半期に一度。	Back a faction and call a leadership race. The bigger that faction, the likelier it wins; the line moves toward the winner. Unity +12, trust +4 (if your pick loses: +6, +2). Once every 4 quarters.
+국가 상태	国の状態	State of the nation
+국방	国防	Defense
+경제	経済	Economy
+민생	暮らし	Livelihoods
+사회 통합	社会統合	Social cohesion
+위기	危機	Crisis
+책임: {0}	責任: {0}	Accountable: {0}
+어떻게 움직이나요?	どう動くの?	How does it change?
+: 안보 법안과 안보 태세 강화로 오르고, 개방·감군 법안과 안보 위기로 내려갑니다. 35 미만이면 안보 중시 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	：安保法案と安保態勢強化で上がり、開放・軍縮法案と安保危機で下がります。35未満だと安保重視の政党の信頼が上がり、政府の信頼が削られます。	: Rises with security bills and tighter defense; falls with openness or arms-cut bills and security crises. Below 35, security-minded parties gain trust and the government loses it.
+: 시장·성장 법안과 세금 감면으로 오르고, 불황 사건과 지나친 분배 법안으로 내려갑니다. 35 미만이면 모든 당 분기 수입이 15% 줄고 정부 신뢰가 깎입니다.	：市場・成長法案と減税で上がり、不況の事件と行き過ぎた分配法案で下がります。35未満だと全政党の四半期収入が15%減り、政府の信頼が削られます。	: Rises with market and growth bills and tax cuts; falls with recessions and heavy redistribution. Below 35, every party's quarterly income drops 15% and the government loses trust.
+: 분배·복지 법안과 민생 지원금으로 오르고, 물가·재난 사건으로 내려갑니다. 35 미만이면 분배 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	：分配・福祉法案と生活支援金で上がり、物価・災害の事件で下がります。35未満だと分配政党の信頼が上がり、政府の信頼が削られます。	: Rises with redistribution and welfare bills and relief payments; falls with price and disaster events. Below 35, redistribution parties gain trust and the government loses it.
+: 개방·화합 법안과 협치로 오르고, 정치 공세와 갈등 사건으로 내려갑니다. 35 미만이면 모든 당 결속이 분기마다 흔들립니다.	：開放・融和法案と協治で上がり、政治攻勢と対立の事件で下がります。35未満だと全政党の結束が毎四半期揺らぎます。	: Rises with openness and reconciliation bills and cooperation; falls with political attacks and conflict. Below 35, every party's unity wobbles each quarter.
+가결된 법은 노선대로 움직입니다(분배→민생, 시장→경제, 안보·전통→국방, 개방→통합). 손대지 않으면 조금씩 닳습니다.	可決された法案は路線どおりに動かします(分配→暮らし、市場→経済、安保・伝統→国防、開放→統合)。手を入れなければ少しずつすり減ります。	Passed laws move them by their line (redistribution → livelihoods, market → economy, security/tradition → defense, openness → cohesion). Left alone they slowly wear down.
+정부 수반 당은 분기마다 네 지표 평균에 따라 신뢰가 오르내리고, 35 미만인 지표마다 신뢰 −1.5. 연립 상대는 그 절반입니다.	政府首班の党は毎四半期、4指標の平均に応じて信頼が上下し、35未満の指標ごとに信頼 −1.5。連立相手はその半分です。	Each quarter the governing party gains or loses trust with the average of the four, and −1.5 trust for each one below 35. Coalition partners get half.
+당내 사정	党内事情	Inside the party
+이번 분기 계파 요구는 없습니다.	今四半期は派閥の要求はありません。	No faction demands this quarter.
+혁신파	革新派	Reform wing
+안정파	安定派	Moderate wing
+분배·개방 쪽	分配・開放寄り	redistribution & openness
+시장·전통 쪽	市場・伝統寄り	market & tradition
+세력 {0}% · 불만 {1}/3	勢力 {0}% · 不満 {1}/3	Strength {0}% · grievances {1}/3
+{0} 세력 {1}%	{0} 勢力 {1}%	{0} · strength {1}%
+{0}의 요구: 「{1}」에 찬성. 들어주면 결속 +4, 무시하면 결속 −5. 불만이 3번 쌓이면 그 계파가 대표 경선을 겁니다.	{0}の要求: 「{1}」に賛成。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。	{0} demands a YES on "{1}". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race.
+{0}의 요구: 「{1}」에 반대. 들어주면 결속 +4, 무시하면 결속 −5. 불만이 3번 쌓이면 그 계파가 대표 경선을 겁니다.	{0}の要求: 「{1}」に反対。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。	{0} demands a NO on "{1}". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race.
+계파 요구: {0}의 찬성 요구	派閥の要求: {0}が賛成を要求	Faction demand: {0} wants YES
+계파 요구: {0}의 반대 요구	派閥の要求: {0}が反対を要求	Faction demand: {0} wants NO
+{0}의 요구를 들어줬습니다. 결속 +4	{0}の要求に応じました。結束 +4	You complied with the {0}. Unity +4
+{0}의 요구를 무시했습니다. 결속 −5	{0}の要求を無視しました。結束 −5	You ignored the {0}. Unity −5
+{0}분기 총선까지	第{0}四半期の総選挙まで	by the Q{0} general election
+지킴	達成	Kept
+아직	未達	Not yet
+걸어 둔 공약이 없습니다. 행동의 '선거 공약'으로 겁니다.	掲げた公約はありません。行動の「選挙公約」で掲げます。	No pledges yet. Make one with the "Campaign pledge" action.
+노선 이동 가능	路線移動できます	Line shift ready
+노선 이동 {0}분기부터	路線移動は第{0}四半期から	Line shift from Q{0}
+대표 경선 가능	代表選できます	Leadership race ready
+대표 경선 {0}분기부터	代表選は第{0}四半期から	Leadership race from Q{0}
+급선회(당 정보 바꾸기) 가능	急旋回(党の情報を変更)できます	Sharp turn (Edit party info) ready
+급선회(당 정보 바꾸기) {0}분기부터	急旋回(党の情報を変更)は第{0}四半期から	Sharp turn (Edit party info) from Q{0}
+· 노선 이동	· 路線移動	· shifted line
+총선 공천	総選挙の公認	Candidate selection
+이번 분기 말 총선 후보를 어떻게 정할지 고릅니다.	今四半期末の総選挙の候補をどう決めるか選びます。	Choose how to pick candidates for this quarter's general election.
+현역 우선	現職優先	Incumbents first
+현역 의원을 대부분 다시 공천합니다. 결속 +3.	現職議員をほぼそのまま公認します。結束 +3。	Re-nominate most sitting members. Unity +3.
+신인 공천	新人擁立	Fresh faces
+새 얼굴을 대거 내세웁니다. 이번 총선 후보 경쟁력이 크게 오르지만(인재 +5) 낙천자 반발로 결속 −10.	新しい顔を大量に立てます。今回の総選挙の候補競争力が大きく上がる(人材 +5)一方、公認漏れの反発で結束 −10。	Field a wave of newcomers. Candidate strength jumps this election (talent +5), but dropped members revolt: unity −10.
+국민 경선	国民予備選	Open primary
+후보를 경선으로 뽑습니다. 자금 2, 신뢰 +3, 결속 −3, 당원 +3%.	候補を予備選で選びます。資金 2、信頼 +3、結束 −3、党員 +3%。	Pick candidates in primaries. Costs 2, trust +3, unity −3, members +3%.
+분배 쪽으로	分配寄りに	toward redistribution
+시장 쪽으로	市場寄りに	toward the market
+개방 쪽으로	開放寄りに	toward openness
+전통·안보 쪽으로	伝統・安保寄りに	toward tradition & security
+중도 쪽으로	中道寄りに	toward the centre
+노선 급선회는 {0}분기부터 다시 할 수 있습니다.	路線の急旋回は第{0}四半期から再びできます。	You can make another sharp turn from Q{0}.
+노선을 통째로 바꾸는 급선회는 신뢰 −{0}, 결속 −{1}, 멀어지는 지역 기반 −3이고 4분기에 한 번입니다. 한 걸음씩 옮기려면 행동의 '노선 이동'을 쓰세요. 지금 노선: {2}	路線を丸ごと変える急旋回は信頼 −{0}、結束 −{1}、遠ざかる地域の基盤 −3で、4四半期に一度です。一歩ずつ動かすなら行動の「路線移動」を使ってください。今の路線: {2}	A sharp turn swaps your whole line: trust −{0}, unity −{1}, base −3 in regions you leave, once every 4 quarters. To move step by step, use the "Shift line" action. Current line: {2}
+{0}, {1}에 「{2}」 공약.	{0}、{1}で「{2}」を公約。	{0} pledges "{2}" in {1}.
+{0}, 「{1}」 공약을 「{2}」로 지켰습니다.	{0}、「{1}」の公約を「{2}」で果たしました。	{0} keeps its "{1}" pledge with "{2}".
+{0}, 「{1}」 공약을 「{2}」으로 지켰습니다.	{0}、「{1}」の公約を「{2}」で果たしました。	{0} keeps its "{1}" pledge with "{2}".
+{0}, 「{1}」 공약을 지키지 못했습니다.	{0}、「{1}」の公約を果たせませんでした。	{0} fails to keep its "{1}" pledge.
+{0}, 노선을 {1} 옮겼습니다.	{0}、路線を{1}移しました。	{0} shifts its line {1}.
+{0} 대표 경선에서 {1} 후보가 이겼습니다.	{0}の代表選で{1}の候補が勝ちました。	The {1} candidate wins {0}'s leadership race.
+{0} 대표 경선에서 밀어준 {1} 후보가 지고 {2} 후보가 대표가 됐습니다.	{0}の代表選で推した{1}の候補が敗れ、{2}の候補が代表になりました。	In {0}'s leadership race the backed {1} candidate lost; the {2} candidate is the new leader.
+{0} {1}가 대표 경선을 걸어 지도부를 바꿨습니다.	{0}の{1}が代表選を仕掛け、執行部を交代させました。	{0}'s {1} forces a leadership race and takes over.
+{0} {1}가 대표 경선에서 지고 지역구 의원 {2}명이 {3}로 집단 탈당했습니다.	{0}の{1}が代表選に敗れ、選挙区議員{2}人が{3}へ集団離党しました。	{0}'s {1} loses a leadership race; {2} district members defect to {3}.
+{0} {1}가 대표 경선에서 지고 지역구 의원 {2}명이 {3}으로 집단 탈당했습니다.	{0}の{1}が代表選に敗れ、選挙区議員{2}人が{3}へ集団離党しました。	{0}'s {1} loses a leadership race; {2} district members defect to {3}.
+{0} {1}가 대표 경선에서 졌습니다.	{0}の{1}が代表選に敗れました。	{0}'s {1} loses a leadership race.
+{0} 내분 끝에 대표 경선. {1}가 지도부를 잡았습니다.	{0}、内紛の末に代表選。{1}が執行部を握りました。	After infighting, {0} holds a leadership race; the {1} takes control.
+{0}, 이번 총선에 신인을 대거 공천했습니다. 낙천한 현역들이 반발합니다.	{0}、今回の総選挙で新人を大量擁立。公認漏れの現職が反発しています。	{0} fields a wave of new candidates; dropped incumbents are furious.
+{0}, 국민 경선으로 후보를 뽑았습니다.	{0}、国民予備選で候補を選びました。	{0} picks its candidates in open primaries.
+「{0}」에 {1} 수정안이 채택됐습니다(수정안 지지 {2}석 · 원안 지지 {3}석).	「{0}」に{1}の修正案が採択されました(修正案支持 {2}議席・原案支持 {3}議席)。	{1}'s amendment to "{0}" is adopted ({2} seats for it, {3} for the original).
+{0}이 낸 「{1}」 수정안이 부결됐습니다(수정안 지지 {2}석 · 원안 지지 {3}석).	{0}の「{1}」修正案は否決されました(修正案支持 {2}議席・原案支持 {3}議席)。	{0}'s amendment to "{1}" fails ({2} seats for it, {3} for the original).
+{0}, 노선을 「{1}」로 급선회했습니다. 신뢰 −{2}, 결속 −{3}.	{0}、路線を「{1}」に急旋回しました。信頼 −{2}、結束 −{3}。	{0} makes a sharp turn to "{1}". Trust −{2}, unity −{3}.
+{0}, 노선을 「{1}」으로 급선회했습니다. 신뢰 −{2}, 결속 −{3}.	{0}、路線を「{1}」に急旋回しました。信頼 −{2}、結束 −{3}。	{0} makes a sharp turn to "{1}". Trust −{2}, unity −{3}.
+{0} 수정안	{0}の修正案	{0} amendment
+: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색을 바로 바꿉니다. 노선을 통째로 바꾸는 급선회는 4분기에 한 번, 신뢰 −8·결속 −15.	：決裁タブの「党の情報を変更」で党名・代表名・スローガン・色をすぐ変えられます。路線を丸ごと変える急旋回は4四半期に一度、信頼 −8・結束 −15。	: Change your party name, leader, slogan and colour any time under "Edit party info" on the Decide tab. A sharp turn that swaps your whole line is allowed once every 4 quarters: trust −8, unity −15.
+: 국방·경제·민생·사회 통합 네 지표(0~100)가 있습니다. 가결된 법의 노선, 정부 행정, 사건이 움직이고, 손대지 않으면 조금씩 닳습니다. 정부 수반 당은 평균에 따라 신뢰가 오르내리고, 35 미만 위기마다 신뢰가 깎입니다. 경제 위기는 모든 당 수입을 줄이고, 국방·민생 위기는 안보·분배 정당에 표를 몰아 주며, 통합 위기는 모든 당 결속을 흔듭니다.	：国防・経済・暮らし・社会統合の4指標(0〜100)があります。可決された法案の路線、政府の行政、事件が動かし、手を入れなければ少しずつすり減ります。政府首班の党は平均に応じて信頼が上下し、35未満の危機ごとに信頼が削られます。経済危機は全政党の収入を減らし、国防・暮らしの危機は安保・分配政党に票を集め、統合危機は全政党の結束を揺さぶります。	: Four indicators (0–100): defense, economy, livelihoods and social cohesion. Passed laws, government actions and events move them, and they slowly wear down if ignored. The governing party gains or loses trust with their average and loses trust for each one in crisis (below 35). An economic crisis cuts every party's income, defense or livelihood crises push votes to security or redistribution parties, and a cohesion crisis shakes every party's unity.
+: 행동으로 분야와 지역을 골라 겁니다(한꺼번에 2개). 그 지역 기반이 바로 오르고, 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +3, 못 지키면 신뢰 −6·승점 -3.	：行動で分野と地域を選んで掲げます(同時に2つまで)。その地域の基盤がすぐ上がり、次の総選挙までにその分野の法案が私たちの賛成で可決されれば信頼 +4・勝ち点 +3、守れなければ信頼 −6・勝ち点 -3。	: Pick a field and a region with an action (up to 2 at once). Your base there rises at once. If a law in that field passes with your vote before the next general election: trust +4, score +3. If not: trust −6, score -3.
+: 행동으로 노선을 한 걸음(분배·시장·개방·전통 쪽, 또는 중도 쪽) 옮깁니다. 결속 −8(대형 −10), 신뢰 −2, 멀어지는 지역 기반 −2. 2분기에 한 번.	：行動で路線を一歩(分配・市場・開放・伝統寄り、または中道寄り)動かします。結束 −8(大政党 −10)、信頼 −2、遠ざかる地域の基盤 −2。2四半期に一度。	: Move your line one step with an action (toward redistribution, market, openness, tradition, or the centre). Unity −8 (−10 for major parties), trust −2, base −2 in regions you move away from. Once every 2 quarters.
+수정안	修正案	Amendments
+: 행동으로 다른 당이 낸 안건의 내용을 우리 노선 쪽으로 35% 당깁니다. 수정안을 더 낫게 보는 의석이 원안을 더 낫게 보는 의석보다 많으면 채택되고, 표결은 고친 안으로 합니다. 채택된 법이 우리 찬성으로 통과되면 승점 +1.	：行動で他党が出した議案の内容を私たちの路線へ35%引き寄せます。修正案を良しとする議席が原案を良しとする議席より多ければ採択され、採決は修正後の案で行います。採択された法案が私たちの賛成で可決されれば勝ち点 +1。	: Use an action to pull another party's bill 35% toward your line. It is adopted if more seats prefer the amendment than the original, and the vote is then on the amended text. If it passes with your vote, score +1.
+계파와 대표 경선	派閥と代表選	Factions and leadership races
+: 당마다 혁신파와 안정파가 있습니다. 분기마다 한 계파가 안건 하나에 당의 원래 표와 다른 표를 요구할 수 있습니다. 들어주면 결속 +4와 그 계파 세력이 오르고, 무시하면 결속 −5와 불만이 쌓입니다. 불만이 3번 쌓이면 그 계파가 경선을 걸어, 이기면 노선이 그쪽으로 옮겨 가고 지면 의원들이 집단 탈당합니다. 행동 '대표 경선'으로 직접 열 수도 있습니다(4분기에 한 번).	：各党に革新派と安定派があります。四半期ごとにどちらかの派閥が、議案ひとつで党の本来の票と違う票を要求することがあります。応じれば結束 +4とその派閥の勢力が上がり、無視すれば結束 −5と不満がたまります。不満が3回たまるとその派閥が代表選を仕掛け、勝てば路線がそちらへ動き、負ければ議員が集団離党します。行動「代表選」で自ら開くこともできます(4四半期に一度)。	: Every party has a reform wing and a moderate wing. Each quarter one wing may demand a different vote from your usual one on a bill. Comply and unity +4 and that wing grows; ignore it and unity −5 and a grievance builds. After three grievances the wing forces a leadership race: if it wins the line moves its way, if it loses its members defect en masse. You can also call a race with the "Leadership race" action (once every 4 quarters).
+: 총선 분기에는 현역 우선(결속 +3), 신인 공천(후보 경쟁력↑, 결속 −10), 국민 경선(자금 2, 신뢰 +3, 결속 −3) 가운데 하나를 고릅니다.	：総選挙の四半期には現職優先(結束 +3)、新人擁立(候補競争力↑、結束 −10)、国民予備選(資金 2、信頼 +3、結束 −3)のうちひとつを選びます。	: In a general-election quarter, choose incumbents first (unity +3), fresh faces (stronger candidates, unity −10) or open primaries (costs 2, trust +3, unity −3).
+이면 세력이 큰 계파가 대표 경선으로 당을 수습하고(4분기에 한 번), 그래도 무너지면 의원들이 탈당합니다.	だと勢力の大きい派閥が代表選で党を立て直し(4四半期に一度)、それでも崩れれば議員が離党します。	: the stronger wing takes over through a leadership race (once every 4 quarters); if the party still falls apart, members defect.
+# 2026-11 헌법 개정 국민투표·주 비준
+재적 3분의 2({0}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다. 성문 헌법이 없어 의회를 넘으면 바로 바뀝니다.	在籍3分の2({0}議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。成文憲法がないため、議会を通れば即座に変わります。	Passes with at least two-thirds of all seats ({0}). The proposing party and its federation members usually vote yes; the rest usually vote no. With no written constitution, it takes effect as soon as Parliament passes it.
+재적 3분의 2({0}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다. 의회를 넘으면 다음 분기 말 주 비준(권역 4분의 3 찬성)을 거쳐야 확정됩니다.	在籍3分の2({0}議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。議会を通れば、翌四半期末の州批准(圏域の4分の3の賛成)を経て確定します。	Passes with at least two-thirds of all seats ({0}). The proposing party and its federation members usually vote yes; the rest usually vote no. If it passes, it still needs ratification by the states (three-quarters of regions) at the end of next quarter.
+재적 3분의 2({0}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다. 의회를 넘으면 다음 분기 말 국민투표(과반 찬성)를 거쳐야 확정됩니다.	在籍3分の2({0}議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。議会を通れば、翌四半期末の国民投票(過半数の賛成)を経て確定します。	Passes with at least two-thirds of all seats ({0}). The proposing party and its federation members usually vote yes; the rest usually vote no. If it passes, it still needs a referendum (simple majority) at the end of next quarter.
+헌법 개정안 「{0}」 가결. 성문 헌법이 없어 의회 의결로 바로 바뀝니다.	憲法改正案「{0}」可決。成文憲法がないため、議会の議決で即座に変わります。	Constitutional amendment "{0}" passes. With no written constitution, Parliament's vote settles it.
+헌법 개정안 「{0}」 의회 통과(재적 3분의 2 {1}석). 다음 분기 말 국민투표에 부칩니다.	憲法改正案「{0}」が議会を通過(在籍3分の2 {1}議席)。翌四半期末に国民投票にかけます。	Constitutional amendment "{0}" clears Parliament (two-thirds: {1} seats). It goes to a referendum at the end of next quarter.
+헌법 개정안 「{0}」 의회 통과(재적 3분의 2 {1}석). 이번 분기 말 국민투표에 부칩니다.	憲法改正案「{0}」が議会を通過(在籍3分の2 {1}議席)。今四半期末に国民投票にかけます。	Constitutional amendment "{0}" clears Parliament (two-thirds: {1} seats). It goes to a referendum at the end of this quarter.
+헌법 개정안 「{0}」 의회 통과(재적 3분의 2 {1}석). 다음 분기 말 주 비준에 부칩니다.	憲法改正案「{0}」が議会を通過(在籍3分の2 {1}議席)。翌四半期末に州の批准にかけます。	Constitutional amendment "{0}" clears Congress (two-thirds: {1} seats). It goes to the states for ratification at the end of next quarter.
+헌법 개정안 「{0}」 의회 통과(재적 3분의 2 {1}석). 이번 분기 말 주 비준에 부칩니다.	憲法改正案「{0}」が議会を通過(在籍3分の2 {1}議席)。今四半期末に州の批准にかけます。	Constitutional amendment "{0}" clears Congress (two-thirds: {1} seats). It goes to the states for ratification at the end of this quarter.
+헌법 개정안 「{0}」 주 비준 통과({1}/{2} 권역, 필요 {3}). 헌법이 바뀝니다.	憲法改正案「{0}」が州の批准を通過({1}/{2}圏域、必要 {3})。憲法が変わります。	Constitutional amendment "{0}" is ratified ({1}/{2} regions, {3} needed). The constitution changes.
+헌법 개정안 「{0}」 국민투표 가결(찬성 {1}%). 헌법이 바뀝니다.	憲法改正案「{0}」が国民投票で可決(賛成 {1}%)。憲法が変わります。	Constitutional amendment "{0}" wins the referendum ({1}% yes). The constitution changes.
+헌법 개정안 「{0}」 주 비준 실패({1}/{2} 권역, 필요 {3}).	憲法改正案「{0}」は州の批准に失敗({1}/{2}圏域、必要 {3})。	Constitutional amendment "{0}" fails ratification ({1}/{2} regions, {3} needed).
+헌법 개정안 「{0}」 국민투표 부결(찬성 {1}%). 발의한 정부가 큰 타격을 입었습니다.	憲法改正案「{0}」は国民投票で否決(賛成 {1}%)。発議した政府は大きな打撃を受けました。	Constitutional amendment "{0}" is rejected in the referendum ({1}% yes). A heavy blow to the government that proposed it.
+국민투표: {0}	国民投票: {0}	Referendum: {0}
+주 비준: {0}	州の批准: {0}	State ratification: {0}
+예상 찬성 {0}%	賛成見込み {0}%	Projected yes {0}%
+예상 찬성 권역 {0}/{1} (필요 {2})	賛成見込みの圏域 {0}/{1}(必要 {2})	Projected yes regions {0}/{1} ({2} needed)
+{0} 정부가 낸 개헌안이 의회를 넘었습니다. 이번 분기 말 국민투표에서 과반이 찬성해야 확정됩니다. 부결되면 발의한 당 신뢰 −6·결속 −4, 반대 운동을 한 당은 신뢰 +2. 가결되면 찬성 운동을 한 당 신뢰 +1.	{0}政府の改憲案が議会を通過しました。今四半期末の国民投票で過半数が賛成すれば確定します。否決なら発議した党は信頼 −6・結束 −4、反対運動をした党は信頼 +2。可決なら賛成運動をした党は信頼 +1。	The {0} government's amendment has cleared Parliament. It takes effect only if a majority votes yes in this quarter's referendum. If rejected: the proposing party loses 6 trust and 4 unity, and parties that campaigned no gain 2 trust. If passed: parties that campaigned yes gain 1 trust.
+{0} 정부가 낸 개헌안이 의회를 넘었습니다. 이번 분기 말 권역 4분의 3 이상이 찬성해야 확정됩니다. 부결되면 발의한 당 신뢰 −6·결속 −4, 반대 운동을 한 당은 신뢰 +2. 가결되면 찬성 운동을 한 당 신뢰 +1.	{0}政府の改憲案が議会を通過しました。今四半期末に圏域の4分の3以上が賛成すれば確定します。否決なら発議した党は信頼 −6・結束 −4、反対運動をした党は信頼 +2。可決なら賛成運動をした党は信頼 +1。	The {0} government's amendment has cleared Congress. It takes effect only if three-quarters of regions ratify it this quarter. If it fails: the proposing party loses 6 trust and 4 unity, and parties that campaigned no gain 2 trust. If ratified: parties that campaigned yes gain 1 trust.
+의회에서 우리는 찬성했습니다. 고르지 않으면 그 입장대로 운동합니다. 반대쪽 운동을 하면 말 바꾸기로 신뢰 −2.	議会で私たちは賛成しました。選ばなければその立場で運動します。反対側の運動をすると前言撤回で信頼 −2。	We voted yes in Parliament. If you choose nothing we campaign that way. Campaigning the other way is a flip-flop: trust −2.
+의회에서 우리는 반대했습니다. 고르지 않으면 그 입장대로 운동합니다. 반대쪽 운동을 하면 말 바꾸기로 신뢰 −2.	議会で私たちは反対しました。選ばなければその立場で運動します。反対側の運動をすると前言撤回で信頼 −2。	We voted no in Parliament. If you choose nothing we campaign that way. Campaigning the other way is a flip-flop: trust −2.
+찬성 운동	賛成運動	Campaign yes
+우리 지지층을 찬성 쪽으로 모읍니다.	支持層を賛成へまとめます。	Rally our supporters behind yes.
+반대 운동	反対運動	Campaign no
+우리 지지층을 반대 쪽으로 모읍니다.	支持層を反対へまとめます。	Rally our supporters behind no.
+운동하지 않습니다.	運動しません。	Do not campaign.
+국민투표: {0} 가결	国民投票: {0} 可決	Referendum: {0} passed
+국민투표: {0} 부결	国民投票: {0} 否決	Referendum: {0} rejected
+주 비준: {0} 가결	州の批准: {0} 成立	State ratification: {0} ratified
+주 비준: {0} 부결	州の批准: {0} 不成立	State ratification: {0} failed
+찬성 {0}%	賛成 {0}%	{0}% yes
+찬성 권역 {0}/{1}	賛成の圏域 {0}/{1}	Yes regions {0}/{1}
+시장·개방 쪽	市場・開放寄り	market & openness
+분배·전통 쪽	分配・伝統寄り	redistribution & tradition
+: 정부 수반 당이 혼자 또는 연맹으로 재적 3분의 2를 가지면 행정 조치로 개헌안을 낼 수 있습니다. 다음 분기 본회의에서 재적 3분의 2가 찬성하면 그다음 분기 말 국민투표(과반 찬성)를 치릅니다. 미국은 국민투표 대신 주 비준(권역 4분의 3 찬성), 영국은 성문 헌법이 없어 의회 의결로 바로 바뀝니다. 국민투표 분기에는 각 당이 찬성·반대 운동이나 중립을 고르고, 그 당 지지율과 신뢰만큼 표가 움직입니다. 부결되면 발의한 당 신뢰 −6. 조항은 비례 봉쇄 조항 상향, 지역구 승자 독식 강화, 행정권 강화, 불신임 요건 강화, 선거 연기이고, 가결되면 권력 강화 논란으로 발의 당 신뢰 −3입니다.	：政府首班の党が単独または連盟で在籍3分の2を持てば、行政措置で改憲案を出せます。翌四半期の本会議で在籍3分の2が賛成すれば、その次の四半期末に国民投票(過半数の賛成)を行います。米国は国民投票の代わりに州の批准(圏域の4分の3の賛成)、英国は成文憲法がないため議会の議決で即座に変わります。国民投票の四半期には各党が賛成・反対の運動か中立を選び、その党の支持率と信頼の分だけ票が動きます。否決なら発議した党の信頼 −6。条項は比例阻止条項の引き上げ、選挙区の勝者総取り強化、行政権強化、不信任要件の強化、選挙延期で、可決されると権力強化への批判で発議した党の信頼 −3です。	: If the governing party holds two-thirds of all seats alone or with its federation, it can propose an amendment as an executive action. If two-thirds vote yes in next quarter's session, a referendum (simple majority) follows at the end of the quarter after. The US uses state ratification (three-quarters of regions) instead; the UK has no written constitution, so Parliament's vote settles it. In the referendum quarter every party campaigns yes, no or stays neutral, moving votes by its support and trust. If rejected, the proposing party loses 6 trust. The clauses are a higher list threshold, stronger winner-take-all districts, stronger executive, a tougher no-confidence rule and postponed elections; if passed, the proposing party loses 3 trust over the power grab.
+# 2026-11 계엄령·탄핵·독재 모드
+체제	体制	Regime
+민주주의	民主主義	Democracy
+독재 체제로 시작	独裁体制で開始	Start as a dictatorship
+비상계엄	非常戒厳	Martial law
+{0}분기째	{0}四半期目	quarter {0}
+{0} 정부가 계엄을 선포했습니다. 본회의의 해제 요구안을 막아 내면 비상 체제를 선포할 수 있습니다. 계엄이 이어지는 동안 우리 신뢰 −4·사회 통합 −6이 분기마다 쌓입니다.	{0}政府が戒厳を宣布しました。本会議の解除要求案を阻めば非常体制を宣布できます。戒厳が続く間、私たちの信頼 −4・社会統合 −6が毎四半期積み重なります。	The {0} government has declared martial law. Block the lifting motion in the chamber and you can declare emergency rule. While it lasts, our trust −4 and social cohesion −6 pile up each quarter.
+{0} 정부가 계엄을 선포했습니다. 본회의의 계엄 해제 요구안에 찬성해 의석 과반을 모으면 계엄이 풀립니다. 계엄 동안 우리 유세 효과가 반으로 줄고, 선포한 당을 향한 공세는 절반쯤 막힙니다.	{0}政府が戒厳を宣布しました。本会議の戒厳解除要求案に賛成して議席の過半数を集めれば戒厳は解けます。戒厳中は私たちの遊説効果が半分になり、宣布した党への攻勢は半分ほど阻まれます。	The {0} government has declared martial law. Back the lifting motion and gather a majority of seats to end it. Meanwhile our rallies are half as effective and about half of our attacks on that party are blocked.
+탄핵소추안	弾劾訴追案	Impeachment motion
+계엄 해제 요구안	戒厳解除要求案	Motion to lift martial law
+비상계엄 해제 요구안	非常戒厳解除要求案	Motion to lift martial law
+{0} 출신 대통령 탄핵소추안	{0}出身の大統領の弾劾訴追案	Motion to impeach the {0} president
+계엄 선포의 책임을 묻습니다. 재적 3분의 2가 찬성하면 대통령이 파면되고 이번 분기 말 대통령 선거를 다시 치릅니다.	戒厳宣布の責任を問います。在籍3分の2が賛成すれば大統領は罷免され、今四半期末に大統領選挙をやり直します。	Holds the president to account for martial law. If two-thirds of all members vote yes, the president is removed and a new presidential election is held at the end of this quarter.
+재적 3분의 2({0}석) 이상이 찬성하면 대통령이 파면되고 이번 분기 말 대통령 선거를 다시 치릅니다.	在籍3分の2({0}議席)以上が賛成すれば大統領は罷免され、今四半期末に大統領選挙をやり直します。	If at least two-thirds of all seats ({0}) vote yes, the president is removed and a new presidential election follows this quarter.
+{0} 정부가 선포한 계엄을 풀라고 요구합니다. 의석 과반이 찬성하면 계엄이 풀립니다.	{0}政府が宣布した戒厳の解除を求めます。議席の過半数が賛成すれば戒厳は解けます。	Demands that the {0} government lift martial law. It ends if a majority of seats vote yes.
+의석 과반이 찬성하면 계엄이 풀립니다. 해제되면 선포한 당 신뢰 −15, 그 정부는 물러납니다.	議席の過半数が賛成すれば戒厳は解けます。解除されれば宣布した党の信頼 −15、その政府は退陣します。	Martial law ends if a majority of seats vote yes. Then the declaring party loses 15 trust and its government falls.
+의석 과반이 찬성하면 계엄이 풀립니다. 해제되면 선포한 당 신뢰 −15, 다음 분기 탄핵소추안이 오릅니다.	議席の過半数が賛成すれば戒厳は解けます。解除されれば宣布した党の信頼 −15、翌四半期に弾劾訴追案が上程されます。	Martial law ends if a majority of seats vote yes. Then the declaring party loses 15 trust and an impeachment motion follows next quarter.
+계엄령 선포	戒厳令の宣布	Declare martial law
+행정부 수반 당만, 한 판에 한 번. 다음 분기 본회의에 계엄 해제 요구안이 오르고 의석 과반이 찬성하면 풀립니다. 계엄 동안 야당 유세가 반으로 줄고 우리를 향한 공세가 절반쯤 막히지만, 우리 신뢰 −4·사회 통합 −6이 분기마다 쌓입니다. 해제되면 정부가 무너지고(대통령제·이원집정부제는 탄핵소추안) 우리 신뢰 −15. 해제 요구를 막아 내면 3분의 2가 없어도 비상 체제(독재)를 선포할 수 있습니다. 선포할 때 신뢰 −10.	行政府首班の党のみ、1ゲームに一度。翌四半期の本会議に戒厳解除要求案が上程され、議席の過半数が賛成すれば解けます。戒厳中は野党の遊説が半分になり、私たちへの攻勢も半分ほど阻まれますが、私たちの信頼 −4・社会統合 −6が毎四半期積み重なります。解除されれば政府は崩れ(大統領制・半大統領制は弾劾訴追案)、私たちの信頼 −15。解除要求を阻めば3分の2がなくても非常体制(独裁)を宣布できます。宣布時に信頼 −10。	Head of the executive only, once per game. A motion to lift it comes to the chamber next quarter and passes with a majority of seats. Under martial law opposition rallies are halved and about half the attacks on us are blocked, but our trust −4 and social cohesion −6 pile up every quarter. If lifted, the government falls (presidential and semi-presidential systems face impeachment) and our trust −15. Block the motion and you can declare emergency rule (dictatorship) even without two-thirds. Declaring costs 10 trust.
+계엄 해제	戒厳解除	Lift martial law
+계엄을 스스로 거둡니다. 신뢰 +3.	戒厳を自ら解きます。信頼 +3。	End martial law yourselves. Trust +3.
+가상 공화국에서 우리 당 단독으로 재적 3분의 2를 가졌을 때, 또는 계엄 해제 요구를 막아 냈을 때(모든 모드). 선거를 무기한 미루고 의석을 굳힙니다. 신뢰 −10. 저항이 쌓여 100%가 되면 시민 혁명으로 무너집니다.	架空の共和国で私たちの党が単独で在籍3分の2を持つとき、または戒厳解除要求を阻んだとき(全モード)。選挙を無期限に延期し議席を固めます。信頼 −10。抵抗がたまって100%になると市民革命で崩れます。	When your party alone holds two-thirds of all seats in the fictional republic, or after you have blocked a motion to lift martial law (any mode). Elections are postponed indefinitely and seats are frozen. Trust −10. If resistance reaches 100%, a civic revolution topples you.
+계엄령	戒厳令	Martial law
+: 행정부 수반 당은 한 판에 한 번 계엄을 선포할 수 있습니다(모든 모드). 다음 분기 본회의에 계엄 해제 요구안이 오르고 의석 과반이 찬성하면 풀립니다. 해제되면 선포한 당 신뢰 −15이고 의원내각제는 내각이 물러나며(영국은 조기 총선), 대통령제·이원집정부제는 탄핵소추안이 올라 재적 3분의 2가 찬성하면 대통령이 파면됩니다. 해제 요구를 막아 내면 3분의 2가 없어도 비상 체제(독재)를 선포할 수 있습니다.	：行政府首班の党は1ゲームに一度、戒厳を宣布できます(全モード)。翌四半期の本会議に戒厳解除要求案が上程され、議席の過半数が賛成すれば解けます。解除されれば宣布した党の信頼 −15、議院内閣制は内閣が退陣し(英国は解散総選挙)、大統領制・半大統領制は弾劾訴追案が上程され、在籍3分の2が賛成すれば大統領は罷免されます。解除要求を阻めば3分の2がなくても非常体制(独裁)を宣布できます。	: The head of the executive can declare martial law once per game (any mode). A motion to lift it comes to the chamber next quarter and passes with a majority of seats. If lifted, the declaring party loses 15 trust; in parliamentary systems the cabinet falls (the UK holds a snap election), and in presidential or semi-presidential systems an impeachment motion follows, removing the president with two-thirds of all members. Block the motion and you can declare emergency rule (dictatorship) even without two-thirds.
+독재 모드	独裁モード	Dictatorship mode
+: 대기실 설정에서 '독재 체제로 시작'을 고르면 정권을 쥔 당(국가 모드는 지금 정부, 가상 공화국은 의석 1당)이 비상 체제로 시작합니다. 선거가 미뤄지고, 나머지 당은 저항을 키워 시민 혁명으로 민주화를 이끌거나 정권과 손잡습니다.	：待合室の設定で「独裁体制で開始」を選ぶと、政権を握る党(国家モードは今の政府、架空の共和国は第一党)が非常体制で始まります。選挙は延期され、残りの党は抵抗を強めて市民革命で民主化を導くか、政権と手を組みます。	: Pick "Start as a dictatorship" in the lobby settings and the ruling party (the current government in country mode, the largest party in the fictional republic) starts under emergency rule. Elections are postponed; the other parties either build resistance toward a civic revolution or side with the regime.
+{0} 정부, 비상계엄 선포. 다음 분기 본회의에 계엄 해제 요구안이 오릅니다.	{0}政府、非常戒厳を宣布。翌四半期の本会議に戒厳解除要求案が上程されます。	The {0} government declares martial law. A motion to lift it comes to the chamber next quarter.
+{0} 정부, 계엄을 해제했습니다.	{0}政府、戒厳を解除しました。	The {0} government lifts martial law.
+계엄 해제 요구안 가결({0}석). {1} 정부의 계엄이 풀렸습니다.	戒厳解除要求案可決({0}議席)。{1}政府の戒厳が解かれました。	Motion to lift martial law passes ({0} seats). The {1} government's martial law is over.
+계엄 해제 요구안 부결(찬성 {0}석). {1} 정부의 계엄이 이어집니다.	戒厳解除要求案否決(賛成 {0}議席)。{1}政府の戒厳が続きます。	Motion to lift martial law fails ({0} seats in favour). The {1} government's martial law continues.
+다음 분기 본회의에 {0} 출신 대통령 탄핵소추안이 오릅니다.	翌四半期の本会議に{0}出身の大統領の弾劾訴追案が上程されます。	A motion to impeach the {0} president comes to the chamber next quarter.
+{0} 내각이 무너져 조기 총선을 치릅니다.	{0}内閣が崩れ、解散総選挙を行います。	The {0} cabinet collapses; a snap election follows.
+{0} 내각이 총사퇴합니다.	{0}内閣が総辞職します。	The {0} cabinet resigns en masse.
+탄핵소추안 가결({0}석, 재적 3분의 2 {1}석). {2} 출신 대통령이 파면돼 이번 분기 말 대통령 선거를 다시 치릅니다.	弾劾訴追案可決({0}議席、在籍3分の2 {1}議席)。{2}出身の大統領は罷免され、今四半期末に大統領選挙をやり直します。	Impeachment passes ({0} seats; two-thirds is {1}). The {2} president is removed and a new presidential election is held this quarter.
+탄핵소추안 부결(찬성 {0}석, 필요 {1}석).	弾劾訴追案否決(賛成 {0}議席、必要 {1}議席)。	Impeachment fails ({0} seats in favour, {1} needed).
+계엄군이 {0}의 {1} 비판 활동을 막았습니다.	戒厳軍が{0}による{1}批判活動を阻みました。	Martial-law troops block {0}'s campaign against {1}.
+계엄 당국이 {0}의 폭로 보도를 막았습니다.	戒厳当局が{0}の暴露報道を差し止めました。	Martial-law authorities suppress {0}'s exposé.

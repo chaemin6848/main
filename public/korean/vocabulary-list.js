@@ -93,3 +93,10 @@ buttons.forEach((button) => button.addEventListener("click", () => { state.level
 search.addEventListener("input", () => { state.query = search.value; state.lesson = 0; state.savedLevel = ""; render(); });
 document.getElementById("score").textContent = KO.readScore();
 render();
+
+// ログインしたアカウントから新しい記録を受け取ったら(/shared/sync.js) チェックとマイ単語帳を読み直して描く
+window.addEventListener("nd:synced", () => {
+  for (const [set, key] of [[checkedWords, KO.CHECKED_KEY], [savedWordKeys, KO.SAVED_KEY]]) { const next = KO.readSet(key); set.clear(); next.forEach((v) => set.add(v)); }
+  document.getElementById("score").textContent = KO.readScore();
+  render();
+});

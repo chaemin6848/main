@@ -30,7 +30,10 @@
   var q = null;
   try { q = new URLSearchParams(location.search).get("lang"); } catch (e) {}
   if (q && SUPPORTED.indexOf(q) >= 0) { try { localStorage.setItem(KEY, q); } catch (e) {} }
-  var want = (q && SUPPORTED.indexOf(q) >= 0) ? q : (stored() || browserLang());
+  // 검색엔진·미리보기 봇은 브라우저 언어(대개 en-US)로 바꾸지 않고 페이지 원문 언어 그대로 읽게 한다.
+  // 그래야 검색 결과의 제목·요약이 원문(한국어 등)으로 나온다. 다른 언어는 ?lang= 으로 고른다.
+  var isBot = /bot|crawl|spider|slurp|yeti|daum|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || "");
+  var want = (q && SUPPORTED.indexOf(q) >= 0) ? q : (stored() || (isBot ? langs[0] : browserLang()));
   // 이 페이지가 고른 언어를 지원하지 않으면: 한국어가 아니면 영어, 그것도 없으면 첫 번째 언어
   var lang = langs.indexOf(want) >= 0 ? want : (want !== "ko" && langs.indexOf("en") >= 0 ? "en" : langs[0]);
   document.documentElement.lang = lang;
@@ -241,6 +244,9 @@
   ];
   var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };
+  var LANG_SHORT = { ko: "KO", ja: "JA", en: "EN" };
+  // 로그아웃 상태의 로그인 버튼: 넓은 화면은 글자, 휴대폰은 사람 아이콘
+  var PERSON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
   var NAV_LABEL = { ko: "nihongodic 도구", ja: "nihongodic ツール", en: "nihongodic tools" };
   var LANG_LABEL = { ko: "언어", ja: "言語", en: "Language" };
   // 후원 링크 (모든 페이지 공통 메뉴 오른쪽 끝)
@@ -249,12 +255,11 @@
   // 사이트 공통 계정 (Google 로그인) — 실제 로그인 코드는 /shared/account.js
   var ACC = {
     login: { ko: "로그인", ja: "ログイン", en: "Log in" },
-    google: { ko: "Google 계정으로 로그인", ja: "Googleアカウントでログイン", en: "Sign in with Google" },
+    google: { ko: "로그인 · 회원가입 (Google 또는 이메일)", ja: "ログイン・新規登録（Googleまたはメール）", en: "Log in or sign up (Google or email)" },
     me: { ko: "내 계정", ja: "アカウント", en: "Account" },
     out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
-    email: { ko: "이메일로 로그인", ja: "メールでログイン", en: "Log in with email" },
-    mypage: { ko: "마이페이지", ja: "マイページ", en: "My page" },
-    wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" }
+    wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" },
+    my: { ko: "마이페이지 · 이용 현황", ja: "マイページ・利用状況", en: "My page · your progress" }
   };
 
   ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
@@ -271,7 +276,7 @@
   }).join("");
 
   var picker = langs.length > 1
-    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span aria-hidden="true">' + LANG_NAME[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
+    ? '<label class="lang" title="' + LANG_LABEL[lang] + '"><span class="full" aria-hidden="true">' + LANG_NAME[lang] + '</span><span class="short" aria-hidden="true">' + LANG_SHORT[lang] + '</span><select aria-label="' + LANG_LABEL[lang] + ' / Language">' +
       langs.map(function (l) { return '<option value="' + l + '"' + (l === lang ? " selected" : "") + ' lang="' + l + '">' + LANG_NAME[l] + "</option>"; }).join("") +
       "</select></label>"
     : "";
@@ -302,36 +307,62 @@
     "font:inherit;font-size:12px;font-weight:800;cursor:pointer;box-sizing:border-box;white-space:nowrap}" +
     ".acct>button:hover{border-color:var(--ink)}" +
     ".acct>button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}" +
+    ".acct>button svg{width:17px;height:17px;display:none}" +
+    ".acct>button.busy{opacity:.6;cursor:progress}" +
+    ".lang .short{display:none}" +
     ".acct>button.me{padding:0;width:30px;min-width:30px;border-radius:50%;overflow:hidden;background:var(--line)}" +
     ".acct>button.me img{width:100%;height:100%;object-fit:cover;display:block}" +
     ".acct-pop{position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(280px,calc(100vw - 24px));padding:12px;background:var(--paper);color:var(--ink);" +
     "border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:grid;gap:4px;font-size:13px;box-sizing:border-box}" +
     ".acct-pop[hidden]{display:none}" +
-    ".acct-pop b{font-size:14px;overflow-wrap:anywhere}" +
-    ".acct-pop span{color:var(--muted);overflow-wrap:anywhere}" +
-    ".acct-pop button{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
-    ".acct-pop button:hover{border-color:var(--ink)}" +
-    ".acct-pop .err{color:#c0392b}" +
-    ".acct-pop a{margin-top:8px;font-size:13px;font-weight:700;color:var(--ink);text-underline-offset:3px}" +
-    ".acct-pop .opts{display:grid;gap:2px}" +
+    // 로그인 상자가 들어갈 때는 폭을 정해 둔다 (여백 포함 300px, 화면이 좁으면 양옆 12px 남기고)
+    ".acct-pop.wide{width:min(300px,calc(100vw - 24px));max-width:none}" +
+    ".acct-pop .me,.acct-pop .in{display:grid;gap:4px;min-width:0}" +
+    ".acct-pop .me b{font-size:14px;overflow-wrap:anywhere}" +
+    ".acct-pop .me span{color:var(--muted);overflow-wrap:anywhere}" +
+    ".acct-pop .out{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
+    ".acct-pop .out:hover{border-color:var(--ink)}" +
+    ".acct-pop .wait{color:var(--muted)}" +
+    ".acct-pop .me .sync{margin-top:6px;font-size:12px;color:var(--muted)}.acct-pop .me .sync.bad{color:#c0392b}" +
+    ".acct-pop .hint{margin:0 0 6px;font-size:12px;color:var(--muted)}" +
+    ".acct-pop .mylink{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}.acct-pop .mylink:hover{text-decoration:underline}" +
+    // 로그인 상자 (/shared/account.js loginForm)
+    ".nd-login,.nd-form{display:grid;gap:8px}.nd-login *{box-sizing:border-box}" +
+    ".nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}" +
+    ".nd-google{background:var(--ink);color:var(--paper)}.nd-submit{background:none;color:var(--ink)}" +
+    ".nd-google:disabled,.nd-submit:disabled{opacity:.6;cursor:default}" +
+    ".nd-or{margin:4px 0 0;font-size:12px;color:var(--muted);text-align:center}" +
+    ".nd-field{display:grid;gap:3px;font-size:12px;color:var(--muted)}" +
+    ".nd-field input{font:inherit;font-size:16px;padding:7px 9px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);min-width:0}" +
+    ".nd-field input:focus-visible{outline:2px solid var(--ink);outline-offset:1px}" +
+    ".nd-agree{display:flex;gap:6px;align-items:flex-start;font-size:12px}.nd-agree input{margin:2px 0 0;flex:none}.nd-agree a{color:inherit}" +
+    ".nd-links{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}" +
+    ".nd-link{font:inherit;font-size:12px;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}" +
+    ".nd-msg{margin:0;font-size:12px;color:#2f8a4e}.nd-msg:empty{display:none}.nd-msg.bad{color:#c0392b}" +
+    ".nd-note{margin:2px 0 0;font-size:11px;color:var(--muted)}" +
+    "[hidden]{display:none!important}" +
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
-    // 휴대폰: 버튼 간격·크기를 줄여 도구 아이콘이 잘리지 않게. 그래도 넘치면 아래 fit()이 nihongodic 글자를 숨긴다
+    // 휴대폰: nihongodic 글자와 도구 아이콘이 모두 보이도록 언어는 약자, 로그인은 아이콘으로 줄이고 버튼을 30px 정사각형으로 맞춘다.
+    // 그래도 넘치면 fit()이 글자 크기와 간격을 한 번 더 줄인다 (글자는 숨기지 않는다)
     "@media (max-width:440px){nav{gap:4px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}" +
-    ".home{padding-right:4px}.tools{gap:2px}.tools a{width:28px;height:32px}" +
-    ".lang{padding:0 6px;margin-left:2px}.coffee{width:30px;margin-left:2px}}" +
-    "nav.tight .home b{display:none}" +
+    ".home{padding-right:2px;gap:6px}.tools{gap:2px}.tools a{width:30px;height:30px}" +
+    ".lang{min-width:30px;width:30px;padding:0;margin-left:2px;font-size:11px}.lang .full{display:none}.lang .short{display:inline}" +
+    ".acct{margin-left:2px}.acct>button.in{width:30px;min-width:30px;padding:0}.acct>button.in .t{display:none}.acct>button.in svg{display:block}" +
+    ".coffee{width:30px;margin-left:2px}}" +
+    "nav.tight{gap:2px;padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}" +
+    "nav.tight .tools{gap:1px}nav.tight .lang,nav.tight .acct,nav.tight .coffee{margin-left:1px}" +
+    "nav.tight .home{font-size:12.5px;gap:4px;padding-right:0;letter-spacing:-.05em}nav.tight .home i{width:22px;height:22px;font-size:11px}" +
+    "nav.tight .tools a{width:28px;height:28px}nav.tight .tools a i{width:22px;height:22px;font-size:12px}" +
+    "nav.tight .lang,nav.tight .acct>button.in,nav.tight .acct>button.me,nav.tight .coffee{width:28px;min-width:28px;height:28px}" +
     "@media print{nav{display:none}}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
-    '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '">' + ACC.login[lang] + "</button>" +
-    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span>' +
-    '<div class="opts"><button type="button" class="gin">' + ACC.google[lang] + '</button><a class="emin" href="/account/?next=' + encodeURIComponent(location.pathname + location.search) + '">' + ACC.email[lang] + "</a></div>" +
-    '<a class="mypage" href="/account/?next=' + encodeURIComponent(location.pathname + location.search) + '" hidden>' + ACC.mypage[lang] + "</a>" +
-    '<button type="button" class="out" hidden>' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
+    '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
+    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + " →</a></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
@@ -342,24 +373,32 @@
 
   /* ---------- 계정 버튼 ---------- */
   var accBtn = root.querySelector(".acct>button"), pop = root.querySelector(".acct-pop");
-  var popName = pop.querySelector("b"), popMail = pop.querySelector("span"), popErr = pop.querySelector(".err");
-  var popOpts = pop.querySelector(".opts"), popMy = pop.querySelector(".mypage"), popOut = pop.querySelector(".out");
-  var me = null, busy = false;
-  function showErr(text) {
-    popErr.textContent = text; popErr.hidden = !text;
-    if (text) { pop.hidden = false; }
+  var popMe = pop.querySelector(".me"), popIn = pop.querySelector(".in");
+  var popName = popMe.querySelector("b"), popMail = popMe.querySelector("span"), popSync = popMe.querySelector(".sync"), popHint = pop.querySelector(".hint");
+  // 기록 동기화(/shared/sync.js)를 쓰는 페이지가 계정 상자에 안내를 띄운다
+  ND.setSyncNote = function (t, bad) { popSync.textContent = t || ""; popSync.hidden = !t; popSync.classList.toggle("bad", !!bad); if (bad) accBtn.style.borderColor = "#c0392b"; else accBtn.style.borderColor = ""; };
+  ND.setSyncHint = function (t) { popHint.textContent = t || ""; popHint.hidden = !t || !!me; };
+  var me = null, form = null;
+  // 상자는 계정 버튼 오른쪽 끝에 맞춰 열고, 화면 왼쪽 밖으로 나가면 그만큼 오른쪽으로 민다
+  function place() {
+    if (pop.hidden) return;
+    pop.style.right = "0px";
+    var left = pop.getBoundingClientRect().left;
+    if (left < 12) pop.style.right = (left - 12) + "px";
   }
+  function setOpen(v) { pop.hidden = !v; accBtn.setAttribute("aria-expanded", String(v)); place(); }
+  window.addEventListener("resize", place);
   function paint(u) {
+    var was = me && me.uid;
     me = u;
+    if ((u && u.uid) !== was) { setOpen(false); if (form) form.reset(); }
+    popMe.hidden = !u; popIn.hidden = !!u; popHint.hidden = !!u || !popHint.textContent;
+    pop.classList.toggle("wide", !u);
     accBtn.textContent = "";
     if (!u) {
-      accBtn.className = "in"; accBtn.textContent = ACC.login[lang]; accBtn.title = ACC.login[lang]; accBtn.setAttribute("aria-label", ACC.login[lang]);
-      // 로그인 전 메뉴: Google로 바로 로그인하거나 이메일 로그인(계정 페이지)으로
-      popName.textContent = ""; popMail.textContent = ""; popName.hidden = true; popMail.hidden = true;
-      popOpts.hidden = false; popMy.hidden = true; popOut.hidden = true;
-      pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); return;
+      accBtn.className = "in"; accBtn.innerHTML = '<span class="t">' + ACC.login[lang] + "</span>" + PERSON; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
+      return;
     }
-    popName.hidden = false; popMail.hidden = false; popOpts.hidden = true; popMy.hidden = false;
     accBtn.className = "me"; accBtn.title = (u.name || u.email); accBtn.setAttribute("aria-label", ACC.me[lang] + ": " + (u.name || u.email));
     var initial = function () { accBtn.textContent = (u.name || u.email || "?").trim().charAt(0).toUpperCase(); };
     if (u.photo) {
@@ -367,7 +406,7 @@
       img.onerror = function () { accBtn.textContent = ""; initial(); };
       accBtn.appendChild(img);
     } else initial();
-    popName.textContent = u.name || ""; popMail.textContent = u.email || ""; popOut.hidden = false; popErr.hidden = true;
+    popName.textContent = u.name || ""; popMail.textContent = u.email || "";
   }
   function withAccount(fn) {
     if (window.ND.account) return fn(window.ND.account);
@@ -380,22 +419,24 @@
     var sc = document.createElement("script"); sc.type = "module"; sc.src = "/shared/account.js";
     document.head.appendChild(sc);
   }
+  // 로그인 전: 로그인 상자(Google + 이메일 로그인·회원가입) / 로그인 후: 이름·이메일·로그아웃
   accBtn.addEventListener("click", function () {
-    // 로그인 전후 모두 메뉴를 연다(로그인 전: Google·이메일, 로그인 뒤: 이름·마이페이지·로그아웃)
-    var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open));
-    if (!me) loadAccount();
+    if (!pop.hidden) { setOpen(false); return; }
+    openBox();
   });
-  pop.querySelector(".gin").addEventListener("click", function () {
-    if (busy) return;
-    if (!window.ND.account) { accBtn.textContent = ACC.wait[lang]; }
-    busy = true;
+  function openBox() {
+    setOpen(true);
+    if (me) return;
     withAccount(function (A) {
-      A.signIn().then(function () { busy = false; }, function (e) { busy = false; paint(me); showErr(A.errorText(e, lang)); });
+      if (!form) { form = A.loginForm(lang); popIn.textContent = ""; popIn.appendChild(form.el); place(); }
+      if (!pop.hidden && !me) form.focus();
     });
-  });
+  }
+  // 다른 도구(제1당 멀티 등)가 로그인 상자를 열 때 쓴다. 클릭 이벤트가 문서까지 올라가 바로 닫히지 않게 다음 틱에 연다
+  ND.openLogin = function () { setTimeout(function () { try { host.scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {} if (pop.hidden) openBox(); }, 0); };
   pop.querySelector(".out").addEventListener("click", function () { withAccount(function (A) { A.signOut(); }); });
-  document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) { pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); } });
-  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { pop.hidden = true; accBtn.focus(); } });
+  document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) setOpen(false); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { setOpen(false); accBtn.focus(); } });
   // 페이지가 다 뜬 뒤에 로그인 상태를 확인한다 (첫 화면 속도에 영향 없게)
   var startAcc = function () { withAccount(function (A) { A.onUser(paint); }); };
   if (document.readyState === "complete") setTimeout(startAcc, 0); else window.addEventListener("load", startAcc);
@@ -403,7 +444,7 @@
   var sel = root.querySelector("select");
   if (sel) sel.addEventListener("change", function () { setLang(sel.value); });
 
-  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 nihongodic 글자를 숨긴다 (폭이 넓어지면 다시 보인다)
+  // 글꼴·화면 폭에 따라 도구 아이콘이 잘리면 메뉴 전체를 한 단계 더 촘촘하게 한다 (폭이 넓어지면 되돌린다)
   var navEl = root.querySelector("nav"), toolsEl = root.querySelector(".tools");
   function fit() {
     if (!navEl || !toolsEl) return;

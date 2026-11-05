@@ -636,10 +636,10 @@ function renderRooms(){
   const off=!S.online||S.onlineState==='off'||S.onlineState==='login';
   if(create)create.disabled=off||!S.canWrite;
   if(join)join.disabled=off;
-  if(S.onlineState==='login'){note.innerHTML='<div class="notice login-note"><p style="margin:0 0 8px">멀티플레이는 Google 로그인이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.</p><button class="btn sm" data-a="login">Google로 로그인</button></div>';box.innerHTML='';return}
+  if(S.onlineState==='login'){note.innerHTML='<div class="notice login-note"><p style="margin:0 0 8px">멀티플레이는 Google 로그인이 필요합니다. AI 정당과 혼자 하기는 로그인 없이 됩니다.</p><div class="row" style="gap:8px"><button class="btn sm" data-a="login">Google로 로그인</button><a class="btn ghost sm" href="/account/?next=/jeildang/">이메일로 로그인</a></div></div>';box.innerHTML='';return}
   if(S.onlineState==='loading'){note.innerHTML='<p class="notice">멀티 서버에 연결하는 중입니다. 혼자 하기는 바로 시작할 수 있습니다.</p>';box.innerHTML='';return}
   if(off){note.innerHTML='<p class="notice">멀티 서버에 연결하지 못했습니다. 잠시 뒤 새로고침해 주세요. AI 정당과 혼자 하기는 그대로 됩니다.</p>';box.innerHTML='';return}
-  note.innerHTML=(S.account?`<p class="small muted" style="margin:0">${esc(S.account.name||S.account.email)} 계정으로 멀티플레이합니다.</p>`:'')+(S.canWrite?'':'<p class="notice">보기 권한이라 방을 관전만 할 수 있습니다. 참가하려면 게임 소유자에게 편집 초대를 요청하세요.</p>');
+  note.innerHTML=(S.account?`<p class="small muted" style="margin:0">${esc(S.account.name||S.account.email)} 계정으로 멀티플레이합니다. <a href="/account/?next=/jeildang/">마이페이지</a></p>`:'')+(S.canWrite?'':'<p class="notice">보기 권한이라 방을 관전만 할 수 있습니다. 참가하려면 게임 소유자에게 편집 초대를 요청하세요.</p>');
   const open=S.rooms.filter(g=>g.status==='lobby'&&Date.now()-(g.createdAt||0)<12*3600e3);
   const row=(g,label)=>`<button class="room" data-a="enter" data-v="${esc(g.code)}"><span><span class="code">${esc(g.code)}</span> <span class="small">${esc(g.title||'')}</span></span><span class="pill">${label}</span></button>`;
   if(!S.roomsLoaded){box.innerHTML='<p class="small muted">열린 방을 불러오는 중입니다.</p>';return}

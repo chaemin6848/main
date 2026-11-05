@@ -252,6 +252,8 @@
     google: { ko: "Google 계정으로 로그인", ja: "Googleアカウントでログイン", en: "Sign in with Google" },
     me: { ko: "내 계정", ja: "アカウント", en: "Account" },
     out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
+    email: { ko: "이메일로 로그인", ja: "メールでログイン", en: "Log in with email" },
+    mypage: { ko: "마이페이지", ja: "マイページ", en: "My page" },
     wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" }
   };
 
@@ -310,6 +312,8 @@
     ".acct-pop button{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
     ".acct-pop button:hover{border-color:var(--ink)}" +
     ".acct-pop .err{color:#c0392b}" +
+    ".acct-pop a{margin-top:8px;font-size:13px;font-weight:700;color:var(--ink);text-underline-offset:3px}" +
+    ".acct-pop .opts{display:grid;gap:2px}" +
     ".coffee{flex:none;display:grid;place-items:center;width:34px;height:30px;margin-left:4px;border-radius:8px;background:#ffdd00;color:#1c211d;text-decoration:none;box-sizing:border-box}" +
     ".coffee:hover{background:#ffe94d}" +
     ".coffee svg{width:18px;height:18px}" +
@@ -324,7 +328,10 @@
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '">' + ACC.login[lang] + "</button>" +
-    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span><button type="button" class="out">' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
+    '<div class="acct-pop" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><b></b><span></span>' +
+    '<div class="opts"><button type="button" class="gin">' + ACC.google[lang] + '</button><a class="emin" href="/account/?next=' + encodeURIComponent(location.pathname + location.search) + '">' + ACC.email[lang] + "</a></div>" +
+    '<a class="mypage" href="/account/?next=' + encodeURIComponent(location.pathname + location.search) + '" hidden>' + ACC.mypage[lang] + "</a>" +
+    '<button type="button" class="out" hidden>' + ACC.out[lang] + "</button><span class=\"err\" hidden></span></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
@@ -336,18 +343,23 @@
   /* ---------- 계정 버튼 ---------- */
   var accBtn = root.querySelector(".acct>button"), pop = root.querySelector(".acct-pop");
   var popName = pop.querySelector("b"), popMail = pop.querySelector("span"), popErr = pop.querySelector(".err");
+  var popOpts = pop.querySelector(".opts"), popMy = pop.querySelector(".mypage"), popOut = pop.querySelector(".out");
   var me = null, busy = false;
   function showErr(text) {
     popErr.textContent = text; popErr.hidden = !text;
-    if (text) { popName.textContent = ""; popMail.textContent = ""; pop.querySelector(".out").hidden = true; pop.hidden = false; }
+    if (text) { pop.hidden = false; }
   }
   function paint(u) {
     me = u;
     accBtn.textContent = "";
     if (!u) {
-      accBtn.className = "in"; accBtn.textContent = ACC.login[lang]; accBtn.title = ACC.google[lang]; accBtn.setAttribute("aria-label", ACC.google[lang]);
+      accBtn.className = "in"; accBtn.textContent = ACC.login[lang]; accBtn.title = ACC.login[lang]; accBtn.setAttribute("aria-label", ACC.login[lang]);
+      // 로그인 전 메뉴: Google로 바로 로그인하거나 이메일 로그인(계정 페이지)으로
+      popName.textContent = ""; popMail.textContent = ""; popName.hidden = true; popMail.hidden = true;
+      popOpts.hidden = false; popMy.hidden = true; popOut.hidden = true;
       pop.hidden = true; accBtn.setAttribute("aria-expanded", "false"); return;
     }
+    popName.hidden = false; popMail.hidden = false; popOpts.hidden = true; popMy.hidden = false;
     accBtn.className = "me"; accBtn.title = (u.name || u.email); accBtn.setAttribute("aria-label", ACC.me[lang] + ": " + (u.name || u.email));
     var initial = function () { accBtn.textContent = (u.name || u.email || "?").trim().charAt(0).toUpperCase(); };
     if (u.photo) {
@@ -355,7 +367,7 @@
       img.onerror = function () { accBtn.textContent = ""; initial(); };
       accBtn.appendChild(img);
     } else initial();
-    popName.textContent = u.name || ""; popMail.textContent = u.email || ""; pop.querySelector(".out").hidden = false; popErr.hidden = true;
+    popName.textContent = u.name || ""; popMail.textContent = u.email || ""; popOut.hidden = false; popErr.hidden = true;
   }
   function withAccount(fn) {
     if (window.ND.account) return fn(window.ND.account);
@@ -369,7 +381,11 @@
     document.head.appendChild(sc);
   }
   accBtn.addEventListener("click", function () {
-    if (me) { var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open)); return; }
+    // 로그인 전후 모두 메뉴를 연다(로그인 전: Google·이메일, 로그인 뒤: 이름·마이페이지·로그아웃)
+    var open = pop.hidden; pop.hidden = !open; popErr.hidden = true; accBtn.setAttribute("aria-expanded", String(open));
+    if (!me) loadAccount();
+  });
+  pop.querySelector(".gin").addEventListener("click", function () {
     if (busy) return;
     if (!window.ND.account) { accBtn.textContent = ACC.wait[lang]; }
     busy = true;

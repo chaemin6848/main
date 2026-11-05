@@ -4668,6 +4668,14 @@ ND.add({
 "マルチサーバーに接続されていません。",
 "Not connected to the multiplayer server."
 ],
+"이메일로 로그인": [
+"メールでログイン",
+"Log in with email"
+],
+"마이페이지": [
+"マイページ",
+"My page"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

@@ -6,14 +6,14 @@
 //   const c = mount({ box, lang: () => "ko", games: [{ id, keys: [k0, k1], get: () => [o0, o1], set: ([o0, o1]) => {} }], onState })
 //   c.changed(id)   // 체크가 바뀌면 알림 → 잠시 뒤 계정에 올림
 //   c.setLang()     // 언어를 바꾸면 다시 그림
-//   c.signIn()
+//   c.open()       // 로그인 상자(Google + 이메일) 열기
 // 체크 객체는 { 번호: 1 } 꼴 (dex.js 의 S[버전키] 그대로).
 //
 // 맞추는 규칙 (기기마다 '마지막으로 계정과 맞춘 상태'를 base 로 기억):
 //   계정에 기록 없음 → 이 기기 기록을 올림 / 둘이 같음 → 그대로
 //   이 기기가 base 그대로 → 계정 기록을 받음 / 계정이 base 그대로 → 이 기기 기록을 올림
 //   처음 맞추는데 이 기기가 비어 있음 → 계정 기록을 받음 / 그 밖(양쪽 다 바뀜) → 합쳐서(체크 합집합) 올림
-import { onUser, signIn, signOut, errorText } from "/shared/account.js";
+import { onUser, signOut, loginForm } from "/shared/account.js";
 import { getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -23,13 +23,13 @@ const COL = "dexSaves";
 const UI = {
   login: { ko: "로그인", ja: "ログイン", en: "Log in" },
   loginT: {
-    ko: "Google 계정으로 로그인하면 체크 기록이 다른 기기와 동기화돼요",
-    ja: "Googleアカウントでログインすると、チェック記録がほかの端末と同期されます",
-    en: "Sign in with Google to sync your checks across devices",
+    ko: "로그인하면 체크 기록이 다른 기기와 동기화돼요",
+    ja: "ログインすると、チェック記録がほかの端末と同期されます",
+    en: "Log in to sync your checks across devices",
   },
   me: { ko: "내 계정", ja: "アカウント", en: "Account" },
   out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
-  wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" },
+  why: { ko: "로그인하면 체크 기록이 계정에 저장돼서 다른 기기에서도 이어서 할 수 있어요.", ja: "ログインするとチェック記録がアカウントに保存され、ほかの端末でも続きから使えます。", en: "Log in to save your checks to your account and pick up on any device." },
   sync: { ko: "동기화 중…", ja: "同期中…", en: "Syncing…" },
   ok: { ko: "체크 기록이 계정에 저장돼요. 같은 계정으로 로그인한 기기끼리 자동으로 맞춰져요.", ja: "チェック記録はアカウントに保存され、同じアカウントでログインした端末どうしで自動的にそろいます。", en: "Your checks are saved to your account and stay in sync on every device signed in with it." },
   outN: { ko: "로그아웃해도 이 기기의 체크 기록은 그대로 남아요.", ja: "ログアウトしても、この端末のチェック記録はそのまま残ります。", en: "Signing out keeps the checks on this device." },
@@ -66,11 +66,11 @@ export function mount({ box, lang, games, onState }) {
   const btn = box.querySelector("button");
   const pop = document.createElement("div");
   pop.className = "acct-pop"; pop.hidden = true; pop.setAttribute("role", "dialog");
-  pop.innerHTML = '<b></b><span class="mail"></span><span class="st"></span><button type="button" class="out"></button><span class="err" hidden></span>';
+  pop.innerHTML = '<div class="me"><b></b><span class="mail"></span><span class="st"></span><button type="button" class="out"></button></div><div class="in"><p class="why"></p></div>';
   box.appendChild(pop);
   const $ = s => pop.querySelector(s);
 
-  let user = null, state = "off", errMsg = "", busy = false, stopSnap = null, ready = false;
+  let user = null, state = "off", stopSnap = null, ready = false, form = null, formLang = null;
   const timers = {};
 
   /* ---------- 그리기 ---------- */
@@ -78,13 +78,15 @@ export function mount({ box, lang, games, onState }) {
     btn.textContent = "";
     $(".out").textContent = L("out");
     pop.setAttribute("aria-label", L("me"));
+    btn.setAttribute("aria-haspopup", "dialog");
+    $(".me").hidden = !user; $(".in").hidden = !!user;
     if (!user) {
       btn.className = "acct-btn"; btn.textContent = L("login"); btn.title = L("loginT"); btn.setAttribute("aria-label", L("loginT"));
-      btn.removeAttribute("aria-haspopup");
-      if (!errMsg) pop.hidden = true;
+      $(".why").textContent = L("why");
+      // 로그인 상자(Google + 이메일)는 언어가 바뀌면 새로 만든다
+      if (formLang !== lang()) { if (form) form.el.remove(); form = loginForm(lang()); formLang = lang(); $(".in").appendChild(form.el); }
     } else {
       btn.className = "acct-btn me"; btn.title = user.name || user.email; btn.setAttribute("aria-label", L("me") + ": " + (user.name || user.email));
-      btn.setAttribute("aria-haspopup", "dialog");
       const initial = () => { btn.textContent = (user.name || user.email || "?").trim().charAt(0).toUpperCase(); };
       if (user.photo) {
         const img = document.createElement("img"); img.alt = ""; img.referrerPolicy = "no-referrer"; img.src = user.photo;
@@ -94,12 +96,10 @@ export function mount({ box, lang, games, onState }) {
       $("b").textContent = user.name || "";
       $(".mail").textContent = user.email || "";
     }
-    $("b").hidden = $(".mail").hidden = $(".out").hidden = !user;
     const st = !user ? "" : state === "denied" ? L("denied") : state === "error" ? L("fail") : state === "sync" ? L("sync") : L("ok") + " " + L("outN");
     $(".st").textContent = st; $(".st").hidden = !st;
     $(".st").classList.toggle("bad", state === "denied" || state === "error");
     btn.classList.toggle("warn", !!user && (state === "denied" || state === "error"));
-    $(".err").textContent = errMsg; $(".err").hidden = !errMsg;
     btn.setAttribute("aria-expanded", String(!pop.hidden));
     if (onState) onState({ user, state });
   }
@@ -160,28 +160,19 @@ export function mount({ box, lang, games, onState }) {
 
   onUser(u => {
     const changedUser = (u && u.uid) !== (user && user.uid);
-    user = u; errMsg = "";
+    user = u;
+    if (changedUser) { pop.hidden = true; if (form) form.reset(); }
     paint();
     if (changedUser) follow();
   });
 
   /* ---------- 버튼 ---------- */
-  function doSignIn() {
-    if (busy) return Promise.resolve();
-    busy = true; errMsg = ""; btn.textContent = L("wait");
-    return signIn().then(() => { busy = false; }, e => {
-      busy = false; errMsg = errorText(e, lang());
-      if (errMsg) pop.hidden = false;
-      paint();
-    });
-  }
-  btn.addEventListener("click", () => {
-    if (!user) { if (!pop.hidden) { errMsg = ""; pop.hidden = true; } return void doSignIn(); }
-    pop.hidden = !pop.hidden; errMsg = ""; paint();
-  });
+  const close = () => { pop.hidden = true; paint(); };
+  function open() { pop.hidden = false; paint(); if (!user && form) form.focus(); }
+  btn.addEventListener("click", () => { if (pop.hidden) open(); else close(); });
   $(".out").addEventListener("click", () => { pop.hidden = true; signOut(); });
-  document.addEventListener("click", ev => { if (!pop.hidden && !box.contains(ev.target)) { pop.hidden = true; errMsg = ""; paint(); } });
-  document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !pop.hidden) { pop.hidden = true; errMsg = ""; paint(); btn.focus(); } });
+  document.addEventListener("click", ev => { if (!pop.hidden && !ev.composedPath().includes(box)) close(); });
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !pop.hidden) { close(); btn.focus(); } });
   // 연결이 돌아오면 못 올린 기록을 다시 올린다
   window.addEventListener("online", () => { if (user && state === "error") games.forEach(g => push(g, true)); });
 
@@ -189,7 +180,7 @@ export function mount({ box, lang, games, onState }) {
   return {
     changed(id) { if (!user || !ready || state === "denied") return; const g = games.find(x => x.id === id); if (g) push(g); },
     setLang: paint,
-    signIn: doSignIn,
+    open,
     get user() { return user; },
   };
 }

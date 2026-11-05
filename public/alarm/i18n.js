@@ -173,4 +173,6 @@
   ]);
   // 낱말 바꿈 뒤에도 한글이 남으면(=사전에 없는 문장) 어설픈 섞어 쓰기 대신 원문을 둔다
   ND.fallback("en", function (s) { if (!/[\uac00-\ud7a3]/.test(s)) return null; var r = gloss(s); return /[\uac00-\ud7a3]/.test(r) ? null : r; });
+  // 일본어 화면(마이페이지 등)에서 일유알리미 일정을 보일 때 쓰는 영어 번역. 문장 사전 → 낱말 사전 순서, 못 바꾸면 원문
+  window.ALARM_EN = function (s) { if (EN[s] != null) return EN[s]; var r = gloss(String(s)); return /[\uac00-\ud7a3]/.test(r) ? s : r; };
 })();

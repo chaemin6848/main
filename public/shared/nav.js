@@ -255,7 +255,8 @@
     google: { ko: "로그인 · 회원가입 (Google 또는 이메일)", ja: "ログイン・新規登録（Googleまたはメール）", en: "Log in or sign up (Google or email)" },
     me: { ko: "내 계정", ja: "アカウント", en: "Account" },
     out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
-    wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" }
+    wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" },
+    my: { ko: "마이페이지 · 이용 현황", ja: "マイページ・利用状況", en: "My page · your progress" }
   };
 
   ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
@@ -321,6 +322,7 @@
     ".acct-pop .wait{color:var(--muted)}" +
     ".acct-pop .me .sync{margin-top:6px;font-size:12px;color:var(--muted)}.acct-pop .me .sync.bad{color:#c0392b}" +
     ".acct-pop .hint{margin:0 0 6px;font-size:12px;color:var(--muted)}" +
+    ".acct-pop .mylink{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}.acct-pop .mylink:hover{text-decoration:underline}" +
     // 로그인 상자 (/shared/account.js loginForm)
     ".nd-login,.nd-form{display:grid;gap:8px}.nd-login *{box-sizing:border-box}" +
     ".nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}" +
@@ -357,7 +359,7 @@
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
-    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + "</span></div></div></div>" +
+    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + " →</a></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +

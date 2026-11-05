@@ -67,7 +67,8 @@ h1{font-family:var(--f-display);font-weight:400;font-size:1.3rem;margin:0;text-w
 .acct-pop .out{justify-self:start;margin-top:6px;font:inherit;font-size:.8rem;padding:5px 12px;border:1px solid var(--line);border-radius:6px;background:none;color:var(--fg);cursor:pointer}
 .acct-pop .out:hover{border-color:var(--fg)}
 .acct-pop .me,.acct-pop .in{display:grid;gap:4px}
-.acct-pop .in{width:min(280px,calc(100vw - 58px))}
+.acct-pop.wide{width:min(300px,calc(100vw - 32px));max-width:none}
+.acct-pop .me,.acct-pop .in{min-width:0}
 .acct-pop .why{margin:0 0 6px;color:var(--muted)}
 /* 로그인 상자 (/shared/account.js loginForm) */
 .nd-login{display:grid;gap:8px}

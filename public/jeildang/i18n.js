@@ -5016,6 +5016,34 @@ ND.add({
 "：待合室の設定で「独裁体制で開始」を選ぶと、政権を握る党(国家モードは今の政府、架空の共和国は第一党)が非常体制で始まります。選挙は延期され、残りの党は抵抗を強めて市民革命で民主化を導くか、政権と手を組みます。",
 ": Pick \"Start as a dictatorship\" in the lobby settings and the ruling party (the current government in country mode, the largest party in the fictional republic) starts under emergency rule. Elections are postponed; the other parties either build resistance toward a civic revolution or side with the regime."
 ],
+"안보 법안과 안보 태세 강화로 오르고, 개방·감군 법안과 안보 위기로 내려갑니다. 35 미만이면 안보 중시 정당 신뢰가 오르고 정부 신뢰가 깎입니다.": [
+"安全保障法案と防衛態勢の強化で上がり、開放・軍縮法案と安全保障の危機で下がります。35未満になると安全保障重視の政党の信頼が上がり、政府の信頼が下がります。",
+"Rises with security bills and stronger defense; falls with openness or troop-cut bills and security crises. Below 35, security-minded parties gain trust and the government loses trust."
+],
+"시장·성장 법안과 세금 감면으로 오르고, 불황 사건과 지나친 분배 법안으로 내려갑니다. 35 미만이면 모든 당 분기 수입이 15% 줄고 정부 신뢰가 깎입니다.": [
+"市場・成長法案と減税で上がり、不況の事件と行き過ぎた分配法案で下がります。35未満になると全政党の四半期収入が15%減り、政府の信頼が下がります。",
+"Rises with market and growth bills and tax cuts; falls with recessions and excessive redistribution bills. Below 35, every party's quarterly income drops 15% and the government loses trust."
+],
+"분배·복지 법안과 민생 지원금으로 오르고, 물가·재난 사건으로 내려갑니다. 35 미만이면 분배 정당 신뢰가 오르고 정부 신뢰가 깎입니다.": [
+"分配・福祉法案と生活支援金で上がり、物価・災害の事件で下がります。35未満になると分配重視の政党の信頼が上がり、政府の信頼が下がります。",
+"Rises with redistribution and welfare bills and relief payments; falls with price spikes and disasters. Below 35, redistribution parties gain trust and the government loses trust."
+],
+"개방·화합 법안과 협치로 오르고, 정치 공세와 갈등 사건으로 내려갑니다. 35 미만이면 모든 당 결속이 분기마다 흔들립니다.": [
+"開放・融和法案と協治で上がり、政治攻勢と対立の事件で下がります。35未満になると全政党の結束が四半期ごとに揺らぎます。",
+"Rises with openness and harmony bills and cooperation; falls with political attacks and conflicts. Below 35, every party's unity wobbles each quarter."
+],
+"방향": [
+"方向",
+"Direction"
+],
+"안건": [
+"議案",
+"Bill"
+],
+"계파": [
+"派閥",
+"Wing"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

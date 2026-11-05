@@ -1,6 +1,6 @@
 // 나가타초 노트 — Firebase 공통 모듈 (index / login / admin 페이지가 함께 씀)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, onIdTokenChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -27,11 +27,16 @@ export const fmtDate = ts => {
 // 로그인 상태 + users/{uid} 프로필을 실시간으로 넘겨준다. cb(user, profile)
 export function watchUser(cb) {
   if (!auth) { cb(null, null); return; }
-  let stopProfile = null;
-  onAuthStateChanged(auth, u => {
-    if (stopProfile) { stopProfile(); stopProfile = null; }
+  let stopProfile = null, last;
+  // onAuthStateChanged 는 익명 계정을 Google·이메일로 승격할 때(uid 그대로) 알려 주지 않으므로 토큰 변경을 보고,
+  // 로그인한 계정(uid)이 바뀐 경우에만 다시 붙는다 (토큰은 한 시간마다 새로 받으므로 같은 계정이면 무시)
+  onIdTokenChanged(auth, u => {
     // 제1당의 익명 로그인은 같은 사이트라 여기에도 보인다 → 나가타초 노트에서는 로그인하지 않은 것으로 본다
-    if (!u || u.isAnonymous) { cb(null, null); return; }
+    const key = u && !u.isAnonymous ? u.uid : null;
+    if (key === last) return;
+    last = key;
+    if (stopProfile) { stopProfile(); stopProfile = null; }
+    if (!key) { cb(null, null); return; }
     stopProfile = onSnapshot(doc(db, "users", u.uid),
       s => cb(u, s.exists() ? s.data() : null),
       () => cb(u, null));

@@ -1623,3 +1623,11 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 탄핵소추안 부결(찬성 {0}석, 필요 {1}석).	弾劾訴追案否決(賛成 {0}議席、必要 {1}議席)。	Impeachment fails ({0} seats in favour, {1} needed).
 계엄군이 {0}의 {1} 비판 활동을 막았습니다.	戒厳軍が{0}による{1}批判活動を阻みました。	Martial-law troops block {0}'s campaign against {1}.
 계엄 당국이 {0}의 폭로 보도를 막았습니다.	戒厳当局が{0}の暴露報道を差し止めました。	Martial-law authorities suppress {0}'s exposé.
+# 2026-11 국가 상태 지표 설명(툴팁)과 선택 상자 이름
+안보 법안과 안보 태세 강화로 오르고, 개방·감군 법안과 안보 위기로 내려갑니다. 35 미만이면 안보 중시 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	安全保障法案と防衛態勢の強化で上がり、開放・軍縮法案と安全保障の危機で下がります。35未満になると安全保障重視の政党の信頼が上がり、政府の信頼が下がります。	Rises with security bills and stronger defense; falls with openness or troop-cut bills and security crises. Below 35, security-minded parties gain trust and the government loses trust.
+시장·성장 법안과 세금 감면으로 오르고, 불황 사건과 지나친 분배 법안으로 내려갑니다. 35 미만이면 모든 당 분기 수입이 15% 줄고 정부 신뢰가 깎입니다.	市場・成長法案と減税で上がり、不況の事件と行き過ぎた分配法案で下がります。35未満になると全政党の四半期収入が15%減り、政府の信頼が下がります。	Rises with market and growth bills and tax cuts; falls with recessions and excessive redistribution bills. Below 35, every party's quarterly income drops 15% and the government loses trust.
+분배·복지 법안과 민생 지원금으로 오르고, 물가·재난 사건으로 내려갑니다. 35 미만이면 분배 정당 신뢰가 오르고 정부 신뢰가 깎입니다.	分配・福祉法案と生活支援金で上がり、物価・災害の事件で下がります。35未満になると分配重視の政党の信頼が上がり、政府の信頼が下がります。	Rises with redistribution and welfare bills and relief payments; falls with price spikes and disasters. Below 35, redistribution parties gain trust and the government loses trust.
+개방·화합 법안과 협치로 오르고, 정치 공세와 갈등 사건으로 내려갑니다. 35 미만이면 모든 당 결속이 분기마다 흔들립니다.	開放・融和法案と協治で上がり、政治攻勢と対立の事件で下がります。35未満になると全政党の結束が四半期ごとに揺らぎます。	Rises with openness and harmony bills and cooperation; falls with political attacks and conflicts. Below 35, every party's unity wobbles each quarter.
+방향	方向	Direction
+안건	議案	Bill
+계파	派閥	Wing

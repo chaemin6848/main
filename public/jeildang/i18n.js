@@ -4908,6 +4908,82 @@ ND.add({
 "：政府首班の党が単独または連盟で在籍3分の2を持てば、行政措置で改憲案を出せます。翌四半期の本会議で在籍3分の2が賛成すれば、その次の四半期末に国民投票(過半数の賛成)を行います。米国は国民投票の代わりに州の批准(圏域の4分の3の賛成)、英国は成文憲法がないため議会の議決で即座に変わります。国民投票の四半期には各党が賛成・反対の運動か中立を選び、その党の支持率と信頼の分だけ票が動きます。否決なら発議した党の信頼 −6。条項は比例阻止条項の引き上げ、選挙区の勝者総取り強化、行政権強化、不信任要件の強化、選挙延期で、可決されると権力強化への批判で発議した党の信頼 −3です。",
 ": If the governing party holds two-thirds of all seats alone or with its federation, it can propose an amendment as an executive action. If two-thirds vote yes in next quarter's session, a referendum (simple majority) follows at the end of the quarter after. The US uses state ratification (three-quarters of regions) instead; the UK has no written constitution, so Parliament's vote settles it. In the referendum quarter every party campaigns yes, no or stays neutral, moving votes by its support and trust. If rejected, the proposing party loses 6 trust. The clauses are a higher list threshold, stronger winner-take-all districts, stronger executive, a tougher no-confidence rule and postponed elections; if passed, the proposing party loses 3 trust over the power grab."
 ],
+"체제": [
+"体制",
+"Regime"
+],
+"민주주의": [
+"民主主義",
+"Democracy"
+],
+"독재 체제로 시작": [
+"独裁体制で開始",
+"Start as a dictatorship"
+],
+"비상계엄": [
+"非常戒厳",
+"Martial law"
+],
+"탄핵소추안": [
+"弾劾訴追案",
+"Impeachment motion"
+],
+"계엄 해제 요구안": [
+"戒厳解除要求案",
+"Motion to lift martial law"
+],
+"비상계엄 해제 요구안": [
+"非常戒厳解除要求案",
+"Motion to lift martial law"
+],
+"계엄 선포의 책임을 묻습니다. 재적 3분의 2가 찬성하면 대통령이 파면되고 이번 분기 말 대통령 선거를 다시 치릅니다.": [
+"戒厳宣布の責任を問います。在籍3分の2が賛成すれば大統領は罷免され、今四半期末に大統領選挙をやり直します。",
+"Holds the president to account for martial law. If two-thirds of all members vote yes, the president is removed and a new presidential election is held at the end of this quarter."
+],
+"의석 과반이 찬성하면 계엄이 풀립니다. 해제되면 선포한 당 신뢰 −15, 그 정부는 물러납니다.": [
+"議席の過半数が賛成すれば戒厳は解けます。解除されれば宣布した党の信頼 −15、その政府は退陣します。",
+"Martial law ends if a majority of seats vote yes. Then the declaring party loses 15 trust and its government falls."
+],
+"의석 과반이 찬성하면 계엄이 풀립니다. 해제되면 선포한 당 신뢰 −15, 다음 분기 탄핵소추안이 오릅니다.": [
+"議席の過半数が賛成すれば戒厳は解けます。解除されれば宣布した党の信頼 −15、翌四半期に弾劾訴追案が上程されます。",
+"Martial law ends if a majority of seats vote yes. Then the declaring party loses 15 trust and an impeachment motion follows next quarter."
+],
+"계엄령 선포": [
+"戒厳令の宣布",
+"Declare martial law"
+],
+"행정부 수반 당만, 한 판에 한 번. 다음 분기 본회의에 계엄 해제 요구안이 오르고 의석 과반이 찬성하면 풀립니다. 계엄 동안 야당 유세가 반으로 줄고 우리를 향한 공세가 절반쯤 막히지만, 우리 신뢰 −4·사회 통합 −6이 분기마다 쌓입니다. 해제되면 정부가 무너지고(대통령제·이원집정부제는 탄핵소추안) 우리 신뢰 −15. 해제 요구를 막아 내면 3분의 2가 없어도 비상 체제(독재)를 선포할 수 있습니다. 선포할 때 신뢰 −10.": [
+"行政府首班の党のみ、1ゲームに一度。翌四半期の本会議に戒厳解除要求案が上程され、議席の過半数が賛成すれば解けます。戒厳中は野党の遊説が半分になり、私たちへの攻勢も半分ほど阻まれますが、私たちの信頼 −4・社会統合 −6が毎四半期積み重なります。解除されれば政府は崩れ(大統領制・半大統領制は弾劾訴追案)、私たちの信頼 −15。解除要求を阻めば3分の2がなくても非常体制(独裁)を宣布できます。宣布時に信頼 −10。",
+"Head of the executive only, once per game. A motion to lift it comes to the chamber next quarter and passes with a majority of seats. Under martial law opposition rallies are halved and about half the attacks on us are blocked, but our trust −4 and social cohesion −6 pile up every quarter. If lifted, the government falls (presidential and semi-presidential systems face impeachment) and our trust −15. Block the motion and you can declare emergency rule (dictatorship) even without two-thirds. Declaring costs 10 trust."
+],
+"계엄 해제": [
+"戒厳解除",
+"Lift martial law"
+],
+"계엄을 스스로 거둡니다. 신뢰 +3.": [
+"戒厳を自ら解きます。信頼 +3。",
+"End martial law yourselves. Trust +3."
+],
+"가상 공화국에서 우리 당 단독으로 재적 3분의 2를 가졌을 때, 또는 계엄 해제 요구를 막아 냈을 때(모든 모드). 선거를 무기한 미루고 의석을 굳힙니다. 신뢰 −10. 저항이 쌓여 100%가 되면 시민 혁명으로 무너집니다.": [
+"架空の共和国で私たちの党が単独で在籍3分の2を持つとき、または戒厳解除要求を阻んだとき(全モード)。選挙を無期限に延期し議席を固めます。信頼 −10。抵抗がたまって100%になると市民革命で崩れます。",
+"When your party alone holds two-thirds of all seats in the fictional republic, or after you have blocked a motion to lift martial law (any mode). Elections are postponed indefinitely and seats are frozen. Trust −10. If resistance reaches 100%, a civic revolution topples you."
+],
+"계엄령": [
+"戒厳令",
+"Martial law"
+],
+": 행정부 수반 당은 한 판에 한 번 계엄을 선포할 수 있습니다(모든 모드). 다음 분기 본회의에 계엄 해제 요구안이 오르고 의석 과반이 찬성하면 풀립니다. 해제되면 선포한 당 신뢰 −15이고 의원내각제는 내각이 물러나며(영국은 조기 총선), 대통령제·이원집정부제는 탄핵소추안이 올라 재적 3분의 2가 찬성하면 대통령이 파면됩니다. 해제 요구를 막아 내면 3분의 2가 없어도 비상 체제(독재)를 선포할 수 있습니다.": [
+"：行政府首班の党は1ゲームに一度、戒厳を宣布できます(全モード)。翌四半期の本会議に戒厳解除要求案が上程され、議席の過半数が賛成すれば解けます。解除されれば宣布した党の信頼 −15、議院内閣制は内閣が退陣し(英国は解散総選挙)、大統領制・半大統領制は弾劾訴追案が上程され、在籍3分の2が賛成すれば大統領は罷免されます。解除要求を阻めば3分の2がなくても非常体制(独裁)を宣布できます。",
+": The head of the executive can declare martial law once per game (any mode). A motion to lift it comes to the chamber next quarter and passes with a majority of seats. If lifted, the declaring party loses 15 trust; in parliamentary systems the cabinet falls (the UK holds a snap election), and in presidential or semi-presidential systems an impeachment motion follows, removing the president with two-thirds of all members. Block the motion and you can declare emergency rule (dictatorship) even without two-thirds."
+],
+"독재 모드": [
+"独裁モード",
+"Dictatorship mode"
+],
+": 대기실 설정에서 '독재 체제로 시작'을 고르면 정권을 쥔 당(국가 모드는 지금 정부, 가상 공화국은 의석 1당)이 비상 체제로 시작합니다. 선거가 미뤄지고, 나머지 당은 저항을 키워 시민 혁명으로 민주화를 이끌거나 정권과 손잡습니다.": [
+"：待合室の設定で「独裁体制で開始」を選ぶと、政権を握る党(国家モードは今の政府、架空の共和国は第一党)が非常体制で始まります。選挙は延期され、残りの党は抵抗を強めて市民革命で民主化を導くか、政権と手を組みます。",
+": Pick \"Start as a dictatorship\" in the lobby settings and the ruling party (the current government in country mode, the largest party in the fictional republic) starts under emergency rule. Elections are postponed; the other parties either build resistance toward a civic revolution or side with the regime."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -4950,7 +5026,9 @@ ND.pat([
 [/^(.*?)\ 정부가\ 낸\ 개헌안이\ 의회를\ 넘었습니다\.\ 이번\ 분기\ 말\ 국민투표에서\ 과반이\ 찬성해야\ 확정됩니다\.\ 부결되면\ 발의한\ 당\ 신뢰\ −6·결속\ −4,\ 반대\ 운동을\ 한\ 당은\ 신뢰\ \+2\.\ 가결되면\ 찬성\ 운동을\ 한\ 당\ 신뢰\ \+1\.$/,"$1政府の改憲案が議会を通過しました。今四半期末の国民投票で過半数が賛成すれば確定します。否決なら発議した党は信頼 −6・結束 −4、反対運動をした党は信頼 +2。可決なら賛成運動をした党は信頼 +1。","The $1 government's amendment has cleared Parliament. It takes effect only if a majority votes yes in this quarter's referendum. If rejected: the proposing party loses 6 trust and 4 unity, and parties that campaigned no gain 2 trust. If passed: parties that campaigned yes gain 1 trust."],
 [/^재적\ 3분의\ 2\((.*?)석\)\ 이상이\ 찬성해야\ 가결됩니다\.\ 발의한\ 당과\ 연맹\ 회원은\ 대체로\ 찬성하고,\ 나머지\ 당은\ 대체로\ 반대합니다\.\ 의회를\ 넘으면\ 다음\ 분기\ 말\ 주\ 비준\(권역\ 4분의\ 3\ 찬성\)을\ 거쳐야\ 확정됩니다\.$/,"在籍3分の2($1議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。議会を通れば、翌四半期末の州批准(圏域の4分の3の賛成)を経て確定します。","Passes with at least two-thirds of all seats ($1). The proposing party and its federation members usually vote yes; the rest usually vote no. If it passes, it still needs ratification by the states (three-quarters of regions) at the end of next quarter."],
 [/^재적\ 3분의\ 2\((.*?)석\)\ 이상이\ 찬성해야\ 가결됩니다\.\ 발의한\ 당과\ 연맹\ 회원은\ 대체로\ 찬성하고,\ 나머지\ 당은\ 대체로\ 반대합니다\.\ 의회를\ 넘으면\ 다음\ 분기\ 말\ 국민투표\(과반\ 찬성\)를\ 거쳐야\ 확정됩니다\.$/,"在籍3分の2($1議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。議会を通れば、翌四半期末の国民投票(過半数の賛成)を経て確定します。","Passes with at least two-thirds of all seats ($1). The proposing party and its federation members usually vote yes; the rest usually vote no. If it passes, it still needs a referendum (simple majority) at the end of next quarter."],
+[/^(.*?)\ 정부가\ 계엄을\ 선포했습니다\.\ 본회의의\ 계엄\ 해제\ 요구안에\ 찬성해\ 의석\ 과반을\ 모으면\ 계엄이\ 풀립니다\.\ 계엄\ 동안\ 우리\ 유세\ 효과가\ 반으로\ 줄고,\ 선포한\ 당을\ 향한\ 공세는\ 절반쯤\ 막힙니다\.$/,"$1政府が戒厳を宣布しました。本会議の戒厳解除要求案に賛成して議席の過半数を集めれば戒厳は解けます。戒厳中は私たちの遊説効果が半分になり、宣布した党への攻勢は半分ほど阻まれます。","The $1 government has declared martial law. Back the lifting motion and gather a majority of seats to end it. Meanwhile our rallies are half as effective and about half of our attacks on that party are blocked."],
 [/^재적\ 3분의\ 2\((.*?)석\)\ 이상이\ 찬성해야\ 가결됩니다\.\ 발의한\ 당과\ 연맹\ 회원은\ 대체로\ 찬성하고,\ 나머지\ 당은\ 대체로\ 반대합니다\.\ 성문\ 헌법이\ 없어\ 의회를\ 넘으면\ 바로\ 바뀝니다\.$/,"在籍3分の2($1議席)以上の賛成で可決されます。発議した党と連盟の会員はおおむね賛成し、残りの党はおおむね反対します。成文憲法がないため、議会を通れば即座に変わります。","Passes with at least two-thirds of all seats ($1). The proposing party and its federation members usually vote yes; the rest usually vote no. With no written constitution, it takes effect as soon as Parliament passes it."],
+[/^(.*?)\ 정부가\ 계엄을\ 선포했습니다\.\ 본회의의\ 해제\ 요구안을\ 막아\ 내면\ 비상\ 체제를\ 선포할\ 수\ 있습니다\.\ 계엄이\ 이어지는\ 동안\ 우리\ 신뢰\ −4·사회\ 통합\ −6이\ 분기마다\ 쌓입니다\.$/,"$1政府が戒厳を宣布しました。本会議の解除要求案を阻めば非常体制を宣布できます。戒厳が続く間、私たちの信頼 −4・社会統合 −6が毎四半期積み重なります。","The $1 government has declared martial law. Block the lifting motion in the chamber and you can declare emergency rule. While it lasts, our trust −4 and social cohesion −6 pile up each quarter."],
 [/^노선을\ 통째로\ 바꾸는\ 급선회는\ 신뢰\ −(.*?),\ 결속\ −(.*?),\ 멀어지는\ 지역\ 기반\ −3이고\ 4분기에\ 한\ 번입니다\.\ 한\ 걸음씩\ 옮기려면\ 행동의\ '노선\ 이동'을\ 쓰세요\.\ 지금\ 노선:\ (.*?)$/,"路線を丸ごと変える急旋回は信頼 −$1、結束 −$2、遠ざかる地域の基盤 −3で、4四半期に一度です。一歩ずつ動かすなら行動の「路線移動」を使ってください。今の路線: $3","A sharp turn swaps your whole line: trust −$1, unity −$2, base −3 in regions you leave, once every 4 quarters. To move step by step, use the \"Shift line\" action. Current line: $3"],
 [/^정부:\ 끝났을\ 때\ 단독\ 과반\ \+(.*?),\ 연맹\ 합산\ 과반이면\ 그\ 당들\ 각\ \+(.*?),\ 둘\ 다\ 없으면\ 원내\ 1당\ \+(.*?),\ 대통령제의\ 대통령\ 여당\ \+(.*?),\ 이원집정부제의\ 대통령\ 당\ \+(.*?)\.$/,"政府：終了時に単独過半数 +$1、連盟の合計が過半数ならその加盟党それぞれ +$2、どちらもなければ院内第一党 +$3、大統領制の大統領与党 +$4、半大統領制の大統領の党 +$5。","Government at the end: single-party majority +$1; if a federation has a combined majority, +$2 for each member; otherwise the largest party +$3; president's party in a presidential system +$4; president's party in a semi-presidential system +$5."],
 [/^(.*?)분기\ 본회의에\ 올릴\ (.*?)을\ 고릅니다\.\ 고르지\ 않으면\ 우리\ 노선에\ 가장\ 맞는\ 안이\ 올라갑니다\.\ 분기\ 말에\ 정부가\ 바뀌면\ 새\ 정부가\ 다시\ 고릅니다\.$/,"$1四半期の本会議に出す$2を選びます。選ばなければ自党の路線に最も合う案が出ます。四半期末に政府が変われば新政府が選び直します。","Choose the $2 for the Q$1 floor session. If you don't, the option closest to our line goes forward. If the government changes at the end of the quarter, the new one chooses again."],
@@ -4959,7 +5037,9 @@ ND.pat([
 [/^재적\ 3분의\ 2\((.*?)석\)\ 이상이\ 찬성해야\ 가결됩니다\.\ 발의한\ 당과\ 연맹\ 회원은\ 대체로\ 찬성하고,\ 나머지\ 당은\ 대체로\ 반대합니다\.$/,"在籍3分の2（$1議席）以上の賛成で可決されます。発議した党と連盟の加盟党はおおむね賛成し、その他の党はおおむね反対します。","Needs two-thirds of all seats ($1) to pass. The proposer and its federation usually vote yes; other parties usually vote no."],
 [/^(.*?)의\ 요구:\ 「(.*?)」에\ 찬성\.\ 들어주면\ 결속\ \+4,\ 무시하면\ 결속\ −5\.\ 불만이\ 3번\ 쌓이면\ 그\ 계파가\ 대표\ 경선을\ 겁니다\.$/,"$1の要求: 「$2」に賛成。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。","$1 demands a YES on \"$2\". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race."],
 [/^(.*?)의\ 요구:\ 「(.*?)」에\ 반대\.\ 들어주면\ 결속\ \+4,\ 무시하면\ 결속\ −5\.\ 불만이\ 3번\ 쌓이면\ 그\ 계파가\ 대표\ 경선을\ 겁니다\.$/,"$1の要求: 「$2」に反対。応じれば結束 +4、無視すれば結束 −5。不満が3回たまるとその派閥が代表選を仕掛けます。","$1 demands a NO on \"$2\". Comply: unity +4. Ignore: unity −5. Three grievances and that wing forces a leadership race."],
+[/^탄핵소추안\ 가결\((.*?)석,\ 재적\ 3분의\ 2\ (.*?)석\)\.\ (.*?)\ 출신\ 대통령이\ 파면돼\ 이번\ 분기\ 말\ 대통령\ 선거를\ 다시\ 치릅니다\.$/,"弾劾訴追案可決($1議席、在籍3分の2 $2議席)。$3出身の大統領は罷免され、今四半期末に大統領選挙をやり直します。","Impeachment passes ($1 seats; two-thirds is $2). The $3 president is removed and a new presidential election is held this quarter."],
 [/^한\ 임기\ 더\ 하면\ 지금\ 의석과\ 승점을\ 그대로\ 이어\ (.*?)분기를\ 더\ 합니다(.*?)\.\ 몇\ 번이든\ 이어\ 갈\ 수\ 있습니다\.$/,"もう1期続けると、いまの議席と勝ち点をそのまま引き継いで$1四半期さらに遊びます$2。何度でも続けられます。","Play another term to continue for $1 more quarters, keeping your seats and points$2. You can keep going as long as you like."],
+[/^재적\ 3분의\ 2\((.*?)석\)\ 이상이\ 찬성하면\ 대통령이\ 파면되고\ 이번\ 분기\ 말\ 대통령\ 선거를\ 다시\ 치릅니다\.$/,"在籍3分の2($1議席)以上が賛成すれば大統領は罷免され、今四半期末に大統領選挙をやり直します。","If at least two-thirds of all seats ($1) vote yes, the president is removed and a new presidential election follows this quarter."],
 [/^마지막\ 총선\ 뒤\ (.*?)석\ 이상이면\ 승점\ \+(.*?)\.\ 순위는\ 승점에서\ 기준\ 승점\ (.*?)을\ 뺀\ 목표\ 대비로\ 매깁니다\.$/,"最後の総選挙で$1議席以上なら勝ち点 +$2。順位は勝ち点から基準勝ち点 $3 を引いた目標比で決まります。","$1+ seats after the final general election earns +$2 points. Ranking is points minus your par of $3."],
 [/^을\ (.*?)개까지\ 고릅니다\.\ 유세·인재\ 영입으로\ 표를\ 늘리고,\ 법안\ 발의로\ 입법\ 점수를\ 노리세요\.$/,"を$1つまで選びます。遊説・人材登用で票を増やし、法案提出で立法点を狙いましょう。",": choose up to $1. Rallies and recruiting win votes; filing bills earns legislation points."],
 [/^신뢰·결속:\ 끝났을\ 때\ 신뢰가\ 50에서\ 1\ 오를\ 때마다\ \+(.*?),\ 결속은\ \+(.*?)\(내려가면\ 감점\)\.$/,"信頼・結束：終了時に信頼が50から1上がるごとに +$1、結束は +$2（下がると減点）。","Trust and unity at the end: +$1 per point of trust above 50, +$2 per point of unity (below counts against you)."],
@@ -4972,12 +5052,14 @@ ND.pat([
 [/^:\ 대형정당은\ 지역구에\ 강하지만\ 결속이\ 빨리\ 떨어집니다\.\ 군소정당은\ 비례에\ 강합니다\.(.*?)$/,"：大政党は選挙区に強いが結束が早く下がります。少数政党は比例に強いです。$1",": Major parties are strong in districts but lose unity fast. Minor parties are strong in PR.$1"],
 [/^대통령이\ 「(.*?)」에\ 거부권을\ 행사했습니다\.\ 재의결에\ 필요한\ 3분의\ 2에\ 못\ 미쳤습니다\.$/,"大統領が「$1」に拒否権を行使しました。再可決に必要な3分の2に届きませんでした。","The president vetoed \"$1\". The override fell short of two-thirds."],
 [/^헌법\ 개정안\ 「(.*?)」\ 국민투표\ 부결\(찬성\ (.*?)%\)\.\ 발의한\ 정부가\ 큰\ 타격을\ 입었습니다\.$/,"憲法改正案「$1」は国民投票で否決(賛成 $2%)。発議した政府は大きな打撃を受けました。","Constitutional amendment \"$1\" is rejected in the referendum ($2% yes). A heavy blow to the government that proposed it."],
+[/^(.*?)\ 정부가\ 선포한\ 계엄을\ 풀라고\ 요구합니다\.\ 의석\ 과반이\ 찬성하면\ 계엄이\ 풀립니다\.$/,"$1政府が宣布した戒厳の解除を求めます。議席の過半数が賛成すれば戒厳は解けます。","Demands that the $1 government lift martial law. It ends if a majority of seats vote yes."],
 [/^시민\ 혁명\.\ (.*?)의\ 비상\ 체제가\ 무너졌습니다\.\ 이번\ 분기\ 말\ 조기\ 총선을\ 치릅니다\.$/,"市民革命。$1の非常体制が崩壊しました。今期末に繰り上げ総選挙を行います。","Popular revolution. $1's emergency rule has collapsed. An early general election is held at the end of this quarter."],
 [/^시작\ 의석은\ (.*?)\ 기준\ 실제\ 의석입니다\.\ 이후\ 전개와\ 뉴스는\ 게임\ 속\ 허구입니다\.$/,"開始議席は$1時点の実際の議席です。その後の展開やニュースはゲーム内のフィクションです。","Starting seats are the real counts as of $1. Everything after that, including the news, is fiction."],
 [/^노선을\ 바꾸면\ 신뢰\ −5,\ 분기에\ 한\ 번만\ 바꿀\ 수\ 있습니다\.\ 지금\ 노선:\ (.*?)$/,"路線を変えると信頼 −5、四半期に1回だけ変更できます。現在の路線：$1","Changing your line costs trust −5 and is allowed once per quarter. Current line: $1"],
 [/^헌법\ 개정안\ 「(.*?)」\ 부결\.\ 찬성\ (.*?)석으로\ 재적\ 3분의\ 2\((.*?)석\)에\ 못\ 미쳤습니다\.$/,"憲法改正案「$1」否決。賛成$2議席で在籍3分の2（$3議席）に届きませんでした。","Constitutional amendment \"$1\" failed: $2 seats in favour, short of two-thirds ($3)."],
 [/^막대는\ 지역\ 지지율,\ 아래\ 숫자는\ 지금\ 선거를\ 치를\ 때의\ 예상\ 의석입니다\.(.*?)$/,"棒は地域の支持率、下の数字はいま選挙をした場合の予想議席です。$1","Bars show regional support; the numbers below are projected seats if the election were held now.$1"],
 [/^노선과\ 어긋나는\ 법:\ 찬성해서\ 가결되면\ (.*?),\ 반대했는데\ 가결되면\ \+(.*?)\ \(소신\)$/,"路線に反する法：賛成して可決されると $1、反対したのに可決されると +$2（信念）","Clashes with our line: yes and it passes $1; no and it passes anyway +$2 (conviction)"],
+[/^(.*?)\ 정부,\ 비상계엄\ 선포\.\ 다음\ 분기\ 본회의에\ 계엄\ 해제\ 요구안이\ 오릅니다\.$/,"$1政府、非常戒厳を宣布。翌四半期の本会議に戒厳解除要求案が上程されます。","The $1 government declares martial law. A motion to lift it comes to the chamber next quarter."],
 [/^(.*?)\ 기준\ 실제\ 의석에서\ 시작합니다\.\ 이후\ 전개는\ 모두\ 게임\ 속\ 가상입니다\.$/,"$1時点の実際の議席から始まります。その後の展開はすべてゲーム内のフィクションです。","Starts from the real seats as of $1. Everything after that is fiction."],
 [/^(.*?),\ 이번\ 총선에\ 신인을\ 대거\ 공천했습니다\.\ 낙천한\ 현역들이\ 반발합니다\.$/,"$1、今回の総選挙で新人を大量擁立。公認漏れの現職が反発しています。","$1 fields a wave of new candidates; dropped incumbents are furious."],
 [/^(.*?)이\ 낸\ 「(.*?)」\ 수정안이\ 부결됐습니다\(수정안\ 지지\ (.*?)석\ ·\ 원안\ 지지\ (.*?)석\)\.$/,"$1の「$2」修正案は否決されました(修正案支持 $3議席・原案支持 $4議席)。","$1's amendment to \"$2\" fails ($3 seats for it, $4 for the original)."],
@@ -4988,14 +5070,17 @@ ND.pat([
 [/^「(.*?)」에\ (.*?)\ 수정안이\ 채택됐습니다\(수정안\ 지지\ (.*?)석\ ·\ 원안\ 지지\ (.*?)석\)\.$/,"「$1」に$2の修正案が採択されました(修正案支持 $3議席・原案支持 $4議席)。","$2's amendment to \"$1\" is adopted ($3 seats for it, $4 for the original)."],
 [/^(.*?)\ (.*?)가\ 대표\ 경선에서\ 지고\ 지역구\ 의원\ (.*?)명이\ (.*?)로\ 집단\ 탈당했습니다\.$/,"$1の$2が代表選に敗れ、選挙区議員$3人が$4へ集団離党しました。","$1's $2 loses a leadership race; $3 district members defect to $4."],
 [/^(.*?)\ 대표\ 경선에서\ 밀어준\ (.*?)\ 후보가\ 지고\ (.*?)\ 후보가\ 대표가\ 됐습니다\.$/,"$1の代表選で推した$2の候補が敗れ、$3の候補が代表になりました。","In $1's leadership race the backed $2 candidate lost; the $3 candidate is the new leader."],
+[/^계엄\ 해제\ 요구안\ 부결\(찬성\ (.*?)석\)\.\ (.*?)\ 정부의\ 계엄이\ 이어집니다\.$/,"戒厳解除要求案否決(賛成 $1議席)。$2政府の戒厳が続きます。","Motion to lift martial law fails ($1 seats in favour). The $2 government's martial law continues."],
 [/^일반\ 행동과\ 별도로\ (.*?)건\ 집행합니다\.\ 비용은\ 국고에서\ 나갑니다\.$/,"通常の行動とは別に$1件執行します。費用は国庫から出ます。","Carry out $1 on top of regular actions. Costs come from the treasury."],
 [/^헌법\ 개정안\ 「(.*?)」\ 국민투표\ 가결\(찬성\ (.*?)%\)\.\ 헌법이\ 바뀝니다\.$/,"憲法改正案「$1」が国民投票で可決(賛成 $2%)。憲法が変わります。","Constitutional amendment \"$1\" wins the referendum ($2% yes). The constitution changes."],
 [/^내각\ 불신임안\ 가결\.\ (.*?)\ 내각이\ 무너져\ 조기\ 총선을\ 치릅니다\.$/,"内閣不信任案が可決。$1内閣が倒れ、解散総選挙になります。","No-confidence motion passed. The $1 cabinet falls and a snap election is called."],
 [/^헌법\ 개정안\ 「(.*?)」\ 가결\.\ 재적\ 3분의\ 2\((.*?)석\)를\ 넘겼습니다\.$/,"憲法改正案「$1」可決。在籍3分の2（$2議席）を超えました。","Constitutional amendment \"$1\" passed, clearing two-thirds of all seats ($2)."],
 [/^「(.*?)」\ 합의\ ·\ (.*?)\.\ 연맹\ 소속\ 당은\ 모두\ 찬성으로\ 묶입니다\.$/,"「$1」の合意 · $2。連盟の加盟党はすべて賛成で縛られます。","“$1” agreement · $2. Every member party is bound to vote yes."],
+[/^계엄\ 해제\ 요구안\ 가결\((.*?)석\)\.\ (.*?)\ 정부의\ 계엄이\ 풀렸습니다\.$/,"戒厳解除要求案可決($1議席)。$2政府の戒厳が解かれました。","Motion to lift martial law passes ($1 seats). The $2 government's martial law is over."],
 [/^(.*?)\ 발의\.\ 가결되면\ 내각이\ 물러나고\ 총리를\ 새로\ 뽑습니다\.$/,"$1提出。可決されると内閣は退陣し、首相を新たに選びます。","Moved by $1. If it passes the cabinet resigns and a new prime minister is chosen."],
 [/^정부가\ 제때\ 대응하지\ 않아\ 이번\ 분기\ 「(.*?)」로\ 번졌습니다\.$/,"政府が適切に対応しなかったため、今期「$1」に広がりました。","The government didn't respond in time, so it has turned into \"$1\" this quarter."],
 [/^(.*?),\ 노선을\ 「(.*?)」으로\ 급선회했습니다\.\ 신뢰\ −(.*?),\ 결속\ −(.*?)\.$/,"$1、路線を「$2」に急旋回しました。信頼 −$3、結束 −$4。","$1 makes a sharp turn to \"$2\". Trust −$3, unity −$4."],
+[/^다음\ 분기\ 본회의에\ (.*?)\ 출신\ 대통령\ 탄핵소추안이\ 오릅니다\.$/,"翌四半期の本会議に$1出身の大統領の弾劾訴追案が上程されます。","A motion to impeach the $1 president comes to the chamber next quarter."],
 [/^(.*?)\ 정부,\ (.*?)\ 강제\ 해산\ 명령\.\ 지역구\ (.*?)석을\ 빼앗았습니다\.$/,"$1政府、$2に強制解散命令。選挙区$3議席を奪いました。","$1 government orders $2 dissolved, seizing $3 district seats."],
 [/^재적\ 3분의\ 2\((.*?)석\)\.\ 헌법\ 개정안을\ 낼\ 수\ 있습니다\.$/,"在籍3分の2（$1議席）。憲法改正案を出せます。","Two-thirds of all seats ($1). Can table constitutional amendments."],
 [/^(.*?),\ 노선을\ 「(.*?)」로\ 급선회했습니다\.\ 신뢰\ −(.*?),\ 결속\ −(.*?)\.$/,"$1、路線を「$2」に急旋回しました。信頼 −$3、結束 −$4。","$1 makes a sharp turn to \"$2\". Trust −$3, unity −$4."],
@@ -5036,9 +5121,13 @@ ND.pat([
 [/^「(.*?)」\ 대표\ (.*?)이\ (.*?)을\ 연맹에서\ 제명했습니다\.(.*?)$/,"「$1」の代表党$2が$3を連盟から除名しました。$4","$2, head of “$1”, has expelled $3 from the federation. $4"],
 [/^「(.*?)」·「(.*?)」\ 합병,\ 새\ 연맹은\ 「(.*?)」입니다\.$/,"「$1」と「$2」が合併、新しい連盟は「$3」です。","“$1” and “$2” merge; the new federation is “$3”."],
 [/^(.*?),\ 노선을\ 「(.*?)」(.*?)\ 바꿨습니다\.\ 신뢰\ −5\.$/,"$1、路線を「$2」に変更しました。信頼 −5。","$1 has switched its line to \"$2\". Trust −5."],
+[/^계엄\ 당국이\ (.*?)의\ 폭로\ 보도를\ 막았습니다\.$/,"戒厳当局が$1の暴露報道を差し止めました。","Martial-law authorities suppress $1's exposé."],
 [/^(.*?)이\ 동맹\ (.*?)을\ 공격해\ 연대가\ 깨졌습니다\.$/,"$1が同盟相手の$2を攻撃し、連携が壊れました。","$1 attacked its ally $2; the alliance has collapsed."],
 [/^대통령\ 선거에서\ (.*?)\ 후보가\ 당선됐습니다\.$/,"大統領選挙で$1候補が当選しました。","$1's candidate wins the presidential election."],
 [/^(.*?)에서\ (.*?)이\ 우리에게\ 후보를\ 양보했습니다\.$/,"$1で$2が自党に候補を譲りました。","In $1, $2 stood down for us."],
+[/^(.*?)\ 내각이\ 무너져\ 조기\ 총선을\ 치릅니다\.$/,"$1内閣が崩れ、解散総選挙を行います。","The $1 cabinet collapses; a snap election follows."],
+[/^탄핵소추안\ 부결\(찬성\ (.*?)석,\ 필요\ (.*?)석\)\.$/,"弾劾訴追案否決(賛成 $1議席、必要 $2議席)。","Impeachment fails ($1 seats in favour, $2 needed)."],
+[/^계엄군이\ (.*?)의\ (.*?)\ 비판\ 활동을\ 막았습니다\.$/,"戒厳軍が$1による$2批判活動を阻みました。","Martial-law troops block $1's campaign against $2."],
 [/^(.*?)이\ (.*?)의\ 연대\ 제안을\ 받지\ 않았습니다\.$/,"$1は$2の連携提案を受けませんでした。","$1 turned down $2's alliance offer."],
 [/^(.*?)이\ 낸\ 내각\ 불신임안이\ 부결됐습니다\.$/,"$1が出した内閣不信任案は否決されました。","$1's no-confidence motion was defeated."],
 [/^(.*?)\ 지역구\ 의원\ (.*?)명이\ (.*?)으로\ 옮겼습니다\.$/,"$1の選挙区議員$2人が$3に移りました。","$2 district lawmakers from $1 defected to $3."],
@@ -5074,6 +5163,7 @@ ND.pat([
 [/^비상\ 체제로\ (.*?)이\ 연기됐습니다\.$/,"非常体制により$1が延期されました。","The $1 has been postponed under emergency rule."],
 [/^(.*?)\ (.*?)가\ 대표\ 경선에서\ 졌습니다\.$/,"$1の$2が代表選に敗れました。","$1's $2 loses a leadership race."],
 [/^예상\ 찬성\ 권역\ (.*?)\/(.*?)\ \(필요\ (.*?)\)$/,"賛成見込みの圏域 $1/$2(必要 $3)","Projected yes regions $1/$2 ($3 needed)"],
+[/^(.*?)\ 정부,\ 계엄을\ 해제했습니다\.$/,"$1政府、戒厳を解除しました。","The $1 government lifts martial law."],
 [/^(.*?),\ 후원금\ 불법\ 의혹\ 보도\.$/,"$1、献金の違法疑惑が報道される。","$1 hit by reports of illegal donations."],
 [/^데려올\ 의원\ 수\ \((.*?)\ (.*?)석\ 중\)$/,"連れてくる議員数（$1 $2議席中）","Lawmakers to bring ($1, of $2 seats)"],
 [/^(.*?)\ 이름·노선\ 바꾸기\ \(선택\)$/,"$1の名前・路線を変える（任意）","Rename $1 / change its line (optional)"],
@@ -5098,6 +5188,7 @@ ND.pat([
 [/^목표\ (.*?)석\ ·\ 기준\ 승점\ (.*?)$/,"目標 $1議席 · 基準勝ち点 $2","Goal $1 seats · par $2 pts"],
 [/^의\ 거래\ 제안(.*?)\ ·\ 관계\ (.*?)$/,"からの取引の提案$1 · 関係 $2","'s deal offer$1 · relationship $2"],
 [/^(.*?),\ 노선을\ (.*?)\ 옮겼습니다\.$/,"$1、路線を$2移しました。","$1 shifts its line $2."],
+[/^(.*?)\ 출신\ 대통령\ 탄핵소추안$/,"$1出身の大統領の弾劾訴追案","Motion to impeach the $1 president"],
 [/^정부,\ (.*?)에\ 예산\ 배정\.$/,"政府、$1に予算を配分。","Government allocates budget to $1."],
 [/^(.*?),\ (.*?)에서\ (.*?)\ 비난\ 광고\.$/,"$1、$2で$3を非難する広告。","$1 runs attack ads against $3 in $2."],
 [/^(.*?)\ 발의\ ·\ (.*?)\ ·\ (.*?)\ 지원$/,"$1提出 · $2 · $3支援","Moved by $1 · $2 · supports $3"],
@@ -5106,6 +5197,7 @@ ND.pat([
 [/^지역구\ (.*?)석\ \+\ 비례\ (.*?)석$/,"選挙区$1議席 + 比例$2議席","$1 district seats + $2 PR seats"],
 [/^(.*?)이\ 약속을\ 어겼습니다\.$/,"$1が約束を破りました。","$1 broke its word."],
 [/^세력\ (.*?)%\ ·\ 불만\ (.*?)\/3$/,"勢力 $1% · 不満 $2/3","Strength $1% · grievances $2/3"],
+[/^(.*?)\ 내각이\ 총사퇴합니다\.$/,"$1内閣が総辞職します。","The $1 cabinet resigns en masse."],
 [/^수반\ 후보는\ (.*?)입니다\.$/,"首班候補は$1です。","The head-of-government candidate is $1."],
 [/^(.*?),\ 내각\ 개편\ 단행\.$/,"$1、内閣改造を断行。","$1 reshuffles the cabinet."],
 [/^\(지역구\ (.*?),\ 비례\ (.*?)\)$/,"（選挙区$1、比例$2）","(district $1, PR $2)"],
@@ -5271,6 +5363,7 @@ ND.pat([
 [/^(.*?)\ 연맹$/,"$1連盟","$1 League"],
 [/^관계\ (.*?)$/,"関係 $1","relationship $1"],
 [/^자금\ (.*?)$/,"資金 $1","money $1"],
+[/^(.*?)분기째$/,"$1四半期目","quarter $1"],
 [/^(.*?)\ (.*?)석(.*?)$/,"$1 $2議席$3","$1 $2 seats$3"],
 [/^(.*?)\ (.*?)석$/,"$1 $2議席","$1 $2 seats"],
 [/^색\ (.*?)$/,"色 $1","Colour $1"],

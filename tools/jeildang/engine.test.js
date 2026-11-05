@@ -392,3 +392,55 @@ test('헌법 개정 확정 절차: 영국은 의회 의결로 바로, 미국은 
     g = E.resolveRound(g, { me: { round: g.round, votes: {}, pm: me.id, actions: [], gov: [], refSide: 'none' } }, 0, {});
     if (!g.report.referendum.passed) assert.ok(!(g.consts || []).includes('delay'), '부결이면 그대로'); }
 });
+
+test('계엄령: 해제 요구안이 가결되면 풀리고 대통령제는 탄핵소추로 이어진다', () => {
+  let { g, me } = superGame('kr', 120); // 소수 여당
+  assert.ok(E.govAvail(g, me, 'martial'), '행정부 수반은 계엄 선포 가능');
+  g = quarter(g, me, [{ type: 'martial' }]);
+  assert.ok(g.martial && g.martial.p === me.id, '계엄 선포');
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  assert.ok(lift, '다음 분기 해제 요구안');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(!g.martial, '과반이 찬성해 해제');
+  const imp = g.agenda.find(it => it.kind === 'impeach');
+  assert.ok(imp && imp.target === me.id, '탄핵소추안');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [imp.id]: 'no' } });
+  const passed = g.report.bills.find(b => b.id === imp.id).passed;
+  if (passed) assert.ok(g.report.pres, '파면되면 대통령 선거를 다시 치른다');
+  assert.ok(!E.govAvail(g, E.party(g, me.id), 'martial'), '계엄은 한 판에 한 번');
+});
+
+test('계엄령: 해제 요구를 막으면 3분의 2 없이도 비상 체제로 넘어갈 수 있다(국가 모드 포함)', () => {
+  let { g, me } = superGame('jp', 300); // 과반이지만 3분의 2(310) 미만
+  assert.ok(!E.govAvail(g, me, 'emergency'), '처음에는 비상 체제 불가');
+  g = quarter(g, me, [{ type: 'martial' }]);
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(g.martial && g.martial.held, '해제 요구안 부결, 계엄 유지');
+  assert.ok(E.govAvail(g, E.party(g, me.id), 'emergency'), '비상 체제 선포 가능');
+  const lift2 = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [{ type: 'emergency' }], { votes: { [lift2.id]: 'no' } });
+  assert.ok(g.regime && g.regime.p === me.id && !g.martial, '비상 체제가 계엄을 대신한다');
+});
+
+test('계엄령: 의원내각제(영국)는 해제되면 내각이 무너져 조기 총선', () => {
+  let { g, me } = superGame('uk', 200);
+  g = quarter(g, me, [{ type: 'martial' }]);
+  const lift = g.agenda.find(it => it.kind === 'lift');
+  g = quarter(g, E.party(g, me.id), [], { votes: { [lift.id]: 'no' } });
+  assert.ok(!g.martial, '해제');
+  assert.ok(g.report.election && g.report.election.kind !== 'mid', '조기 총선');
+});
+
+test('독재 모드: 정권을 쥔 당이 비상 체제로 시작하고 선거가 미뤄진다', () => {
+  for (const country of [null, 'kr', 'fr']) {
+    const r = playOne({ seed: 9, rounds: 6, size: 5, country });
+    assert.ok(r.g.status === 'over');
+    let g = E.newGame({ players: [], size: 5, seed: 9, rounds: 6, timer: 0, now: 0, country, dict: true });
+    assert.ok(g.regime && g.regime.p === g.pmParty, String(country));
+    const seats0 = Object.fromEntries(g.parties.map(p => [p.id, p.seats]));
+    while (g.status !== 'over' && g.regime) g = E.resolveRound(g, {}, 0, {});
+    assert.ok(g.status === 'over' || !g.regime, '끝나거나 체제가 무너진다');
+    assert.ok(seats0, String(country));
+  }
+});

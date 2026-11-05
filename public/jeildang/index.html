@@ -585,6 +585,8 @@ function rulesHtml(){return`
     <li><b>연맹</b>: 연대는 1:1이 아니라 연맹 단위로 맺습니다. 결재 탭의 연맹 협상에서 연맹이 없는 당끼리 새 연맹을 결성하거나, 이미 있는 연맹의 대표 당에 가입을 신청합니다. 대표 당은 다른 당을 초대하거나, 다른 연맹의 대표 당에 두 연맹의 합병을 제안할 수 있습니다(합친 회원이 정원 안일 때, 제안한 쪽 대표가 새 연맹의 대표). 한 당은 한 연맹에만 들어가고, 한 연맹에는 ${E.MAX_FED}개 당까지 들어갑니다. 회원 당은 모두 서로 연대 상대가 되고, 수반 후보도 연맹에 하나입니다. 제안에는 수반 후보, 공동 입법 과제(다음 분기에 연맹 합의 법안으로 올라가고 연맹 회원은 모두 찬성으로 묶임), 선거 협력(한 지역 후보 양보), 공개 지지(지지하는 당 신뢰를 나눠 줌)를 겁니다. 받는 쪽이 수락하는 즉시 성사되고, AI는 그 자리에서 답하거나 역제안합니다. 나오려면 '연맹 탈퇴'를, 대표 당은 '연맹 제명'을 씁니다. 회원이 하나만 남으면 연맹은 해체됩니다. 같은 연맹의 당을 공격하면 연맹에서 떨어져 나가고 신뢰가 크게 떨어집니다.</li>
     <li><b>연맹 규칙</b>: 회원 누구나 개정안을 내고, 회원 과반이 찬성하면 바로 바뀝니다. 이름·대표 당·수반 후보와 가입·제명 결정 방식(대표가 결정 / 회원 과반 찬성), 표결 구속(연맹 합의 법안만 / 모든 안건에서 대표 당과 같은 표), 정원, 탈퇴 벌점, 대통령을 뽑는 나라에서는 대선 후보(연맹 단일 후보 / 각자 출마)를 정합니다.</li>
     <li><b>당 정보</b>: 결재 탭의 '당 정보 바꾸기'에서 당 이름·대표 이름·구호·색을 바로 바꿉니다. 노선을 통째로 바꾸는 급선회는 4분기에 한 번, 신뢰 −${E.BAL.leapTrust}·결속 −${E.BAL.leapUnity}.</li>
+    <li><b>계엄령</b>: 행정부 수반 당은 한 판에 한 번 계엄을 선포할 수 있습니다(모든 모드). 다음 분기 본회의에 계엄 해제 요구안이 오르고 의석 과반이 찬성하면 풀립니다. 해제되면 선포한 당 신뢰 −15이고 의원내각제는 내각이 물러나며(영국은 조기 총선), 대통령제·이원집정부제는 탄핵소추안이 올라 재적 3분의 2가 찬성하면 대통령이 파면됩니다. 해제 요구를 막아 내면 3분의 2가 없어도 비상 체제(독재)를 선포할 수 있습니다.</li>
+    <li><b>독재 모드</b>: 대기실 설정에서 '독재 체제로 시작'을 고르면 정권을 쥔 당(국가 모드는 지금 정부, 가상 공화국은 의석 1당)이 비상 체제로 시작합니다. 선거가 미뤄지고, 나머지 당은 저항을 키워 시민 혁명으로 민주화를 이끌거나 정권과 손잡습니다.</li>
     <li><b>국가 상태</b>: 국방·경제·민생·사회 통합 네 지표(0~100)가 있습니다. 가결된 법의 노선, 정부 행정, 사건이 움직이고, 손대지 않으면 조금씩 닳습니다. 정부 수반 당은 평균에 따라 신뢰가 오르내리고, 35 미만 위기마다 신뢰가 깎입니다. 경제 위기는 모든 당 수입을 줄이고, 국방·민생 위기는 안보·분배 정당에 표를 몰아 주며, 통합 위기는 모든 당 결속을 흔듭니다.</li>
     <li><b>선거 공약</b>: 행동으로 분야와 지역을 골라 겁니다(한꺼번에 2개). 그 지역 기반이 바로 오르고, 다음 총선까지 그 분야 법이 우리 찬성으로 통과되면 신뢰 +4·승점 +${E.PTS.pledgeKept}, 못 지키면 신뢰 −6·승점 ${E.PTS.pledgeBroken}.</li>
     <li><b>노선 이동</b>: 행동으로 노선을 한 걸음(분배·시장·개방·전통 쪽, 또는 중도 쪽) 옮깁니다. 결속 −8(대형 −10), 신뢰 −2, 멀어지는 지역 기반 −2. 2분기에 한 번.</li>
@@ -813,6 +815,7 @@ function renderLobbySettings(){
       <label for="set-rounds">분기 수<select id="set-rounds" data-set="rounds" ${host?'':'disabled'}>${opt('rounds',6,'6분기 · 총선 1번 (약 20분)')}${opt('rounds',12,'12분기 · 총선 2번 (약 45분)')}${opt('rounds',18,'18분기 · 총선 3번 (약 1시간)')}${opt('rounds',24,'24분기 · 총선 4번 (약 1시간 30분)')}</select></label>
       <label for="set-country">게임 무대<select id="set-country" data-set="country" ${host?'':'disabled'}><option value="" ${s.country?'':'selected'}>가상 해람 공화국</option>${Object.entries(E.COUNTRIES).map(([k,c])=>`<option value="${k}" ${s.country===k?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
       ${s.country?'':`<label for="set-size">정당 수<select id="set-size" data-set="size" ${host?'':'disabled'}>${[3,4,5,6,7,8].map(n=>opt('size',n,n+'개')).join('')}</select></label>`}
+      <label for="set-dict">체제<select id="set-dict" data-set="dict" ${host?'':'disabled'}>${opt('dict',0,'민주주의')}${opt('dict',1,'독재 체제로 시작')}</select></label>
       <label for="set-timer">분기 제한시간<select id="set-timer" data-set="timer" ${host?'':'disabled'}>${opt('timer',0,'없음')}${opt('timer',90,'90초')}${opt('timer',180,'3분')}${opt('timer',600,'10분')}</select></label>
     </div>
     ${host?'<button class="btn" id="btn-start" data-a="start">시작</button>':'<p class="small muted">방장이 시작하면 바로 넘어갑니다.</p>'}`;
@@ -827,7 +830,7 @@ async function startGame(){
     await S.store.doc(`games/${S.code}/members/${S.me}`).update(memberBody());
     const ms=memberList().map(m=>m.uid===S.me?{...m,...memberBody()}:m);
     const s=S.game.settings;
-    const g=E.newGame({players:ms.map(m=>({ownerId:m.uid,name:m.name,leader:m.leader,slogan:m.slogan,ideology:m.ideology,colorIdx:m.colorIdx})),size:s.size,seed:Math.floor(Math.random()*2**31),rounds:s.rounds,timer:s.timer,now:Date.now(),country:s.country||null});
+    const g=E.newGame({players:ms.map(m=>({ownerId:m.uid,name:m.name,leader:m.leader,slogan:m.slogan,ideology:m.ideology,colorIdx:m.colorIdx})),size:s.size,seed:Math.floor(Math.random()*2**31),rounds:s.rounds,timer:s.timer,now:Date.now(),country:s.country||null,dict:!!s.dict});
     await roomRef().set({...g,scenario:s.scenario||null,code:S.code,hostId:S.game.hostId,createdAt:S.game.createdAt,title:S.game.title,settings:s});
   }catch(e){toast('시작하지 못했습니다. 다시 눌러 주세요.');if(btn)btn.disabled=false}
 }
@@ -976,7 +979,7 @@ function reportHtml(g){
   const R=g.report;if(!R)return'';
   const me=myParty();
   const auto=(R.auto||[]).map(id=>E.party(g,id).name);
-  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'불신임안',emer:'긴급 법안',const:'헌법 개정안'};
+  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'불신임안',emer:'긴급 법안',const:'헌법 개정안',lift:'계엄 해제 요구안',impeach:'탄핵소추안'};
   const pmHtml=R.pm?(()=>{
     const w=E.party(g,R.pm.winner);
     const line=(t)=>Object.entries(t).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>0).map(([id,n])=>`${esc(E.party(g,id).name)} ${n}`).join(' · ');
@@ -1044,9 +1047,12 @@ const isPactBound=(g,me,it)=>it.kind==='pact'&&E.isAlly(E.party(g,it.by),it.by2)
 const followHead=(g,me)=>{const f=E.fedOf(g,me);return f&&E.rulesOf(f).bind==='all'&&f.head!==me.id?E.party(g,f.head):null};
 const isBound=(g,me,it)=>isPactBound(g,me,it)||!!followHead(g,me);
 function agendaHtml(g,me){
-  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'내각 불신임안',emer:'긴급 법안',const:'헌법 개정안'};
+  const kind={gov:g.country==='us'?'행정부 지지 법안':'정부 법안',member:'의원 법안',pact:'연립 합의 법안',noconf:'내각 불신임안',emer:'긴급 법안',const:'헌법 개정안',lift:'계엄 해제 요구안',impeach:'탄핵소추안'};
   return g.agenda.map(it=>{
     let hint='';
+    if(it.kind==='lift')hint=`의석 과반이 찬성하면 계엄이 풀립니다. 해제되면 선포한 당 신뢰 −15${g.system==='presidential'||g.system==='semi'?', 다음 분기 탄핵소추안이 오릅니다':', 그 정부는 물러납니다'}.`;
+    else if(it.kind==='impeach')hint=`재적 3분의 2(${E.superLine()}석) 이상이 찬성하면 대통령이 파면되고 이번 분기 말 대통령 선거를 다시 치릅니다.`;
+    else
     if(it.kind==='noconf')hint=(me&&E.inGov(g,me)?'우리는 여당입니다. 가결되면 내각이 물러납니다.':'가결되면 총리를 새로 뽑습니다.')+(g.noconfSuper?` 개헌으로 재적 3분의 2(${E.superLine()}석) 찬성이 필요합니다.`:'');
     else if(it.kind==='const')hint=`재적 3분의 2(${E.superLine()}석) 이상이 찬성해야 가결됩니다. 발의한 당과 연맹 회원은 대체로 찬성하고, 나머지 당은 대체로 반대합니다.`+({none:' 성문 헌법이 없어 의회를 넘으면 바로 바뀝니다.',states:' 의회를 넘으면 다음 분기 말 주 비준(권역 4분의 3 찬성)을 거쳐야 확정됩니다.',vote:' 의회를 넘으면 다음 분기 말 국민투표(과반 찬성)를 거쳐야 확정됩니다.'}[E.ratifyKind(g)]);
     else{
@@ -1379,7 +1385,7 @@ function renderDecide(){
   const g=S.game;const col=$('#col-decide');if(!col)return;
   if(g.status==='over'){col.innerHTML=finalHtml(g)+reportHtml(g);return}
   const me=myParty();
-  col.innerHTML=guideHtml(g,me)+reportHtml(g)+eventHtml(g,me)+refHtml(g,me)+nationHtml(g,me)+govHtml(g)+pmVoteHtml(g,me)+`
+  col.innerHTML=guideHtml(g,me)+reportHtml(g)+martialHtml(g,me)+eventHtml(g,me)+refHtml(g,me)+nationHtml(g,me)+govHtml(g)+pmVoteHtml(g,me)+`
   <section class="panel" id="agenda-panel"><h2>${g.round}분기 본회의</h2>${agendaHtml(g,me)}</section>
   ${me&&g.pmParty===me.id&&(g.billOptions||[]).length&&g.round<g.maxRounds?billPickHtml(g,me):''}
   ${me&&E.govSlots(g,me)?govActionsHtml(g,me):''}
@@ -1431,6 +1437,13 @@ function insideHtml(g,me){
     ${wings}
     <h3 style="margin-top:12px">선거 공약</h3><ul class="small" style="padding-left:18px;margin:4px 0">${plTxt}</ul>
     <p class="small muted"><span>${shiftOk?'노선 이동 가능':`노선 이동 ${me.shiftAt+2}분기부터`}</span> · <span>${E.canRace(g,me)?'대표 경선 가능':`대표 경선 ${me.raceAt+E.RACE_GAP}분기부터`}</span> · <span>${E.canLeap(g,me)?'급선회(당 정보 바꾸기) 가능':`급선회(당 정보 바꾸기) ${me.lineRound+E.LEAP_GAP}분기부터`}</span></p></section>`;
+}
+// 비상계엄 상황
+function martialHtml(g,me){
+  if(!g.martial)return'';const D=E.party(g,g.martial.p);if(!D)return'';const n=g.round-g.martial.since;
+  const mine=me&&me.id===D.id;
+  return`<section class="panel" id="martial-panel"><div class="row between"><h2>비상계엄</h2><span class="pill hot">${n}분기째</span></div>
+    <p class="small">${esc(D.name)} 정부가 계엄을 선포했습니다. ${mine?'본회의의 해제 요구안을 막아 내면 비상 체제를 선포할 수 있습니다. 계엄이 이어지는 동안 우리 신뢰 −4·사회 통합 −6이 분기마다 쌓입니다.':'본회의의 계엄 해제 요구안에 찬성해 의석 과반을 모으면 계엄이 풀립니다. 계엄 동안 우리 유세 효과가 반으로 줄고, 선포한 당을 향한 공세는 절반쯤 막힙니다.'}</p></section>`;
 }
 // 국민투표(미국은 주 비준): 의회를 넘은 개헌안. 이번 분기 말에 치르고, 각 당은 찬성·반대 운동이나 중립을 고른다.
 function refHtml(g,me){

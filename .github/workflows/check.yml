@@ -1,0 +1,26 @@
+# 사이트 점검: main에 올라오는 커밋과 PR마다 깨진 링크, JS 오류, 휴대폰 가로 넘침을 본다.
+name: Site check
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Internal links
+        run: python3 tools/check/links.py
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Pages open without errors on a 360px screen
+        run: node tools/check/smoke.js

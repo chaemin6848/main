@@ -247,7 +247,7 @@ let acctFlash = null;
 
 function renderAll(user, cloud, state) {
   document.title = L("title"); $("t-h1").textContent = L("h1"); $("t-lead").textContent = L("lead");
-  $("t-foot").textContent = L("foot"); $("t-priv").textContent = L("priv"); $("t-priv").href = "/privacy.html?lang=" + lang; $("t-foot2").textContent = L("foot2");
+  $("t-foot").textContent = L("foot"); $("t-priv").textContent = L("priv"); $("t-priv").href = "/privacy?lang=" + lang; $("t-foot2").textContent = L("foot2");
   acctCard(user, state);
   $("tools").innerHTML = [wordsCard(cloud.userData), alarmCard(cloud.userData), dexCard(cloud.dex), polCard(user, cloud.pol), jdCard()].join("");
 }

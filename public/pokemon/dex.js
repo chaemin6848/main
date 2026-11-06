@@ -324,8 +324,8 @@ function applyLang(){
   document.getElementById("q").placeholder=t.q;
   document.getElementById("saveSeg").setAttribute("aria-label",t.saveLbl);
   document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===S.lang));
-  document.getElementById("privLink").href="/privacy.html?lang="+S.lang;
-  document.getElementById("ckMore").href="/privacy.html?lang="+S.lang;
+  document.getElementById("privLink").href="/privacy?lang="+S.lang;
+  document.getElementById("ckMore").href="/privacy?lang="+S.lang;
   whereText();
   const links=DONATE.filter(d=>d.url&&(!d.only||d.only===S.lang));
   document.getElementById("support").hidden=!links.length||supHidden;

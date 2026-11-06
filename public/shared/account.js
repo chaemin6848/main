@@ -170,7 +170,7 @@ export function loginForm(lang, { onDone } = {}) {
   const [pwL, pwI, pwS] = field(L("pw"), "password", "current-password");
   const agreeL = el("label", "nd-agree"); const agreeI = el("input"); agreeI.type = "checkbox";
   const agreeT = el("span", null, L("agree") + " ");
-  const pv = el("a", null, L("privacy")); pv.href = "/privacy.html?lang=" + lang; pv.target = "_blank"; pv.rel = "noopener";
+  const pv = el("a", null, L("privacy")); pv.href = "/privacy?lang=" + lang; pv.target = "_blank"; pv.rel = "noopener";
   agreeT.append(pv); agreeL.append(agreeI, agreeT);
   const submit = el("button", "nd-submit"); submit.type = "submit";
   const links = el("div", "nd-links");

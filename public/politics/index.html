@@ -48,7 +48,7 @@
         <div class="panel">
           <div class="banner" id="setup-banner" hidden>Firebase 설정 전입니다. <code>firebase-config.js</code>에 프로젝트 값을 넣으면 로그인과 게시판이 작동합니다. (설정방법.md 참고)</div>
           <div class="feed" id="feed"><p class="empty">글을 불러오는 중입니다.</p></div>
-          <p class="gate" id="gate">글을 올리려면 <a href="login.html">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.</p>
+          <p class="gate" id="gate">글을 올리려면 <a href="login">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.</p>
           <details class="write" id="write" hidden>
             <summary>글 올리기</summary>
             <p class="note" id="f-note">올린 글은 관리자가 승인한 뒤 게시됩니다.</p>
@@ -164,7 +164,7 @@
       <li><a href="https://www.jiji.com/jc/article?k=2026101500705&g=pol" target="_blank" rel="noopener">時事通信 10月世論調査</a></li>
       <li><a href="https://en.wikipedia.org/wiki/2026_Japanese_general_election" target="_blank" rel="noopener">2026 Japanese general election</a></li>
     </ul>
-    <p style="margin:10px 0 0"><a href="/privacy.html?lang=ko">개인정보처리방침</a></p>
+    <p style="margin:10px 0 0"><a href="/privacy?lang=ko">개인정보처리방침</a></p>
   </footer>
 </div>
 
@@ -349,7 +349,7 @@ function render() {
         if (!armed) { armed = true; del.textContent = "한 번 더 누르면 삭제"; setTimeout(() => { armed = false; del.textContent = "삭제"; }, 3000); return; }
         try { await deleteDoc(doc(db, "news", d.id)); } catch (e) { del.textContent = "삭제 권한이 없습니다"; }
       });
-      const ed = document.createElement("a"); ed.className = "del"; ed.href = "admin.html?edit=" + encodeURIComponent(d.id); ed.textContent = "수정";
+      const ed = document.createElement("a"); ed.className = "del"; ed.href = "admin?edit=" + encodeURIComponent(d.id); ed.textContent = "수정";
       foot.append(ed);
       foot.append(del);
     }
@@ -366,7 +366,7 @@ function updateGate() {
   const r = role();
   write.hidden = true; gate.hidden = false;
   if (!configured) { gate.textContent = "Firebase 설정 후 글을 올릴 수 있습니다."; return; }
-  if (!me) { gate.innerHTML = '글을 올리려면 <a href="login.html">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.'; return; }
+  if (!me) { gate.innerHTML = '글을 올리려면 <a href="login">로그인</a>하세요. 회원가입 후 관리자가 승인하면 글을 올릴 수 있습니다.'; return; }
   if (r === "blocked") { gate.textContent = "이 계정은 글을 올릴 수 없습니다. 관리자에게 문의하세요."; return; }
   if (!can.submit(r)) { gate.textContent = "가입 승인 대기 중입니다. 관리자가 승인하면 글을 올릴 수 있습니다."; return; }
   gate.hidden = true; write.hidden = false;

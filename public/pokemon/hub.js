@@ -45,7 +45,7 @@ function render(){
   document.documentElement.lang=lang;document.title=t.title;
   document.querySelectorAll("[data-i]").forEach(el=>{const v=t[el.dataset.i];if(typeof v==="string")el.textContent=v});
   document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
-  document.getElementById("privLink").href="/privacy.html?lang="+lang;
+  document.getElementById("privLink").href="/privacy?lang="+lang;
   document.getElementById("how").innerHTML=t.how.map(x=>`<li>${esc(x)}</li>`).join("");
   if(cloud)cloud.setLang();else acctBtn.textContent=t.login;
   GAMES.forEach(g=>{

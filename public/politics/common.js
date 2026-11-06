@@ -53,7 +53,7 @@ export function renderAccount(el, user, profile) {
     el.append(s); return;
   }
   if (!user) {
-    const a = document.createElement("a"); a.className = "btn"; a.href = "login.html"; a.textContent = "로그인 · 회원가입";
+    const a = document.createElement("a"); a.className = "btn"; a.href = "login"; a.textContent = "로그인 · 회원가입";
     el.append(a); return;
   }
   const role = profile?.role || "pending";
@@ -62,7 +62,7 @@ export function renderAccount(el, user, profile) {
   const badge = document.createElement("span"); badge.className = "role " + role; badge.textContent = ROLES[role] || role;
   el.append(name, badge);
   if (can.publish(role)) {
-    const a = document.createElement("a"); a.className = "btn"; a.href = "admin.html"; a.textContent = "관리자 페이지";
+    const a = document.createElement("a"); a.className = "btn"; a.href = "admin"; a.textContent = "관리자 페이지";
     el.append(a);
   }
   const out = document.createElement("button"); out.type = "button"; out.className = "btn"; out.textContent = "로그아웃";

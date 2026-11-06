@@ -339,6 +339,8 @@
     ".acct-pop .me .sync{margin-top:6px;font-size:12px;color:var(--muted)}.acct-pop .me .sync.bad{color:#c0392b}" +
     ".acct-pop .hint{margin:0 0 6px;font-size:12px;color:var(--muted)}" +
     ".acct-pop .mylink{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}.acct-pop .mylink:hover{text-decoration:underline}" +
+    // 휴대폰에서는 메뉴 줄의 후원 버튼을 빼고 계정 상자 안에 넣는다 (메뉴 줄에 여유를 두려고)
+    ".acct-pop .coffee-pop{display:none;margin-top:6px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none}.acct-pop .coffee-pop:hover{text-decoration:underline}" +
     // 로그인 상자 (/shared/account.js loginForm)
     ".nd-login,.nd-form{display:grid;gap:8px}.nd-login *{box-sizing:border-box}" +
     ".nd-google,.nd-submit{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--ink)}" +
@@ -363,13 +365,13 @@
     ".home{padding-right:2px;gap:6px}.tools{gap:2px}.tools a{width:30px;height:30px}" +
     ".lang{min-width:30px;width:30px;padding:0;margin-left:2px;font-size:11px}.lang .full{display:none}.lang .short{display:inline}" +
     ".acct{margin-left:2px}.acct>button.in{width:30px;min-width:30px;padding:0}.acct>button.in .t{display:none}.acct>button.in svg{display:block}" +
-    ".coffee{width:30px;margin-left:2px}}" +
+    "nav>.coffee{display:none}.acct-pop .coffee-pop{display:block}}" +
     "@media (max-width:359px){" +
     "nav{gap:2px;padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}" +
-    "nav .tools{gap:1px}nav .lang,nav .acct,nav .coffee{margin-left:1px}" +
+    "nav .tools{gap:1px}nav .lang,nav .acct{margin-left:1px}" +
     "nav .home{font-size:12.5px;gap:4px;padding-right:0;letter-spacing:-.05em}nav .home i{width:22px;height:22px;font-size:11px}" +
     "nav .tools a{width:28px;height:28px}nav .tools a i{width:22px;height:22px;font-size:12px}" +
-    "nav .lang,nav .acct>button.in,nav .acct>button.me,nav .coffee{width:28px;min-width:28px;height:28px}" +
+    "nav .lang,nav .acct>button.in,nav .acct>button.me{width:28px;min-width:28px;height:28px}" +
     "}" +
     "@media print{nav{display:none}}" +
     "</style>" +
@@ -377,7 +379,7 @@
     '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>" + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
-    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + " →</a></div></div>" +
+    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + ' →</a><a class="coffee-pop" href="' + COFFEE_URL + '" target="_blank" rel="noopener">☕ ' + COFFEE_LABEL[lang] + "</a></div></div>" +
     '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +

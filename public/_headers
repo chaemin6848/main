@@ -30,3 +30,7 @@
 /judge/*
   ! Content-Security-Policy
   Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'none'
+
+# 판례 노트(/judge): 개인용 페이지라 검색에서 뺀다
+/judge/*
+  X-Robots-Tag: noindex, nofollow

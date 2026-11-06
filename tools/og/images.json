@@ -1,0 +1,86 @@
+{
+ "home": {
+  "glyph": "日",
+  "accent": "#dfff70",
+  "title": "일본어 공부부터\n일본 유학까지",
+  "sub": "단어 퀴즈 · EJU 종합과목 · 출원 일정 · 일본 정치",
+  "url": "nihongodic.com"
+ },
+ "words": {
+  "glyph": "語",
+  "accent": "#dfff70",
+  "title": "단어 퀴즈 모음",
+  "sub": "JLPT 일본어 · 한국어 단어 퀴즈와 단어 사전",
+  "url": "nihongodic.com/words"
+ },
+ "eju": {
+  "glyph": "留",
+  "accent": "#ffb3c6",
+  "title": "EJU · 유학",
+  "sub": "종합과목 플래시 카드 · 출원 일정 · 일본 정치 정리",
+  "url": "nihongodic.com/eju"
+ },
+ "games": {
+  "glyph": "遊",
+  "accent": "#cdb9ff",
+  "title": "게임",
+  "sub": "정당 전략 게임 제1당 · 포켓몬 도감 채우기 도우미",
+  "url": "nihongodic.com/games"
+ },
+ "japanese": {
+  "glyph": "あ",
+  "accent": "#dfff70",
+  "title": "단어 한 장",
+  "sub": "JLPT N5–N1 일본어 단어 퀴즈와 단어 사전",
+  "url": "nihongodic.com/japanese"
+ },
+ "jlpt": {
+  "glyph": "あ",
+  "accent": "#dfff70",
+  "title": "JLPT 단어 목록",
+  "sub": "N5부터 N1까지 일본어 단어 · 읽기 · 한국어 뜻 · 예문",
+  "url": "nihongodic.com/japanese/jlpt"
+ },
+ "korean": {
+  "glyph": "가",
+  "accent": "#dfff70",
+  "title": "単語一枚",
+  "sub": "日本語話者のための韓国語単語クイズと単語辞書",
+  "url": "nihongodic.com/korean"
+ },
+ "en-japanese": {
+  "glyph": "あ",
+  "accent": "#dfff70",
+  "title": "Wordcard Japanese",
+  "sub": "JLPT N5–N1 Japanese vocabulary quiz & dictionary",
+  "url": "nihongodic.com/en/japanese"
+ },
+ "en-korean": {
+  "glyph": "가",
+  "accent": "#ffe77b",
+  "title": "Wordcard Korean",
+  "sub": "Korean vocabulary quiz & dictionary for English speakers",
+  "url": "nihongodic.com/en/korean"
+ },
+ "japanworld": {
+  "glyph": "総",
+  "accent": "#ffb3c6",
+  "title": "종합과목 플래시 카드",
+  "sub": "EJU 総合科目 고난도 개념과 기출 변형 문제",
+  "url": "nihongodic.com/japanworld"
+ },
+ "alarm": {
+  "glyph": "留",
+  "accent": "#9fd8ff",
+  "title": "일유알리미",
+  "sub": "일본 대학 사비유학생전형 출원 · 면접 · 합격발표 일정",
+  "url": "nihongodic.com/alarm"
+ },
+ "politics": {
+  "glyph": "政",
+  "accent": "#ffb4a2",
+  "title": "나가타초 노트",
+  "sub": "내각 지지율 · 중의원 · 참의원 의석 · 일본 정치 정리",
+  "url": "nihongodic.com/politics"
+ }
+}

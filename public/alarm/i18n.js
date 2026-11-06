@@ -87,6 +87,7 @@
     "이문화커뮤니케이션(본고사, 11/14 시험)·법 국제비즈니스법 글로벌코스는 9/25–10/2 출원, 12/7 발표. 서류는 11/24까지 도착해야 함": "Intercultural Communication (exam on 11/14) and the Law Global Course in International Business Law: apply 9/25–10/2, results 12/7. Others: documents must arrive by 11/24.",
     "이학부(생물)·공·기초공 2/25 시험+2/26 구두시문. 경제 1차 3/1, 의학과 1차 2/6": "Science (Biology), Engineering and Engineering Science: exam 2/25 + oral exam 2/26. Economics 1st round 3/1, Medicine 1st round 2/6",
     "출원자격심사(법·경제 ~10/9, 공 10/14–10/16)를 통과한 사람만 본출원. 경제 검정료 12/18–1/7, 1차 결과 1/22 우송": "Only applicants who passed eligibility screening (Law/Economics by 10/9, Engineering 10/14–10/16) may apply. Economics exam fee 12/18–1/7; 1st-round results mailed 1/22",
+    "신학부는 출원 9/1–9/8, 시험 10/24": "Theology: apply 9/1–9/8, exam 10/24",
     "수험표 인쇄 1/29. 수속마감 3/15": "Print admission ticket 1/29. Enrollment deadline 3/15",
     "1일 시험 학과 (신·외국어 등)": "One-day exam depts. (Theology, Foreign Studies, etc.)",
     "2단계 학과 (법·문 등)": "Two-stage depts. (Law, Humanities, etc.)",

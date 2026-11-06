@@ -34,3 +34,6 @@
 /pokemon/privacy        /privacy  301
 # 옛 iOS가 찾는 아이콘 이름
 /apple-touch-icon-precomposed.png  /apple-touch-icon.png  301
+# 일본어 사전이 /japanese/로 옮기기 전의 단어 목록 주소
+/vocabulary-list       /japanese/vocabulary-list  301
+/vocabulary-list.html  /japanese/vocabulary-list  301

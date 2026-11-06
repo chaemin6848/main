@@ -175,3 +175,14 @@ body.has-banner .wrap{padding-bottom:240px}
   #langSeg button{padding:4px 8px}
 }
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* 휴대폰: 위에 붙는 영역을 줄인다. 제목·언어·로그인 줄은 스크롤하면 위로 사라지고(--hide는 dex.js가 잰다),
+   진행률과 '세이브 전환 + 탭' 한 줄만 남는다 */
+@media (max-width:600px){
+  header{top:calc(env(safe-area-inset-top,0px) - var(--hide,0px))}
+  .meters{margin-top:10px;gap:12px}
+  .row2{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+  .row2 .ctrl,.row2 .tabs{margin-top:0}
+  .row2 .ctrl{order:2}
+  .row2 .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}

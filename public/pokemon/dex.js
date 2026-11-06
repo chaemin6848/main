@@ -429,3 +429,8 @@ if(!consent)showBanner();
 render();
 takeImport();
 })();
+
+// 휴대폰에서 헤더의 제목 줄(.top)만큼 위로 밀어, 스크롤하면 그 줄은 사라지고 진행률·탭만 붙어 있게 한다 (dex.css)
+(function(){const h=document.querySelector("header"),t=h&&h.querySelector(".top");if(!t)return;
+const fit=()=>h.style.setProperty("--hide",(t.offsetTop+t.offsetHeight)+"px");
+fit();addEventListener("resize",fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(t);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit)})();

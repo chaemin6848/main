@@ -210,7 +210,9 @@ function buildLatest(){
     const b=document.createElement("button"); b.type="button"; b.setAttribute("aria-pressed",hidden.has(i)?"false":"true");
     b.title=`${o.name} · 20${months[li].replace(".","년 ")}월 조사`;
     b.innerHTML=`<span class="who"><i style="background:var(${o.c})"></i></span><span class="v num"></span><span class="d num"></span>`;
-    b.querySelector(".who").append(o.name+(li<months.length-1?` (${months[li].split(".")[1]}월)`:""));
+    {const w=b.querySelector(".who"),t=document.createElement("span");t.textContent=o.name;
+     if(li<months.length-1){const m=document.createElement("span");m.className="mo";m.textContent=`(${months[li].split(".")[1]}월)`;t.append(" ",m);}
+     w.append(t);}
     b.querySelector(".v").textContent=cur+"%";
     const de=b.querySelector(".d");
     if(d==null){de.textContent="—";de.className="d num flat";}

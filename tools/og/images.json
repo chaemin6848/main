@@ -82,5 +82,12 @@
   "title": "나가타초 노트",
   "sub": "내각 지지율 · 중의원 · 참의원 의석 · 일본 정치 정리",
   "url": "nihongodic.com/politics"
+ },
+ "geumbaeji": {
+  "glyph": "金",
+  "accent": "#f2d27a",
+  "title": "금배지",
+  "sub": "초선 의원에서 대통령까지, 정치인 한 사람의 경력",
+  "url": "nihongodic.com/geumbaeji"
  }
 }

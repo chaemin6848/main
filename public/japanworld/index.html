@@ -132,7 +132,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 .ctag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted)}
 .xq,.plus,.basic{font-size:11px;font-weight:700;border-radius:999px;padding:0 7px;line-height:1.6}
 .xq{color:var(--ink);border:1px solid var(--ink)}
-.cc ul.xadd{border-left:3px solid var(--accent);padding-left:14px;margin-left:2px}
+.cc ul.xadd{list-style:none;border-left:3px solid var(--accent);padding-left:12px;margin-left:2px}
 .cc ul.xadd::before{content:"기출에서 보강";display:block;margin:0 0 2px -2px;font-size:12px;font-weight:700;color:var(--muted)}
 .plus{color:var(--on-accent);background:var(--accent);border:1px solid var(--ink)}
 .basic{color:var(--ok);border:1px solid var(--ok)}
@@ -240,8 +240,8 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 </article>
 <article class="cc" id="c-p-world" data-area="정치">
 <header><span class="ctag">정치</span><span class="plus">보충</span><h2>주요국 정치 체제</h2></header>
-<div class="tw"><table><thead><tr><th>나라</th><th>체제</th><th>포인트</th></tr></thead><tbody><tr><td>영국</td><td>의원내각제·입헌군주제</td><td>하원 다수당 당수가 총리. 상원(귀족원)은 비선출. 야당이 '그림자 내각'. 불문헌법. 2009 대법원 설치(상원에서 분리)</td></tr><tr><td>미국</td><td>대통령제</td><td>대통령은 의회 해산권·법안 제출권 없음, 법안 거부권 있음. 연방대법원 위헌심사</td></tr><tr><td>프랑스</td><td>반대통령제</td><td>대통령은 국민 직선(임기 5년), 총리 임명·하원 해산권. 총리는 의회에 책임</td></tr><tr><td>독일</td><td>의원내각제</td><td>대통령은 의례적(연방회의가 선출). 총리는 연방의회가 선출, 건설적 불신임(후임을 정해야 불신임)</td></tr><tr><td>중국</td><td>권력집중제(민주집중제)</td><td>전국인민대표대회가 최고 권력기관, 국무원은 행정. 공산당이 지도, 삼권분립 아님</td></tr></tbody></table></div><ul class="xadd"><li>상원 구성: 미국 = 각 주 2명, 1913년(수정 17조)부터 직선 · 독일 연방참의원 = 주 정부 대표 · 프랑스 상원 = 간접선거.</li></ul>
-<p class="trap"><b>함정</b> 프랑스 대통령은 의회가 아니라 국민이 뽑는다. 영국 상원 의원은 선거로 뽑지 않는다. 중국은 삼권분립을 부정한다.</p>
+<div class="tw"><table><thead><tr><th>나라</th><th>체제</th><th>포인트</th></tr></thead><tbody><tr><td>영국</td><td>의원내각제·입헌군주제</td><td>하원 다수당 당수가 총리. 상원(귀족원)은 비선출. 야당이 '그림자 내각'. 불문헌법. 2009 대법원 설치(상원에서 분리)</td></tr><tr><td>미국</td><td>대통령제</td><td>대통령은 의회 해산권·법안 제출권 없음, 법안 거부권 있음. 연방대법원 위헌심사</td></tr><tr><td>프랑스</td><td>반대통령제</td><td>대통령은 국민 직선(임기 5년), 총리 임명·하원 해산권. 총리는 의회에 책임</td></tr><tr><td>독일</td><td>의원내각제</td><td>대통령은 의례적(연방회의가 선출). 총리는 연방의회가 선출, 건설적 불신임(후임을 정해야 불신임)</td></tr><tr><td>러시아</td><td>대통령제 (반대통령제 성격)</td><td>대통령은 국민 직선(임기 6년, 2008 개헌으로 4년 → 6년), 하원 동의를 얻어 총리 임명·하원 해산권. 연방의회 = 연방회의(상원, 각 연방 구성 주체 대표) + 국가두마(하원)</td></tr><tr><td>중국</td><td>권력집중제(민주집중제)</td><td>전국인민대표대회가 최고 권력기관, 국무원은 행정. 공산당이 지도, 삼권분립 아님</td></tr></tbody></table></div><ul class="xadd"><li>상원 구성: 미국 = 각 주 2명, 1913년(수정 17조)부터 직선 · 독일 연방참의원 = 주 정부 대표 · 프랑스 상원 = 간접선거.</li></ul>
+<p class="trap"><b>함정</b> 프랑스·러시아 대통령은 의회가 아니라 국민이 뽑는다. 영국 상원 의원은 선거로 뽑지 않는다. 중국은 삼권분립을 부정한다.</p>
 <button class="btn sm" type="button" data-play="p-world">관련 문제 3개 풀기 →</button>
 </article>
 <article class="cc" id="c-p-unconst" data-area="정치">
@@ -297,7 +297,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 </article>
 <article class="cc" id="c-e-fiscal" data-area="경제">
 <header><span class="ctag">경제</span><h2>재정</h2></header>
-<ul><li>재정의 3기능: 자원 배분(공공재) · 소득 재분배(누진세·사회보장) · 경기 안정화(빌트인 스태빌라이저, 피스컬 폴리시).</li><li>직접세(소득세·법인세, 누진과세) / 간접세(소비세, 역진성). 소비세는 2020년도에 처음으로 최대 세목.</li><li>세출: 사회보장관계비(약 3분의 1) &gt; 국채비(약 4분의 1) &gt; 지방교부세교부금 &gt; 공공사업·문교·방위.</li><li>세입: 조세 외에 공채금이 약 3분의 1(대부분 적자공채). 국채도 세입이다.</li><li>재정법 4조는 건설국채만 허용, 적자(특례)국채는 매년 특례법으로 발행. 1965년 첫 적자국채.</li></ul>
+<ul><li>재정의 3기능: 자원 배분(공공재) · 소득 재분배(누진세·사회보장) · 경기 안정화(빌트인 스태빌라이저, 피스컬 폴리시).</li><li>직접세(소득세·법인세, 누진과세) / 간접세(소비세, 역진성). 소비세는 2020년도에 처음으로 최대 세목.</li><li>직간비율(직접세 : 간접세): 1949 샤우프 권고로 직접세 중심 → 1980년대 국세 약 7 : 3 → 소비세 도입(1989, 3%)·인상(1997 5%, 2014 8%, 2019 10%)으로 간접세 비중 상승, 최근 국세 약 6 : 4. 국제 비교: 미국은 직접세 비중이 높고(약 8 : 2), 프랑스·독일 등 유럽은 간접세 비중이 높다(약 5 : 5).</li><li>세출: 사회보장관계비(약 3분의 1) &gt; 국채비(약 4분의 1) &gt; 지방교부세교부금 &gt; 공공사업·문교·방위.</li><li>세입: 조세 외에 공채금이 약 3분의 1(대부분 적자공채). 국채도 세입이다.</li><li>재정법 4조는 건설국채만 허용, 적자(특례)국채는 매년 특례법으로 발행. 1965년 첫 적자국채.</li></ul>
 <ul class="xadd"><li>일반정부 채무잔고/GDP(2022): 일본 약 260%(선진국 최고) > 이탈리아 약 140% > 미국 약 120% > 독일 약 65%(G7 최저).</li><li>국세 직접세 = 소득세·법인세·상속세 / 국세 간접세 = 소비세·주세·관세 / 지방세 직접세 = 주민세·고정자산세 / 지방세 간접세 = 지방소비세 등.</li><li>일본은행의 국채 직접 인수는 재정법 5조로 금지(시중 소화 원칙). 시장에서 사들이는 매입 오퍼레이션은 가능.</li></ul>
 <button class="btn sm" type="button" data-play="e-fiscal">관련 문제 7개 풀기 →</button>
 </article>
@@ -319,7 +319,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 </article>
 <article class="cc" id="c-e-jpecon" data-area="경제">
 <header><span class="ctag">경제</span><h2>전후 일본 경제</h2></header>
-<div class="tw"><table><thead><tr><th>연도</th><th>사건</th></tr></thead><tbody><tr><td>1949</td><td>도지 라인(초균형예산), 1달러 = 360엔 단일환율</td></tr><tr><td>1955~73</td><td>고도경제성장 (실질 연평균 약 10%)</td></tr><tr><td>1960</td><td>이케다 내각 국민소득배증계획</td></tr><tr><td>1964</td><td>IMF 8조국 이행·OECD 가맹·도쿄 올림픽</td></tr><tr><td>1973</td><td>변동환율 이행, 제1차 석유위기 → 1974 전후 첫 마이너스 성장</td></tr><tr><td>1985</td><td>플라자 합의 → 엔고 불황 → 1986~91 버블 경제</td></tr><tr><td>1990년대</td><td>버블 붕괴, 불량채권, &#x27;잃어버린 10년&#x27;</td></tr><tr><td>2002·05</td><td>페이오프 해금</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>연도</th><th>사건</th></tr></thead><tbody><tr><td>1949</td><td>도지 라인(초균형예산), 1달러 = 360엔 단일환율</td></tr><tr><td>1955~73</td><td>고도경제성장 (실질 연평균 약 10%)</td></tr><tr><td>1960</td><td>이케다 내각 국민소득배증계획</td></tr><tr><td>1964</td><td>IMF 8조국 이행·OECD 가맹·도쿄 올림픽</td></tr><tr><td>1972</td><td>다나카 가쿠에이 내각 『일본열도개조론』: 신칸센·고속도로망, 공업 지방 분산 → 땅값 급등, 이듬해 석유위기와 겹쳐 &#x27;광란물가&#x27;</td></tr><tr><td>1973</td><td>변동환율 이행, 제1차 석유위기 → 1974 전후 첫 마이너스 성장</td></tr><tr><td>1985</td><td>플라자 합의 → 엔고 불황 → 1986~91 버블 경제</td></tr><tr><td>1990년대</td><td>버블 붕괴, 불량채권, &#x27;잃어버린 10년&#x27;</td></tr><tr><td>2002·05</td><td>페이오프 해금</td></tr></tbody></table></div>
 <button class="btn sm" type="button" data-play="e-jpecon">관련 문제 2개 풀기 →</button>
 </article>
 <article class="cc" id="c-e-money" data-area="경제">
@@ -339,7 +339,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 </article>
 <article class="cc" id="c-e-thinkers" data-area="경제">
 <header><span class="ctag">경제</span><span class="plus">보충</span><h2>경제 사상가</h2></header>
-<div class="tw"><table><thead><tr><th>인물</th><th>저서·키워드</th></tr></thead><tbody><tr><td>애덤 스미스</td><td>『국부론』(1776), 보이지 않는 손, 분업, 자유방임 → 작은 정부</td></tr><tr><td>리카도</td><td>비교생산비설 → 자유무역</td></tr><tr><td>리스트</td><td>보호무역, 유치산업 보호 (후발국 독일)</td></tr><tr><td>마르크스</td><td>『자본론』, 자본주의 비판, 사회주의</td></tr><tr><td>케인스</td><td>『고용·이자 및 화폐의 일반이론』(1936), 유효수요, 정부의 적극적 재정 → 수정자본주의·큰 정부</td></tr><tr><td>슘페터</td><td>혁신(이노베이션), 창조적 파괴</td></tr><tr><td>프리드먼</td><td>통화주의(머니터리즘), 신자유주의 → 대처·레이건의 작은 정부</td></tr></tbody></table></div><p class="trap"><b>함정</b> '야경국가'는 라살이 자유방임 국가를 비판한 말. 유효수요 = 케인스, 혁신 = 슘페터를 바꿔 내는 함정이 많다.</p>
+<div class="tw"><table><thead><tr><th>인물</th><th>저서·키워드</th></tr></thead><tbody><tr><td>프랑수아 케네</td><td>『경제표』(1758), 중농주의: 농업만이 순생산물(부)을 낳는다, 자유방임(레세페르)의 선구 → 스미스에 영향. 중상주의 비판</td></tr><tr><td>애덤 스미스</td><td>『국부론』(1776), 보이지 않는 손, 분업, 자유방임 → 작은 정부</td></tr><tr><td>리카도</td><td>비교생산비설 → 자유무역</td></tr><tr><td>리스트</td><td>보호무역, 유치산업 보호 (후발국 독일)</td></tr><tr><td>마르크스</td><td>『자본론』, 자본주의 비판, 사회주의</td></tr><tr><td>케인스</td><td>『고용·이자 및 화폐의 일반이론』(1936), 유효수요, 정부의 적극적 재정 → 수정자본주의·큰 정부</td></tr><tr><td>슘페터</td><td>혁신(이노베이션), 창조적 파괴</td></tr><tr><td>프리드먼</td><td>통화주의(머니터리즘), 신자유주의 → 대처·레이건의 작은 정부</td></tr></tbody></table></div><p class="trap"><b>함정</b> 부의 원천: 중상주의 = 무역(금·은), 케네(중농주의) = 농업, 스미스 = 노동. '야경국가'는 라살이 자유방임 국가를 비판한 말. 유효수요 = 케인스, 혁신 = 슘페터를 바꿔 내는 함정이 많다.</p>
 <button class="btn sm" type="button" data-play="e-thinkers">관련 문제 4개 풀기 →</button>
 </article>
 <article class="cc" id="c-e-smallbiz" data-area="경제">
@@ -349,7 +349,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
 </article>
 <article class="cc" id="c-e-agri" data-area="경제">
 <header><span class="ctag">경제</span><span class="xq">기출</span><h2>전후 일본의 농업정책</h2></header>
-<div class="tw"><table><thead><tr><th>연도</th><th>정책·사건</th><th>포인트</th></tr></thead><tbody><tr><td>1946~50</td><td><b>농지개혁</b></td><td>부재지주 소작지 전부·재촌지주의 일정 면적 초과분을 정부가 강제 매수 → 소작농에 매도, 자작농 창출</td></tr><tr><td>1952</td><td>농지법</td><td>자작농주의 고정</td></tr><tr><td>1961</td><td><b>농업기본법</b></td><td>농업과 타 산업의 소득격차 시정, 선택적 확대</td></tr><tr><td>1970</td><td>감반(쌀 생산조정) 개시</td><td>쌀 과잉 → 2018년 국가의 생산목표 배분 폐지</td></tr><tr><td>1991</td><td>소고기·오렌지 수입자유화</td><td>미일 협상(1988 합의)의 결과</td></tr><tr><td>1995</td><td>쌀 최소접근(미니멈 액세스)</td><td>우루과이 라운드 합의(1993) / 식량관리법 폐지 → 신식량법</td></tr><tr><td>1999</td><td><b>쌀 관세화</b></td><td>같은 해 식료·농업·농촌기본법(신농업기본법)</td></tr><tr><td>2009</td><td>농지법 개정</td><td>일반 법인의 농지 임차 자유화</td></tr></tbody></table></div><p class="trap"><b>함정</b> 소고기·오렌지는 우루과이 라운드가 아니라 미일 2국 협상. 도하 라운드는 타결되지 못했다.</p>
+<div class="tw"><table><thead><tr><th>연도</th><th>정책·사건</th><th>포인트</th></tr></thead><tbody><tr><td>1946~50</td><td><b>농지개혁</b></td><td>부재지주 소작지 전부·재촌지주의 일정 면적 초과분을 정부가 강제 매수 → 소작농에 매도, 자작농 창출</td></tr><tr><td>1942~95</td><td><b>식량관리법</b></td><td>전시 중 제정, 정부가 쌀을 전량 관리(매입·배급). 전후에도 유지 → 생산자 쌀값 &gt; 소비자 쌀값의 역 차이로 &#x27;식관 적자&#x27;, 1969 자주유통미 도입 → 1995 폐지, 신식량법으로 쌀 유통 자유화</td></tr><tr><td>1952</td><td>농지법</td><td>자작농주의 고정</td></tr><tr><td>1961</td><td><b>농업기본법</b></td><td>농업과 타 산업의 소득격차 시정, 선택적 확대</td></tr><tr><td>1970</td><td>감반(쌀 생산조정) 개시</td><td>쌀 과잉 → 2018년 국가의 생산목표 배분 폐지</td></tr><tr><td>1991</td><td>소고기·오렌지 수입자유화</td><td>미일 협상(1988 합의)의 결과</td></tr><tr><td>1995</td><td>쌀 최소접근(미니멈 액세스)</td><td>우루과이 라운드 합의(1993) / 식량관리법 폐지 → 신식량법</td></tr><tr><td>1999</td><td><b>쌀 관세화</b></td><td>같은 해 식료·농업·농촌기본법(신농업기본법)</td></tr><tr><td>2009</td><td>농지법 개정</td><td>일반 법인의 농지 임차 자유화</td></tr></tbody></table></div><p class="trap"><b>함정</b> 소고기·오렌지는 우루과이 라운드가 아니라 미일 2국 협상. 도하 라운드는 타결되지 못했다.</p>
 <button class="btn sm" type="button" data-play="e-agri">관련 문제 1개 풀기 →</button>
 </article>
 <article class="cc" id="c-e-gini" data-area="경제">

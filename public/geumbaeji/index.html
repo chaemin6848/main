@@ -46,7 +46,8 @@ input,select{background:var(--card);border:1px solid var(--line);border-radius:6
 label{display:grid;gap:4px;font-size:13px;color:var(--ink2)}
 .btn{background:var(--accent);color:var(--on-accent);border:1px solid var(--accent);border-radius:8px;padding:8px 16px;font-weight:600}
 .btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}
-.btn.sm{padding:4px 10px;font-size:13px}
+.btn.sm{padding:4px 10px;font-size:13px;white-space:nowrap}
+.btn.xs{padding:2px 7px;font-size:12px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:12px;min-width:0}
@@ -157,6 +158,7 @@ const ACTS={
   bill:{label:'법안 대표발의',energy:15,need:'bill',seat:true,desc:'우리 당 몫으로 다음 분기 본회의에 법안을 올립니다. 가결되면 실적이 쌓입니다.'},
   faction:{label:'계파 모임',energy:10,money:1,seat:true,desc:'당내 입지 +4, 같은 계파 의원 모두와 관계 +4 (무계파면 아무 의원 8명과 +3)'},
   woo:{label:'의원과 식사',energy:8,money:1,need:'member',desc:'고른 의원과 관계 +12. 이미 가까울수록 덜 오릅니다.'},
+  deal:{label:'협상',energy:8,need:'deal',desc:'의원 한 사람과 거래합니다: 동지 맺기, 다른 당 의원 영입, 계파 지지 거래, 내 계파로 영입.'},
   endorse:{label:'지지 선언 요청',energy:6,need:'member',desc:'관계가 좋을수록 잘 됩니다. 성공하면 다음 당내 선거에서 그 의원과 같은 계파 의원들이 우리 쪽으로 기웁니다.'},
   donate:{label:'특별당비 납부',energy:0,money:3,desc:'당 자금 +3, 입지 +4'},
   fund:{label:'후원회 개최',energy:12,desc:'정치자금 +(3 + 인지도/20), 청렴 −1'},
@@ -168,7 +170,6 @@ const PACT_HIDE=['leaveFed','expel','propose','shift','amendBill','leaderRace'];
 const GOV_HIDE=['amend'];
 const SURNAMES='김이박최정강조윤장임한오서신권황안송류전홍고문양손배백허유남심노하곽성차주우구민진나지엄채원천방공현함변염여추도소석선설마길연위표명기반왕금옥육인맹제모탁국어은편용예경봉사부황보'.split('');
 const GIVEN='민준 서연 도윤 지우 하준 서윤 시우 지민 주원 수아 예준 하은 건우 윤서 현우 지유 우진 채원 선우 지아 정훈 은정 상철 미경 영수 혜진 동현 수진 재석 경희 태호 나연 성민 유나 진호 소영 준혁 다은 석진 보람'.split(' ');
-const newName=()=>pick(SURNAMES)+pick(GIVEN);
 
 /* ---------- 상태 ---------- */
 let G=null;           // 저장되는 게임 전체
@@ -197,7 +198,8 @@ function fullGov(){const g=W(),p=myParty();return!!headRole()||(leader()&&g.pmPa
 function titleOf(){
   const h=headRole();if(h)return POSTS[h][0];
   for(const k of['leader','whip','minister','chair','spokes'])if(G.me.posts[k])return POSTS[k][0];
-  return seated()?(G.me.terms===1?'초선 의원':`${G.me.terms}선 의원`):'원외 인사';
+  const t=seated()?(G.me.terms===1?'초선 의원':`${G.me.terms}선 의원`):'원외 인사';
+  return isIndep()?'무소속 '+t:t;
 }
 function postScore(){const h=headRole();if(h)return POSTS[h][1];let s=seated()?10:4;for(const k in POSTS)if(G.me.posts[k])s=Math.max(s,POSTS[k][1]);return s}
 function govSlots(){return E.govSlots(W(),myParty())}
@@ -233,6 +235,7 @@ function startGame(){
       stats:{...b.s,energy:100},posts:{},bills:0,billsPassed:0,defy:[],dirty:0,timeline:[],peak:10,over:null,cutoff:false,indep:false,wing:SETUP.wing||'n'},
     events:[],draft:null,turn:null,lastReport:null,next:{whip:3,conv:5},rel:{}};
   initCaucus();
+  { const fs=facsOf(p.id).filter(f=>f.wing===G.me.wing);if(fs.length){const pw=facPower(p.id);const f=fs.sort((a,b)=>pw[b.id]-pw[a.id])[0];G.me.fac=f.id}else G.me.wing=NONE }
   milestone(`${p.name} 소속으로 ${E.REG[G.me.region].name}에서 국회의원에 처음 당선됐습니다.`);
   newTurn();prepareQuarter();save();render();
 }
@@ -255,31 +258,35 @@ function prepareQuarter(){
   if(g.status!=='playing')return;
   // 1. 공천: 이번 분기 말이 총선이면 먼저 공천을 받는다.
   if(E.isGeneralRound(g)&&!me.over){
-    if(leader()||me.posts.president){me.cutoff=false;addEvent({type:'info',title:'공천 확정',text:`당대표로서 ${E.REG[me.region].name} 공천을 받았습니다. 이번 분기 말 총선입니다.`})}
+    if(isIndep()){me.cutoff=false;addEvent({type:'info',title:'무소속 출마',text:`${E.REG[me.region].name}에 무소속으로 출마합니다. 이번 분기 말 총선입니다.`})}
+    else if(leader()||me.posts.president){me.cutoff=false;addEvent({type:'info',title:'공천 확정',text:`당대표로서 ${E.REG[me.region].name} 공천을 받았습니다. 이번 분기 말 총선입니다.`})}
     else{
       const risk=me.stats.standing<38?(38-me.stats.standing)/38*.8:0;
       if(rnd()<risk)addEvent({type:'cutoff',title:'공천 탈락',text:`당 공천관리위원회가 ${E.REG[me.region].name}에 다른 후보를 냈습니다. 당내 입지가 약했던 탓입니다.`,
-        opts:[['accept','승복하고 이번 총선은 쉰다','입지 +8, 청렴 +2. 총선 뒤 원외 인사가 됩니다.'],['indep','무소속으로 출마한다','당선되면 복당하지만 입지가 크게 깎입니다.'],['switch','탈당해 다른 당 공천을 받는다','노선이 가까운 당으로 옮깁니다.']]});
+        opts:[['accept','승복하고 이번 총선은 쉰다','입지 +8, 청렴 +2. 총선 뒤 원외 인사가 됩니다.'],['indep','탈당하고 무소속으로 출마한다','당 지지 없이 개인 기반으로만 싸웁니다. 동지가 따라 나올 수 있습니다.'],['switch','탈당해 다른 당 공천을 받는다','노선이 가까운 당으로 옮깁니다.']]});
       else{me.cutoff=false;addEvent({type:'info',title:'공천 확정',text:`${E.REG[me.region].name} 공천을 받았습니다. 이번 분기 말 총선입니다.`})}
     }
   }
   // 2. 당내 선거: 전당대회는 한 분기 앞서 예고하고 다음 분기에 표결한다. 대통령은 당대표를 겸한다.
-  if(me.posts.president){if(g.round>=G.next.conv-1)G.next.conv=g.round+8;G.conv=null}
+  if(me.posts.president||isIndep()){if(g.round>=G.next.conv-1)G.next.conv=g.round+8;G.conv=null}
   else if(G.conv&&g.round>=G.conv.round)holdConv();
   else if(!G.conv&&g.round>=G.next.conv-1)announceConv();
   if(g.round>=G.next.whip){
     G.next.whip=g.round+4;
+    if(isIndep()){}else
     if(seated()&&!leader())announceWhip();
     else if(G.roster.length>1){G.whipCands=whipCands();const o=runWhip('none');note(o.res)}
   }
   // 3. 자리 제안
   const ev=[];
+  if(!isIndep()){
   if(seated()&&!me.posts.spokes&&!leader()&&!whip()&&me.stats.fame>=42&&rnd()<.45)
     ev.push({type:'offer',post:'spokes',title:'대변인 제안',text:'당 지도부가 대변인을 맡아 달라고 합니다. 분기마다 이름이 알려지지만 체력이 듭니다.',opts:[['yes','맡는다','분기마다 인지도 +2, 체력 −4'],['no','사양한다','']]});
   if(seated()&&!me.posts.chair&&(me.terms>=2||me.stats.expert>=60)&&me.stats.standing>=45&&rnd()<.35)
     ev.push({type:'offer',post:'chair',title:'상임위원장 제안',text:'상임위원장 자리가 비었습니다. 법안 대표발의가 당 일정에 반드시 오르고 전문성이 쌓입니다.',opts:[['yes','맡는다','분기마다 전문성 +1'],['no','사양한다','']]});
   if(!leader()&&!me.posts.minister&&govSlots()>0&&me.stats.expert>=52&&me.stats.standing>=48&&rnd()<.4)
     ev.push({type:'offer',post:'minister',title:'입각 제안',text:'정부가 장관 자리를 제안했습니다. 분기마다 행정 조치 하나를 직접 고릅니다.',opts:[['yes','입각한다','인지도 +2/분기, 체력 −6/분기'],['no','사양한다','']]});
+  }
   if(ev.length)addEvent(ev[0]);
   // 4. 스캔들
   const risk=Math.max(0,60-me.stats.integrity)/60*.12+me.dirty*.03;
@@ -344,9 +351,10 @@ function mkMember(p,terms,mine=true,extra){
   terms=terms||1+Math.floor(rnd()*rnd()*5);
   // 이름은 국회 전체에서 겹치지 않게 짓는다.
   const used=G.names||(G.names={});
-  let name;do name=newName();while(used[name]||name===G.me.name);used[name]=1;
+  let name,k=0;do{name=newName();if(++k>60)name+=' '+k}while(used[name]||name===G.me.name);used[name]=1;
   const m={id:'m'+(G.mseq=(G.mseq||0)+1),name,wing,terms,clout:clamp(Math.round(terms*9+rnd()*25),5,95),region:pick(E.REGIONS).id};
-  G.rel[m.id]=mine?Math.round(rnd()*14-5)+(m.wing!==NONE&&m.wing===G.me.wing?8:0):Math.round(rnd()*10-6);
+  assignFac(p,m);
+  G.rel[m.id]=mine?Math.round(rnd()*14-5)+(m.fac&&m.fac===G.me.fac?10:m.wing!==NONE&&m.wing===G.me.wing?4:0):Math.round(rnd()*10-6);
   return m;
 }
 // 당대표는 영향력이 가장 큰 의원, 원내대표는 다른 계파에서 가장 큰 의원으로 시작한다.
@@ -359,6 +367,11 @@ function pickHeads(p,o){
   p.leader=L.name;
 }
 function buildOther(p){const o={list:[],lead:null,whip:null};while(o.list.length<p.seats)o.list.push(mkMember(p,0,false));pickHeads(p,o);return o}
+// 예전 저장 판: 계파가 없으면 만들고, 의원을 계열에 맞춰 계파에 넣는다.
+function migrateFacs(){
+  G.facs=G.facs||{};if(G.me.fac===undefined)G.me.fac=null;
+  for(const p of W().parties){ensureFacs(p);for(const m of listOf(p.id))if(m.fac===undefined)assignFac(p,m)}
+}
 function initOthers(){
   G.others=G.others||{};
   for(const p of W().parties)if(p.id!==G.me.party&&!G.others[p.id])G.others[p.id]=buildOther(p);
@@ -376,7 +389,6 @@ function fitList(list,p,target,election,keep,mine){
 }
 const rosterTarget=()=>Math.max(0,myParty().seats-(G.me.seat?1:0));
 // 계파 수장: 그 계파에서 영향력이 가장 큰 의원
-const bossOf=w=>G.roster.filter(m=>m.wing===w).sort((a,b)=>b.clout-a.clout||(a.id<b.id?-1:1))[0]||null;
 function setLead(id){
   G.lead=id;G.me.posts.leader=id==='me';if(id==='me')G.me.posts.whip=false;
   if(G.whipId===id)G.whipId=null;
@@ -406,7 +418,8 @@ function syncRoster(election){
   // 영향력은 조금씩 오르내리고, 자리에 있으면 오른다.
   for(const m of G.roster)m.clout=clamp(m.clout+(m.id===G.lead?2:m.id===G.whipId?1:0)+(rnd()-.5)*2,5,95);
   for(const k in G.rel)G.rel[k]*=.97;
-  if(G.lead!=='me'&&!member(G.lead)){const t=G.roster.slice().sort((a,b)=>b.clout-a.clout)[0];if(t){setLead(t.id);note(`당대표 자리가 비어 ${t.name} 의원이 권한대행을 맡았습니다.`);G.next.conv=Math.min(G.next.conv,W().round+1)}}
+  if(p.fixed){G.lead=null;G.whipId=null}
+  else if(G.lead!=='me'&&!member(G.lead)){const t=G.roster.slice().sort((a,b)=>b.clout-a.clout)[0];if(t){setLead(t.id);note(`당대표 자리가 비어 ${t.name} 의원이 권한대행을 맡았습니다.`);G.next.conv=Math.min(G.next.conv,W().round+1)}}
   if(G.whipId&&G.whipId!=='me'&&!member(G.whipId))G.whipId=null;
   if(G.lead==='me')p.leader=G.me.name;
 }
@@ -414,8 +427,12 @@ function syncRoster(election){
 function leanTo(m,c,ctx){
   if(c.id===m.id)return 999;
   let s=c.clout*.25+(rnd()-.5)*14;
-  if(c.id==='me'){if((ctx.endorse||{})[m.id])s+=60;s+=rel(m.id)+(m.wing!==NONE&&m.wing===G.me.wing?18:0);for(const e in ctx.endorse||{}){const b=member(e);if(b&&b.wing===m.wing&&m.wing!==NONE)s+=12}}
-  else{s+=(m.wing!==NONE&&m.wing===c.wing?25:m.wing===NONE||c.wing===NONE?0:-6)+affinity(m.id,c.id);if(ctx.support===c.id&&rel(m.id)>=15)s+=12}
+  if(c.id==='me'){
+    if((ctx.endorse||{})[m.id])s+=60;if(m.ally)s+=40;
+    s+=rel(m.id)+(m.fac&&m.fac===G.me.fac?22:m.wing!==NONE&&m.wing===G.me.wing?8:0);
+    for(const e in ctx.endorse||{}){const b=member(e);if(b&&b.fac&&b.fac===m.fac)s+=12}
+    if(ctx.pacts&&m.fac&&ctx.pacts[m.fac])s+=15;
+  }else{s+=(m.fac&&m.fac===c.fac?28:m.wing!==NONE&&m.wing===c.wing?8:m.wing===NONE||c.wing===NONE?0:-6)+affinity(m.id,c.id);if(ctx.support===c.id&&rel(m.id)>=15)s+=12}
   return s;
 }
 function memberVotes(cands,ctx,list){
@@ -431,20 +448,20 @@ function partyPoll(cands,p){
   const v=cands.map(c=>Math.pow(pop(c),2)),sum=v.reduce((a,b)=>a+b,0);
   return Object.fromEntries(cands.map((c,i)=>[c.id,v[i]/sum]));
 }
-const cand=id=>id==='me'?{id:'me',name:G.me.name,wing:G.me.wing,clout:Math.round(G.me.stats.standing*.6+G.me.terms*6)}:{...member(id)};
+const cand=id=>id==='me'?{id:'me',name:G.me.name,wing:G.me.wing,fac:G.me.fac,clout:Math.round(G.me.stats.standing*.6+G.me.terms*6)}:{...member(id)};
 function tallyHtml(rows,cols){
-  return`<div class="scroll"><table><thead><tr><th>후보</th>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr class="${r.id==='me'?'mine':''}"><td>${esc(r.name)} <span class="small muted">${esc(wingName(r.wing))}</span>${r.win?' <b class="good">당선</b>':''}</td>${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return`<div class="scroll"><table><thead><tr><th>후보</th>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr class="${r.id==='me'?'mine':''}"><td>${esc(r.name)} <span class="small muted">${esc(facName(r.fac))}</span>${r.win?' <b class="good">당선</b>':''}</td>${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 // 전당대회 예고: 다음 분기에 표결한다. 후보가 정해지고, 그 사이 의원을 만나 표를 모을 수 있다.
 function announceConv(){
   const g=W(),me=G.me;
   const ids=[];
   if(G.lead!=='me'&&member(G.lead))ids.push(G.lead);
-  for(const w of wingsOf(myParty())){const b=bossOf(w.id);if(b&&!ids.includes(b.id)&&(w.power>=32||ids.length<2))ids.push(b.id)}
+  for(const b of topBosses(G.me.party,3))if(!ids.includes(b)&&ids.length<3)ids.push(b);
   if(ids.length<2){const t=G.roster.filter(m=>!ids.includes(m.id)).sort((a,b)=>b.clout-a.clout)[0];if(t)ids.push(t.id)}
   G.conv={round:g.round+1,cands:ids.slice(0,3),meRun:false,support:null};
   const inc=leader();
-  const list=G.conv.cands.map(id=>{const m=member(id);return`<li>${esc(m.name)} — ${esc(wingName(m.wing))}, ${m.terms}선, 영향력 ${Math.round(m.clout)}${id===G.lead?', 현 대표':''}${m.wing!==NONE&&bossOf(m.wing)===m?', 계파 수장':''} · 나와의 관계 ${sign(rel(id))}</li>`}).join('');
+  const list=G.conv.cands.map(id=>{const m=member(id);return`<li>${esc(m.name)} — ${esc(facName(m.fac))}${isBoss(m)?' 수장':''}, ${m.terms}선, 영향력 ${Math.round(m.clout)}${id===G.lead?', 현 대표':''}${m.ally?', 나의 동지':''} · 나와의 관계 ${sign(rel(id))}</li>`}).join('');
   addEvent({type:'convAnn',title:'전당대회 예고',text:`다음 분기에 ${myParty().name} 전당대회가 열립니다. 의원 투표 50%와 당원 여론조사 50%로 당대표를 뽑고, 과반 후보가 없으면 상위 두 사람이 결선을 치릅니다.`,
     html:`<ul class="small">${list}</ul>`,
     opts:[['run',inc?'연임에 도전한다':'당대표에 출마한다','체력 −10. 이번 분기에 의원을 만나 표를 모으세요.'],
@@ -456,7 +473,7 @@ function holdConv(){
   const ids=C.cands.filter(id=>member(id)).concat(C.meRun?['me']:[]);
   if(!ids.length)return;
   let cands=ids.map(cand);
-  const ctx={endorse:C.meRun?G.endorse:{},support:C.support,myVote:C.meRun?'me':C.support};
+  const ctx={endorse:C.meRun?G.endorse:{},pacts:C.meRun?G.pacts:null,support:C.support,myVote:C.meRun?'me':C.support};
   const run=cs=>{const mv=memberVotes(cs,ctx),poll=partyPoll(cs),tot=Object.values(mv).reduce((a,b)=>a+b,0)||1;
     return cs.map(c=>({...c,mv:mv[c.id],ms:mv[c.id]/tot,poll:poll[c.id],score:mv[c.id]/tot*.5+poll[c.id]*.5})).sort((a,b)=>b.score-a.score)};
   let r1=run(cands),r2=null,win=r1[0];
@@ -475,7 +492,9 @@ function holdConv(){
     else text=`${win.name} 후보가 당대표가 됐습니다.`;
     if(was==='me'&&!C.meRun)milestone('당대표에서 물러났습니다.');
   }
-  G.endorse={};
+  // 계파 지지 거래: 이겼으면 약속대로 그 계파 수장에게 원내대표를 맡긴다.
+  if(win.id==='me'){const ids=Object.values(G.pacts||{}).filter(id=>member(id));if(ids.length){G.whipId=ids[0];text+=` 약속대로 ${member(ids[0]).name} 의원이 원내대표를 맡습니다.`;addRel(ids[0],8)}}
+  G.endorse={};G.pacts={};
   addEvent({type:'info',title:'전당대회 결과',text,html});
 }
 // 다른 당 전당대회: 당마다 8분기 간격(당 번호로 시기를 엇갈리게)으로 치른다. 결과는 분기 결과의 '다른 당 소식'에 나온다.
@@ -484,14 +503,14 @@ function otherConventions(round){
     const p=E.party(W(),pid),o=G.others[pid];
     if(!p||p.fixed||o.list.length<3||(round+p.no*3)%8!==0)continue;
     const ids=[];if(o.lead)ids.push(o.lead);
-    for(const w of wingsOf(p)){const b=o.list.filter(m=>m.wing===w.id).sort((a,b)=>b.clout-a.clout)[0];if(b&&!ids.includes(b.id))ids.push(b.id)}
+    for(const b of topBosses(pid,3))if(!ids.includes(b))ids.push(b);
     if(ids.length<2)continue;
     const cs=ids.slice(0,3).map(id=>({...o.list.find(m=>m.id===id)}));
     const mv=memberVotes(cs,{},o.list),poll=partyPoll(cs,p),tot=o.list.length;
     const r=cs.map(c=>({...c,score:mv[c.id]/tot*.5+poll[c.id]*.5})).sort((a,b)=>b.score-a.score);
     const win=r[0],again=win.id===o.lead;o.lead=win.id;if(o.whip===win.id)o.whip=null;pickHeads(p,o);
     const W1=wingsOf(p).find(w=>w.id===win.wing);if(W1&&p.wings){W1.power=clamp(W1.power+8,20,80);for(const x of p.wings)if(x!==W1)x.power=100-W1.power}
-    world(`${p.name} 전당대회: ${win.name} 의원(${wingName(win.wing,p)}) ${again?'연임':'당대표 선출'} · 합산 ${(win.score*100).toFixed(0)}%`);
+    world(`${p.name} 전당대회: ${win.name} 의원(${facName(win.fac)}) ${again?'연임':'당대표 선출'} · 합산 ${(win.score*100).toFixed(0)}%`);
   }
 }
 function world(text){(G.turn.world=G.turn.world||[]).push(text)}
@@ -506,7 +525,7 @@ function whipCands(){
 }
 function announceWhip(){
   const ids=whipCands();G.whipCands=ids;
-  const list=ids.map(id=>{const m=member(id);return`<li>${esc(m.name)} — ${esc(wingName(m.wing))}, ${m.terms}선, 영향력 ${Math.round(m.clout)} · 나와의 관계 ${sign(rel(id))}</li>`}).join('');
+  const list=ids.map(id=>{const m=member(id);return`<li>${esc(m.name)} — ${esc(facName(m.fac))}, ${m.terms}선, 영향력 ${Math.round(m.clout)} · 나와의 관계 ${sign(rel(id))}</li>`}).join('');
   addEvent({type:'whip',title:'원내대표 선거',text:whip()?'원내대표 임기가 끝났습니다. 의원들이 다시 뽑습니다.':'의원들이 새 원내대표를 뽑습니다. 의원만 투표합니다.',html:`<ul class="small">${list}</ul>`,
     opts:[['run',whip()?'연임에 도전한다':'출마한다','체력 −8. 같은 계파와 나와 가까운 의원이 표를 줍니다.'],...ids.map(id=>['sup:'+id,`${member(id).name} 의원을 지지한다`,'']),['none','나서지 않는다','']]});
 }
@@ -527,15 +546,236 @@ function runWhip(key){
     else res=`${win.name} 의원이 원내대표가 됐습니다.`}
   return{res,html:tallyHtml(rows,[['의원 표',r=>`<b>${r.mv}</b>`]])};
 }
-// 계파 옮기기: 한 분기에 한 번
-function joinWing(w){
-  const me=G.me;if(G.turn.wingMoved||w===me.wing)return;
-  if(me.wing!==NONE)relWing(me.wing,-8);
-  if(w!==NONE)relWing(w,6);
-  stat('standing',-2);
-  milestone(w===NONE?`${wingName(me.wing)}를 떠나 무계파가 됐습니다.`:`${wingName(w)}에 합류했습니다.`);
-  me.wing=w;G.turn.wingMoved=true;
+/* ---------- 이름: 나라에 맞춰 짓는다(한글 표기) ---------- */
+const NAME_POOLS={
+  jp:{order:'sg',s:'사토 스즈키 다카하시 다나카 와타나베 이토 야마모토 나카무라 고바야시 가토 요시다 야마다 사사키 야마구치 마쓰모토 이노우에 기무라 하야시 시미즈 야마자키 모리 이케다 하시모토 이시카와 오가와 후지타 오카다 마에다 곤도 무라카미 엔도 아오키 사카모토 니시무라 후쿠다 오타 미우라 후지이 오카모토 마쓰다 나카가와 나카노 하라다 오노 다무라 다케우치 가네코 와다 나카야마 이시이 우에다 모리타 시바타 구도 노무라 스기야마'.split(' '),
+    g:'히로시 다케시 겐지 마코토 이치로 쇼타 다이스케 유키 아키라 도모코 요코 게이코 나오미 미호 사토시 류지 가즈오 히데키 마사오 다로 유코 에미 마유미 레이코 신이치 고지 데쓰야 아야코 하루카 사키 겐타 준코 마사히로 노리코 슌스케 가오리'.split(' ')},
+  us:{order:'gs',g:'존 마이클 데이비드 제임스 로버트 윌리엄 리처드 토머스 크리스토퍼 대니얼 매슈 앤서니 마크 스티븐 폴 앤드루 조슈아 케빈 브라이언 메리 퍼트리샤 제니퍼 린다 엘리자베스 바버라 수전 제시카 세라 캐런 낸시 리사 마거릿 샌드라 애슐리 에밀리 미셸 로라 레이철 마리아 카를로스 호세 루이스 타마라 드숀'.split(' '),
+    s:'스미스 존슨 윌리엄스 브라운 존스 가르시아 밀러 데이비스 로드리게스 마르티네스 에르난데스 로페스 윌슨 앤더슨 테일러 무어 잭슨 마틴 톰프슨 화이트 해리스 클라크 루이스 로빈슨 워커 영 앨런 킹 라이트 스콧 그린 베이커 애덤스 넬슨 힐 캠벨 미첼 로버츠 카터 필립스 에번스 터너 파커 콜린스 에드워즈 스튜어트 모리스 머피 쿡 로저스 모건 쿠퍼 피터슨 리드 베일리 벨 켈리 하워드 콕스 리처드슨 우드 왓슨 브룩스 베넷 그레이 휴스 프라이스 샌더스 포스터 오코너 나카무라 카푸르'.split(' ')},
+  uk:{order:'gs',g:'제임스 올리버 해리 잭 조지 찰리 토머스 윌리엄 대니얼 매슈 앤드루 피터 사이먼 데이비드 리처드 에마 소피 샬럿 에밀리 해나 루시 앨리스 케이트 레이철 세라 레베카 클레어 니컬라 헬렌 조애나 앵거스 이언 개러스 리스 오웬 프리야 이므란'.split(' '),
+    s:'스미스 존스 윌리엄스 테일러 브라운 데이비스 에번스 윌슨 토머스 존슨 로버츠 로빈슨 톰프슨 라이트 워커 화이트 에드워즈 휴스 그린 홀 루이스 해리스 클라크 패텔 잭슨 우드 터너 마틴 쿠퍼 힐 워드 모리스 무어 리 킹 베이커 해리슨 모건 앨런 스콧 필립스 왓슨 파커 프라이스 베넷 영 그리피스 미첼 켈리 쿡 맥도널드 캠벨 스튜어트 머리 칸 알리 후세인 오브라이언 맥그리거'.split(' ')},
+  fr:{order:'gs',g:'장 피에르 미셸 필리프 알랭 니콜라 프랑수아 크리스토프 올리비에 로랑 세바스티앵 쥘리앵 앙투안 마티외 토마 뱅자맹 마리 나탈리 이자벨 실비 카트린 소피 상드린 나디아 오렐리 쥘리 카미유 셀린 엘로디 클레르 마농 레아 야니크 카림 사미르'.split(' '),
+    s:'마르탱 베르나르 뒤부아 토마 로베르 리샤르 프티 뒤랑 르루아 모로 시몽 로랑 르페브르 미셸 가르시아 다비드 베르트랑 루 뱅상 푸르니에 모렐 지라르 앙드레 메르시에 뒤퐁 랑베르 보네 프랑수아 마르티네즈 르그랑 가르니에 포르 루소 블랑 게랭 뮐레르 앙리 루셀 니콜라 페랭 모랭 클레망 고티에 뒤몽 로페즈 퐁텐 슈발리에 로비네 벤아메드 디알로'.split(' ')},
+};
+function newName(){
+  const c=(G&&G.world?G.world.country:SETUP&&SETUP.country)||'';const P=NAME_POOLS[c];
+  if(!P)return pick(SURNAMES)+pick(GIVEN);
+  const s=pick(P.s),g=pick(P.g);return P.order==='sg'?`${s} ${g}`:`${g} ${s}`;
 }
+
+/* ---------- 계파: 엔진의 두 계열(a·b) 아래에 당 노선에 맞는 계파를 여럿 둔다 ----------
+   G.facs[당 id] = [{id,name,wing,mine}], 의원 m.fac = 계파 id(무계파면 null), m.wing = 그 계파의 계열.
+   내가 만든 계파(mine)는 내가 수장이다. */
+const FAC_POOL={
+  reform:['개혁연대','민주광장','청년혁신모임','진보미래포럼','평화와 공존','시민정치연구회','새길포럼'],
+  labor:['민생연대','노동정치포럼','농어촌의 힘','공정분배모임','서민경제연구회','풀뿌리연대','일하는 사람들'],
+  liberal:['혁신경제포럼','미래성장연구회','자유시장모임','디지털전환포럼','개방과 도전','청년창업연대','열린경제모임'],
+  conservative:['국가미래연구회','원조보수','안보우선모임','보수혁신연대','전통과 질서','국민통합포럼','바른정치모임'],
+  center:['실용정치모임','중도개혁포럼','통합과 협치','합리주의연구회','민생실용연대','새정치포럼','상식과 균형'],
+};
+const ideoKey=p=>Object.keys(E.IDEOLOGIES).sort((a,b)=>Math.hypot(E.IDEOLOGIES[a].eco-p.eco,E.IDEOLOGIES[a].soc-p.soc)-Math.hypot(E.IDEOLOGIES[b].eco-p.eco,E.IDEOLOGIES[b].soc-p.soc))[0];
+const facsOf=pid=>(G.facs=G.facs||{})[pid]||[];
+const facById=id=>{for(const pid in G.facs||{}){const f=G.facs[pid].find(x=>x.id===id);if(f)return f}return null};
+function ensureFacs(p){
+  G.facs=G.facs||{};if(G.facs[p.id])return G.facs[p.id];
+  if(p.fixed)return G.facs[p.id]=[];
+  const n=p.seats<8?1:clamp(2+Math.floor(p.seats/45),2,5);
+  const names=FAC_POOL[ideoKey(p)].slice().sort(()=>rnd()-.5);
+  return G.facs[p.id]=Array.from({length:n},(_,i)=>({id:'f'+(G.fseq=(G.fseq||0)+1),name:names[i%names.length],wing:i%2?'b':'a'}));
+}
+// 계열에 맞는 계파를 고른다. 그 계열에 계파가 없으면 무계파.
+function assignFac(p,m){
+  const fs=ensureFacs(p).filter(f=>f.wing===m.wing&&!f.mine);
+  if(p.fixed||m.wing===NONE||!fs.length){m.fac=null;m.wing=p.fixed?NONE:m.wing;if(!fs.length)m.wing=NONE;return}
+  m.fac=pick(fs).id;
+}
+const listOf=pid=>pid===G.me.party?G.roster:((G.others||{})[pid]||{list:[]}).list;
+const facName=id=>{const f=id&&facById(id);return f?f.name:'무계파'};
+// 계파 세력: 소속 의원 영향력의 합(내가 들어 있으면 나도 센다)
+function facPower(pid){
+  const list=listOf(pid),mine=pid===G.me.party;const tot={};let all=0;
+  for(const m of list){all+=m.clout;if(m.fac)tot[m.fac]=(tot[m.fac]||0)+m.clout}
+  if(mine&&G.me.fac){const c=cand('me').clout;tot[G.me.fac]=(tot[G.me.fac]||0)+c;all+=c}
+  return Object.fromEntries(facsOf(pid).map(f=>[f.id,all?(tot[f.id]||0)/all:0]));
+}
+function facBoss(pid,fid){
+  const f=facById(fid);if(!f)return null;
+  if(f.mine&&pid===G.me.party&&G.me.fac===fid)return'me';
+  const b=listOf(pid).filter(m=>m.fac===fid).sort((a,b)=>b.clout-a.clout||(a.id<b.id?-1:1))[0];return b?b.id:null;
+}
+const isBoss=(m,pid)=>!!m.fac&&facBoss(pid||G.me.party,m.fac)===m.id;
+// 계파 순위가 높은 수장들(전당대회 후보)
+function topBosses(pid,n){
+  const pw=facPower(pid);
+  return facsOf(pid).slice().sort((a,b)=>pw[b.id]-pw[a.id]).map(f=>facBoss(pid,f.id)).filter(id=>id&&id!=='me').slice(0,n);
+}
+function relFac(fid,d){for(const m of G.roster)if(m.fac===fid)addRel(m.id,d)}
+// 나의 계파 가입·탈퇴·창설. 한 분기에 한 번.
+function joinFac(fid){
+  const me=G.me;if(G.turn.wingMoved||fid===me.fac)return;
+  const old=me.fac&&facById(me.fac);
+  if(old){relFac(old.id,-6);if(old.mine)dropMyFac(old)}
+  const f=fid&&facById(fid);
+  if(f){relFac(f.id,6);me.fac=f.id;me.wing=f.wing;milestone(`${f.name}에 들어갔습니다.`)}
+  else{me.fac=null;me.wing=NONE;milestone(`${old?old.name+'를 떠나 ':''}무계파가 됐습니다.`)}
+  stat('standing',-1);G.turn.wingMoved=true;
+}
+// 내가 만든 계파를 떠나면 가장 영향력 큰 회원이 이어받고, 회원이 없으면 없어진다.
+function dropMyFac(f){
+  const ms=G.roster.filter(m=>m.fac===f.id);
+  if(ms.length)f.mine=false;else G.facs[G.me.party]=facsOf(G.me.party).filter(x=>x!==f);
+}
+function createFac(name,wing){
+  const me=G.me;name=String(name||'').replace(/\s+/g,' ').trim().slice(0,12);
+  if(!name||G.turn.wingMoved||!canCreateFac())return;
+  if(facsOf(me.party).some(f=>f.name===name)){alert('같은 이름의 계파가 이미 있습니다.');return}
+  const old=me.fac&&facById(me.fac);if(old){relFac(old.id,-8);if(old.mine)dropMyFac(old)}
+  const f={id:'f'+(G.fseq=(G.fseq||0)+1),name,wing,mine:true};ensureFacs(myParty()).push(f);
+  me.fac=f.id;me.wing=wing;stat('money',-2);stat('fame',2);G.turn.wingMoved=true;
+  milestone(`계파 「${name}」을 만들었습니다.`);
+}
+const canCreateFac=()=>seated()&&!isIndep()&&(G.me.terms>=2||G.me.stats.standing>=50)&&G.me.stats.money>=2;
+
+/* ---------- 협상: 의원 한 사람과 거래한다 ---------- */
+const DEALS={
+  ally:{label:'동지 맺기',desc:'어느 당 의원과도 맺습니다. 동지는 당내 선거에서 나를 밀고, 탈당·창당 때 따라옵니다.'},
+  recruit:{label:'우리 당으로 영입',desc:'다른 당·무소속 의원을 데려옵니다. 계파 수장이면 계파원 일부가 함께 옵니다.'},
+  pact:{label:'계파 지지 거래',desc:'우리 당 계파 수장에게 원내대표 자리를 약속하고 다음 당내 선거에서 그 계파의 표를 받습니다.'},
+  join:{label:'내 계파로 영입',desc:'내가 만든 계파에 우리 당 의원을 들입니다.'},
+};
+function dealKinds(m){
+  const mine=!!member(m.id),q=partyOfMember(m.id),out=[];if(!q)return out;
+  if(!m.ally)out.push('ally');
+  if(!mine&&!isIndep()&&q&&listOf(q.id).length&&(G.others[q.id]||{}).lead!==m.id)out.push('recruit');
+  if(mine&&isBoss(m)&&m.fac!==G.me.fac&&!(G.pacts||{})[m.fac])out.push('pact');
+  if(mine&&G.me.fac&&(facById(G.me.fac)||{}).mine&&m.fac!==G.me.fac)out.push('join');
+  return out;
+}
+function doDeal(a){
+  const m=findMember(a.target);if(!m)return;
+  const kind=dealKinds(m).includes(a.kind)?a.kind:dealKinds(m)[0];
+  const r=rel(m.id),s=G.me.stats,q=partyOfMember(m.id),P=myParty();
+  if(!kind){note(`${m.name} 의원과는 더 맺을 거래가 없습니다.`);return}
+  if(kind==='ally'){
+    if(rnd()<clamp((r-10)/35+s.standing/300,0,.9)){m.ally=true;addRel(m.id,5);note(`${q.id===P.id?'':q.name+' '}${m.name} 의원과 동지가 됐습니다.`,'good');milestone(`${m.name} 의원과 동지를 맺었습니다.`)}
+    else{addRel(m.id,-2);note(`${m.name} 의원이 동지 제안에 선을 그었습니다.`,'bad')}
+  }else if(kind==='recruit'){
+    const d=Math.hypot(q.eco-P.eco,q.soc-P.soc);
+    if(rnd()<clamp((r-20)/40+(1-d)/3+s.fame/300,0,.85)){
+      const boss=isBoss(m,q.id)&&r>=35?m.fac:null;
+      moveMember(m,q,P);addRel(m.id,5);let n=1;
+      if(boss)for(const x of listOf(q.id).filter(x=>x.fac===boss).slice())if(rnd()<.45){moveMember(x,q,P);n++}
+      note(`${q.name} ${m.name} 의원${n>1?` 등 ${n}명`:''}이 우리 당으로 옮겨 왔습니다.`,'good');milestone(`${q.name}에서 ${m.name} 의원${n>1?` 등 ${n}명`:''}을 영입했습니다.`);stat('standing',2+n);
+    }else{addRel(m.id,-3);note(`${m.name} 의원이 영입 제안을 거절했습니다.`,'bad')}
+  }else if(kind==='pact'){
+    if(rnd()<clamp(r/40+s.standing/200,0,.85)){(G.pacts=G.pacts||{})[m.fac]=m.id;note(`${facName(m.fac)} 수장 ${m.name} 의원과 거래했습니다. 다음 당내 선거에서 그 계파가 우리를 밀고, 이기면 원내대표 자리를 줍니다.`,'good')}
+    else{addRel(m.id,-3);note(`${m.name} 의원이 거래를 거절했습니다.`,'bad')}
+  }else if(kind==='join'){
+    if(rnd()<clamp((r-5)/35,0,.9)){m.fac=G.me.fac;m.wing=G.me.wing;note(`${m.name} 의원이 「${facName(G.me.fac)}」에 들어왔습니다.`,'good')}
+    else{addRel(m.id,-2);note(`${m.name} 의원이 계파 합류를 거절했습니다.`,'bad')}
+  }
+}
+
+/* ---------- 당적: 탈당·입당·창당·무소속 ---------- */
+const isIndep=()=>!!myParty().fixed;
+// 무소속 묶음: 나라 모드의 '무소속·기타'를 쓰고, 가상 공화국에는 처음 필요할 때 만든다(선거 판세에는 거의 끼지 않고 의석만 지킨다).
+function indepParty(){
+  const g=W();let p=g.parties.find(x=>x.fixed);if(p)return p;
+  const zero=Object.fromEntries(E.REGIONS.map(r=>[r.id,0]));
+  p={id:'pind',no:Math.max(...g.parties.map(x=>x.no))+1,ownerId:null,name:'무소속',leader:'',slogan:'',ideology:'center',colorIdx:7,bot:true,kind:'minor',base:-30,home:null,eco:0,soc:0,
+    funds:0,members:1,trust:50,unity:50,talent:0,seats:0,district:0,pr:0,fed:null,allies:[],yields:{},allyLead:null,pmRounds:0,reg:{...zero},delta:null,
+    fixed:true,only:[],hold:{...zero},holdPr:0,color:'#7A8580',idea:'무소속',startSeats:0,prw:1,pick:'ind'};
+  g.parties.push(p);(G.others=G.others||{})[p.id]={list:[],lead:null,whip:null};G.facs[p.id]=[];
+  return p;
+}
+// 의석 한 개를 옮긴다. 무소속 묶음(hold)은 지역별 보유 의석도 함께 맞춘다.
+function moveSeat(from,to,region){
+  if(!from||!to||from.seats<=0)return;
+  const d=from.district>0;
+  if(d){from.district--;to.district++}else{from.pr--;to.pr++}
+  from.seats--;to.seats++;
+  if(from.hold){if(d){const k=from.hold[region]>0?region:Object.keys(from.hold).find(x=>from.hold[x]>0);if(k)from.hold[k]--}else if(from.holdPr>0)from.holdPr--}
+  if(to.hold){if(d)to.hold[region]=(to.hold[region]||0)+1;else to.holdPr=(to.holdPr||0)+1}
+}
+// 의원 한 사람을 다른 당으로 옮긴다(의석과 명부 함께).
+function moveMember(m,from,to){
+  const fl=listOf(from.id);const i=fl.indexOf(m);if(i<0)return;fl.splice(i,1);
+  moveSeat(from,to,m.region);
+  if(G.endorse)delete G.endorse[m.id];
+  if(to.fixed){m.fac=null;m.wing=NONE}
+  else if(m.fac&&facsOf(to.id).some(f=>f.id===m.fac)){/* 계파째 옮겨 가면 그대로 */}
+  else if(to.id===G.me.party&&G.me.fac&&(facById(G.me.fac)||{}).mine&&m.ally){m.fac=G.me.fac;m.wing=G.me.wing}
+  else{m.wing=rnd()<.5?'a':'b';assignFac(to,m)}
+  listOf(to.id).push(m);
+  const o=(G.others||{})[from.id];if(o&&(o.lead===m.id||o.whip===m.id)){if(o.lead===m.id)o.lead=null;if(o.whip===m.id)o.whip=null;pickHeads(from,o)}
+  if(from.id===G.me.party){if(G.lead===m.id){G.lead=null}if(G.whipId===m.id)G.whipId=null}
+}
+// 나를 따라 움직일 의원: 동지, 내가 만든 계파 회원, 아주 가까운 의원
+function followers(){
+  const fac=G.me.fac&&(facById(G.me.fac)||{}).mine?G.me.fac:null;
+  const out=[];
+  for(const m of G.roster)if(rnd()<(m.ally?.75:fac&&m.fac===fac?.65:rel(m.id)>=30?.2:0))out.push(m);
+  return out;
+}
+function leaveToIndep(){
+  const me=G.me,from=myParty();if(from.fixed)return'';
+  const fol=followers().filter(m=>m.ally);
+  const to=indepParty();
+  for(const m of fol)moveMember(m,from,to);
+  switchParty(to.id,'탈당');
+  return`${from.name}을 탈당해 무소속이 됐습니다.${fol.length?` 동지 ${fol.length}명이 함께 나왔습니다.`:''}`;
+}
+const joinChance=t=>{const P=myParty(),d=P.fixed?Math.hypot(t.eco,t.soc)*.5:Math.hypot(t.eco-P.eco,t.soc-P.soc);return clamp(.85-d*.5+G.me.stats.fame/400+(P.fixed?.05:0),.1,.95)};
+function applyJoin(pid){
+  const t=E.party(W(),pid);if(!t||t.fixed||t.id===G.me.party)return'';
+  if(rnd()<joinChance(t)){const from=myParty().name;switchParty(t.id,'입당');return`${from}에서 ${t.name}으로 입당했습니다.`}
+  stat('standing',-2);return`${t.name}이 입당을 받아 주지 않았습니다.`;
+}
+function foundParty(name,ideo){
+  const g=W(),me=G.me,from=myParty();
+  name=String(name||'').replace(/\s+/g,' ').trim().slice(0,14);
+  if(!name||g.parties.some(p=>p.name===name)||!E.IDEOLOGIES[ideo]||me.stats.money<8)return'';
+  const I=E.IDEOLOGIES[ideo],live=g.parties.filter(p=>!p.fixed);
+  const used=new Set(g.parties.map(p=>p.colorIdx));let ci=0;while(used.has(ci)&&ci<7)ci++;
+  const small=live.slice().sort((a,b)=>a.members-b.members)[0];
+  const t={id:'pn'+(G.pseq=(G.pseq||0)+1),no:Math.max(...g.parties.map(x=>x.no))+1,ownerId:'me',name,leader:me.name,slogan:'',ideology:ideo,colorIdx:ci,bot:false,kind:'minor',
+    base:g.country?Math.min(...live.map(p=>p.base)):0,home:null,eco:I.eco,soc:I.soc,funds:4*E.U,members:g.country?Math.max(.1,small.members*.5):3,
+    trust:clamp(35+me.stats.fame*.3,35,70),unity:78,talent:0,seats:0,district:0,pr:0,fed:null,allies:[],yields:{},allyLead:null,pmRounds:0,
+    reg:Object.fromEntries(E.REGIONS.map(r=>[r.id,0])),delta:null,fixed:false,idea:I.name,startSeats:0,prw:1,pick:'new'};
+  if(g.country){t.m0=t.members;t.income0=(small.income0||4)*.5}
+  g.parties.push(t);stat('money',-8);
+  // 내 계파는 새 당으로 함께 옮겨 간다.
+  const fac=me.fac&&facById(me.fac);
+  G.facs[t.id]=fac&&fac.mine?[fac]:[];if(fac&&fac.mine)G.facs[from.id]=facsOf(from.id).filter(x=>x!==fac);
+  G.others[t.id]={list:[],lead:null,whip:null};
+  const fol=followers();for(const m of fol)moveMember(m,from,t);
+  // 다른 당의 동지도 절반쯤 따라온다.
+  for(const pid in G.others){if(pid===t.id)continue;const q=E.party(g,pid);for(const m of G.others[pid].list.filter(x=>x.ally).slice())if(rnd()<.5)moveMember(m,q,t)}
+  const n=G.others[t.id].list.length;
+  switchParty(t.id,'창당');
+  setLead('me');
+  if(fac&&fac.mine){me.fac=fac.id;me.wing=fac.wing}
+  t.startSeats=t.seats;
+  return`「${name}」을 창당했습니다. 의원 ${n}명이 함께했습니다.`;
+}
+// 당적 패널
+function careerHtml(){
+  const g=W(),me=G.me,P=myParty(),moved=G.turn.moved,pres=me.posts.president;
+  const parties=g.parties.filter(p=>!p.fixed&&p.id!==P.id).sort((a,b)=>b.seats-a.seats);
+  const ui=G.ui||{};const jp=parties.some(p=>p.id===ui.join)?ui.join:(parties[0]||{}).id;
+  const fol=G.roster.filter(m=>m.ally).length,facN=me.fac&&(facById(me.fac)||{}).mine?G.roster.filter(m=>m.fac===me.fac).length:0;
+  const dis=moved||pres?'disabled':'';
+  return`<section class="panel"><div class="row between"><h2>당적</h2><span class="pill">${isIndep()?'무소속':esc(P.name)}</span></div>
+    ${pres?'<p class="small muted">대통령 임기 중에는 당적을 바꿀 수 없습니다.</p>':moved?'<p class="small muted">이번 분기에는 이미 당적을 바꿨습니다.</p>':''}
+    ${isIndep()?'<p class="small muted">무소속은 당론·공천·당내 선거가 없습니다. 총선은 개인 기반으로만 치르고, 법안 대표발의를 할 수 없습니다.</p>'
+      :`<div class="row between"><span class="small">탈당하고 무소속이 됩니다. 동지(${fol}명)는 따라 나올 수 있습니다. 입지를 잃고 맡은 자리를 내려놓습니다.</span><button class="btn ghost sm" data-a="leave" ${dis}>탈당</button></div>`}
+    ${parties.length?`<div class="row"><label style="flex:1">입당할 정당<select data-ui="join">${parties.map(p=>`<option value="${p.id}" ${p.id===jp?'selected':''}>${esc(p.name)} (${p.seats}석) · 받아 줄 가능성 ${Math.round(joinChance(p)*100)}%</option>`).join('')}</select></label><button class="btn ghost sm" data-a="joinp" ${dis}>입당 신청</button></div>`:''}
+    <div class="row"><label style="flex:1">새 당 이름<input data-ui="pname" maxlength="14" value="${esc(ui.pname||'')}" placeholder="예: 새미래당"></label>
+      <label style="flex:1">노선<select data-ui="pideo">${Object.entries(E.IDEOLOGIES).map(([k,i])=>`<option value="${k}" ${k===(ui.pideo||ideoKey(P.fixed?{eco:0,soc:0}:P))?'selected':''}>${esc(i.name)}</option>`).join('')}</select></label>
+      <button class="btn ghost sm" data-a="found" ${dis||me.stats.money<8?'disabled':''}>창당 (정치자금 8)</button></div>
+    <p class="small muted">창당하면 동지 ${fol}명${facN?`과 내 계파 의원 ${facN}명`:''}이 높은 확률로, 아주 가까운 의원 일부가 따라옵니다. 내가 당대표가 됩니다.</p></section>`;
+}
+
 function applyFx(fx){
   if(!fx)return'';let out='';
   for(const k in fx){
@@ -545,22 +785,22 @@ function applyFx(fx){
   }
   return out;
 }
-// 당적 옮기기: 의원이면 지역구 한 석이 따라간다.
-function switchParty(to){
+// 당적 옮기기: 의원이면 의석 하나가 따라간다. how: 이동 방식(입당·탈당·창당·영입 등, 경력 문구에 쓴다)
+function switchParty(to,how){
   const g=W(),me=G.me,from=myParty(),t=E.party(g,to);
-  if(me.seat&&from.district>0){from.district--;from.seats--;t.district++;t.seats++}
-  if(leader()&&from)from.leader=newName();
+  if(me.seat)moveSeat(from,t,me.region);
   from.ownerId=null;from.bot=true;
-  t.ownerId='me';
-  me.party=t.id;me.posts={};me.stats.standing=30;stat('local',-6);stat('fame',4);
-  // 새 당의 의원 명부를 처음부터 만든다. 계파는 무계파에서 시작한다.
+  t.ownerId='me';t.bot=true;
+  me.party=t.id;me.posts={};me.stats.standing=t.fixed?me.stats.standing:30;stat('local',-6);stat('fame',4);
   // 옛 당 명부는 다른 당 몫으로 넘기고, 새 당 명부를 내 명부로 가져온다. 의원들과의 관계는 그대로 남는다.
   initOthers();
+  const oldFac=me.fac&&facById(me.fac);if(oldFac&&oldFac.mine&&how!=='창당')dropMyFac(oldFac);
   const old={list:G.roster||[],lead:G.lead==='me'?null:G.lead,whip:G.whipId==='me'?null:G.whipId};pickHeads(from,old);G.others[from.id]=old;
   const nw=G.others[t.id]||buildOther(t);delete G.others[t.id];
-  G.roster=nw.list;G.whipId=nw.whip;G.conv=null;G.endorse={};me.wing='n';
-  if(nw.lead)setLead(nw.lead);
-  milestone(`${from.name}을 떠나 ${t.name}으로 옮겼습니다.`);
+  G.roster=nw.list;G.whipId=nw.whip;G.lead=null;G.conv=null;G.endorse={};G.pacts={};me.fac=null;me.wing=NONE;
+  if(!t.fixed&&nw.lead)setLead(nw.lead);
+  ensureFacs(t);
+  milestone(how==='탈당'?`${from.name}을 탈당해 무소속이 됐습니다.`:how==='창당'?`${from.fixed?'':from.name+'을 떠나 '}「${t.name}」을 창당했습니다.`:`${from.fixed?'무소속에서':from.name+'을 떠나'} ${t.name}${t.fixed?'이 됐습니다':'에 입당했습니다'}.`);
   G.draft=freshDraft();
 }
 function answer(i,key){
@@ -570,7 +810,7 @@ function answer(i,key){
     case'info':res=applyFx(e.fx)||'';break;
     case'cutoff':
       if(key==='accept'){me.cutoff=true;stat('standing',8);stat('integrity',2);res='이번 총선에는 나서지 않습니다.'}
-      else if(key==='indep'){me.cutoff=false;me.indep=true;res='무소속으로 출마합니다. 당 지지 없이 개인 기반으로만 싸웁니다.'}
+      else if(key==='indep'){me.cutoff=false;res=leaveToIndep()+' 무소속으로 출마합니다.';G.turn.moved=true}
       else{
         const g=W(),p=myParty();
         const t=g.parties.filter(o=>!o.fixed&&o.id!==p.id).sort((a,b)=>Math.hypot(a.eco-p.eco,a.soc-p.soc)-Math.hypot(b.eco-p.eco,b.soc-p.soc))[0];
@@ -605,8 +845,10 @@ function actionAllowed(k){
   if(d.seat&&!seated())return false;
   if(d.energy>0&&s.energy<d.energy)return false;
   if(d.money&&s.money<d.money)return false;
-  if(k==='bill'&&G.draft.acts.some(a=>a.type==='bill'))return false;
+  if(k==='bill'&&(isIndep()||G.draft.acts.some(a=>a.type==='bill')))return false;
+  if(k==='endorse'&&isIndep())return false;
   if(ACTS[k].need==='member'&&!(G.roster||[]).length)return false;
+  if(k==='deal'&&!(G.roster||[]).length&&!othersList().length)return false;
   return true;
 }
 function doPersonal(a){
@@ -618,16 +860,17 @@ function doPersonal(a){
     case'media':stat('fame',5);if(rnd()<.15){stat('standing',-5);note('방송에서 한 말이 설화로 번졌습니다.','bad')}break;
     case'attack':{stat('fame',G.me.posts.spokes?4:3);stat('standing',2);const t=E.party(W(),a.target);if(t)t.trust-=1;if(rnd()<.2){stat('integrity',-3);note('논평이 지나쳤다는 역풍을 맞았습니다.','bad')}break}
     case'study':stat('expert',5);break;
-    case'faction':stat('standing',4);if(G.me.wing!==NONE)relWing(G.me.wing,4);else for(let i=0;i<8&&G.roster.length;i++)addRel(pick(G.roster).id,3);break;
+    case'faction':stat('standing',4);if(G.me.fac){relFac(G.me.fac,4);relWing(G.me.wing,1)}else for(let i=0;i<8&&G.roster.length;i++)addRel(pick(G.roster).id,3);break;
+    case'deal':doDeal(a);break;
     case'woo':{const m=findMember(a.target);if(!m)break;const d=12*(1-Math.max(0,rel(m.id))/60);addRel(m.id,d);
-      if(member(m.id)){if(bossOf(m.wing)===m)stat('standing',1);note(`${m.name} 의원과 식사했습니다. 관계 ${sign(rel(m.id))}`)}
+      if(member(m.id)){if(isBoss(m))stat('standing',1);note(`${m.name} 의원과 식사했습니다. 관계 ${sign(rel(m.id))}`)}
       else{const q=partyOfMember(m.id);const ally=q&&E.allies(myParty()).includes(q.id);if(!ally)stat('standing',-1);
         note(`${q?q.name+' ':''}${m.name} 의원과 식사했습니다. 관계 ${sign(rel(m.id))}${ally?'':' · 다른 당 의원과 어울린다는 눈총에 입지 −1'}`)}break}
     case'endorse':{const m=member(a.target);if(!m){note('지지 선언은 우리 당 의원에게만 요청할 수 있습니다.','bad');break}
       if(G.endorse[m.id]){note(`${m.name} 의원은 이미 우리를 지지합니다.`);break}
       if(G.conv&&G.conv.cands.includes(m.id)){note(`${m.name} 의원은 전당대회 후보라 다른 사람을 지지하지 않습니다.`,'bad');break}
       const ch=clamp((rel(m.id)-5)/40+G.me.stats.standing/250,0,.9);
-      if(rnd()<ch){G.endorse[m.id]=true;addRel(m.id,3);note(`${m.name} 의원(${wingName(m.wing)})이 우리를 지지하겠다고 약속했습니다.`,'good')}
+      if(rnd()<ch){G.endorse[m.id]=true;addRel(m.id,3);note(`${m.name} 의원(${facName(m.fac)})이 우리를 지지하겠다고 약속했습니다.`,'good')}
       else{addRel(m.id,-3);note(`${m.name} 의원이 지지 요청을 거절했습니다.`,'bad')}break}
     case'donate':myParty().funds+=3*E.U;stat('standing',4);break;
     case'fund':stat('money',3+s.fame/20);stat('integrity',-1);break;
@@ -642,7 +885,8 @@ function endQuarter(){
   for(const a of dr.acts)doPersonal(a);
   // 2. 우리 당의 결정: AI 기본안에 내 자리만큼 손을 댄다.
   const base=baseMove();
-  const mv={round:g.round,votes:{...base.votes},pm:base.pm,actions:base.actions.map(a=>({...a})),gov:base.gov.map(a=>({...a})),bill:base.bill};
+  // 엔진이 더 붙인 결정(공천 방식·대응 등)은 기본안 그대로 넘긴다.
+  const mv={...base,round:g.round,votes:{...base.votes},pm:base.pm,actions:base.actions.map(a=>({...a})),gov:base.gov.map(a=>({...a})),bill:base.bill};
   if(leader()){mv.actions=dr.partyActs.map(a=>({...a}));if(dr.pm)mv.pm=dr.pm}
   if(leader()||whip())Object.assign(mv.votes,dr.partyVotes);
   const slots=govSlots();
@@ -662,7 +906,7 @@ function endQuarter(){
     }else note('당이 이번 분기 발의 몫을 다른 법안에 줬습니다. 대표발의가 밀렸습니다.','bad');
   }
   // 3. 내 표: 의원만. 당론과 다르면 반란표.
-  if(seated())for(const it of g.agenda){
+  if(seated()&&!isIndep())for(const it of g.agenda){
     const mine=dr.myVotes[it.id];const line=mv.votes[it.id];
     if(!mine||mine===line||leader()||whip())continue;
     stat('standing',-5);stat('fame',2);me.defy.push(g.round);
@@ -671,7 +915,7 @@ function endQuarter(){
   }
   // 계파 요구: 계파가 안건 하나에 표를 요구한다. 따르면 그 계파 의원들과 가까워지고, 거스르면 멀어진다.
   const dem=(g.demands||{})[p.id];
-  if(dem&&seated()&&g.agenda.some(it=>it.id===dem.item)){
+  if(dem&&seated()&&!isIndep()&&g.agenda.some(it=>it.id===dem.item)){
     const v=leader()||whip()?mv.votes[dem.item]:(dr.myVotes[dem.item]||mv.votes[dem.item]);
     relWing(dem.wing,v===dem.want?3:-3);
   }
@@ -723,18 +967,22 @@ function afterQuarter(round,prev){
     const regRes=el.regions.find(x=>x.id===me.region);
     if(me.cutoff){me.seat=false;me.cutoff=false;for(const k of['whip','chair','minister'])me.posts[k]=false;note('이번 총선에 나서지 않아 원외 인사가 됐습니다.');milestone('총선에 불출마해 원외로 물러났습니다.')}
     else{
-      const regSeats=E.REG[me.region].seats,frac=me.indep?0:(regRes.seats[p.id]||0)/regSeats;
+      const ind=isIndep(),regSeats=E.REG[me.region].seats,frac=ind?0:(regRes.seats[p.id]||0)/regSeats;
       const camp=Math.min(me.stats.money,6);me.stats.money-=camp;
-      const chance=clamp(frac*.85+(me.stats.local-50)/120+(me.stats.fame-50)/400+(me.stats.integrity-50)/600+camp*.012+(me.indep?.12:0),.03,.97);
+      const chance=clamp(frac*.85+(me.stats.local-50)/120+(me.stats.fame-50)/400+(me.stats.integrity-50)/600+camp*.012+(ind?.12:0),.03,.97);
       const won=rnd()<chance;
       if(won){
         // 당이 그 권역에서 한 석도 못 얻었는데 내가 이겼다면, 그 권역 1위 당에서 한 석을 옮겨 맞춘다.
-        if(!me.indep&&!(regRes.seats[p.id]>0)){const w=E.party(g,regRes.winner);if(w&&w.district>0&&w.id!==p.id){w.district--;w.seats--;p.district++;p.seats++}}
+        if(!ind&&!(regRes.seats[p.id]>0)){const w=E.party(g,regRes.winner);if(w&&w.district>0&&w.id!==p.id)moveSeat(w,p,me.region)}
+        // 무소속으로 원외였다가 당선되면 무소속 묶음에 의석을 하나 더한다.
+        if(ind&&!me.seat){const w=E.party(g,regRes.winner);if(w&&w.id!==p.id&&w.district>0)moveSeat(w,p,me.region)}
         me.terms++;me.seat=true;
         note(`${E.REG[me.region].name}에서 당선됐습니다! (당선 가능성 ${Math.round(chance*100)}%)`,'good');milestone(`${me.terms}선 고지에 올랐습니다.`);stat('fame',3);
-        if(me.indep){me.indep=false;me.stats.standing=Math.min(me.stats.standing,25);note('당선 뒤 복당했습니다. 당내 입지는 바닥에서 다시 시작합니다.')}
+        if(ind)note('무소속으로 살아남았습니다.','good');
       }else{
-        me.seat=false;me.indep=false;for(const k of['whip','chair','minister'])me.posts[k]=false;
+        // 무소속이 지면 지키던 의석을 그 지역 1위 당이 가져간다.
+        if(ind&&me.seat){const w=E.party(g,regRes.winner);if(w&&w.id!==p.id)moveSeat(p,w,me.region)}
+        me.seat=false;for(const k of['whip','chair','minister'])me.posts[k]=false;
         note(`${E.REG[me.region].name}에서 낙선했습니다. (당선 가능성 ${Math.round(chance*100)}%)`,'bad');milestone('총선에서 낙선했습니다.');stat('standing',-6);
       }
     }
@@ -810,9 +1058,9 @@ function renderSetup(){
   <section class="panel"><h2>3. 소속 정당</h2>
     <div class="choices">${ps.map(p=>`<button class="choice" data-a="party" data-v="${p.id}" aria-pressed="${S.party===p.id}"><b>${chip(p)} ${esc(p.name)}</b><span>${p.seats}석 · ${esc(p.idea||E.IDEOLOGIES[p.ideology].name)}</span></button>`).join('')}</div>
   </section>
-  <section class="panel"><h2>4. 계파</h2>
-    <p class="small muted">당 안의 두 계파 가운데 하나에 들거나 무계파로 시작합니다. 같은 계파 의원들은 당내 선거에서 우리 편이 되기 쉽습니다.</p>
-    <div class="choices">${(E.party(g,S.party).wings||[]).map(w=>`<button class="choice" data-a="swing" data-v="${w.id}" aria-pressed="${S.wing===w.id}"><b>${esc(w.name)}</b><span>세력 ${Math.round(w.power)}% · ${esc(wingLean(w))}</span></button>`).join('')}<button class="choice" data-a="swing" data-v="n" aria-pressed="${!S.wing||S.wing==='n'}"><b>무계파</b><span>어느 쪽에도 빚지지 않습니다.</span></button></div>
+  <section class="panel"><h2>4. 계열</h2>
+    <p class="small muted">당은 두 계열로 나뉘고, 계열마다 이름 있는 계파가 여럿 있습니다. 고른 계열에서 가장 큰 계파에 들어가 시작합니다. 같은 계파 의원들은 당내 선거에서 우리 편이 되기 쉽고, 게임 중에 계파를 옮기거나 직접 만들 수도 있습니다.</p>
+    <div class="choices">${(E.party(g,S.party).wings||[]).map(w=>`<button class="choice" data-a="swing" data-v="${w.id}" aria-pressed="${S.wing===w.id}"><b>${esc(w.name)}</b><span>${esc(w.name)} 계열 · 세력 ${Math.round(w.power)}% · ${esc(wingLean(w))}</span></button>`).join('')}<button class="choice" data-a="swing" data-v="n" aria-pressed="${!S.wing||S.wing==='n'}"><b>무계파</b><span>어느 쪽에도 빚지지 않습니다.</span></button></div>
   </section>
   <section class="panel"><h2>5. 지역구</h2>
     <p class="small muted">우리 당이 강한 곳일수록 다음 총선에서 살아남기 쉽습니다.</p>
@@ -854,6 +1102,7 @@ function renderPlay(){
     </div>
     <div class="stack">
       ${worldHtml()}
+      ${careerHtml()}
       ${caucusHtml()}
       <section class="panel"><h2>경력</h2><p class="small">선수 ${me.terms} · 대표발의 ${me.bills}건 · 가결 ${me.billsPassed}건</p>
         <div class="timeline">${me.timeline.map(t=>`<div><span class="muted">${t.round}분기</span><span>${esc(t.text)}</span></div>`).join('')}</div>
@@ -871,21 +1120,31 @@ function caucusHtml(){
   const boss=w=>list0.filter(m=>m.wing===w).sort((a,b)=>b.clout-a.clout||(a.id<b.id?-1:1))[0]||null;
   const avg=w=>{const ms=list0.filter(m=>m.wing===w);return ms.length?Math.round(ms.reduce((n,m)=>n+rel(m.id),0)/ms.length):0};
   const cnt=w=>list0.filter(m=>m.wing===w).length+(own&&me.wing===w&&seated()?1:0);
-  const wingRows=p.fixed?`<p class="small muted">무소속·군소 의원 묶음이라 계파와 지도부가 없습니다.</p>`:[...ws.map(w=>{const b=boss(w.id);return`<div class="stat"><div class="top"><span><b>${esc(w.name)}</b> <span class="muted">${esc(wingLean(w))}</span>${own&&me.wing===w.id?' <span class="pill gold">내 계파</span>':''}</span><b>${Math.round(w.power)}%</b></div>
-      <div class="meter"><i style="width:${w.power}%"></i></div><span class="small muted">의원 ${cnt(w.id)}명 · 수장 ${b?esc(b.name):'없음'} · 나와의 관계 평균 ${sign(avg(w.id))}</span>
-      ${own&&me.wing!==w.id&&!G.turn.wingMoved?`<button class="btn ghost sm" data-a="wing" data-v="${w.id}">${esc(w.name)}에 합류</button>`:''}</div>`}),
-    `<div class="small muted">무계파 의원 ${cnt(NONE)}명 · 관계 평균 ${sign(avg(NONE))}${own&&me.wing!==NONE&&!G.turn.wingMoved?` <button class="btn ghost sm" data-a="wing" data-v="${NONE}">계파에서 나오기</button>`:''}</div>`].join('');
-  const tests={all:()=>true,a:m=>m.wing==='a',b:m=>m.wing==='b',n:m=>m.wing===NONE,ally:m=>rel(m.id)>=15,foe:m=>rel(m.id)<=-10};
+  // 계열(엔진의 두 갈래) 아래에 계파를 세력 순으로 늘어놓는다.
+  const pw=facPower(vid),facs=facsOf(vid);
+  const facAvg=f=>{const ms=list0.filter(m=>m.fac===f.id);return ms.length?Math.round(ms.reduce((n,m)=>n+rel(m.id),0)/ms.length):0};
+  const facCnt=f=>list0.filter(m=>m.fac===f.id).length+(own&&me.fac===f.id&&seated()?1:0);
+  const moved=G.turn.wingMoved;
+  const facRow=f=>{const bid=facBoss(vid,f.id),bn=bid==='me'?me.name:bid?(list0.find(m=>m.id===bid)||{}).name:null,pt=Math.round(pw[f.id]*100);
+    return`<div class="stat" style="margin-left:10px"><div class="top"><span><b>${esc(f.name)}</b>${f.mine?' <span class="pill">내가 만든 계파</span>':''}${own&&me.fac===f.id?' <span class="pill gold">내 계파</span>':''}${own&&(G.pacts||{})[f.id]?' <span class="pill">거래 중</span>':''}</span><b>${pt}%</b></div>
+      <div class="meter"><i style="width:${pt}%"></i></div><span class="small muted">의원 ${facCnt(f)}명 · 수장 ${bn?esc(bn):'없음'} · 나와의 관계 평균 ${sign(facAvg(f))}</span>
+      ${own&&!isIndep()&&me.fac!==f.id&&!moved?`<button class="btn ghost sm" data-a="jfac" data-v="${f.id}">${esc(f.name)}에 들어가기</button>`:''}</div>`};
+  const wingRows=p.fixed?`<p class="small muted">무소속·군소 의원 묶음이라 계파와 지도부가 없습니다.</p>`:[...ws.map(w=>`<div class="stack" style="gap:6px"><div class="small"><b>${esc(w.name)} 계열</b> <span class="muted">${esc(wingLean(w))} · 엔진 세력 ${Math.round(w.power)}%</span></div>${facs.filter(f=>f.wing===w.id).map(facRow).join('')||'<p class="small muted" style="margin-left:10px">계파 없음</p>'}</div>`),
+    `<div class="small muted">무계파 의원 ${cnt(NONE)}명 · 관계 평균 ${sign(avg(NONE))}${own&&me.fac&&!moved?` <button class="btn ghost sm" data-a="jfac" data-v="none">계파에서 나오기</button>`:''}</div>`,
+    own&&!moved&&canCreateFac()?`<div class="row"><label style="flex:1">새 계파 이름<input data-ui="fname" maxlength="12" value="${esc((G.ui||{}).fname||'')}" placeholder="예: 미래정치포럼"></label>${ws.map(w=>`<button class="btn ghost sm" data-a="cfac" data-v="${w.id}">${esc(w.name)} 계열로 창설</button>`).join('')}</div><p class="small muted">계파를 만들면 내가 수장이 됩니다. 정치자금 2. 협상의 '내 계파로 영입'으로 의원을 모으세요.</p>`
+      :own&&!isIndep()&&!moved?'<p class="small muted">계파를 만들려면 재선 이상이거나 당내 입지 50 이상, 정치자금 2가 필요합니다.</p>':''].join('');
+  if(!(flt in{all:1,n:1,ally:1,foe:1})&&!facsOf(vid).some(f=>f.id===flt))G.ui.flt='all';
+  const tests={all:()=>true,n:m=>!m.fac,ally:m=>rel(m.id)>=15||m.ally,foe:m=>rel(m.id)<=-10};for(const f of facsOf(vid))tests[f.id]=m=>m.fac===f.id;
   const list=list0.filter(tests[flt]||tests.all).sort((a,b)=>b.clout-a.clout);
   const shown=more?list:list.slice(0,15);
-  const canWoo=G.draft.acts.length<AP&&actionAllowed('woo');
-  const badge=m=>[m.id===o.lead?'당대표':'',m.id===o.whip?'원내대표':'',m.wing!==NONE&&boss(m.wing)===m?'수장':'',own&&G.endorse[m.id]?'나를 지지':''].filter(Boolean).map(t=>`<span class="pill ${t==='나를 지지'?'gold':''}">${t}</span>`).join(' ');
-  const rows=shown.map(m=>{const r=rel(m.id);return`<tr><td>${esc(m.name)} <span class="small muted">${m.terms}선</span> ${badge(m)}</td><td>${esc(wingName(m.wing,p))}</td><td>${Math.round(m.clout)}</td><td class="${r>=15?'good':r<=-10?'bad':''}">${sign(r)}</td><td><button class="btn ghost sm" data-a="add" data-v="woo" data-m="${m.id}" ${canWoo?'':'disabled'} aria-label="${esc(m.name)} 의원과 식사">식사</button></td></tr>`}).join('');
+  const canWoo=G.draft.acts.length<AP&&actionAllowed('woo'),canDeal=G.draft.acts.length<AP&&actionAllowed('deal');
+  const badge=m=>[m.id===o.lead?'당대표':'',m.id===o.whip?'원내대표':'',isBoss(m,vid)?'수장':'',m.ally?'동지':'',own&&G.endorse[m.id]?'나를 지지':''].filter(Boolean).map(t=>`<span class="pill ${t==='나를 지지'||t==='동지'?'gold':''}">${t}</span>`).join(' ');
+  const rows=shown.map(m=>{const r=rel(m.id);return`<tr><td>${esc(m.name)} <span class="small muted">${m.terms}선</span> ${badge(m)}</td><td>${esc(facName(m.fac))}</td><td>${Math.round(m.clout)}</td><td class="${r>=15?'good':r<=-10?'bad':''}">${sign(r)}</td><td><span class="row" style="gap:4px;flex-wrap:nowrap"><button class="btn ghost sm xs" data-a="add" data-v="woo" data-m="${m.id}" ${canWoo?'':'disabled'} aria-label="${esc(m.name)} 의원과 식사">식사</button><button class="btn ghost sm xs" data-a="add" data-v="deal" data-m="${m.id}" ${canDeal&&dealKinds(m).length?'':'disabled'} aria-label="${esc(m.name)} 의원과 협상">협상</button></span></td></tr>`}).join('');
   const nm=id=>id==='me'?me.name:id?(list0.find(m=>m.id===id)||{name:'공석'}).name:'공석';
-  const head=p.fixed?'':`<p class="small">당대표 <b>${esc(nm(o.lead))}</b> · 원내대표 <b>${esc(nm(o.whip))}</b>${own?` · 내 계파 <b>${esc(wingName(me.wing))}</b>`:''}</p>`;
+  const head=p.fixed?'':`<p class="small">당대표 <b>${esc(nm(o.lead))}</b> · 원내대표 <b>${esc(nm(o.whip))}</b>${own?` · 내 계파 <b>${esc(facName(me.fac))}</b>`:''}</p>`;
   const convLine=own?`<p class="small muted">${G.conv?`전당대회 ${G.conv.round}분기 표결 · 후보 ${G.conv.cands.map(personName).concat(G.conv.meRun?[me.name]:[]).map(esc).join(', ')}`:`다음 전당대회 ${G.next.conv}분기 · 원내대표 선거 ${G.next.whip}분기`}</p>`
     :`<p class="small muted">다른 당 의원과 식사하면 관계가 오르지만, 연맹 밖이면 우리 당에서 눈총을 받습니다(입지 −1). 그 당에 가까운 의원이 많을수록 영입 제안이 잦아집니다.</p>`;
-  const filt=[['all','전체'],...ws.map(w=>[w.id,w.name]),[NONE,'무계파'],['ally','가까운 의원'],['foe','껄끄러운 의원']];
+  const filt=[['all','전체'],...facsOf(vid).map(f=>[f.id,f.name]),[NONE,'무계파'],['ally','가까운 의원·동지'],['foe','껄끄러운 의원']];
   const tabs=[mineP,...g.parties.filter(x=>x.id!==mineP.id&&(G.others||{})[x.id]).sort((a,b)=>b.seats-a.seats)];
   return`<section class="panel"><div class="row between"><h2>의원 명부</h2><span class="pill">${esc(p.name)} ${list0.length+(own&&seated()?1:0)}명</span></div>
     <div class="row">${tabs.map(x=>`<button class="btn ghost sm" data-a="vparty" data-v="${x.id}" aria-pressed="${x.id===vid}"><span class="dot" style="--c:${pColor(x)}"></span>${x.id===mineP.id?'우리 당':esc(x.name)}</button>`).join('')}</div>
@@ -908,6 +1167,10 @@ function actsHtml(){
     const d=ACTS[a.type];let params='';
     const ext=d.need==='member'&&a.target&&!member(a.target)?findMember(a.target):null;
     if(d.need==='member')params=`<div class="params"><select data-act="target" data-i="${i}" aria-label="의원">${ext?`<option value="${ext.id}" selected>${esc(partyOfMember(ext.id).name)} ${esc(ext.name)} · 관계 ${sign(rel(ext.id))}</option>`:''}${G.roster.slice().sort((x,y)=>y.clout-x.clout).map(m=>`<option value="${m.id}" ${m.id===a.target?'selected':''}>${esc(m.name)} · ${esc(wingName(m.wing))} · 관계 ${sign(rel(m.id))}</option>`).join('')}</select></div>`;
+    if(d.need==='deal'){const m=findMember(a.target);const ks=m?dealKinds(m):[];
+      const opts=[...(m&&!member(m.id)?[m]:[]),...G.roster.slice().sort((x,y)=>y.clout-x.clout)];
+      params=`<div class="params"><select data-act="target" data-i="${i}" aria-label="의원">${opts.map(x=>`<option value="${x.id}" ${x.id===a.target?'selected':''}>${member(x.id)?'':esc(partyOfMember(x.id).name)+' '}${esc(x.name)} · ${esc(facName(x.fac))} · 관계 ${sign(rel(x.id))}${x.ally?' · 동지':''}</option>`).join('')}</select>
+        <select data-act="kind" data-i="${i}" aria-label="협상 내용">${ks.length?ks.map(k=>`<option value="${k}" ${k===a.kind?'selected':''}>${DEALS[k].label}</option>`).join(''):'<option value="">맺을 거래 없음</option>'}</select></div><p class="small muted">${ks.length?esc(DEALS[ks.includes(a.kind)?a.kind:ks[0]].desc):''}</p>`}
     if(d.need==='target')params=`<div class="params"><select data-act="target" data-i="${i}" aria-label="대상 정당">${g.parties.filter(o=>o.id!==me.party&&!o.fixed).map(o=>`<option value="${o.id}" ${o.id===a.target?'selected':''}>${esc(o.name)}</option>`).join('')}</select></div>`;
     if(d.need==='bill')params=`<div class="params"><select data-act="topic" data-i="${i}" aria-label="정책 분야">${Object.entries(E.TOPICS).map(([k,t])=>`<option value="${k}" ${k===a.topic?'selected':''}>${esc(t.label)} (${E.billAlign(t,myParty())>.25?'당 노선':E.billAlign(t,myParty())<-.25?'노선 반대':'중립'})</option>`).join('')}</select><input data-act="title" data-i="${i}" maxlength="24" placeholder="${esc(E.TOPICS[a.topic].title)}" value="${esc(a.title||'')}" aria-label="법안 이름"></div>`;
     slots.push(`<div class="slot"><b>${i+1}</b><div style="min-width:0"><b>${d.label}</b>${params}</div><button class="x" data-a="rm" data-v="${i}" aria-label="${d.label} 빼기">×</button></div>`);
@@ -924,10 +1187,11 @@ function votesHtml(){
     const line=dr.partyVotes[it.id];const mine=dr.myVotes[it.id]||line;
     const by=it.by?E.party(g,it.by):null;
     const kind={gov:'정부 법안',member:'의원 법안',pact:'연맹 합의 법안',noconf:'불신임안'}[it.kind]||'';
-    const dem=(g.demands||{})[myParty().id];const dl=dem&&dem.item===it.id?`<p class="small"><b>${esc(wingName(dem.wing))}</b>가 이 안건에 <b>${dem.want==='yes'?'찬성':'반대'}</b>을 요구합니다. 따르면 그 계파와 가까워지고, 거스르면 멀어집니다.</p>`:'';
+    const dem=(g.demands||{})[myParty().id];const dl=dem&&dem.item===it.id?`<p class="small"><b>${esc(wingName(dem.wing))} 계열</b>이 이 안건에 <b>${dem.want==='yes'?'찬성':'반대'}</b>을 요구합니다. 따르면 그 계파와 가까워지고, 거스르면 멀어집니다.</p>`:'';
     return`<div class="bill"><div><b>${esc(it.title)}</b> <span class="pill">${kind}</span>${by?` <span class="small muted">${esc(by.name)}</span>`:''}</div>
       <p class="small muted">${esc(it.desc||'')}</p>${dl}
       ${setter?`<div class="vote"><span class="small">당론</span><button class="btn ghost sm" data-a="pvote" data-id="${it.id}" data-v="yes" aria-pressed="${line==='yes'}">찬성</button><button class="btn ghost sm" data-a="pvote" data-id="${it.id}" data-v="no" aria-pressed="${line==='no'}">반대</button></div>`
+        :seated()&&isIndep()?`<div class="vote"><span class="small">무소속 · 내 표</span><button class="btn ghost sm" data-a="vote" data-id="${it.id}" data-v="yes" aria-pressed="${mine==='yes'}">찬성</button><button class="btn ghost sm" data-a="vote" data-id="${it.id}" data-v="no" aria-pressed="${mine==='no'}">반대</button></div>`
         :seated()?`<div class="vote"><span class="small">당론 <b>${line==='yes'?'찬성':'반대'}</b> · 내 표</span><button class="btn ghost sm" data-a="vote" data-id="${it.id}" data-v="yes" aria-pressed="${mine==='yes'}">찬성</button><button class="btn ghost sm" data-a="vote" data-id="${it.id}" data-v="no" aria-pressed="${mine==='no'}">반대</button>${mine!==line?'<span class="small bad">반란표: 입지 −5, 인지도 +2</span>':''}</div>`
         :`<p class="small muted">원외라 표결에 참여하지 않습니다. 당론 ${line==='yes'?'찬성':'반대'}.</p>`}
     </div>`}).join('');
@@ -1021,7 +1285,7 @@ document.addEventListener('click',ev=>{
       case'swing':SETUP.wing=v;break;
       case'region':SETUP.region=v;break;
       case'start':SETUP.name=$('#s-name').value;startGame();return;
-      case'resume':G=load();E.useMap(G.world);G.turn=G.turn||{d:{},notes:[]};if(!G.roster){G.rel=G.rel||{};initCaucus();G.next.conv=Math.max(G.next.conv,G.world.round+1)}if(!G.others)initOthers();save();render();return;
+      case'resume':G=load();E.useMap(G.world);G.turn=G.turn||{d:{},notes:[]};if(!G.roster){G.rel=G.rel||{};initCaucus();G.next.conv=Math.max(G.next.conv,G.world.round+1)}if(!G.others)initOthers();migrateFacs();save();render();return;
       case'discard':try{localStorage.removeItem(SAVE_KEY)}catch(e){}break;
     }
     if(!G||!G.world)renderSetup();return;
@@ -1032,13 +1296,20 @@ document.addEventListener('click',ev=>{
     case'answer':answer(+b.dataset.i,v);break;
     case'add':{const x={type:v};if(v==='attack')x.target=W().parties.filter(o=>o.id!==G.me.party&&!o.fixed).sort((p,q)=>q.seats-p.seats)[0].id;
       // 기본 대상: 경쟁 후보는 빼고, 아직 우리를 지지하지 않은 의원 가운데 영향력과 관계가 큰 사람
+      if(v==='deal'){const m=b.dataset.m?findMember(b.dataset.m):G.roster.slice().sort((p,q)=>rel(q.id)-rel(p.id))[0]||othersList()[0];x.target=m.id;x.kind=b.dataset.k||dealKinds(m)[0]||''}
       if(ACTS[v].need==='member'){const rivals=[...(G.conv?G.conv.cands:[]),...(G.whipCands||[])];
         const pool=G.roster.filter(m=>!rivals.includes(m.id)&&!(v==='endorse'&&G.endorse[m.id]));
         const t=b.dataset.m?member(b.dataset.m):(pool.length?pool:G.roster).slice().sort((p,q)=>q.clout+(v==='endorse'?rel(q.id):0)-p.clout-(v==='endorse'?rel(p.id):0))[0];x.target=t.id}
       if(v==='bill'){x.topic=Object.keys(E.TOPICS).sort((p,q)=>E.billAlign(E.TOPICS[q],myParty())-E.billAlign(E.TOPICS[p],myParty()))[0];x.region=G.me.region}
       dr.acts.push(x);save();render();break}
     case'rm':dr.acts.splice(+v,1);save();render();break;
-    case'wing':joinWing(v);save();render();break;
+    case'jfac':joinFac(v==='none'?null:v);save();render();break;
+    case'cfac':createFac((G.ui||{}).fname,v);save();render();break;
+    case'leave':if(confirm('탈당하면 입지를 잃고 맡은 자리를 내려놓습니다. 탈당할까요?')){const r=leaveToIndep();G.turn.moved=true;if(r)note(r);save();render()}break;
+    case'joinp':{const t=E.party(W(),(G.ui||{}).join)||W().parties.filter(p=>!p.fixed&&p.id!==G.me.party).sort((a,b)=>b.seats-a.seats)[0];if(t&&confirm(`${t.name}에 입당을 신청할까요?`)){const r=applyJoin(t.id);G.turn.moved=true;note(r);alert(r);save();render()}break}
+    case'found':{const ui=G.ui||{};const nm=String(ui.pname||'').trim();if(!nm){alert('새 당 이름을 적어 주세요.');break}
+      if(W().parties.some(p=>p.name===nm)){alert('같은 이름의 정당이 이미 있습니다.');break}
+      if(confirm(`「${nm}」을 창당할까요? 정치자금 8이 듭니다.`)){const r=foundParty(nm,ui.pideo||ideoKey(myParty().fixed?{eco:0,soc:0}:myParty()));G.turn.moved=true;if(r){note(r);alert(r)}save();render()}break}
     case'flt':G.ui={...(G.ui||{}),flt:v,more:false};render();break;
     case'vparty':G.ui={...(G.ui||{}),party:v,flt:'all',more:false};render();break;
     case'more':G.ui={...(G.ui||{}),more:!(G.ui&&G.ui.more)};render();break;
@@ -1057,7 +1328,9 @@ document.addEventListener('change',ev=>{
   if(t.id==='s-rounds'){SETUP.rounds=+t.value;refreshSetupWorld();renderSetup();return}
   if(!G||!G.world)return;
   const dr=G.draft,i=+t.dataset.i;
-  if(t.dataset.act){dr.acts[i][t.dataset.act]=t.value;if(t.dataset.act==='topic'){dr.acts[i].title='';render()}}
+  if(t.dataset.ui&&t.tagName==='SELECT'){G.ui={...(G.ui||{}),[t.dataset.ui]:t.value};render()}
+  else if(t.dataset.act){dr.acts[i][t.dataset.act]=t.value;if(t.dataset.act==='topic'){dr.acts[i].title='';render()}
+    if(t.dataset.act==='target'&&dr.acts[i].type==='deal'){const m=findMember(t.value);dr.acts[i].kind=m?dealKinds(m)[0]||'':''}if(t.dataset.act==='target'||t.dataset.act==='kind')render()}
   else if(t.dataset.pact){const a=dr.partyActs[i];const k=t.dataset.pact;
     if(k==='type'){const d=E.ACTIONS[t.value];dr.partyActs[i]={type:t.value,level:2};const n=dr.partyActs[i];
       if(d.need.includes('region'))n.region=G.me.region;if(d.need.includes('target'))n.target=W().parties.filter(o=>o.id!==G.me.party).sort((x,y)=>y.seats-x.seats)[0].id;
@@ -1077,6 +1350,7 @@ document.addEventListener('input',ev=>{
   const t=ev.target;
   if(t.id==='s-name'&&SETUP)SETUP.name=t.value;
   if(G&&G.draft&&t.dataset.act==='title'){G.draft.acts[+t.dataset.i].title=t.value;save()}
+  if(G&&t.dataset.ui&&t.tagName==='INPUT')G.ui={...(G.ui||{}),[t.dataset.ui]:t.value};
 });
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!$('#modal').hidden){$('#modal').hidden=true;render()}});
 render();

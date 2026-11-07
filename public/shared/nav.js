@@ -219,7 +219,8 @@
     "/japanese/": ["단어 한 장", "단어 한 장（韓国語のみ）", "단어 한 장 (Korean only)"],
     "/alarm/": ["일유알리미", "日留アラーム", "Japan Admissions Tracker"],
     "/politics/": ["나가타초 노트", "나가타초 노트（韓国語のみ）", "나가타초 노트 (Korean only)"],
-    "/jeildang/": ["제1당", "第一党", "First Party"]
+    "/jeildang/": ["제1당", "第一党", "First Party"],
+    "/geumbaeji/": ["금배지", "금배지（韓国語のみ）", "금배지 (Korean only)"]
   };
   var LI = { ko: 0, ja: 1, en: 2 };
   // langs: 그 도구가 지원하는 언어. 고른 언어를 지원하지 않는 도구는 메뉴에서 뺀다 (지금 보고 있는 도구는 남긴다)
@@ -227,7 +228,8 @@
     { path: "/japanese/", glyph: "あ", accent: "#dfff70", langs: ["ko"] },
     { path: "/alarm/", glyph: "留", accent: "#9fd8ff", langs: ["ko", "en"] },
     { path: "/politics/", glyph: "政", accent: "#ffb4a2", langs: ["ko"] },
-    { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] }
+    { path: "/jeildang/", glyph: "党", accent: "#cdb9ff", langs: ["ko", "ja", "en"] },
+    { path: "/geumbaeji/", glyph: "金", accent: "#f2d27a", langs: ["ko"] }
   ];
   var toolOk = function (tl) { return tl.langs.indexOf(want) >= 0; };
   var LANG_NAME = { ko: "한국어", ja: "日本語", en: "English" };

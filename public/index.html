@@ -19,12 +19,12 @@
 /* Layout: one narrow column — wordmark hero, then four stacked tool cards; borrows 단어 한 장's ink/paper/lime offset-shadow language */
 :root{
   --ink:#1c211d; --muted:#6c736b; --paper:#f8f7f2; --card:#ffffff; --line:#dcdcd3;
-  --lime:#dfff70; --sky:#9fd8ff; --coral:#ffb4a2; --lilac:#cdb9ff; --on-accent:#1c211d;
+  --lime:#dfff70; --sky:#9fd8ff; --coral:#ffb4a2; --lilac:#cdb9ff; --gold:#f2d27a; --on-accent:#1c211d;
   --sans:"Noto Sans KR",system-ui,-apple-system,sans-serif; --jp:"Noto Sans JP","Noto Sans KR",sans-serif; --mono:"DM Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme:dark){:root{
   --ink:#ecefe7; --muted:#9aa197; --paper:#151814; --card:#1d211c; --line:#343a32;
-  --lime:#8fa82e; --sky:#3b7aa3; --coral:#a95f4f; --lilac:#7a62b8; --on-accent:#f4f6ee; color-scheme:dark}}
+  --lime:#8fa82e; --sky:#3b7aa3; --coral:#a95f4f; --lilac:#7a62b8; --gold:#a8842a; --on-accent:#f4f6ee; color-scheme:dark}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6}
@@ -120,6 +120,17 @@ footer a{color:var(--muted)}
           <p>정당을 세우고 자금, 당원, 신뢰, 계파를 관리하며 총선 300석을 겨루는 무료 멀티 전략 게임. 방 코드만 나누면 친구와 바로 할 수 있어요.</p>
           <span class="tags"><span>멀티 게임</span><span>방 코드</span><span>총선 300석</span></span>
           <span class="go">게임하러 가기 <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a class="tool" href="/geumbaeji/" style="--accent:var(--gold)">
+        <span class="glyph" aria-hidden="true">金</span>
+        <div class="body">
+          <div class="row"><h2>금배지</h2><span class="url">nihongodic.com/geumbaeji</span></div>
+          <p>초선 의원으로 시작해 대변인, 원내대표, 당대표를 거쳐 총리·대통령까지. 제1당 세계에서 정치인 한 사람의 경력을 키우는 혼자 하기 시뮬레이션.</p>
+          <span class="tags"><span>혼자 하기</span><span>정치인 육성</span><span>공천 · 전당대회</span></span>
+          <span class="go">의원 배지 달기 <span aria-hidden="true">→</span></span>
         </div>
       </a>
     </li>

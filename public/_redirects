@@ -4,5 +4,6 @@
 /politics  /politics/  301
 /jeildang  /jeildang/  301
 /pokemon   /pokemon/   301
+/geumbaeji /geumbaeji/ 301
 /game      /jeildang/  301
 /game/*    /jeildang/:splat  301

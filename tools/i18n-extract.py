@@ -84,8 +84,14 @@ def main(path):
     keys = []
     body = re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>|<!--[\s\S]*?-->', '', src)
     keys += segments(body)
-    for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>', src):
-        for kind, v in scan(m.group(1)):
+    codes = [m.group(1) for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>', src)]
+    # 같은 폴더의 스크립트 파일(engine.js 등)도 읽는다. 번역 사전(i18n.js)과 공통 파일(/로 시작)은 뺀다.
+    import os
+    for m in re.finditer(r'<script[^>]*\bsrc="([^"/:][^"]*)"', src):
+        f = os.path.join(os.path.dirname(path), m.group(1))
+        if os.path.basename(f) != 'i18n.js' and os.path.exists(f): codes.append(open(f, encoding='utf-8').read())
+    for code in codes:
+        for kind, v in scan(code):
             if kind == 's':
                 if H.search(v): keys += segments(v) if '<' in v else [v.strip()]
             else:

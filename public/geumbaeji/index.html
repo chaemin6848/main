@@ -180,9 +180,12 @@ const whip=()=>!!G.me.posts.whip;
 function headRole(){
   const g=W(),p=myParty();
   if(G.me.posts.president&&(isPresSys()?g.pmParty===p.id:g.presParty===p.id))return'president';
-  if(!isPresSys()&&leader()&&g.pmParty===p.id)return'pm';
+  // 총리는 의원만 맡는다. 원외 당대표면 우리 당 몫의 총리는 다른 의원이 맡는다.
+  if(!isPresSys()&&leader()&&seated()&&g.pmParty===p.id)return'pm';
   return null;
 }
+// 행정 조치를 직접 정하는가: 수반이거나, 우리 당이 정부를 이끌지 않는 연립 정당의 당대표일 때
+function fullGov(){const g=W(),p=myParty();return!!headRole()||(leader()&&g.pmParty!==p.id&&g.presParty!==p.id)}
 function titleOf(){
   const h=headRole();if(h)return POSTS[h][0];
   for(const k of['leader','whip','minister','chair','spokes'])if(G.me.posts[k])return POSTS[k][0];
@@ -421,7 +424,7 @@ function endQuarter(){
   if(leader()){mv.actions=dr.partyActs.map(a=>({...a}));if(dr.pm)mv.pm=dr.pm}
   if(leader()||whip())Object.assign(mv.votes,dr.partyVotes);
   const slots=govSlots();
-  if(slots>0&&(leader()||headRole())){mv.gov=dr.gov.slice(0,slots);if(g.pmParty===p.id)mv.bill=dr.govBill}
+  if(slots>0&&fullGov()){mv.gov=dr.gov.slice(0,slots);if(g.pmParty===p.id)mv.bill=dr.govBill}
   else if(me.posts.minister&&slots>0&&dr.minister)mv.gov=[dr.minister,...mv.gov].slice(0,slots);
   // 대표발의: 당의 발의 몫을 내 법안으로 쓴다. 상임위원장이거나 당대표면 반드시, 아니면 입지에 따라 당이 받아 준다.
   const bill=dr.acts.find(a=>a.type==='bill');
@@ -482,8 +485,9 @@ function afterQuarter(round,prev){
     else if(me.posts.president)note('대통령 선거에서 우리 당이 정권을 지켰습니다. 대통령 임기를 이어 갑니다.','good');
   }
   // 총리 지명
-  if(!isPresSys()&&R.pm&&R.pm.winner===p.id&&leader()){milestone('총리로 지명됐습니다.');note('총리로 지명됐습니다!','good');stat('fame',10)}
-  if(!isPresSys()&&prev.pm===p.id&&g.pmParty!==p.id&&leader())note('총리 자리를 잃었습니다.','bad');
+  if(!isPresSys()&&R.pm&&R.pm.winner===p.id&&leader()&&!seated())note(`우리 당이 총리를 냈지만 당대표가 원외라 ${newName()} 의원이 총리를 맡습니다.`);
+  if(!isPresSys()&&R.pm&&R.pm.winner===p.id&&leader()&&seated()){milestone('총리로 지명됐습니다.');note('총리로 지명됐습니다!','good');stat('fame',10)}
+  if(!isPresSys()&&prev.pm===p.id&&g.pmParty!==p.id&&leader()&&seated())note('총리 자리를 잃었습니다.','bad');
   // 총선·해산: 내 지역구
   const el=R.election;
   if(el&&el.kind!=='mid'){
@@ -664,7 +668,7 @@ function leaderHtml(){
     const lsel=d.spend?`<select data-pact="level" data-i="${i}" aria-label="규모">${E.LEVELS.map((l,n)=>`<option value="${n}" ${n===(a.level==null?2:a.level)?'selected':''}>${l.name} · ${E.actionCost({type:a.type,level:n})}${E.UNIT}</option>`).join('')}</select>`:'';
     return`<div class="slot"><b>${i+1}</b><div style="min-width:0"><select data-pact="type" data-i="${i}" aria-label="당 행동">${Object.entries(E.ACTIONS).filter(([k])=>!['leaveFed','expel','propose'].includes(k)||k===a.type).map(([k,x])=>`<option value="${k}" ${k===a.type?'selected':''}>${x.label}</option>`).join('')}</select><div class="params">${lsel}${rsel}${tsel}</div></div><button class="x" data-a="prm" data-v="${i}" aria-label="빼기">×</button></div>`}).join('');
   const add=dr.partyActs.length<E.AP?`<button class="btn ghost sm" data-a="padd">당 행동 더하기</button>`:'';
-  const pmSel=g.pmElection?`<label>총리 지명<select data-pm="1">${g.parties.slice().sort((a,b)=>b.seats-a.seats).map(o=>`<option value="${o.id}" ${o.id===dr.pm?'selected':''}>${esc(o.name)} (${o.seats}석)${o.id===p.id?' · 우리 당':''}</option>`).join('')}</select></label>`:'';
+  const pmSel=g.pmElection?`${!seated()&&!isPresSys()?'<p class="small muted">원외라 총리는 맡을 수 없습니다. 우리 당이 지명되면 원내 의원이 총리가 됩니다.</p>':''}<label>총리 지명<select data-pm="1">${g.parties.slice().sort((a,b)=>b.seats-a.seats).map(o=>`<option value="${o.id}" ${o.id===dr.pm?'selected':''}>${esc(o.name)} (${o.seats}석)${o.id===p.id?' · 우리 당':''}</option>`).join('')}</select></label>`:'';
   // 연맹: AI가 보낸 제안에 답하고, 새 제안을 낸다.
   const inc=(g.botDeals||[]).filter(d=>d.to===p.id).map(d=>{const from=E.party(g,d.from),k=E.dealKind(g,from,p);if(!k.kind)return'';const key=d.from+':'+d.id,v=dr.replies[key];
     const kind={found:'연맹 결성',join:'연맹 가입 신청',invite:'연맹 초대',merge:'연맹 합병'}[k.kind];
@@ -684,7 +688,7 @@ function leaderHtml(){
 function govHtml(){
   const g=W(),p=myParty(),dr=G.draft,slots=govSlots();
   if(slots<=0)return'';
-  const full=leader()||headRole();
+  const full=fullGov();
   if(!full&&!G.me.posts.minister)return'';
   const n=full?slots:1;
   const list=full?dr.gov:(dr.minister?[dr.minister]:[]);
@@ -774,7 +778,7 @@ document.addEventListener('change',ev=>{
     if(k==='type'){const d=E.ACTIONS[t.value];dr.partyActs[i]={type:t.value,level:2};const n=dr.partyActs[i];
       if(d.need.includes('region'))n.region=G.me.region;if(d.need.includes('target'))n.target=W().parties.filter(o=>o.id!==G.me.party).sort((x,y)=>y.seats-x.seats)[0].id}
     else a[k]=k==='level'?+t.value:t.value;render()}
-  else if(t.dataset.gov){const k=t.dataset.gov;const list=leader()||headRole()?dr.gov:null;
+  else if(t.dataset.gov){const k=t.dataset.gov;const list=fullGov()?dr.gov:null;
     if(k==='type'){const d=t.value?E.GOV[t.value]:null;const n=d?{type:t.value}:null;
       if(n&&d.need.includes('region'))n.region=G.me.region;if(n&&d.need.includes('target'))n.target=W().parties.filter(o=>o.id!==G.me.party).sort((x,y)=>y.seats-x.seats)[0].id;
       if(list){if(n)list[i]=n;else list.splice(i,1)}else dr.minister=n}

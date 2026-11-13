@@ -231,7 +231,7 @@
   };
   var LI = { ko: 0, ja: 1, en: 2 };
   var GROUPS = [
-    { path: "/words/", glyph: "語", accent: "#dfff70", tools: ["/japanese/", "/korean/", "/en/japanese/", "/en/korean/"] },
+    { path: "/words/", glyph: "語", accent: "#dfff70", tools: ["/japanese/", "/korean/", "/en/japanese/", "/en/korean/", "/kaiwa/"] },
     { path: "/eju/", glyph: "留", accent: "#ffb3c6", tools: ["/japanworld/", "/alarm/", "/politics/", "/tutoring/"] },
     { path: "/games/", glyph: "遊", accent: "#cdb9ff", tools: ["/jeildang/", "/geumbaeji/", "/pokemon/"] }
   ];
@@ -245,6 +245,7 @@
     { path: "/alarm/", langs: ["ko", "en"] },
     { path: "/politics/", langs: ["ko"] },
     { path: "/tutoring/", langs: ["ko"] },
+    { path: "/kaiwa/", langs: ["ko"] },
     { path: "/jeildang/", langs: ["ko", "ja", "en"] },
     { path: "/geumbaeji/", langs: ["ko"] },
     { path: "/pokemon/", langs: ["ko", "ja", "en"] }

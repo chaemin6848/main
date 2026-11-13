@@ -63,7 +63,8 @@ ND.add({
   "일본 정치": ["日本政治", "Japanese politics"],
   "모아 보기 →": ["一覧へ →", "View group →"],
   "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"],
-  "과외 신청": ["個別指導の申し込み（韓国語）", "Tutoring request (Korean)"]
+  "과외 신청": ["個別指導の申し込み（韓国語）", "Tutoring request (Korean)"],
+  "일본어 회화 과외": ["日本語会話の個別指導（韓国語）", "Japanese conversation tutoring (Korean)"]
 });
 
 // 고른 언어를 지원하지 않는 도구 카드는 숨긴다 (공통 메뉴와 같은 기준)

@@ -96,5 +96,12 @@
   "title": "EJU · 일본 유학\n과외 신청",
   "sub": "EJU 일본어 · 종합과목 · JLPT · 출원 서류와 면접",
   "url": "nihongodic.com/tutoring"
+ },
+ "kaiwa": {
+  "glyph": "話",
+  "accent": "#dfff70",
+  "title": "취미로 배우는\n일본어 회화 과외",
+  "sub": "왕초보 · 여행 일본어 · 애니·드라마·J-POP · 일상 회화",
+  "url": "nihongodic.com/kaiwa"
  }
 }

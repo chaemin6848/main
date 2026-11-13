@@ -25,6 +25,8 @@ h1{margin:0;font-size:26px;letter-spacing:-.03em}
 .item.s-new{box-shadow:4px 4px 0 var(--accent)}
 .head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;align-items:baseline}
 .head b{font-size:17px}
+.track{display:inline-block;vertical-align:2px;margin-left:4px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;background:var(--accent);color:#1c211d}
+.track.t-hobby{background:#dfff70}
 .head time{font-size:12px;color:var(--muted)}
 dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;margin:0;font-size:14px}
 dt{color:var(--muted)}
@@ -48,6 +50,8 @@ dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
     <button type="button" data-f="contacted" aria-pressed="false">연락함</button>
     <button type="button" data-f="done" aria-pressed="false">끝남</button>
     <button type="button" data-f="all" aria-pressed="false">전체</button>
+    <button type="button" data-f="exam" aria-pressed="false">EJU · 유학만</button>
+    <button type="button" data-f="hobby" aria-pressed="false">취미 · 회화만</button>
   </div>
   <ul class="list" id="list"></ul>
 </div>
@@ -58,7 +62,10 @@ import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updat
 
 const db = getFirestore(getApps()[0]);
 const WHO = { high: "고등학생", grad: "졸업생 · 재수", univ: "대학생", adult: "직장인", other: "기타" };
-const SUB = { "eju-ja": "EJU 일본어", "eju-sogo": "EJU 종합과목", jlpt: "일본어 · JLPT", apply: "출원 서류 · 면접", other: "기타" };
+const SUB = { "eju-ja": "EJU 일본어", "eju-sogo": "EJU 종합과목", jlpt: "일본어 · JLPT", apply: "출원 서류 · 면접", other: "기타",
+  basic: "왕초보 · 기초", talk: "일상 회화", travel: "여행 일본어", culture: "애니 · 드라마 · J-POP" };
+const TRACK = { exam: "EJU · 유학", hobby: "취미 · 회화" };
+const FREQ = { "1": "주 1회", "2": "주 2회", "3": "주 3회 이상", any: "" };
 const MODE = { online: "온라인", offline: "대면", any: "상관없음" };
 const STATUS = { new: "새 신청", contacted: "연락함", done: "끝남" };
 const note = document.getElementById("note"), list = document.getElementById("list"), bar = document.getElementById("bar");
@@ -77,15 +84,17 @@ bar.addEventListener("click", ev => {
 
 function render() {
   list.textContent = "";
-  const shown = rows.filter(r => filter === "all" || (filter === "open" ? r.status !== "done" : r.status === filter));
+  const shown = rows.filter(r => filter === "all" || (filter === "exam" || filter === "hobby" ? (r.track || "exam") === filter : filter === "open" ? r.status !== "done" : r.status === filter));
   if (!shown.length) { list.append(el("li", "note", "해당하는 신청서가 없어요.")); return; }
   for (const r of shown) {
     const li = el("li", "item s-" + r.status);
-    const head = el("div", "head"); head.append(el("b", "", r.name), el("time", "", fmt(r.createdAt)));
+    const head = el("div", "head"), who = el("b", "", r.name + " ");
+    who.append(el("span", "track t-" + (r.track || "exam"), TRACK[r.track || "exam"]));
+    head.append(who, el("time", "", fmt(r.createdAt)));
     const dl = el("dl");
     const add = (k, v) => { if (v) dl.append(el("dt", "", k), el("dd", "", v)); };
     add("연락처", r.contact); add("상황", WHO[r.who] || r.who); add("과목", (r.subjects || []).map(s => SUB[s] || s).join(", "));
-    add("방식", MODE[r.mode] || r.mode); add("실력", r.level); add("목표", r.goal); add("시간", r.time); add("남긴 말", r.message);
+    add("방식", MODE[r.mode] || r.mode); add("횟수", FREQ[r.freq] ?? r.freq); add("실력", r.level); add("목표", r.goal); add("시간", r.time); add("남긴 말", r.message);
     add("계정", r.uid ? "로그인해서 보냄" : "");
     const ctl = el("div", "ctl");
     const sel = el("select"); sel.setAttribute("aria-label", "상태");

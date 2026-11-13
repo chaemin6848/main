@@ -61,6 +61,8 @@ h2 { margin:0; font-size:clamp(26px, 5vw, 38px); line-height:1.25; letter-spacin
 .ad-slot .adsbygoogle { width:min(100%, 728px); min-height:70px; }
 .site-links { margin-top:16px; text-align:center; font-size:11px; }
 .site-links a { color:var(--muted); text-underline-offset:3px; }
+.kaiwa-link { margin-bottom:-8px; font-size:13px; }
+.kaiwa-link a { font-weight:700; color:var(--ink); }
 .tutorial-dialog { width:min(100% - 32px, 490px); padding:28px; border:1px solid var(--ink); border-radius:18px; color:var(--ink); background:var(--paper); box-shadow:9px 10px 0 var(--lime); }
 .tutorial-dialog::backdrop { background:var(--overlay); }
 .tutorial-dialog-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:27px; }

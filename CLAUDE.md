@@ -7,6 +7,7 @@ Cloudflare Workers(정적 자산)로 배포되는 사이트. `main`에 올라가
 - `public/index.html`: 메인. 분류는 **01 단어 / 02 EJU · 유학 / 03 게임** 세 개
 - `public/words/`, `public/eju/`, `public/games/`: 분류별 묶음 페이지(위쪽 메뉴의 세 아이콘이 여기로 온다)
 - `public/<도구>/`: 각 도구 (japanese, korean, en/*, japanworld, alarm, politics, jeildang, pokemon)
+- `public/kaiwa/`: 취미·회화 과외 신청서(같은 `tutoringRequests`에 `track: "hobby"`로 저장)
 - `public/tutoring/`: 과외 신청서(Firestore `tutoringRequests`에 저장). `admin.html`은 나가타초 노트 관리자 계정으로 신청서 확인·상태 변경
 - `public/japanese/jlpt/`: **생성물**. `tools/jlpt/build.py`가 만든다. 직접 고치지 말 것
 - `public/shared/nav.js`: 모든 페이지 위쪽 공통 메뉴 + 한/일/영 번역 엔진 + 로그인 버튼

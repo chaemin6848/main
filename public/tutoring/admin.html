@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>과외 신청 관리 | nihongodic</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c211d'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E日%3C/text%3E%3C/svg%3E">
+<style>
+/* 과외 신청 관리: 관리자(users/{uid}.role == 'admin')만 볼 수 있다. 규칙은 firestore.rules 의 tutoringRequests */
+:root{--ink:#1c211d;--muted:#6c736b;--paper:#f8f7f2;--card:#fff;--line:#dcdcd3;--accent:#ffb3c6;--bad:#b3261e;--ok:#1f7a55}
+@media (prefers-color-scheme:dark){:root{--ink:#ecefe7;--muted:#9aa197;--paper:#151814;--card:#1d211c;--line:#343a32;--accent:#a8516a;--bad:#f08a80;--ok:#5ccf98;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
+h1{margin:0;font-size:26px;letter-spacing:-.03em}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar button{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.note{margin:0;color:var(--muted);font-size:14px}
+.note.bad{color:var(--bad)}
+.list{display:flex;flex-direction:column;gap:12px;list-style:none;margin:0;padding:0}
+.item{padding:16px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;display:flex;flex-direction:column;gap:8px}
+.item.s-new{box-shadow:4px 4px 0 var(--accent)}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;align-items:baseline}
+.head b{font-size:17px}
+.head time{font-size:12px;color:var(--muted)}
+dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;margin:0;font-size:14px}
+dt{color:var(--muted)}
+dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctl select,.ctl input{font:inherit;font-size:14px;padding:5px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);min-width:0}
+.ctl input{flex:1 1 200px}
+.ctl button{font:inherit;font-size:13px;font-weight:700;padding:5px 10px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}
+.ctl button.del{color:var(--bad)}
+.ctl .st{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<script src="/shared/nav.js" data-langs="ko"></script>
+<div class="wrap">
+  <h1>과외 신청 관리</h1>
+  <p class="note" id="note">로그인 상태를 확인하는 중…</p>
+  <div class="bar" id="bar" hidden>
+    <button type="button" data-f="open" aria-pressed="true">처리 중</button>
+    <button type="button" data-f="new" aria-pressed="false">새 신청</button>
+    <button type="button" data-f="contacted" aria-pressed="false">연락함</button>
+    <button type="button" data-f="done" aria-pressed="false">끝남</button>
+    <button type="button" data-f="all" aria-pressed="false">전체</button>
+  </div>
+  <ul class="list" id="list"></ul>
+</div>
+<script type="module">
+import { onUser } from "/shared/account.js";
+import { getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const db = getFirestore(getApps()[0]);
+const WHO = { high: "고등학생", grad: "졸업생 · 재수", univ: "대학생", adult: "직장인", other: "기타" };
+const SUB = { "eju-ja": "EJU 일본어", "eju-sogo": "EJU 종합과목", jlpt: "일본어 · JLPT", apply: "출원 서류 · 면접", other: "기타" };
+const MODE = { online: "온라인", offline: "대면", any: "상관없음" };
+const STATUS = { new: "새 신청", contacted: "연락함", done: "끝남" };
+const note = document.getElementById("note"), list = document.getElementById("list"), bar = document.getElementById("bar");
+let rows = [], filter = "open", stop = null;
+
+const say = (t, bad) => { note.textContent = t; note.classList.toggle("bad", !!bad); note.hidden = !t; };
+const fmt = ts => ts && ts.toDate ? ts.toDate().toLocaleString("ko-KR", { dateStyle: "medium", timeStyle: "short" }) : "";
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+bar.addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  filter = b.dataset.f;
+  bar.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  render();
+});
+
+function render() {
+  list.textContent = "";
+  const shown = rows.filter(r => filter === "all" || (filter === "open" ? r.status !== "done" : r.status === filter));
+  if (!shown.length) { list.append(el("li", "note", "해당하는 신청서가 없어요.")); return; }
+  for (const r of shown) {
+    const li = el("li", "item s-" + r.status);
+    const head = el("div", "head"); head.append(el("b", "", r.name), el("time", "", fmt(r.createdAt)));
+    const dl = el("dl");
+    const add = (k, v) => { if (v) dl.append(el("dt", "", k), el("dd", "", v)); };
+    add("연락처", r.contact); add("상황", WHO[r.who] || r.who); add("과목", (r.subjects || []).map(s => SUB[s] || s).join(", "));
+    add("방식", MODE[r.mode] || r.mode); add("실력", r.level); add("목표", r.goal); add("시간", r.time); add("남긴 말", r.message);
+    add("계정", r.uid ? "로그인해서 보냄" : "");
+    const ctl = el("div", "ctl");
+    const sel = el("select"); sel.setAttribute("aria-label", "상태");
+    for (const [k, v] of Object.entries(STATUS)) { const o = el("option", "", v); o.value = k; o.selected = k === r.status; sel.append(o); }
+    const memo = el("input"); memo.type = "text"; memo.maxLength = 2000; memo.placeholder = "메모 (관리자만 봄)"; memo.value = r.memo || ""; memo.setAttribute("aria-label", "메모");
+    const save = el("button", "", "저장"), del = el("button", "del", "삭제"), st = el("span", "st");
+    save.type = del.type = "button";
+    save.onclick = async () => {
+      save.disabled = true; st.textContent = "저장 중…";
+      try { await updateDoc(doc(db, "tutoringRequests", r.id), { status: sel.value, memo: memo.value.trim() }); st.textContent = "저장됨"; }
+      catch (e) { st.textContent = "실패: 권한 확인"; }
+      save.disabled = false;
+    };
+    del.onclick = async () => {
+      if (!confirm(r.name + " 님의 신청서를 지울까요? 되돌릴 수 없어요.")) return;
+      try { await deleteDoc(doc(db, "tutoringRequests", r.id)); } catch (e) { st.textContent = "삭제 실패"; }
+    };
+    ctl.append(sel, memo, save, del, st);
+    li.append(head, dl, ctl);
+    list.append(li);
+  }
+}
+
+onUser(u => {
+  if (stop) { stop(); stop = null; }
+  rows = []; list.textContent = ""; bar.hidden = true;
+  if (!u) { say("관리자 계정으로 로그인하세요. 위쪽 메뉴의 로그인 버튼을 쓰면 됩니다."); return; }
+  say("불러오는 중…");
+  stop = onSnapshot(query(collection(db, "tutoringRequests"), orderBy("createdAt", "desc"), limit(300)), snap => {
+    rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const n = rows.filter(r => r.status === "new").length;
+    say(n ? `새 신청 ${n}건` : ""); bar.hidden = false; render();
+  }, () => say("볼 권한이 없어요. 나가타초 노트 관리자 계정만 볼 수 있습니다.", true));
+});
+</script>
+</body>
+</html>

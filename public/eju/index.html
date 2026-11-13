@@ -102,6 +102,7 @@ footer a{color:var(--muted)}
 }
 @media (prefers-reduced-motion:reduce){.tool,.go span,.side,.side-go{transition:none}}
 .jump a[aria-current]{background:var(--ink);color:var(--paper)}
+html:not([data-lang="ko"]) .ko-only{display:none}
 .empty{margin:0;padding:18px 20px;border:1.5px dashed var(--muted);border-radius:10px;color:var(--muted);font-size:14.5px}
 </style>
 </head>
@@ -114,6 +115,7 @@ footer a{color:var(--muted)}
     <p class="eyebrow">02 · EJU · RYUGAKU</p>
     <h1>EJU · 유학</h1>
     <p>EJU 종합과목 개념·문제, 일본 대학 출원 일정, 일본 정치 정리까지 유학 준비에 쓰는 도구입니다.</p>
+    <p class="ko-only">1:1 과외가 필요하면 <a href="/tutoring/" style="color:inherit;font-weight:700">과외 신청</a>을 남겨 주세요.</p>
     <nav class="jump" aria-label="묶음">
       <a href="/words/">단어</a><a href="/eju/" aria-current="page">EJU · 유학</a><a href="/games/">게임</a><a href="/">메인으로</a>
     </nav>
@@ -153,6 +155,17 @@ footer a{color:var(--muted)}
           <p>일본 정치를 한눈에. 신문사별 내각 지지율 추이와 중의원·참의원 의석 수, 정치 개요와 최신 뉴스를 정리합니다.</p>
           <span class="tags"><span>내각 지지율</span><span>중의원 · 참의원</span><span>정치 뉴스</span></span>
           <span class="go">일본 정치 보러 가기 <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a class="tool" href="/tutoring/" style="--accent:var(--rose)">
+        <span class="glyph" aria-hidden="true">教</span>
+        <div class="body">
+          <div class="row"><h2>과외 신청</h2><span class="url">nihongodic.com/tutoring</span></div>
+          <p>EJU 일본어·종합과목, JLPT·일본어 회화, 출원 서류와 면접 준비를 1:1로. 목표와 가능한 시간을 남기면 확인 후 연락드려요.</p>
+          <span class="tags"><span>EJU</span><span>JLPT</span><span>서류 · 면접</span><span>온라인 · 대면</span></span>
+          <span class="go">과외 신청하기 <span aria-hidden="true">→</span></span>
         </div>
       </a>
     </li>

@@ -7,6 +7,7 @@ rules_version = '2';
 //   jeilGames/{방코드}/...       제1당 온라인 방 (/jeildang)
 //   dexSaves/{uid}               포켓몬 도감 도우미 체크 기록 동기화 (/pokemon)
 //   userData/{uid}               단어 한 장·単語一枚·Wordcard(/japanese·/korean·/en)·일유알리미(/alarm) 기록 동기화
+//   tutoringRequests/{id}        과외 신청서 (/tutoring, 관리는 /tutoring/admin.html)
 //   그 밖의 경로는 모두 막는다.
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -144,6 +145,32 @@ service cloud.firestore {
       allow read, delete: if isMe(uid) && realUser();
       allow create, update: if isMe(uid) && realUser()
         && request.resource.data.keys().hasOnly(['wordcard', 'wordcardKo', 'wordcardEnJa', 'wordcardEnKo', 'alarm']);
+    }
+
+    /* ---------- 과외 신청 ---------- */
+    // 누구나(로그인 없이도) 신청서를 한 건 보낼 수 있다. 정해진 칸·길이만, 'new' 상태로.
+    // 읽기·상태 변경·삭제는 나가타초 노트 관리자(users/{uid}.role == 'admin')만 (/tutoring/admin.html)
+    match /tutoringRequests/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'contact', 'who', 'subjects', 'mode', 'level', 'goal', 'time', 'message', 'status', 'createdAt', 'uid'])
+        && request.resource.data.keys().hasAll(['name', 'contact', 'who', 'subjects', 'mode', 'status', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 30
+        && request.resource.data.contact is string && request.resource.data.contact.size() >= 3 && request.resource.data.contact.size() <= 100
+        && request.resource.data.who in ['high', 'grad', 'univ', 'adult', 'other']
+        && request.resource.data.subjects is list && request.resource.data.subjects.size() > 0 && request.resource.data.subjects.size() <= 5
+        && request.resource.data.subjects.hasOnly(['eju-ja', 'eju-sogo', 'jlpt', 'apply', 'other'])
+        && request.resource.data.mode in ['online', 'offline', 'any']
+        && shortStr(request.resource.data.get('level', ''), 200)
+        && shortStr(request.resource.data.get('goal', ''), 200)
+        && shortStr(request.resource.data.get('time', ''), 200)
+        && shortStr(request.resource.data.get('message', ''), 2000)
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time
+        && (!('uid' in request.resource.data) || isMe(request.resource.data.uid));
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'memo'])
+        && request.resource.data.status in ['new', 'contacted', 'done']
+        && shortStr(request.resource.data.get('memo', ''), 2000);
     }
 
     // 위에 없는 경로는 전부 거부

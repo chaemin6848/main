@@ -37,6 +37,7 @@
   --accent:#a8516a; --accent-soft:#3a2229; --on-accent:#f4f6ee;
   --ok:#5ccf98; --ok-soft:#173326; --bad:#f08a80; --bad-soft:#3b1d1b; color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
+.nd-cta{display:flex;align-items:center;gap:14px;margin:28px 0 0;padding:16px 18px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 var(--accent);color:var(--ink);text-decoration:none;font-family:"Noto Sans KR",system-ui,sans-serif}.nd-cta:hover{transform:translate(-1px,-1px)}.nd-cta:focus-visible{outline:3px solid var(--ink);outline-offset:3px}.nd-cta i{flex:none;width:40px;height:40px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font-style:normal;font-weight:900;font-size:19px;font-family:"Noto Sans JP","Noto Sans KR",sans-serif}.nd-cta span{display:flex;flex-direction:column;min-width:0;flex:1}.nd-cta b{font-size:15px;letter-spacing:-.02em}.nd-cta small{font-size:12.5px;color:var(--muted);line-height:1.5}.nd-cta em{flex:none;font-style:normal;font-weight:700;font-size:14px}@media (prefers-reduced-motion:reduce){.nd-cta:hover{transform:none}}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
 .wrap{max-width:760px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-block:18px max(56px,env(safe-area-inset-bottom,0px))}
@@ -646,6 +647,7 @@ h2{font-size:17px;margin:22px 0 8px;font-weight:900;letter-spacing:-.02em}
   <div class="top" id="topbar" hidden><span><b id="pos">1</b> / <span id="tot">31</span></span><div class="rail"><i id="railfill"></i></div><span>맞힘 <b id="okc">0</b></span></div>
   <main id="view"></main>
   </section>
+  <a class="nd-cta" href="/tutoring/?s=eju-sogo#apply"><i aria-hidden="true">教</i><span><b>혼자 어렵다면 1:1 과외</b><small>EJU 종합과목·일본어, 출원 서류와 면접까지 함께 준비해요.</small></span><em>과외 신청 →</em></a>
 </div>
 
 <script>

@@ -89,5 +89,12 @@
   "title": "금배지",
   "sub": "초선 의원에서 대통령까지, 정치인 한 사람의 경력",
   "url": "nihongodic.com/geumbaeji"
+ },
+ "tutoring": {
+  "glyph": "教",
+  "accent": "#ffb3c6",
+  "title": "EJU · 일본 유학\n과외 신청",
+  "sub": "EJU 일본어 · 종합과목 · JLPT · 출원 서류와 면접",
+  "url": "nihongodic.com/tutoring"
  }
 }

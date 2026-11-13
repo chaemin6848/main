@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>과외 신청 | EJU · 일본어 · 일본 유학 | nihongodic</title>
+<meta name="description" content="EJU 일본어·종합과목, JLPT·일본어 회화, 일본 대학 출원 서류와 면접 준비 과외 신청서입니다. 지금 수준과 목표, 가능한 시간을 남기면 확인 후 연락드립니다.">
+<link rel="canonical" href="https://nihongodic.com/tutoring/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c211d'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E日%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="과외 신청 | EJU · 일본어 · 일본 유학">
+<meta property="og:description" content="EJU 일본어·종합과목, JLPT·일본어 회화, 일본 대학 출원 서류와 면접 준비 과외 신청서입니다. 지금 수준과 목표, 가능한 시간을 남기면 확인 후 연락드립니다.">
+<meta property="og:url" content="https://nihongodic.com/tutoring/"><meta property="og:image" content="https://nihongodic.com/shared/og/tutoring.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:image" content="https://nihongodic.com/shared/og/tutoring.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="nihongodic">
+<meta property="og:locale" content="ko_KR">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@700;900&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* 과외 신청: 메인과 같은 잉크·종이·오프셋 그림자. 위에서 아래로 소개 → 진행 순서 → 신청서 한 장 */
+:root{
+  --ink:#1c211d; --muted:#6c736b; --paper:#f8f7f2; --card:#ffffff; --line:#dcdcd3;
+  --accent:#ffb3c6; --accent-soft:#ffe8ee; --on-accent:#1c211d; --ok:#1f7a55; --bad:#b3261e;
+  --sans:"Noto Sans KR",system-ui,-apple-system,sans-serif; --jp:"Noto Sans JP","Noto Sans KR",sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ink:#ecefe7; --muted:#9aa197; --paper:#151814; --card:#1d211c; --line:#343a32;
+  --accent:#a8516a; --accent-soft:#3a2229; --on-accent:#f4f6ee; --ok:#5ccf98; --bad:#f08a80; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6}
+.shell{width:100%;max-width:760px;margin:0 auto;padding-block:max(12px,env(safe-area-inset-top,0px)) max(56px,env(safe-area-inset-bottom,0px));
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:36px}
+.hero{display:flex;flex-direction:column;gap:14px;padding-top:24px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);margin:0}
+h1{margin:0;font-size:clamp(32px,8vw,52px);line-height:1.15;letter-spacing:-.03em;font-weight:900;text-wrap:balance}
+h1 em{font-style:normal;background:linear-gradient(transparent 58%,var(--accent) 58%)}
+.hero p{margin:0;color:var(--muted);font-size:15px;max-width:54ch}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.jump a{font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;padding:6px 12px;border:1.5px solid var(--ink);border-radius:999px;background:var(--card)}
+.jump a.main{background:var(--ink);color:var(--paper)}
+.jump a:hover{background:var(--accent);color:var(--on-accent)}
+.jump a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+h2{margin:0 0 12px;display:flex;align-items:baseline;gap:10px;font-size:15px;font-weight:900;letter-spacing:-.01em}
+h2 span{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;color:var(--muted)}
+.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0}
+.subjects li{padding:14px 16px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px}
+.subjects b{display:block;font-size:15.5px;letter-spacing:-.02em}
+.subjects small{display:block;font-size:13px;color:var(--muted);line-height:1.5;margin-top:2px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;padding:14px 16px;border:1.5px dashed var(--muted);border-radius:10px;font-size:13.5px;color:var(--muted)}
+.steps li::before{content:"0" counter(s);display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em}
+.steps b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+@media (max-width:560px){.subjects,.steps{grid-template-columns:1fr}}
+/* 신청서 */
+form{display:flex;flex-direction:column;gap:18px;padding:22px;background:var(--card);border:1.5px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--accent)}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0;border:0;margin:0;padding:0}
+.f>label,.f>legend{font-size:14px;font-weight:800;padding:0}
+.f .req{color:var(--bad);font-weight:700;margin-left:2px}
+.f .opt{color:var(--muted);font-weight:500;font-size:12px;margin-left:4px}
+.f .help{margin:0;font-size:12.5px;color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+input[type=text],input[type=email],select,textarea{font:inherit;font-size:16px;width:100%;min-width:0;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:1px;border-color:var(--ink)}
+.f[aria-invalid=true] input,.f[aria-invalid=true] select,.f[aria-invalid=true] .chips{border-color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;border:1.5px solid transparent;border-radius:10px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip span{display:inline-block;padding:7px 13px;border:1.5px solid var(--line);border-radius:999px;font-size:14px;font-weight:700;background:var(--paper);cursor:pointer}
+.chip input:checked+span{background:var(--accent);border-color:var(--ink);color:var(--on-accent)}
+.chip input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.consent{padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-size:13px;color:var(--muted)}
+.consent dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 12px;margin:0 0 10px}
+.consent dt{font-weight:700;color:var(--ink)}
+.consent dd{margin:0}
+.consent p{margin:0 0 10px}
+.agree{display:flex;gap:8px;align-items:flex-start;font-size:14px;font-weight:700;color:var(--ink)}
+.agree[aria-invalid=true]{color:var(--bad)}
+.agree input{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--ink)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+button.send{font:inherit;font-size:16px;font-weight:900;padding:12px 26px;border:1.5px solid var(--ink);border-radius:10px;background:var(--ink);color:var(--paper);cursor:pointer;box-shadow:3px 3px 0 var(--accent)}
+button.send:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--accent)}
+button.send:disabled{opacity:.6;cursor:progress;transform:none}
+button.send:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.msg{margin:0;font-size:14px;font-weight:700}
+.msg.bad{color:var(--bad)}
+.done{padding:26px 22px;background:var(--card);border:1.5px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--accent)}
+.done h3{margin:0 0 6px;font-size:21px;letter-spacing:-.02em}
+.done p{margin:0 0 6px;color:var(--muted)}
+.done a{color:var(--ink);font-weight:700}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+footer a{color:var(--muted)}
+@media (max-width:520px){.shell{gap:30px}form{padding:18px}}
+@media (prefers-reduced-motion:reduce){button.send:hover{transform:none}}
+</style>
+</head>
+<body>
+<script src="/shared/nav.js" data-langs="ko"></script>
+<div class="shell">
+  <section class="hero">
+    <p class="eyebrow">02 · EJU · RYUGAKU · TUTORING</p>
+    <h1>EJU · 일본 유학<br><em>과외 신청</em></h1>
+    <p>EJU 일본어·종합과목, JLPT와 일본어 회화, 일본 대학 출원 서류와 면접까지. 지금 수준과 목표, 가능한 시간을 남겨 주시면 확인한 뒤 적어 주신 연락처로 연락드립니다.</p>
+    <nav class="jump" aria-label="바로 가기">
+      <a class="main" href="#apply">신청서 쓰기</a><a href="#subjects">과목</a><a href="#steps">진행 순서</a><a href="/kaiwa/">취미 · 회화 과외는 여기</a>
+    </nav>
+  </section>
+
+  <section id="subjects" aria-labelledby="h-sub">
+    <h2 id="h-sub"><span>01</span>과목</h2>
+    <ul class="subjects">
+      <li><b>EJU 일본어</b><small>독해·청해·청독해, 기술 문제 쓰기와 첨삭</small></li>
+      <li><b>EJU 종합과목</b><small>정치·경제·국제·지리·역사 개념 정리와 기출 풀이</small></li>
+      <li><b>일본어 · JLPT</b><small>N5–N1 단계별 문법·어휘, 회화</small></li>
+      <li><b>출원 서류 · 면접</b><small>지원 동기서·학업 계획서, 일본어 면접 연습</small></li>
+    </ul>
+  </section>
+
+  <section id="steps" aria-labelledby="h-steps">
+    <h2 id="h-steps"><span>02</span>진행 순서</h2>
+    <ol class="steps">
+      <li><b>신청서 작성</b>아래 신청서에 목표와 가능한 시간을 적어요.</li>
+      <li><b>연락 · 상담</b>신청서를 확인하고 연락드려 수준과 일정을 함께 정해요.</li>
+      <li><b>수업 시작</b>정한 방식(온라인·대면)과 시간으로 수업을 시작해요.</li>
+    </ol>
+  </section>
+
+  <section id="apply" aria-labelledby="h-apply">
+    <h2 id="h-apply"><span>03</span>신청서</h2>
+    <form id="form" novalidate>
+      <div class="two">
+        <div class="f" id="f-name"><label for="name">이름<span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="name" name="name" maxlength="30" autocomplete="name" required></div>
+        <div class="f" id="f-contact"><label for="contact">연락처<span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="contact" name="contact" maxlength="100" autocomplete="email" required placeholder="이메일, 전화번호, 카카오톡 ID">
+          <p class="help">연락받을 방법 하나를 적어 주세요.</p></div>
+      </div>
+
+      <div class="f" id="f-who"><label for="who">지금 상황<span class="req" aria-hidden="true">*</span></label>
+        <select id="who" name="who" required>
+          <option value="">고르세요</option>
+          <option value="high">고등학생</option>
+          <option value="grad">졸업생 · 재수</option>
+          <option value="univ">대학생</option>
+          <option value="adult">직장인</option>
+          <option value="other">기타</option>
+        </select></div>
+
+      <fieldset class="f" id="f-subjects"><legend>원하는 과목<span class="req" aria-hidden="true">*</span><span class="opt">여러 개 고를 수 있어요</span></legend>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="subjects" value="eju-ja"><span>EJU 일본어</span></label>
+          <label class="chip"><input type="checkbox" name="subjects" value="eju-sogo"><span>EJU 종합과목</span></label>
+          <label class="chip"><input type="checkbox" name="subjects" value="jlpt"><span>일본어 · JLPT</span></label>
+          <label class="chip"><input type="checkbox" name="subjects" value="apply"><span>출원 서류 · 면접</span></label>
+          <label class="chip"><input type="checkbox" name="subjects" value="other"><span>기타</span></label>
+        </div></fieldset>
+
+      <div class="two">
+        <div class="f"><label for="level">지금 실력<span class="opt">선택</span></label>
+          <input type="text" id="level" name="level" maxlength="200" placeholder="예) JLPT N2, EJU 일본어 280점"></div>
+        <div class="f"><label for="goal">목표<span class="opt">선택</span></label>
+          <input type="text" id="goal" name="goal" maxlength="200" placeholder="예) 2027년 4월 입학, ○○대 경제학부"></div>
+      </div>
+
+      <fieldset class="f" id="f-mode"><legend>수업 방식<span class="req" aria-hidden="true">*</span></legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="mode" value="online"><span>온라인</span></label>
+          <label class="chip"><input type="radio" name="mode" value="offline"><span>대면</span></label>
+          <label class="chip"><input type="radio" name="mode" value="any" checked><span>상관없음</span></label>
+        </div></fieldset>
+
+      <div class="f"><label for="time">가능한 요일 · 시간<span class="opt">선택</span></label>
+        <input type="text" id="time" name="time" maxlength="200" placeholder="예) 평일 저녁 8시 이후, 주말 오전"></div>
+
+      <div class="f"><label for="message">더 알려 주고 싶은 것<span class="opt">선택</span></label>
+        <textarea id="message" name="message" maxlength="2000" placeholder="어려운 부분, 원하는 수업 횟수, 대면이라면 지역 등"></textarea></div>
+
+      <div class="hp" aria-hidden="true"><label>비워 두세요 <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="consent">
+        <p><b>개인정보 수집·이용 동의</b> (필수)</p>
+        <dl>
+          <dt>항목</dt><dd>이름, 연락처, 지금 상황, 과목·실력·목표·수업 방식·가능한 시간·남긴 말</dd>
+          <dt>목적</dt><dd>과외 상담과 연락, 수업 일정 조율</dd>
+          <dt>보유 기간</dt><dd>상담이 끝난 뒤 1년, 또는 삭제를 요청할 때까지</dd>
+        </dl>
+        <p>동의하지 않을 수 있으며, 그 경우 신청서를 보낼 수 없습니다. 만 14세 미만은 보호자가 대신 신청해 주세요. 자세한 내용은 <a href="/privacy" style="color:inherit">개인정보처리방침</a>을 보세요.</p>
+        <label class="agree" id="f-agree"><input type="checkbox" id="agree" name="agree"> 위 내용에 동의합니다</label>
+      </div>
+
+      <div class="actions">
+        <button class="send" type="submit">신청서 보내기</button>
+        <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="done" id="done" hidden tabindex="-1">
+      <h3>신청서를 받았어요</h3>
+      <p>확인한 뒤 적어 주신 연락처로 연락드릴게요. 며칠이 지나도 연락이 없으면 <a href="mailto:pepcy011@icloud.com">pepcy011@icloud.com</a>으로 알려 주세요.</p>
+      <p>기다리는 동안 <a href="/japanworld/">EJU 종합과목</a>이나 <a href="/alarm/">일유알리미</a>를 둘러보세요.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 nihongodic</span>
+    <a href="/privacy">개인정보처리방침</a>
+  </footer>
+</div>
+
+<script type="module">
+// 신청서는 Firestore tutoringRequests 에 한 건씩 쌓인다 (규칙: firestore.rules, 관리: /tutoring/admin.html)
+const form = document.getElementById("form"), msg = document.getElementById("msg"), btn = form.querySelector(".send");
+const field = id => document.getElementById(id);
+const say = (t, bad) => { msg.textContent = t; msg.classList.toggle("bad", !!bad); };
+
+// 다른 페이지에서 과목을 골라 들어온 경우 (/tutoring/?s=eju-sogo#apply)
+try {
+  const s = new URLSearchParams(location.search).get("s");
+  if (s) s.split(",").forEach(v => { const b = form.querySelector(`input[name=subjects][value="${CSS.escape(v)}"]`); if (b) b.checked = true; });
+} catch (e) {}
+
+let fb = null, user = null;
+// Firebase는 처음 입력을 시작하거나 보낼 때 불러온다 (첫 화면 속도에 영향 없게)
+async function firebase() {
+  if (fb) return fb;
+  const acc = await import("/shared/account.js");
+  const { getApps } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+  const fs = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+  acc.onUser(u => {
+    user = u;
+    // 로그인했으면 비어 있는 이름·연락처를 채워 준다
+    if (u) { if (!field("name").value && u.name && u.name !== u.email) field("name").value = u.name.slice(0, 30); if (!field("contact").value && u.email) field("contact").value = u.email; }
+  });
+  fb = { db: fs.getFirestore(getApps()[0]), fs };
+  return fb;
+}
+window.addEventListener("load", () => setTimeout(() => firebase().catch(() => {}), 300));
+
+function check() {
+  const bad = [];
+  const mark = (id, ok) => { field(id).setAttribute("aria-invalid", String(!ok)); if (!ok) bad.push(id); };
+  mark("f-name", field("name").value.trim().length > 0);
+  mark("f-contact", field("contact").value.trim().length >= 3);
+  mark("f-who", !!field("who").value);
+  mark("f-subjects", !!form.querySelector("input[name=subjects]:checked"));
+  mark("f-mode", !!form.querySelector("input[name=mode]:checked"));
+  mark("f-agree", field("agree").checked);
+  return bad;
+}
+form.addEventListener("change", () => { if (msg.classList.contains("bad")) check(); });
+
+form.addEventListener("submit", async ev => {
+  ev.preventDefault();
+  if (form.website.value) return; // 자동 입력 봇
+  const bad = check();
+  if (bad.length) {
+    say(bad.includes("f-agree") && bad.length === 1 ? "개인정보 수집·이용에 동의해 주세요." : "* 표시가 있는 칸을 채워 주세요.", true);
+    const first = field(bad[0]).querySelector("input,select") || field(bad[0]);
+    first.focus();
+    return;
+  }
+  const v = id => field(id).value.trim();
+  const data = {
+    name: v("name").slice(0, 30), contact: v("contact").slice(0, 100), who: v("who"),
+    subjects: [...form.querySelectorAll("input[name=subjects]:checked")].map(b => b.value),
+    mode: form.querySelector("input[name=mode]:checked").value,
+    level: v("level").slice(0, 200), goal: v("goal").slice(0, 200), time: v("time").slice(0, 200), message: v("message").slice(0, 2000),
+    status: "new",
+  };
+  btn.disabled = true; say("보내는 중…");
+  try {
+    const { db, fs } = await firebase();
+    if (user) data.uid = user.uid;
+    data.createdAt = fs.serverTimestamp();
+    await fs.addDoc(fs.collection(db, "tutoringRequests"), data);
+    form.hidden = true;
+    const done = field("done"); done.hidden = false; done.focus();
+  } catch (e) {
+    btn.disabled = false;
+    say("보내지 못했어요. 잠시 뒤 다시 시도하거나 pepcy011@icloud.com으로 보내 주세요.", true);
+  }
+});
+</script>
+</body>
+</html>

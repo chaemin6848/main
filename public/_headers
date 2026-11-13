@@ -35,3 +35,7 @@
 # 판례 노트(/judge): 개인용 페이지라 검색에서 뺀다
 /judge/*
   X-Robots-Tag: noindex, nofollow
+
+# 과외 신청 관리(/tutoring/admin): 관리자용이라 검색에서 뺀다
+/tutoring/admin*
+  X-Robots-Tag: noindex, nofollow

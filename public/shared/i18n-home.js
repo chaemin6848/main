@@ -62,7 +62,9 @@ ND.add({
   "EJU · 유학": ["EJU・留学", "EJU · Study in Japan"],
   "일본 정치": ["日本政治", "Japanese politics"],
   "모아 보기 →": ["一覧へ →", "View group →"],
-  "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"]
+  "개인정보처리방침": ["プライバシーポリシー", "Privacy policy"],
+  "과외 신청": ["個別指導の申し込み（韓国語）", "Tutoring request (Korean)"],
+  "일본어 회화 과외": ["日本語会話の個別指導（韓国語）", "Japanese conversation tutoring (Korean)"]
 });
 
 // 고른 언어를 지원하지 않는 도구 카드는 숨긴다 (공통 메뉴와 같은 기준)
@@ -70,6 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // 두 입구 카드(.tool.feature)는 제목 링크(.stretch)의 주소로 판단한다
   document.querySelectorAll(".tools a.tool, .tools .tool.feature a.stretch").forEach(function (a) {
     if (!ND.toolShown(a.getAttribute("href"))) a.closest("li").hidden = true;
+  });
+  // 바로 가기의 페이지 링크(과외 신청 등)도 같은 기준으로 숨긴다
+  document.querySelectorAll('.jump a[href^="/"]').forEach(function (a) {
+    if (!ND.toolShown(a.getAttribute("href"))) a.hidden = true;
   });
   // 카드가 모두 숨겨진 묶음은 제목째 숨기고, 바로 가기에서도 뺀다
   document.querySelectorAll("section.group").forEach(function (g) {

@@ -60,13 +60,22 @@ const E=(function(){
   // 단위가 실제 지역구와 하나씩 맞는 나라 (한국 22대 총선 지역구 254곳, 영국 하원 선거구 650곳).
   // 의석 수는 지역 단위로 정하고(밸런스 유지), 그 의석을 정당마다 자기에게 가장 유리한 실제 지역구에 앉힌다.
   const ONE2ONE={kr:true,uk:true};
+  // 지역별 실제 득표율 (최신 선거). 판을 시작할 때 이 비율에 맞춰 정당·지역별 보정값(p.cal)을 둔다
+  const TARGETS=UNIT_DATA._targets||{};
   let HAERAM_UNITS=null;
   for(const[k,str]of Object.entries(UNIT_DATA)){
     const C=k==='haeram'?{regions:HAERAM}:COUNTRIES[k];if(!C)continue;const us=[];
     for(const grp of str.split('|')){
-      const[region,list]=grp.split(':');const r=C.regions.find(x=>x.id===region);if(!r)continue;
-      const mine=list.split(';').map(x=>{const[id,w,m]=x.split(',');return{id,region,w:+w,m:+m}});
+      const ci=grp.indexOf(':'),region=grp.slice(0,ci),list=grp.slice(ci+1);const r=C.regions.find(x=>x.id===region);if(!r)continue;
+      const mine=list.split(';').map(x=>{const[id,w,m,sh]=x.split(',');const u={id,region,w:+w,m:+m};
+        // 정당별 실제 득표율(%)이 있으면 지역 평균 대비 배율(f)로 쓴다 (한국·영국)
+        if(sh){u.f={};const q=sh.split(':');for(let i=0;i<q.length;i+=2)u.f[q[i]]=+q[i+1]/100}
+        return u});
       const tw=mine.reduce((a,u)=>a+u.w,0),avg=mine.reduce((a,u)=>a+u.w*u.m,0)/tw;
+      if(mine.some(u=>u.f)){
+        const tot={};for(const u of mine)for(const k in u.f)tot[k]=(tot[k]||0)+u.w*u.f[k];
+        for(const u of mine){const f={};for(const k in tot)f[k]=Math.max(u.f&&u.f[k]||0,.003)/Math.max(tot[k]/tw,.003);u.f=f}
+      }
       for(const u of mine){u.sw=u.w/tw;u.d=Math.round((u.m-avg)*1000)/1000;u.seats=ONE2ONE[k]?1:Math.round(r.seats*u.sw*100)/100;us.push(u)}
     }
     if(k==='haeram')HAERAM_UNITS=us;else C.units=us;
@@ -107,11 +116,11 @@ const E=(function(){
   const LEVELS=[{name:'풀뿌리',cost:.1,effect:.3},{name:'소규모',cost:.25,effect:.5},{name:'보통',cost:1,effect:1},{name:'대규모',cost:3,effect:1.7},{name:'총력',cost:8,effect:2.8}];
   const toReg=rs=>Object.fromEntries(rs.map(r=>[r.id,r]));
   const groupUnits=us=>{if(!us)return null;const o={};for(const u of us)(o[u.region]=o[u.region]||[]).push(u);return o};
-  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=HAERAM_UNITS,UNITS_BY=groupUnits(HAERAM_UNITS),UNIT_ONE=false;
+  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=HAERAM_UNITS,UNITS_BY=groupUnits(HAERAM_UNITS),UNIT_ONE=false,CUR=null;
   // 지금 판의 나라에 맞춰 지역과 의석 규모를 고른다. 페이지에 판은 하나뿐이다.
   function useMap(g){
     const C=g&&g.country?COUNTRIES[g.country]:null;
-    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C?C.units||null:HAERAM_UNITS;UNITS_BY=groupUnits(UNITS);UNIT_ONE=!!(C&&ONE2ONE[g.country]);
+    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C?C.units||null:HAERAM_UNITS;UNITS_BY=groupUnits(UNITS);UNIT_ONE=!!(C&&ONE2ONE[g.country]);CUR=C?g.country:null;
     TOTAL=C?C.total:400;DISTRICT=C?C.district:280;PR=C?C.pr:120;
     U=C?C.money.u:1;UNIT=C?C.money.unit:'억';MEMBER_NAME=C?C.money.members:'당원';
   }
@@ -133,7 +142,7 @@ const E=(function(){
   // 엠블럼이 없는 당(예전 판·무소속)은 노선 기본값. 무소속(fixed)은 -1(무늬 없음)
   const embOf=p=>!p?-1:embOk(p.emblem)?p.emblem:p.fixed?-1:(EMB_DEF[p.ideology]??4);
   const ACTIONS={
-    rally:{label:'지역 유세',cost:3,spend:true,need:['region'],desc:'선택한 지역 지지 기반 +6. 기반이 이미 두터운 지역일수록, 당이 작을수록 효과가 줄어듭니다.'},
+    rally:{label:'지역 유세',cost:3,spend:true,need:['region'],desc:'선택한 지역 지지 기반 +6. 기반이 이미 두터운 지역일수록, 당이 작을수록 효과가 줄어듭니다. 지도가 있는 무대에서는 선거구 하나를 골라 그곳에 집중할 수 있습니다(그 선거구 득표가 크게 오르고, 지역 전체 효과는 3분의 1).'},
     recruit:{label:'당원 모집',cost:2,spend:true,need:[],desc:'당원이 늘어 수입이 오릅니다. 국가 모드에서는 득표력도 오릅니다.'},
     talent:{label:'인재 영입',cost:4,spend:true,need:[],desc:'전국 후보 경쟁력 상승, 신뢰 +1. 경쟁력은 분기마다 조금씩 빠지고 상한이 있습니다.'},
     policy:{label:'정책 발표',cost:2,spend:true,need:[],desc:'신뢰 +4, 노선이 맞는 두 지역 기반 +1'},
@@ -720,7 +729,7 @@ const E=(function(){
   // 판이 길어질수록 모든 당의 표 힘이 함께 불어나 큰 당의 우위가 희석되던 문제를 막는다.
   function campAvg(g,reg){const live=g.parties.filter(p=>!p.fixed);const n=Math.max(1,live.length),k=BAL.relCamp;
     return{reg:k*live.reduce((a,p)=>a+(p.reg[reg.id]||0),0)/n,talent:k*live.reduce((a,p)=>a+(p.talent||0),0)/n}}
-  function raw(p,reg,avg){if(shut(p,reg))return 1;return Math.max(1,6+p.base-(p.fatigue||0)+(p.m0?clamp(15*Math.log(p.members/p.m0),-4,8):0)+(p.home&&p.home[reg.id]||0)+fit(p,reg)*24+(p.reg[reg.id]||0)-(avg?avg.reg:0)+(p.trust-50)*.2+(p.unity-50)*.06+(p.talent-(avg?avg.talent:0))*.7+(p.check||0))}
+  function raw(p,reg,avg){if(shut(p,reg))return 1;return Math.max(1,6+p.base-(p.fatigue||0)+(p.m0?clamp(15*Math.log(p.members/p.m0),-4,8):0)+(p.home&&p.home[reg.id]||0)+(p.cal&&p.cal[reg.id]||0)+fit(p,reg)*24+(p.reg[reg.id]||0)-(avg?avg.reg:0)+(p.trust-50)*.2+(p.unity-50)*.06+(p.talent-(avg?avg.talent:0))*.7+(p.check||0))}
   function regionShares(g,reg){
     const avg=campAvg(g,reg),base=Object.fromEntries(g.parties.map(p=>[p.id,raw(p,reg,avg)]));
     // 선거 협력: 후보를 양보한 지역에서는 그 당 표의 상당수가 연대 상대에게 간다.
@@ -737,7 +746,9 @@ const E=(function(){
   // 시군구 판세: 지역 판세에서 시작해, 그 시군구가 지역 평균보다 진보·보수 쪽으로 기운 만큼(d) 정당 몫을 기울인다.
   // 기울기 축은 진보(분배·개방)↔보수(시장·전통) 대각선. UNIT_B 는 2022년 대선 강남구(서울 평균 대비 득표 비 약 0.5배)에 맞추고 조금 키웠다.
   const UNIT_B=1.8,lean=p=>p.eco*.74+p.soc*.67;
-  function tilt(g,s,u){const o={};let t=0;for(const k in s){o[k]=s[k]*Math.exp(UNIT_B*u.d*lean(party(g,k)));t+=o[k]}for(const k in o)o[k]/=t;return o}
+  // 선거구 집중 유세(p.ub)는 그 선거구 득표에 exp(값/UB_SCALE) 배. 보통 규모 한 번이면 약 1.5배
+  const UB_SCALE=25;
+  function tilt(g,s,u){const o={};let t=0;for(const k in s){const p=party(g,k),pk=p.pick;o[k]=s[k]*(u.f&&u.f[pk]!=null?u.f[pk]:Math.exp(UNIT_B*u.d*lean(p)))*(p.ub&&p.ub[u.id]?Math.exp(p.ub[u.id]/UB_SCALE):1);t+=o[k]}for(const k in o)o[k]/=t;return o}
   function unitShares(g,u,regShares){return tilt(g,regShares||regionShares(g,REG[u.region]),u)}
   function nationalShares(g,list){
     // 정당 투표: 지역구보다 표가 고르게 갈리고 군소정당에 소신 투표가 몰린다.
@@ -767,16 +778,17 @@ const E=(function(){
       const us=UNITS_BY&&UNITS_BY[reg.id];
       if(us&&us.length){
         // 시군구가 수천 곳이라(미국 카운티 3,100곳) 배열로 계산한다
-        const ids=Object.keys(s),n=ids.length,sv=ids.map(k=>s[k]),L=ids.map(k=>UNIT_B*lean(party(g,k))),held=ids.map(k=>!!party(g,k).hold);
+        const ids=Object.keys(s),n=ids.length,sv=ids.map(k=>s[k]),L=ids.map(k=>UNIT_B*lean(party(g,k))),held=ids.map(k=>!!party(g,k).hold),pk=ids.map(k=>party(g,k).pick),ub=ids.map(k=>party(g,k).ub||null);
         const acc=new Array(n).fill(0),o=new Array(n),x=new Array(n);
         const tilt=UNIT_ONE?[]:null;
         for(const u of us){
           let t=0,tt=0,bi=-1;
-          for(let i=0;i<n;i++){o[i]=sv[i]*Math.exp(u.d*L[i]);t+=o[i];if(!held[i]&&(bi<0||o[i]>o[bi]))bi=i}
+          for(let i=0;i<n;i++){o[i]=sv[i]*(u.f&&u.f[pk[i]]!=null?u.f[pk[i]]:Math.exp(u.d*L[i]))*(ub[i]&&ub[i][u.id]?Math.exp(ub[i][u.id]/UB_SCALE):1);t+=o[i];if(!held[i]&&(bi<0||o[i]>o[bi]))bi=i}
           for(let i=0;i<n;i++){x[i]=held[i]?0:Math.pow(o[i]/t,1.8);tt+=x[i]}
-          if(tt>0)for(let i=0;i<n;i++)acc[i]+=u.sw*x[i]/tt;
+          if(UNIT_ONE&&TARGETS[CUR]){if(bi>=0)acc[bi]+=1}   // 실제 득표율에 맞춘 나라(한국·영국): 지역구마다 1위가 1석
+          else if(tt>0)for(let i=0;i<n;i++)acc[i]+=u.sw*x[i]/tt;
           units[u.id]=ids[bi>=0?bi:0];
-          if(tilt)for(let i=0;i<n;i++)tilt.push([u.d*L[i]-Math.log(t),u.id,ids[i]]);
+          if(tilt)for(let i=0;i<n;i++)tilt.push([Math.log(o[i]/sv[i]/t),u.id,ids[i]]);
         }
         regionTilt=tilt;
         w={};for(let i=0;i<n;i++)if(!held[i])w[ids[i]]=acc[i];
@@ -802,6 +814,30 @@ const E=(function(){
   }
   function setSeats(p,district,pr){p.district=district;p.pr=pr;p.seats=district+pr}
   function moveDistrict(from,to,n){n=Math.min(from.district,n);setSeats(from,from.district-n,from.pr);setSeats(to,to.district+n,to.pr);return n}
+  // 정당 투표도 실제 비례 의석에 맞춘다. 맞추지 않으면 군소정당 득표가 실제보다 몇 배 높게 나온다.
+  function prCal(g){
+    if(!PR)return;
+    const live=g.parties.filter(p=>!(p.fixed&&g.country==='kr'));
+    const want=Object.fromEntries(live.map(p=>[p.id,(p.pr+.6)/PR]));const sum=Object.values(want).reduce((a,b)=>a+b,0);
+    for(let t=0;t<40;t++){const nat=nationalShares(g,true);for(const p of live)p.prw=clamp((p.prw||1)*Math.pow(want[p.id]/sum/Math.max(nat[p.id],1e-4),.7),.05,4)}
+  }
+  // 지역 판세를 최신 선거의 실제 득표율에 맞춘다 (정당·지역별 보정값 p.cal). 판 시작 때 AI 연대까지 맺은 뒤에 맞춘다.
+  // 목표 표는 원래 정당 id(p.pick)로 적혀 있고, 표에 없는 정당은 1%로 본다
+  function targetCal(g){
+    const T=TARGETS[g.country];if(!T)return;
+    for(const p of g.parties)p.cal={};
+    for(let t=0;t<60;t++)for(const reg of REGIONS){
+      const want=T[reg.id];if(!want)continue;
+      const s=regionShares(g,reg),avg=campAvg(g,reg);
+      for(const p of g.parties){
+        if(shut(p,reg))continue;
+        const goal=Math.max(want[p.pick]||0,.01),cur=Math.max(s[p.id],1e-4);
+        p.cal[reg.id]=(p.cal[reg.id]||0)+(Math.sqrt(goal/cur)-1)*raw(p,reg,avg)*.6;
+      }
+    }
+    for(const p of g.parties)for(const k in p.cal)p.cal[k]=r1(p.cal[k]);
+    prCal(g);
+  }
   function newGame({players,size,seed,rounds,timer,now,country,dict}){
     const C=own(COUNTRIES,country)?COUNTRIES[country]:null;useMap({country:C?country:null});
     const r=rng(seed);
@@ -897,12 +933,7 @@ const E=(function(){
         const res=electionSeats(g);
         for(const p of g.parties)p.base=clamp(p.base+(p.district-res.district[p.id])/DISTRICT*40,-30,70);
       }
-      // 정당 투표도 실제 비례 의석에 맞춘다. 맞추지 않으면 군소정당 득표가 실제보다 몇 배 높게 나온다.
-      if(PR){
-        const live=g.parties.filter(p=>!(p.fixed&&g.country==='kr'));
-        const want=Object.fromEntries(live.map(p=>[p.id,(p.pr+.6)/PR]));const sum=Object.values(want).reduce((a,b)=>a+b,0);
-        for(let t=0;t<40;t++){const nat=nationalShares(g,true);for(const p of live)p.prw=clamp((p.prw||1)*Math.pow(want[p.id]/sum/Math.max(nat[p.id],1e-4),.7),.05,4)}
-      }
+      prCal(g);
       // 무소속·기타 묶음은 정당처럼 뛰지 않으니, 선거 때마다 지금 의석을 지역별로 그대로 지킨다.
       const res=electionSeats(g);
       // 권역 정원을 넘지 않게 나눈다(예전에는 영국 북아일랜드 32석이 18석짜리 권역에 몰려 다른 당 의석이 음수가 됐다).
@@ -935,6 +966,7 @@ const E=(function(){
     g.botTrades=botTrades(g,r);
     g.botDeals=botDeals(g,r);
     g.dealNews=[];formDeals(g,{},(text,...who)=>g.dealNews.push({text,who}),false);
+    if(g.country)targetCal(g);
     return g;
   }
   function mkParty(id,no,ownerId,name,leader,slogan,ideology,colorIdx,bot,kind){
@@ -1031,6 +1063,8 @@ const E=(function(){
       if(a.type==='amendBill'){const it=g.agenda.find(x=>x.id===a.item);if(!it||!['gov','member','emer','pact'].includes(it.kind)||it.by===p.id||it.by2===p.id)continue}
       if(a.type==='leaderRace'&&(!canRace(g,p)||!wingOf(p,a.wing)))continue;
       const c={type:a.type,region:a.region,target:a.target,level:d.spend&&Number.isInteger(a.level)&&LEVELS[a.level]?a.level:2};
+      // 선거구 집중 유세: 그 지역 안의 선거구일 때만
+      if(a.type==='rally'&&typeof a.unit==='string'&&UNITS_BY&&(UNITS_BY[a.region]||[]).some(u=>u.id===a.unit))c.unit=a.unit;
       const cost=actionCost(c);
       if(cost>f)continue;
       f-=cost;if(a.type==='fundraise')f+=fundGain(p);
@@ -1856,7 +1890,14 @@ const E=(function(){
         p.funds-=actionCost(a);const k=levelEffect(a);
         const t=a.target?party(g,a.target):null;
         switch(a.type){
-          case'rally':p.reg[a.region]+=6*k*satur(p,a.region)*reach(p)*(curbed(p)?.5:1);break;
+          case'rally':
+            if(a.unit){
+              // 선거구 집중: 지역 전체 효과는 3분의 1, 그 선거구에는 따로 쌓는다(UB_SCALE 로 득표 배율이 된다)
+              p.reg[a.region]+=2*k*satur(p,a.region)*reach(p)*(curbed(p)?.5:1);
+              p.ub=p.ub||{};const cur=p.ub[a.unit]||0;
+              p.ub[a.unit]=cur+8*k*(BAL.sat/(BAL.sat+Math.max(0,cur)))*reach(p)*(curbed(p)?.5:1);
+            }else p.reg[a.region]+=6*k*satur(p,a.region)*reach(p)*(curbed(p)?.5:1);
+            break;
           case'recruit':p.members=p.m0?p.members*(1+.04*k):p.members+1.5*k;break;
           case'talent':p.talent=Math.min(BAL.talentMax,p.talent+2.5*k);p.trust+=1;say(`${p.name}, 외부 인재 영입 발표.`,p.id);break;
           case'policy':{p.trust+=4*k;REGIONS.slice().sort((x,y)=>fit(p,y)-fit(p,x)).slice(0,2).forEach(x=>p.reg[x.id]+=1*reach(p));break}
@@ -1957,6 +1998,7 @@ const E=(function(){
       if(g.pmParty===p.id){p.trust-=BAL.govFatigue;p.pmRounds=(p.pmRounds||0)+1;p.fatigue=Math.min(g.country?BAL.fatigueMaxReal:BAL.fatigueMax,(p.fatigue||0)+BAL.fatigueStep)}
       else if(p.fatigue)p.fatigue=Math.max(0,p.fatigue-.75);
       for(const k in p.reg)p.reg[k]*=.95;
+      if(p.ub)for(const k in p.ub){p.ub[k]*=.85;if(p.ub[k]<.3)delete p.ub[k]}
       p.talent=(p.talent||0)*BAL.talentKeep;
       p.trust=clamp(p.trust,0,100);p.unity=clamp(p.unity,0,100);
     }
@@ -2071,6 +2113,7 @@ const E=(function(){
       p.delta={funds:r2(p.funds-b.funds),members:r2(p.members-b.members),trust:r1(p.trust-b.trust),unity:r1(p.unity-b.unity),seats:p.seats-b.seats};
       p.funds=r2(p.funds);p.members=r2(p.members);p.trust=r1(p.trust);p.unity=r1(p.unity);p.talent=r1(p.talent);
       for(const k in p.reg)p.reg[k]=r1(p.reg[k]);
+      if(p.ub)for(const k in p.ub)p.ub[k]=r1(p.ub[k]);
     }
     const tradeRep=judgeTrades(g,plans,bills,pmVoted,say);
     g.report={referendum:refRep,nation:{before:Object.fromEntries(NKEYS.map(k=>[k,r1(nation0[k])])),after:Object.fromEntries(NKEYS.map(k=>[k,r1(g.nation[k])]))},wings:wingRep,pledges:pledgeRep,round:g.round,revolution,regime:g.regime?{...g.regime}:null,trades:tradeRep,bills,pm:pmReport,pres:presReport,event:evRep,news,election,auto:g.parties.filter(p=>plans[p.id].auto).map(p=>p.id)};

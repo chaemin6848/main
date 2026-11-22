@@ -5132,6 +5132,10 @@ ND.add({
 "色は前回総選挙で各地の1位になった政党です。",
 "Color shows which party won each place at the last election."
 ],
+"지역마다 예상 의석 수만큼, 정당마다 자기에게 유리한 지역구부터 차지한 모습입니다.": [
+"地域ごとの予想議席数だけ、各党が自党に有利な選挙区から獲得した姿です。",
+"Each party takes its forecast seats in each region, starting with the districts most favorable to it."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -5388,6 +5392,7 @@ ND.pat([
 [/^주\ 비준:\ (.*?)\ 가결$/,"州の批准: $1 成立","State ratification: $1 ratified"],
 [/^주\ 비준:\ (.*?)\ 부결$/,"州の批准: $1 不成立","State ratification: $1 failed"],
 [/^지난\ 총선\ 1위\ (.*?)$/,"前回総選挙1位 $1","Won last election: $1"],
+[/^(.*?)\ ·\ 지역구\ 1석$/,"$1 · 選挙区 1議席","$1 · 1 district seat"],
 [/^(.*?)\ 내각\ 불신임안$/,"$1内閣不信任案","No confidence in the $1 cabinet"],
 [/^지역구\ 판세\ (.*?)석$/,"選挙区情勢 $1議席","District outlook: $1 seats"],
 [/^(.*?)분기\ 결과\ 보고$/,"$1四半期の結果報告","Q$1 report"],

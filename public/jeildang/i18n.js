@@ -1998,7 +1998,7 @@ ND.add({
 ],
 "총선 예상": [
 "総選挙予想",
-"Election forecast"
+"Forecast"
 ],
 "정당 득표": [
 "政党得票",
@@ -5088,6 +5088,50 @@ ND.add({
 "葉",
 "Leaf"
 ],
+"지도": [
+"地図",
+"Map"
+],
+"지도를 불러오는 중…": [
+"地図を読み込んでいます…",
+"Loading map…"
+],
+"지역 평균보다 진보 쪽": [
+"地域平均より革新寄り",
+"More progressive than the region"
+],
+"지역 평균보다 보수 쪽": [
+"地域平均より保守寄り",
+"More conservative than the region"
+],
+"지역 평균과 비슷": [
+"地域平均と同程度",
+"About average for the region"
+],
+"지난 총선": [
+"前回総選挙",
+"Last election"
+],
+"전국": [
+"全国",
+"Nationwide"
+],
+"지도 보기": [
+"地図の表示",
+"Map view"
+],
+"지도에서 한 곳을 누르면 판세를 봅니다. 지역 이름을 누르면 그 지역을 크게 봅니다.": [
+"地図上の場所をタップすると情勢を表示します。地域名をタップするとその地域を拡大します。",
+"Tap a place on the map to see its race. Tap a region name to zoom in."
+],
+"색은 곳마다 1위 정당이고, 진할수록 1·2위 차이가 큽니다.": [
+"色は各地の1位政党で、濃いほど1位と2位の差が大きいことを示します。",
+"Color shows the leading party in each place; darker means a wider lead."
+],
+"색은 지난 총선에서 곳마다 1위를 한 정당입니다.": [
+"色は前回総選挙で各地の1位になった政党です。",
+"Color shows which party won each place at the last election."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -5303,6 +5347,7 @@ ND.pat([
 [/^(.*?)이\ 약속을\ 어겼습니다\.$/,"$1が約束を破りました。","$1 broke its word."],
 [/^세력\ (.*?)%\ ·\ 불만\ (.*?)\/3$/,"勢力 $1% · 不満 $2/3","Strength $1% · grievances $2/3"],
 [/^(.*?)\ 내각이\ 총사퇴합니다\.$/,"$1内閣が総辞職します。","The $1 cabinet resigns en masse."],
+[/^(.*?)\ ·\ 지역구\ 약\ (.*?)석\ 몫$/,"$1 · 選挙区 約$2議席分","$1 · about $2 district seats"],
 [/^수반\ 후보는\ (.*?)입니다\.$/,"首班候補は$1です。","The head-of-government candidate is $1."],
 [/^(.*?),\ 내각\ 개편\ 단행\.$/,"$1、内閣改造を断行。","$1 reshuffles the cabinet."],
 [/^\(지역구\ (.*?),\ 비례\ (.*?)\)$/,"（選挙区$1、比例$2）","(district $1, PR $2)"],
@@ -5342,6 +5387,7 @@ ND.pat([
 [/^국민투표:\ (.*?)\ 부결$/,"国民投票: $1 否決","Referendum: $1 rejected"],
 [/^주\ 비준:\ (.*?)\ 가결$/,"州の批准: $1 成立","State ratification: $1 ratified"],
 [/^주\ 비준:\ (.*?)\ 부결$/,"州の批准: $1 不成立","State ratification: $1 failed"],
+[/^지난\ 총선\ 1위\ (.*?)$/,"前回総選挙1位 $1","Won last election: $1"],
 [/^(.*?)\ 내각\ 불신임안$/,"$1内閣不信任案","No confidence in the $1 cabinet"],
 [/^지역구\ 판세\ (.*?)석$/,"選挙区情勢 $1議席","District outlook: $1 seats"],
 [/^(.*?)분기\ 결과\ 보고$/,"$1四半期の結果報告","Q$1 report"],
@@ -5469,6 +5515,7 @@ ND.pat([
 [/^관계\ (.*?)$/,"関係 $1","relationship $1"],
 [/^자금\ (.*?)$/,"資金 $1","money $1"],
 [/^(.*?)분기째$/,"$1四半期目","quarter $1"],
+[/^(.*?)\ 지도$/,"$1の地図","Map of $1"],
 [/^(.*?)\ (.*?)석(.*?)$/,"$1 $2議席$3","$1 $2 seats$3"],
 [/^(.*?)\ (.*?)석$/,"$1 $2議席","$1 $2 seats"],
 [/^색\ (.*?)$/,"色 $1","Colour $1"],

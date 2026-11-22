@@ -108,6 +108,17 @@ details>summary{cursor:pointer;font-weight:900;letter-spacing:-.02em}
 .b-name{padding:8px 12px;min-width:0;overflow-wrap:anywhere}
 .b-name strong{font-weight:700;display:block}
 .swatches{display:flex;gap:6px;flex-wrap:wrap}
+/* 지도 */
+.map{display:block;width:100%;height:auto;max-height:70vh;margin:6px 0;background:color-mix(in srgb,var(--line) 35%,transparent);border-radius:8px}
+.map path{stroke:var(--card);stroke-width:.6;stroke-linejoin:round;cursor:pointer;vector-effect:non-scaling-stroke}
+.map path:hover{stroke:var(--ink);stroke-width:1.4}
+.map path.sel{stroke:var(--ink);stroke-width:2.2}
+.map .map-frame{fill:none;stroke:var(--ink2);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke;pointer-events:none}
+.map g.dim path{fill-opacity:.12!important;pointer-events:none}
+.map-zooms{gap:4px;flex-wrap:wrap}
+.map-zooms .btn{padding:3px 8px}
+.map-info{display:grid;gap:4px;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.map-info .me{font-weight:700}
 .swatch{width:30px;height:30px;border-radius:50%;border:2px solid transparent;background:var(--c);padding:0}
 .swatch[aria-pressed="true"]{outline:2.5px solid var(--ink);outline-offset:2px}
 /* 정당 엠블럼: 번호 칸·명부·결과에 정당 색 바탕의 흰 무늬로 그린다 */
@@ -282,6 +293,7 @@ html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
 <div id="modal"></div>
 <div id="toast" class="toast" hidden></div>
 
+<script src="units.js"></script>
 <script src="engine.js"></script>
 <script>
 if(typeof document!=='undefined'){
@@ -964,6 +976,67 @@ function renderTop(){
   $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${badge(me,46)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>
     ${stat('의석',me.seats,me.delta&&me.delta.seats)}${stat(`자금 (${E.UNIT})`,Math.round(me.funds*100)/100,me.delta&&me.delta.funds)}${stat(`${E.MEMBER_NAME} (만 명)`,Math.round(me.members*100)/100,me.delta&&me.delta.members)}${stat('신뢰',Math.round(me.trust),me.delta&&me.delta.trust)}${stat('결속',Math.round(me.unity),me.delta&&me.delta.unity)}${(()=>{const G=E.goalOf(g,me);return G?`<div title="마지막 총선 뒤 ${G.seats}석 이상이면 승점 +${E.PTS.goalHit}. 순위는 승점에서 기준 승점 ${G.par}을 뺀 목표 대비로 매깁니다."><span class="k">목표 의석</span><span class="v">${G.seats}${me.seats>=G.seats?' ✓':''}</span><span class="small muted" style="display:block">기준 ${G.par}점</span></div>`:''})()}</div>`:'';
 }
+/* ---------- 지도: 실제 국가 모양, 시군구 단위 ----------
+   그림은 maps/<나라>.js (tools/jeildang/maps/ 에서 만든다). 색은 시군구별 1위 당, 진하기는 1·2위 차이. */
+function loadMap(c){
+  if(S.mapLoading===c)return;S.mapLoading=c;
+  const sc=document.createElement('script');sc.src='maps/'+c+'.js';sc.onload=()=>{if(S.game&&S.screen==='game')renderHouse()};document.head.appendChild(sc);
+}
+function mapPanel(g,fc,me){
+  if(!E.UNITS)return'';
+  const mk=g.country||'haeram',M=window.JD_MAPS&&JD_MAPS[mk];
+  if(!M){loadMap(mk);return'<section class="panel" id="map-panel"><h3>지도</h3><p class="small muted">지도를 불러오는 중…</p></section>'}
+  const last=g.lastUnits&&g.lastUnits.w;
+  const mode=S.mapMode==='last'&&last?'last':'fc';
+  const zoom=E.REG[S.mapZoom]?S.mapZoom:'all';
+  // 이름: [한국어, 日本語, English] 또는 [이름, 묶음 키] (묶음은 주·지방, 세 언어 이름이 M.groups 에)
+  const LI={ko:0,ja:1,en:2}[window.ND&&ND.lang]||0,uname=id=>{const n=M.names[id]||[id];if(n.length===2&&M.groups&&M.groups[n[1]]){const gname=M.groups[n[1]][LI];return LI===1?`${n[0]}（${gname}）`:LI===2?`${n[0]}, ${gname}`:`${n[0]} (${gname})`}return n[LI]||n[0]};
+  const reg=Object.fromEntries(E.REGIONS.map(r=>[r.id,E.regionShares(g,r)]));
+  const info={};
+  for(const u of E.UNITS){
+    const s=E.unitShares(g,u,reg[u.region]);const top=Object.keys(s).sort((a,b)=>s[b]-s[a]);
+    info[u.id]={s,win:mode==='last'?last[u.id]:top[0],gap:s[top[0]]-s[top[1]]};
+  }
+  const groups=E.REGIONS.map(r=>`<g data-r="${r.id}" class="${zoom!=='all'&&zoom!==r.id?'dim':''}">${E.UNITS.filter(u=>u.region===r.id).map(u=>{
+    const x=info[u.id],p=E.party(g,x.win);const op=mode==='last'?.9:(.35+.65*Math.min(1,x.gap/.3)).toFixed(2);
+    return M.paths[u.id]?`<path d="${M.paths[u.id]}" data-a="map-unit" data-v="${u.id}" style="fill:${p?pColor(p):'#bbb'};fill-opacity:${op}" class="${S.mapSel===u.id?'sel':''}"><title>${esc(uname(u.id))}</title></path>`:''}).join('')}</g>`).join('')
+    +(M.frames||[]).map(f=>`<rect class="map-frame" x="${f[0]}" y="${f[1]}" width="${f[2]}" height="${f[3]}"/>`).join('');
+  const sel=E.UNITS.find(u=>u.id===S.mapSel);
+  let box='<p class="small muted">지도에서 한 곳을 누르면 판세를 봅니다. 지역 이름을 누르면 그 지역을 크게 봅니다.</p>';
+  if(sel){
+    const x=info[sel.id],ord=Object.keys(x.s).sort((a,b)=>x.s[b]-x.s[a]).slice(0,4);
+    const lw=last&&E.party(g,last[sel.id]);
+    box=`<div class="map-info"><b>${esc(uname(sel.id))}</b> <span class="small muted">${E.REG[sel.region].name} · 지역구 약 ${sel.seats}석 몫</span>
+      <div class="small">${ord.map(k=>{const p=E.party(g,k);return`<span class="${me&&p.id===me.id?'me':''}">${chip(p)} ${esc(p.name)} ${(x.s[k]*100).toFixed(0)}%</span>`}).join(' · ')}</div>
+      <div class="small muted"><span>${sel.d>.02?'지역 평균보다 진보 쪽':sel.d<-.02?'지역 평균보다 보수 쪽':'지역 평균과 비슷'}</span> <span>(${esc(M.basis[LI])})</span>${lw?` · <span>지난 총선 1위 ${esc(lw.name)}</span>`:''}</div></div>`;
+  }
+  const zbtn=(id,t)=>`<button class="btn ghost sm" data-a="map-zoom" data-v="${id}" aria-pressed="${zoom===id}">${t}</button>`;
+  return`<section class="panel" id="map-panel"><div class="row between"><h3>지도</h3><div class="row" role="group" aria-label="지도 보기">
+      <button class="btn ghost sm" data-a="map-mode" data-v="fc" aria-pressed="${mode==='fc'}">총선 예상</button>${last?`<button class="btn ghost sm" data-a="map-mode" data-v="last" aria-pressed="${mode==='last'}">지난 총선</button>`:''}</div></div>
+    <div class="row map-zooms" role="group" aria-label="지역">${zbtn('all','전국')}${E.REGIONS.map(r=>zbtn(r.id,r.name)).join('')}</div>
+    <svg class="map" id="jd-map" viewBox="0 0 ${M.w} ${M.h}" role="img" aria-label="${esc(g.country?E.COUNTRIES[g.country].name:'가상 해람 공화국')} 지도">${groups}</svg>
+    ${box}
+    <p class="small muted"><span>${mode==='fc'?'색은 곳마다 1위 정당이고, 진할수록 1·2위 차이가 큽니다.':'색은 지난 총선에서 곳마다 1위를 한 정당입니다.'}</span> <span>${esc(M.credit[LI])}</span></p></section>`;
+}
+// 확대: 고른 지역의 실제 범위에 맞춰 viewBox 를 바꾼다 (그린 뒤에 잰다)
+function fitMap(){
+  const svg=document.getElementById('jd-map');if(!svg)return;
+  const z=E.REG[S.mapZoom]?svg.querySelector(`g[data-r="${S.mapZoom}"]`):null;
+  if(!z)return;
+  try{
+    // 멀리 떨어진 섬(도쿄 이즈 제도 등) 때문에 본토가 작아지지 않게, 유권자 비중으로 위아래 3%는 빼고 범위를 잡는다
+    const sw=Object.fromEntries((E.UNITS||[]).map(u=>[u.id,u.sw]));
+    const it=[...z.querySelectorAll('path')].map(p=>({b:p.getBBox(),w:sw[p.dataset.v]||0}));if(!it.length)return;
+    const tw=it.reduce((a,x)=>a+x.w,0)||1;
+    const q=(key,f)=>{const a=it.map(x=>({v:key(x.b),w:x.w})).sort((x,y)=>x.v-y.v);let c=0;for(const x of a){c+=x.w/tw;if(c>=f)return x.v}return a[a.length-1].v};
+    const half=it.map(x=>Math.max(x.b.width,x.b.height)).sort((x,y)=>x-y)[it.length>>1]/2;
+    const cx=b=>b.x+b.width/2,cy=b=>b.y+b.height/2;
+    let x0=q(cx,.03)-half,x1=q(cx,.97)+half,y0=q(cy,.03)-half,y1=q(cy,.97)+half;
+    // 칸이 몇 개뿐이면 그대로 전체 범위
+    if(it.length<8){const B=z.getBBox();x0=B.x;y0=B.y;x1=B.x+B.width;y1=B.y+B.height}
+    const pad=Math.max(x1-x0,y1-y0)*.06;svg.setAttribute('viewBox',`${x0-pad} ${y0-pad} ${x1-x0+pad*2} ${y1-y0+pad*2}`);
+  }catch(e){}
+}
 function renderHouse(){
   const g=S.game,me=myParty();const nat=E.nationalShares(g);
   const ps=g.parties.slice().sort((a,b)=>b.seats-a.seats||a.no-b.no);
@@ -998,6 +1071,7 @@ function renderHouse(){
     <div class="scroll"><table class="ptable"><thead><tr><th>정당</th><th>의석</th>${E.PR?'<th>지역·비례</th>':''}<th>총선 예상</th><th>정당 득표</th><th>신뢰</th><th>결속</th></tr></thead><tbody>
     ${ps.map(p=>`<tr class="${me&&p.id===me.id?'me':''}"><td>${chip(p)} ${esc(p.name)}${p.bot?` <span class="small muted"${E.personaOf(p)?` title="${esc(E.personaOf(p).desc)}"`:''}>AI${E.personaOf(p)?' · '+esc(E.personaOf(p).name):''}</span>`:''}${g.pmParty===p.id||g.presParty===p.id?` <span class="small" style="color:var(--stamp);font-weight:700">${roleLabel(g,p)}</span>`:''}<span class="ally">${E.KINDS[p.kind].name} · ${esc(partyIdea(p))}${p.members?` · ${esc(E.MEMBER_NAME)} ${members(p.members)}`:''}${E.fedOf(g,p)?' · '+esc(E.fedOf(g,p).name)+(E.fedOf(g,p).head===p.id?' 대표':''):''}</span></td><td>${p.seats}</td>${E.PR?`<td>${p.district}·${p.pr}</td>`:''}<td title="${E.PR?`지역구 ${fc.district[p.id]} · 비례 ${fc.pr[p.id]}`:''}">${fcTotal(p)}${fcTotal(p)!==p.seats?` <span class="small muted">${fmtD(fcTotal(p)-p.seats)}</span>`:''}</td><td>${(nat[p.id]*100).toFixed(1)}%</td><td>${Math.round(p.trust)}</td><td>${Math.round(p.unity)}</td></tr>`).join('')}
     </tbody></table></div>`}</section>
+  ${mapPanel(g,fc,me)}
   ${g.status==='playing'?scoreBoard(g):''}
   <section class="panel"><h3>승점 추이</h3>${scoreChart(g)}</section>
   <section class="panel"><h3>정당 득표 전망 추이</h3>${pollChart(g)}</section>
@@ -1011,6 +1085,7 @@ function renderHouse(){
     <p class="small muted">정당 득표율대로 나눕니다. 득표 3% 미만이면서 지역구 5석 미만인 당은 받지 못합니다.</p>
     <div class="bar" role="img" aria-label="${esc(order.map(p=>p.name+' '+(nat[p.id]*100).toFixed(1)+'%').join(', '))}">${order.map(p=>`<i style="--c:${pColor(p)};width:${(nat[p.id]*100).toFixed(1)}%" title="${esc(p.name)} ${(nat[p.id]*100).toFixed(1)}%"></i>`).join('')}</div>
   </section>`}`;
+  fitMap();
 }
 // 지난 분기 승점 변화: 우리 당은 항목별로, 다른 당은 합계만.
 const SCORE_PARTS={elec:'선거',law:'입법',ideo:'이념',gov:'집권',end:'정부',rep:'신뢰·결속',goal:'목표 의석'};
@@ -2016,6 +2091,9 @@ document.addEventListener('click',async ev=>{
       else{b.dataset.sure='1';b.textContent='정말 버리기'}
       break;
     case'tab':setTab(v);break;
+    case'map-zoom':S.mapZoom=v;S.mapSel=null;renderHouse();break;
+    case'map-mode':S.mapMode=v;renderHouse();break;
+    case'map-unit':{const u=E.UNITS&&E.UNITS.find(x=>x.id===v);if(!u)break;S.mapSel=v;if(!E.REG[S.mapZoom])S.mapZoom=u.region;renderHouse();break}
     case'house-view':S.houseView=v==='fed'?'fed':'party';try{localStorage.setItem('jd-house-view',S.houseView)}catch(e){}renderHouse();break;
     case'vote':S.draft.votes[b.dataset.id]=v;touchDraft();renderDecide();break;
     case'add':{

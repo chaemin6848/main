@@ -46,11 +46,27 @@ const E=(function(){
       regions:[['hanbyeol','일드프랑스',100,.3,.7,'수도권'],['neoreun','북부·동부',115,.1,-.5,'공업 지대'],['donghae','서부',106,-.1,.2,'브르타뉴·루아르'],['namnyeok','남서부',94,.3,.1,'옥시타니'],['seodeul','오베르뉴·론알프',68,-.2,.1,'리옹'],['bukbang','남프랑스·코르시카',56,-.1,-.6,'지중해'],['seom','해외 영토·재외',38,.3,.2,'해외']],
       parties:[['rn','국민연합',118,0,.1,-.9,7],['epr','르네상스 계열',90,0,-.5,.3,0],['lfi','굴복하지않는프랑스',70,0,.9,.7,1],['ps','사회당 계열',67,0,.6,.6,6],['dr','공화파',47,0,-.7,-.6,4],['eco','생태주의 계열',38,0,.6,.8,2],['dem','민주운동·오리종',71,0,-.4,.2,3],['ind','기타 원내 그룹',68,0,.2,-.1,5,null,true]]},
   };
+  // 지도 단위(시군구·시정촌·카운티·선거구 …): units.js (tools/jeildang/maps/build_*.py 가 만든다). 지도 그림은 maps/<나라>.js.
+  // 브라우저에서는 index.html 이 units.js 를 engine.js 보다 먼저 불러 JD_UNITS 로 둔다.
+  const UNIT_DATA=typeof JD_UNITS!=='undefined'?JD_UNITS:typeof require==='function'?(()=>{try{return require('./units.js')}catch(e){return{}}})():{};
   // 지역 정당은 본거지에서만 후보를 내고, 닫힌 지역(북아일랜드)에는 그 지역 정당만 나온다.
   const LOCAL={uk:{parties:{snp:['seodeul'],plaid:['bukbang'],ind:['seom']},regions:{seom:['ind']}}};
   for(const c of Object.values(COUNTRIES)){
     c.regions=c.regions.map(([id,name,seats,eco,soc,tag])=>({id,name,seats,eco,soc,tag}));
     c.parties=c.parties.map(([id,name,district,pr,eco,soc,colorIdx,home,fixed])=>({id,name,district,pr,eco,soc,colorIdx,home:home||null,fixed:!!fixed,seats:district+pr}));
+  }
+  // 시군구를 지역별로 묶고, 지역 안에서의 상대 성향(d)과 지역 지역구 의석 중 몫(sw)을 미리 구한다.
+  // 가상 해람 공화국은 haeram 항목 (COUNTRIES 에 없는 기본 무대)
+  let HAERAM_UNITS=null;
+  for(const[k,str]of Object.entries(UNIT_DATA)){
+    const C=k==='haeram'?{regions:HAERAM}:COUNTRIES[k];if(!C)continue;const us=[];
+    for(const grp of str.split('|')){
+      const[region,list]=grp.split(':');const r=C.regions.find(x=>x.id===region);if(!r)continue;
+      const mine=list.split(';').map(x=>{const[id,w,m]=x.split(',');return{id,region,w:+w,m:+m}});
+      const tw=mine.reduce((a,u)=>a+u.w,0),avg=mine.reduce((a,u)=>a+u.w*u.m,0)/tw;
+      for(const u of mine){u.sw=u.w/tw;u.d=Math.round((u.m-avg)*1000)/1000;u.seats=Math.round(r.seats*u.sw*100)/100;us.push(u)}
+    }
+    if(k==='haeram')HAERAM_UNITS=us;else C.units=us;
   }
   // 정당별 이념 소개와 상징색. 같은 계열 색을 쓰는 당은 구분되도록 명도를 달리했다.
   const PARTY_LOOK={
@@ -87,11 +103,12 @@ const E=(function(){
   // 지출 규모. 돈을 많이 쓸수록 효과는 늘지만 비용만큼 늘지는 않는다.
   const LEVELS=[{name:'풀뿌리',cost:.1,effect:.3},{name:'소규모',cost:.25,effect:.5},{name:'보통',cost:1,effect:1},{name:'대규모',cost:3,effect:1.7},{name:'총력',cost:8,effect:2.8}];
   const toReg=rs=>Object.fromEntries(rs.map(r=>[r.id,r]));
-  let REGIONS=HAERAM,REG=toReg(HAERAM);
+  const groupUnits=us=>{if(!us)return null;const o={};for(const u of us)(o[u.region]=o[u.region]||[]).push(u);return o};
+  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=HAERAM_UNITS,UNITS_BY=groupUnits(HAERAM_UNITS);
   // 지금 판의 나라에 맞춰 지역과 의석 규모를 고른다. 페이지에 판은 하나뿐이다.
   function useMap(g){
     const C=g&&g.country?COUNTRIES[g.country]:null;
-    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);
+    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C?C.units||null:HAERAM_UNITS;UNITS_BY=groupUnits(UNITS);
     TOTAL=C?C.total:400;DISTRICT=C?C.district:280;PR=C?C.pr:120;
     U=C?C.money.u:1;UNIT=C?C.money.unit:'억';MEMBER_NAME=C?C.money.members:'당원';
   }
@@ -714,6 +731,11 @@ const E=(function(){
     for(const k in w)w[k]/=sum;
     return w;
   }
+  // 시군구 판세: 지역 판세에서 시작해, 그 시군구가 지역 평균보다 진보·보수 쪽으로 기운 만큼(d) 정당 몫을 기울인다.
+  // 기울기 축은 진보(분배·개방)↔보수(시장·전통) 대각선. UNIT_B 는 2022년 대선 강남구(서울 평균 대비 득표 비 약 0.5배)에 맞추고 조금 키웠다.
+  const UNIT_B=1.8,lean=p=>p.eco*.74+p.soc*.67;
+  function tilt(g,s,u){const o={};let t=0;for(const k in s){o[k]=s[k]*Math.exp(UNIT_B*u.d*lean(party(g,k)));t+=o[k]}for(const k in o)o[k]/=t;return o}
+  function unitShares(g,u,regShares){return tilt(g,regShares||regionShares(g,REG[u.region]),u)}
   function nationalShares(g,list){
     // 정당 투표: 지역구보다 표가 고르게 갈리고 군소정당에 소신 투표가 몰린다.
     const out=Object.fromEntries(g.parties.map(p=>[p.id,0]));
@@ -734,10 +756,25 @@ const E=(function(){
   }
   function electionSeats(g){
     const district=Object.fromEntries(g.parties.map(p=>[p.id,0]));
-    const regions=[];
+    const regions=[],units={};
     const holders=g.parties.filter(p=>p.hold);
     for(const reg of REGIONS){
-      const s=regionShares(g,reg);const w={};for(const k in s)if(!party(g,k).hold)w[k]=Math.pow(s[k],1.8);
+      const s=regionShares(g,reg);let w={};for(const k in s)if(!party(g,k).hold)w[k]=Math.pow(s[k],1.8);
+      // 시군구가 있는 나라: 시군구마다 같은 식으로 나눈 몫을 유권자 비중대로 더한다. 1위 당은 시군구별로 남긴다.
+      const us=UNITS_BY&&UNITS_BY[reg.id];
+      if(us&&us.length){
+        // 시군구가 수천 곳이라(미국 카운티 3,100곳) 배열로 계산한다
+        const ids=Object.keys(s),n=ids.length,sv=ids.map(k=>s[k]),L=ids.map(k=>UNIT_B*lean(party(g,k))),held=ids.map(k=>!!party(g,k).hold);
+        const acc=new Array(n).fill(0),o=new Array(n),x=new Array(n);
+        for(const u of us){
+          let t=0,tt=0,bi=0;
+          for(let i=0;i<n;i++){o[i]=sv[i]*Math.exp(u.d*L[i]);t+=o[i];if(o[i]>o[bi])bi=i}
+          for(let i=0;i<n;i++){x[i]=held[i]?0:Math.pow(o[i]/t,1.8);tt+=x[i]}
+          if(tt>0)for(let i=0;i<n;i++)acc[i]+=u.sw*x[i]/tt;
+          units[u.id]=ids[bi];
+        }
+        w={};for(let i=0;i<n;i++)if(!held[i])w[ids[i]]=acc[i];
+      }
       const kept=holders.reduce((n,p)=>n+(p.hold[reg.id]||0),0);
       const a=allocate(w,reg.seats-kept);for(const p of holders)a[p.id]=p.hold[reg.id]||0;for(const k in a)district[k]+=a[k];
       const winner=Object.keys(s).sort((x,y)=>s[y]-s[x])[0];
@@ -747,7 +784,7 @@ const E=(function(){
     const vote=nationalShares(g),list=nationalShares(g,true);const pass={};
     for(const k in list)pass[k]=!party(g,k).hold&&(list[k]>=(g.prTh||PR_THRESHOLD)||district[k]>=5)?list[k]:0;
     const prKept=holders.reduce((n,p)=>n+(p.holdPr||0),0);const pr=allocate(pass,PR-prKept);for(const p of holders)pr[p.id]=p.holdPr||0;
-    return{district,pr,vote,regions};
+    return{district,pr,vote,regions,units:UNITS?units:null};
   }
   function setSeats(p,district,pr){p.district=district;p.pr=pr;p.seats=district+pr}
   function moveDistrict(from,to,n){n=Math.min(from.district,n);setSeats(from,from.district-n,from.pr);setSeats(to,to.district+n,to.pr);return n}
@@ -1995,7 +2032,9 @@ const E=(function(){
         g.parties.forEach(p=>setSeats(p,mix[p.id],p.pr));
         for(const x of res.regions){const w=party(g,x.winner);w.funds+=2*U;w.reg[x.id]+=1.5}
       }
-      election={kind:general?'general':dissolve?'dissolve':'mid',regions:res.regions,prev,vote:Object.fromEntries(Object.entries(res.vote).map(([k,v])=>[k,r1(v*100)]))};
+      // 시군구별 1위는 총선 때만 남긴다 (지도의 '지난 총선' 보기)
+      if(res.units&&(general||dissolve))g.lastUnits={round:g.round,w:res.units};
+      election={kind:general?'general':dissolve?'dissolve':'mid',regions:res.regions,...(res.units?{units:res.units}:{}),prev,vote:Object.fromEntries(Object.entries(res.vote).map(([k,v])=>[k,r1(v*100)]))};
     }
     if(fell&&g.system!=='westminster')g.pmElection=true;
     if(!isFinal&&g.system==='westminster'&&!g.pmParty){
@@ -2195,6 +2234,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{unitShares,get UNITS(){return UNITS},EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

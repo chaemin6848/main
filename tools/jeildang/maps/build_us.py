@@ -14,7 +14,7 @@
 """
 import csv, json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import write
+from common import write, write_targets
 
 geo_path, res_path = sys.argv[1], sys.argv[2]
 
@@ -75,3 +75,11 @@ write('us', units, ['경계: 미국 인구조사국(us-atlas, 퍼블릭 도메�
                     'Boundaries: US Census Bureau (us-atlas, public domain) · Leanings: 2024 presidential vote by county (tonmcg/US_County_Level_Election_Results_08-24, MIT) · Alaska and Hawaii shown inset'],
       ['2024년 대선 기준', '2024年大統領選基準', 'based on the 2024 presidential election'], y_up=False,
       groups={v[0]: [v[1], v[2] + '州', v[0]] for v in ST.values()})
+targets = {}
+for u in units:
+    if u['id'] not in res: continue
+    d, g, t, _ = res[u['id']]
+    x = targets.setdefault(u['region'], {'dem': 0, 'gop': 0, 'ind': 0}); x['dem'] += d; x['gop'] += g; x['ind'] += max(0, t - d - g)
+for r, x in targets.items():
+    tot = sum(x.values()); targets[r] = {k: v / tot for k, v in x.items()}
+write_targets('us', targets)

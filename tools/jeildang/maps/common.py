@@ -5,6 +5,7 @@
   region  게임 지역 id (engine.js COUNTRIES.<나라>.regions)
   w       유권자 비중을 잴 값 (유효표 수 등)
   m       성향: 진보 쪽 득표 − 보수 쪽 득표 비율 (−1~1)
+  shares  (선택) {게임 정당 id: 득표율} — 실제 선거구와 하나씩 맞는 나라(한국·영국)는 정당별 득표를 그대로 쓴다
   names   [한국어, 日本語, English] 화면 이름
           또는 [이름, 묶음 키] — 이름이 세 언어에서 같을 때 (미국 카운티 등). 묶음(주·지방) 이름은 write(groups=)로 한 번만 적는다
   geom    GeoJSON geometry (평면 좌표). 지도에 그리지 않는 단위(재외국민 선거구 등)는 None
@@ -78,7 +79,9 @@ def write(country, units, credit, basis, width=1000, y_up=True, frames=None, dig
         t = ('%.3f' % v).rstrip('0').rstrip('.')
         t = re.sub(r'^(-?)0\.', r'\1.', t)
         return '0' if t in ('', '-', '-0') else t
-    line = '|'.join(r + ':' + ';'.join('%s,%d,%s' % (u['id'], max(1, round(u['w'] / tot * 1e5)), fm(u['m'])) for u in us)
+    # 단위마다 정당별 실제 득표율(%)이 있으면 덧붙인다: 코드,비중,성향,정당:득표율:정당:득표율…
+    sh = lambda u: (',' + ':'.join('%s:%g' % (k, round(v * 100, 1)) for k, v in sorted(u['shares'].items()) if v >= .0005)) if u.get('shares') else ''
+    line = '|'.join(r + ':' + ';'.join('%s,%d,%s%s' % (u['id'], max(1, round(u['w'] / tot * 1e5)), fm(u['m']), sh(u)) for u in us)
                     for r, us in by.items())
     upath = os.path.join(ROOT, 'public/jeildang/units.js')
     data = {}
@@ -93,3 +96,19 @@ def write(country, units, credit, basis, width=1000, y_up=True, frames=None, dig
                 % json.dumps(dict(sorted(data.items())), ensure_ascii=False, separators=(',', ':')))
     print('%s: 단위 %d곳 (지도 %d곳), maps/%s.js %d KB, units %d KB' % (country, len(units), len(M['paths']), country,
           os.path.getsize(os.path.join(ROOT, 'public/jeildang/maps/%s.js' % country)) // 1024, len(line) // 1024))
+
+
+def write_targets(country, targets):
+    """지역별 실제 득표율 목표 {지역: {게임 정당 id: 비율}} 을 units.js 의 _targets 에 넣는다.
+    엔진은 판을 시작할 때 이 비율에 맞춰 지역별 보정값을 계산한다 (판세를 실제 득표율처럼)."""
+    upath = os.path.join(ROOT, 'public/jeildang/units.js')
+    txt = open(upath, encoding='utf-8').read()
+    m = re.search(r'var U=(\{.*?\});', txt, re.S)
+    data = json.loads(m.group(1))
+    t = data.get('_targets', {})
+    t[country] = {r: {k: round(v, 4) for k, v in sorted(d.items()) if v > 0} for r, d in targets.items()}
+    data['_targets'] = dict(sorted(t.items()))
+    head = txt[:m.start()]
+    tail = txt[m.end():]
+    open(upath, 'w', encoding='utf-8').write(head + 'var U=' + json.dumps(dict(sorted(data.items())), ensure_ascii=False, separators=(',', ':')) + ';' + tail)
+    print('%s 목표 득표율: %s' % (country, {r: {k: round(v * 100) for k, v in d.items() if v >= .02} for r, d in t[country].items()}))

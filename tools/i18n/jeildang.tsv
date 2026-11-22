@@ -1662,3 +1662,11 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 색은 지난 총선에서 곳마다 1위를 한 정당입니다.	色は前回総選挙で各地の1位になった政党です。	Color shows which party won each place at the last election.
 {0} · 지역구 1석	{0} · 選挙区 1議席	{0} · 1 district seat
 지역마다 예상 의석 수만큼, 정당마다 자기에게 유리한 지역구부터 차지한 모습입니다.	地域ごとの予想議席数だけ、各党が自党に有利な選挙区から獲得した姿です。	Each party takes its forecast seats in each region, starting with the districts most favorable to it.
+# 2026-11 선거구 집중 유세
+선택한 지역 지지 기반 +6. 기반이 이미 두터운 지역일수록, 당이 작을수록 효과가 줄어듭니다. 지도가 있는 무대에서는 선거구 하나를 골라 그곳에 집중할 수 있습니다(그 선거구 득표가 크게 오르고, 지역 전체 효과는 3분의 1).	選択した地域の支持基盤 +6。基盤がすでに厚い地域ほど、党が小さいほど効果が下がります。地図のある舞台では選挙区を一つ選んで集中できます（その選挙区の得票が大きく上がり、地域全体への効果は3分の1）。	Regional base +6 in the chosen region. Weaker where your base is already strong and for smaller parties. On stages with a map you can focus on one district instead (a big boost there; one third of the effect for the wider region).
+선거구	選挙区	District
+지역 전체	地域全体	Whole region
+{0} (우리 {1}%, {2})	{0}（自党 {1}%、{2}）	{0} (us {1}%, {2})
+이곳에서 유세	ここで遊説	Campaign here
+이 선거구 집중 유세를 이번 분기 행동에 넣었습니다.	この選挙区での集中遊説を今四半期の行動に入れました。	Added a focused campaign in this district to this quarter's actions.
+행동 칸이 가득 찼습니다. 결재 탭에서 하나를 지우세요.	行動枠がいっぱいです。決裁タブで一つ削除してください。	Your action slots are full. Remove one in the Decisions tab.

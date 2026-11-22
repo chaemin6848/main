@@ -5136,6 +5136,30 @@ ND.add({
 "地域ごとの予想議席数だけ、各党が自党に有利な選挙区から獲得した姿です。",
 "Each party takes its forecast seats in each region, starting with the districts most favorable to it."
 ],
+"선택한 지역 지지 기반 +6. 기반이 이미 두터운 지역일수록, 당이 작을수록 효과가 줄어듭니다. 지도가 있는 무대에서는 선거구 하나를 골라 그곳에 집중할 수 있습니다(그 선거구 득표가 크게 오르고, 지역 전체 효과는 3분의 1).": [
+"選択した地域の支持基盤 +6。基盤がすでに厚い地域ほど、党が小さいほど効果が下がります。地図のある舞台では選挙区を一つ選んで集中できます（その選挙区の得票が大きく上がり、地域全体への効果は3分の1）。",
+"Regional base +6 in the chosen region. Weaker where your base is already strong and for smaller parties. On stages with a map you can focus on one district instead (a big boost there; one third of the effect for the wider region)."
+],
+"선거구": [
+"選挙区",
+"District"
+],
+"지역 전체": [
+"地域全体",
+"Whole region"
+],
+"이곳에서 유세": [
+"ここで遊説",
+"Campaign here"
+],
+"이 선거구 집중 유세를 이번 분기 행동에 넣었습니다.": [
+"この選挙区での集中遊説を今四半期の行動に入れました。",
+"Added a focused campaign in this district to this quarter's actions."
+],
+"행동 칸이 가득 찼습니다. 결재 탭에서 하나를 지우세요.": [
+"行動枠がいっぱいです。決裁タブで一つ削除してください。",
+"Your action slots are full. Remove one in the Decisions tab."
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"
@@ -5393,6 +5417,7 @@ ND.pat([
 [/^주\ 비준:\ (.*?)\ 부결$/,"州の批准: $1 不成立","State ratification: $1 failed"],
 [/^지난\ 총선\ 1위\ (.*?)$/,"前回総選挙1位 $1","Won last election: $1"],
 [/^(.*?)\ ·\ 지역구\ 1석$/,"$1 · 選挙区 1議席","$1 · 1 district seat"],
+[/^(.*?)\ \(우리\ (.*?)%,\ (.*?)\)$/,"$1（自党 $2%、$3）","$1 (us $2%, $3)"],
 [/^(.*?)\ 내각\ 불신임안$/,"$1内閣不信任案","No confidence in the $1 cabinet"],
 [/^지역구\ 판세\ (.*?)석$/,"選挙区情勢 $1議席","District outlook: $1 seats"],
 [/^(.*?)분기\ 결과\ 보고$/,"$1四半期の結果報告","Q$1 report"],

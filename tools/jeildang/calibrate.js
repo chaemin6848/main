@@ -5,21 +5,23 @@
 // 3) 기준 승점 = 모든 당의 '목표 대비 1위' 비율이 같아지도록, 모아 둔 판 결과 위에서 반복 조정한다.
 // 4) engine.js의 GOALS 표를 다시 쓴다. 검증은 다른 시드로 sim.js를 돌려서 한다.
 //
-// 사용: node tools/jeildang/calibrate.js [--games 1500] [--seed 9] [--dry]
+// 사용: node tools/jeildang/calibrate.js [--games 1500] [--seed 9] [--dry] [--country kr,uk]  (--country 를 주면 그 나라만 다시 맞추고 나머지는 그대로 둔다)
 const fs = require('fs');
 const path = require('path');
 const ENGINE = path.join(__dirname, '../../public/jeildang/engine.js');
 const E = require(ENGINE);
 const { playOne } = require('./sim.js');
 
-const o = { games: 1500, seed: 9, dry: false };
+const o = { games: 1500, seed: 9, dry: false, country: '' };
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
   const k = argv[i].replace(/^--/, '');
-  if (k === 'dry') o.dry = true; else o[k] = Number(argv[++i]);
+  if (k === 'dry') o.dry = true; else if (k === 'country') o.country = argv[++i]; else o[k] = Number(argv[++i]);
 }
 
-// 기존 목표를 비워 원래 승점(목표 보너스 없음)으로 판을 모은다.
+// 기존 목표를 비워 원래 승점(목표 보너스 없음)으로 판을 모은다. 고르지 않은 나라는 기존 표를 그대로 쓴다.
+const KEEP = JSON.parse(JSON.stringify(E.GOALS));
+const ONLY = o.country ? o.country.split(',') : Object.keys(E.COUNTRIES);
 for (const k of Object.keys(E.GOALS)) delete E.GOALS[k];
 
 function collect(country, rounds) {
@@ -68,6 +70,7 @@ function fit(games) {
 
 const table = {};
 for (const c of Object.keys(E.COUNTRIES)) {
+  if (!ONLY.includes(c)) { table[c] = KEEP[c]; continue; }
   const t0 = Date.now();
   const fits = E.GOAL_ROUNDS.map(r => fit(collect(c, r)));
   table[c] = {};

@@ -9,13 +9,14 @@
 가공:
   - 성향 = (민주·진보·녹색정의·새로운미래 계열 − 국민의힘·개혁신당·자유통일 계열) ÷ 둘의 합 (지역구 후보 득표)
   - 지역구 하나가 의석 하나다. 엔진은 한국을 지역구마다 1위가 1석을 가지는 소선거구제로 계산한다
+  - 지역별 정당 득표율(지역구 후보 득표 합)을 판 시작 판세의 목표로 units.js 의 _targets 에 넣는다
 이름: 한국어는 '시도 선거구 약칭', 영어는 로마자 표기법 + A/B/C, 일본어는 시도 한자 + 가타카나 + 甲乙丙
 사용: build_kr.py 2024_22_Elec_simplify.json 22nd-general-2024.json
 """
 import json, math, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hangul import rr, kana
-from common import write
+from common import write, write_targets
 
 geo_path, res_path = sys.argv[1], sys.argv[2]
 REGION = {'서울': 'hanbyeol', '경기': 'neoreun', '인천': 'neoreun', '부산': 'donghae', '울산': 'donghae', '경남': 'donghae',
@@ -47,13 +48,22 @@ def names(sd, full):
     return en + ' (' + SIDO_EN[sd] + ')', SIDO_JA[sd] + ' ' + ja
 
 
+# 게임 정당 id (그 밖의 당·무소속은 ind)
+GAME = {'더불어민주당': 'dem', '국민의힘': 'ppp', '조국혁신당': 'rebuild', '진보당': 'jinbo', '개혁신당': 'reform'}
+targets = {}
 res = {}
 for r in json.load(open(res_path, encoding='utf-8'))['races']:
+    if r['scope'] == 'district':
+        t = targets.setdefault(REGION[SHORT[r['sido']]], {})
+        for c in r['candidates']:
+            k = GAME.get(c['party'], 'ind'); t[k] = t.get(k, 0) + c['votes']
     if r['scope'] != 'district': continue
     sd = SHORT[r['sido']]
     pro = sum(c['votes'] for c in r['candidates'] if c['party'] in PROG)
     con = sum(c['votes'] for c in r['candidates'] if c['party'] in CONS)
-    res[(sd, norm(r['district']))] = (pro, con, r['valid_votes'], r['district'])
+    sh = {}
+    for c in r['candidates']: k = GAME.get(c['party'], 'ind'); sh[k] = sh.get(k, 0) + c['votes'] / max(r['valid_votes'], 1)
+    res[(sd, norm(r['district']))] = (pro, con, r['valid_votes'], r['district'], sh)
 
 # 위경도 → 평면 (위도 36.5도 기준). 1.5km² 보다 작은 섬은 지운다(독도는 남긴다)
 K = math.cos(math.radians(36.5))
@@ -74,12 +84,15 @@ def proj(g):
 units = []
 for f in sorted(json.load(open(geo_path, encoding='utf-8'))['features'], key=lambda f: f['properties']['SGG_Code']):
     p = f['properties']; sd = p['SIDO']
-    pro, con, valid, full = res[(sd, norm(p['SGG']))]
+    pro, con, valid, full, sh = res[(sd, norm(p['SGG']))]
     en, ja = names(sd, full)
     units.append({'id': p['SGG_Code'], 'region': REGION[sd], 'w': valid, 'm': (pro - con) / max(pro + con, 1),
-                  'names': [p['SIDO_SGG'], ja, en], 'geom': proj(f['geometry'])})
+                  'names': [p['SIDO_SGG'], ja, en], 'geom': proj(f['geometry']), 'shares': sh})
 assert len(units) == 254
 write('kr', units, ['경계: 오마이뉴스 22대 총선 선거구 지도(통계청 행정동 경계 기반, MIT) · 성향: 2024년 22대 총선 지역구 득표(중앙선거관리위원회)',
                     '境界: オーマイニュース第22代総選挙選挙区地図（韓国統計庁の行政洞境界に基づく、MIT） · 傾向: 2024年第22代総選挙 選挙区得票（中央選挙管理委員会）',
                     'Boundaries: OhmyNews 22nd general election district map (from Statistics Korea boundaries, MIT) · Leanings: 2024 general election district votes (NEC)'],
       ['2024년 22대 총선 기준', '2024年第22代総選挙基準', 'based on the 2024 general election'])
+for r, d in targets.items():
+    tot = sum(d.values()); targets[r] = {k: v / tot for k, v in d.items()}
+write_targets('kr', targets)

@@ -1660,3 +1660,5 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 지도에서 한 곳을 누르면 판세를 봅니다. 지역 이름을 누르면 그 지역을 크게 봅니다.	地図上の場所をタップすると情勢を表示します。地域名をタップするとその地域を拡大します。	Tap a place on the map to see its race. Tap a region name to zoom in.
 색은 곳마다 1위 정당이고, 진할수록 1·2위 차이가 큽니다.	色は各地の1位政党で、濃いほど1位と2位の差が大きいことを示します。	Color shows the leading party in each place; darker means a wider lead.
 색은 지난 총선에서 곳마다 1위를 한 정당입니다.	色は前回総選挙で各地の1位になった政党です。	Color shows which party won each place at the last election.
+{0} · 지역구 1석	{0} · 選挙区 1議席	{0} · 1 district seat
+지역마다 예상 의석 수만큼, 정당마다 자기에게 유리한 지역구부터 차지한 모습입니다.	地域ごとの予想議席数だけ、各党が自党に有利な選挙区から獲得した姿です。	Each party takes its forecast seats in each region, starting with the districts most favorable to it.

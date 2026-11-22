@@ -995,7 +995,7 @@ function mapPanel(g,fc,me){
   const info={};
   for(const u of E.UNITS){
     const s=E.unitShares(g,u,reg[u.region]);const top=Object.keys(s).sort((a,b)=>s[b]-s[a]);
-    info[u.id]={s,win:mode==='last'?last[u.id]:top[0],gap:s[top[0]]-s[top[1]]};
+    info[u.id]={s,win:mode==='last'?last[u.id]:(fc.units&&fc.units[u.id])||top[0],gap:s[top[0]]-s[top[1]]};
   }
   const groups=E.REGIONS.map(r=>`<g data-r="${r.id}" class="${zoom!=='all'&&zoom!==r.id?'dim':''}">${E.UNITS.filter(u=>u.region===r.id).map(u=>{
     const x=info[u.id],p=E.party(g,x.win);const op=mode==='last'?.9:(.35+.65*Math.min(1,x.gap/.3)).toFixed(2);
@@ -1003,10 +1003,12 @@ function mapPanel(g,fc,me){
     +(M.frames||[]).map(f=>`<rect class="map-frame" x="${f[0]}" y="${f[1]}" width="${f[2]}" height="${f[3]}"/>`).join('');
   const sel=E.UNITS.find(u=>u.id===S.mapSel);
   let box='<p class="small muted">지도에서 한 곳을 누르면 판세를 봅니다. 지역 이름을 누르면 그 지역을 크게 봅니다.</p>';
+  // 실제 지역구와 하나씩 맞는 나라(한국·영국): 예상 보기의 색은 지역 의석 배분대로 정당마다 유리한 지역구에 앉힌 결과
+  const oneNote=E.UNIT_ONE&&mode==='fc'?' <span>지역마다 예상 의석 수만큼, 정당마다 자기에게 유리한 지역구부터 차지한 모습입니다.</span>':'';
   if(sel){
     const x=info[sel.id],ord=Object.keys(x.s).sort((a,b)=>x.s[b]-x.s[a]).slice(0,4);
     const lw=last&&E.party(g,last[sel.id]);
-    box=`<div class="map-info"><b>${esc(uname(sel.id))}</b> <span class="small muted">${E.REG[sel.region].name} · 지역구 약 ${sel.seats}석 몫</span>
+    box=`<div class="map-info"><b>${esc(uname(sel.id))}</b> <span class="small muted">${E.UNIT_ONE?`${E.REG[sel.region].name} · 지역구 1석`:`${E.REG[sel.region].name} · 지역구 약 ${sel.seats}석 몫`}</span>
       <div class="small">${ord.map(k=>{const p=E.party(g,k);return`<span class="${me&&p.id===me.id?'me':''}">${chip(p)} ${esc(p.name)} ${(x.s[k]*100).toFixed(0)}%</span>`}).join(' · ')}</div>
       <div class="small muted"><span>${sel.d>.02?'지역 평균보다 진보 쪽':sel.d<-.02?'지역 평균보다 보수 쪽':'지역 평균과 비슷'}</span> <span>(${esc(M.basis[LI])})</span>${lw?` · <span>지난 총선 1위 ${esc(lw.name)}</span>`:''}</div></div>`;
   }
@@ -1016,7 +1018,7 @@ function mapPanel(g,fc,me){
     <div class="row map-zooms" role="group" aria-label="지역">${zbtn('all','전국')}${E.REGIONS.map(r=>zbtn(r.id,r.name)).join('')}</div>
     <svg class="map" id="jd-map" viewBox="0 0 ${M.w} ${M.h}" role="img" aria-label="${esc(g.country?E.COUNTRIES[g.country].name:'가상 해람 공화국')} 지도">${groups}</svg>
     ${box}
-    <p class="small muted"><span>${mode==='fc'?'색은 곳마다 1위 정당이고, 진할수록 1·2위 차이가 큽니다.':'색은 지난 총선에서 곳마다 1위를 한 정당입니다.'}</span> <span>${esc(M.credit[LI])}</span></p></section>`;
+    <p class="small muted"><span>${mode==='fc'?'색은 곳마다 1위 정당이고, 진할수록 1·2위 차이가 큽니다.':'색은 지난 총선에서 곳마다 1위를 한 정당입니다.'}</span> ${oneNote} <span>${esc(M.credit[LI])}</span></p></section>`;
 }
 // 확대: 고른 지역의 실제 범위에 맞춰 viewBox 를 바꾼다 (그린 뒤에 잰다)
 function fitMap(){

@@ -57,6 +57,9 @@ const E=(function(){
   }
   // 시군구를 지역별로 묶고, 지역 안에서의 상대 성향(d)과 지역 지역구 의석 중 몫(sw)을 미리 구한다.
   // 가상 해람 공화국은 haeram 항목 (COUNTRIES 에 없는 기본 무대)
+  // 단위가 실제 지역구와 하나씩 맞는 나라 (한국 22대 총선 지역구 254곳, 영국 하원 선거구 650곳).
+  // 의석 수는 지역 단위로 정하고(밸런스 유지), 그 의석을 정당마다 자기에게 가장 유리한 실제 지역구에 앉힌다.
+  const ONE2ONE={kr:true,uk:true};
   let HAERAM_UNITS=null;
   for(const[k,str]of Object.entries(UNIT_DATA)){
     const C=k==='haeram'?{regions:HAERAM}:COUNTRIES[k];if(!C)continue;const us=[];
@@ -64,7 +67,7 @@ const E=(function(){
       const[region,list]=grp.split(':');const r=C.regions.find(x=>x.id===region);if(!r)continue;
       const mine=list.split(';').map(x=>{const[id,w,m]=x.split(',');return{id,region,w:+w,m:+m}});
       const tw=mine.reduce((a,u)=>a+u.w,0),avg=mine.reduce((a,u)=>a+u.w*u.m,0)/tw;
-      for(const u of mine){u.sw=u.w/tw;u.d=Math.round((u.m-avg)*1000)/1000;u.seats=Math.round(r.seats*u.sw*100)/100;us.push(u)}
+      for(const u of mine){u.sw=u.w/tw;u.d=Math.round((u.m-avg)*1000)/1000;u.seats=ONE2ONE[k]?1:Math.round(r.seats*u.sw*100)/100;us.push(u)}
     }
     if(k==='haeram')HAERAM_UNITS=us;else C.units=us;
   }
@@ -104,11 +107,11 @@ const E=(function(){
   const LEVELS=[{name:'풀뿌리',cost:.1,effect:.3},{name:'소규모',cost:.25,effect:.5},{name:'보통',cost:1,effect:1},{name:'대규모',cost:3,effect:1.7},{name:'총력',cost:8,effect:2.8}];
   const toReg=rs=>Object.fromEntries(rs.map(r=>[r.id,r]));
   const groupUnits=us=>{if(!us)return null;const o={};for(const u of us)(o[u.region]=o[u.region]||[]).push(u);return o};
-  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=HAERAM_UNITS,UNITS_BY=groupUnits(HAERAM_UNITS);
+  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=HAERAM_UNITS,UNITS_BY=groupUnits(HAERAM_UNITS),UNIT_ONE=false;
   // 지금 판의 나라에 맞춰 지역과 의석 규모를 고른다. 페이지에 판은 하나뿐이다.
   function useMap(g){
     const C=g&&g.country?COUNTRIES[g.country]:null;
-    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C?C.units||null:HAERAM_UNITS;UNITS_BY=groupUnits(UNITS);
+    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C?C.units||null:HAERAM_UNITS;UNITS_BY=groupUnits(UNITS);UNIT_ONE=!!(C&&ONE2ONE[g.country]);
     TOTAL=C?C.total:400;DISTRICT=C?C.district:280;PR=C?C.pr:120;
     U=C?C.money.u:1;UNIT=C?C.money.unit:'억';MEMBER_NAME=C?C.money.members:'당원';
   }
@@ -756,7 +759,7 @@ const E=(function(){
   }
   function electionSeats(g){
     const district=Object.fromEntries(g.parties.map(p=>[p.id,0]));
-    const regions=[],units={};
+    const regions=[],units={};let regionTilt=null;
     const holders=g.parties.filter(p=>p.hold);
     for(const reg of REGIONS){
       const s=regionShares(g,reg);let w={};for(const k in s)if(!party(g,k).hold)w[k]=Math.pow(s[k],1.8);
@@ -766,17 +769,28 @@ const E=(function(){
         // 시군구가 수천 곳이라(미국 카운티 3,100곳) 배열로 계산한다
         const ids=Object.keys(s),n=ids.length,sv=ids.map(k=>s[k]),L=ids.map(k=>UNIT_B*lean(party(g,k))),held=ids.map(k=>!!party(g,k).hold);
         const acc=new Array(n).fill(0),o=new Array(n),x=new Array(n);
+        const tilt=UNIT_ONE?[]:null;
         for(const u of us){
-          let t=0,tt=0,bi=0;
-          for(let i=0;i<n;i++){o[i]=sv[i]*Math.exp(u.d*L[i]);t+=o[i];if(o[i]>o[bi])bi=i}
+          let t=0,tt=0,bi=-1;
+          for(let i=0;i<n;i++){o[i]=sv[i]*Math.exp(u.d*L[i]);t+=o[i];if(!held[i]&&(bi<0||o[i]>o[bi]))bi=i}
           for(let i=0;i<n;i++){x[i]=held[i]?0:Math.pow(o[i]/t,1.8);tt+=x[i]}
           if(tt>0)for(let i=0;i<n;i++)acc[i]+=u.sw*x[i]/tt;
-          units[u.id]=ids[bi];
+          units[u.id]=ids[bi>=0?bi:0];
+          if(tilt)for(let i=0;i<n;i++)tilt.push([u.d*L[i]-Math.log(t),u.id,ids[i]]);
         }
+        regionTilt=tilt;
         w={};for(let i=0;i<n;i++)if(!held[i])w[ids[i]]=acc[i];
       }
       const kept=holders.reduce((n,p)=>n+(p.hold[reg.id]||0),0);
       const a=allocate(w,reg.seats-kept);for(const p of holders)a[p.id]=p.hold[reg.id]||0;for(const k in a)district[k]+=a[k];
+      // 실제 지역구와 하나씩 맞는 나라: 정당마다 받은 의석만큼, 지역 평균보다 자기에게 유리하게 기운 지역구부터 차지한다
+      if(regionTilt&&us&&us.length===reg.seats){
+        const left={...a},taken=new Set();
+        regionTilt.sort((p,q)=>q[0]-p[0]);
+        for(const[,uid,pid]of regionTilt){if(taken.has(uid)||!(left[pid]>0))continue;units[uid]=pid;taken.add(uid);left[pid]--}
+        for(const u of us)if(!taken.has(u.id)){const pid=Object.keys(left).find(k=>left[k]>0);if(pid){units[u.id]=pid;left[pid]--}}
+      }
+      regionTilt=null;
       const winner=Object.keys(s).sort((x,y)=>s[y]-s[x])[0];
       regions.push({id:reg.id,winner,seats:a});
     }
@@ -2234,6 +2248,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{unitShares,get UNITS(){return UNITS},EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{unitShares,get UNITS(){return UNITS},get UNIT_ONE(){return UNIT_ONE},EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

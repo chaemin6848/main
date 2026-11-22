@@ -46,11 +46,24 @@ const E=(function(){
       regions:[['hanbyeol','일드프랑스',100,.3,.7,'수도권'],['neoreun','북부·동부',115,.1,-.5,'공업 지대'],['donghae','서부',106,-.1,.2,'브르타뉴·루아르'],['namnyeok','남서부',94,.3,.1,'옥시타니'],['seodeul','오베르뉴·론알프',68,-.2,.1,'리옹'],['bukbang','남프랑스·코르시카',56,-.1,-.6,'지중해'],['seom','해외 영토·재외',38,.3,.2,'해외']],
       parties:[['rn','국민연합',118,0,.1,-.9,7],['epr','르네상스 계열',90,0,-.5,.3,0],['lfi','굴복하지않는프랑스',70,0,.9,.7,1],['ps','사회당 계열',67,0,.6,.6,6],['dr','공화파',47,0,-.7,-.6,4],['eco','생태주의 계열',38,0,.6,.8,2],['dem','민주운동·오리종',71,0,-.4,.2,3],['ind','기타 원내 그룹',68,0,.2,-.1,5,null,true]]},
   };
+  // 시군구(선거 계산 단위): 코드|이름|지역|유권자 비중(10만분율)|성향(2022년 대선 이재명−윤석열 양자 득표차, +면 진보 쪽)
+  // tools/jeildang/maps/build_kr.py 가 만든다. 지도 그림은 maps/kr.js 에 따로 있다.
+  const UNIT_DATA={kr:'11110|서울 종로구|hanbyeol|285|-0.045;11140|서울 중구|hanbyeol|242|-0.069;11170|서울 용산구|hanbyeol|430|-0.186;11200|서울 성동구|hanbyeol|569|-0.112;11215|서울 광진구|hanbyeol|682|-0.028;11230|서울 동대문구|hanbyeol|663|-0.034;11260|서울 중랑구|hanbyeol|764|0.037;11290|서울 성북구|hanbyeol|837|0.015;11305|서울 강북구|hanbyeol|579|0.075;11320|서울 도봉구|hanbyeol|628|0.019;11350|서울 노원구|hanbyeol|1015|0.009;11380|서울 은평구|hanbyeol|917|0.057;11410|서울 서대문구|hanbyeol|593|-0.005;11440|서울 마포구|hanbyeol|729|-0.039;11470|서울 양천구|hanbyeol|881|-0.05;11500|서울 강서구|hanbyeol|1137|0.013;11530|서울 구로구|hanbyeol|793|0.009;11545|서울 금천구|hanbyeol|454|0.06;11560|서울 영등포구|hanbyeol|759|-0.088;11590|서울 동작구|hanbyeol|765|-0.063;11620|서울 관악구|hanbyeol|974|0.044;11650|서울 서초구|hanbyeol|799|-0.365;11680|서울 강남구|hanbyeol|1029|-0.399;11710|서울 송파구|hanbyeol|1333|-0.184;11740|서울 강동구|hanbyeol|968|-0.086;26110|부산 중구|donghae|78|-0.265;26140|부산 서구|donghae|202|-0.265;26170|부산 동구|donghae|173|-0.259;26200|부산 영도구|donghae|213|-0.153;26230|부산 부산진구|donghae|686|-0.214;26260|부산 동래구|donghae|522|-0.259;26290|부산 남구|donghae|511|-0.241;26320|부산 북구|donghae|564|-0.182;26350|부산 해운대구|donghae|768|-0.267;26380|부산 사하구|donghae|585|-0.174;26410|부산 금정구|donghae|457|-0.279;26440|부산 강서구|donghae|245|-0.111;26470|부산 연제구|donghae|406|-0.246;26500|부산 수영구|donghae|342|-0.282;26530|부산 사상구|donghae|406|-0.177;26710|부산 기장군|donghae|307|-0.159;27110|대구 중구|namnyeok|149|-0.573;27140|대구 동구|namnyeok|691|-0.547;27170|대구 서구|namnyeok|339|-0.658;27200|대구 남구|namnyeok|285|-0.597;27230|대구 북구|namnyeok|876|-0.54;27260|대구 수성구|namnyeok|837|-0.581;27290|대구 달서구|namnyeok|1094|-0.568;27710|대구 달성군|namnyeok|484|-0.519;28110|인천 중구|neoreun|264|0.026;28140|인천 동구|neoreun|123|-0.019;28177|인천 미추홀구|neoreun|752|-0.016;28185|인천 연수구|neoreun|744|-0.071;28200|인천 남동구|neoreun|981|0.033;28237|인천 부평구|neoreun|944|0.055;28245|인천 계양구|neoreun|578|0.088;28260|인천 서구|neoreun|1036|0.059;28710|인천 강화군|neoreun|139|-0.284;28720|인천 옹진군|neoreun|37|-0.275;29110|광주 동구|seodeul|199|0.695;29140|광주 서구|seodeul|570|0.744;29155|광주 남구|seodeul|409|0.731;29170|광주 북구|seodeul|835|0.754;29200|광주 광산구|seodeul|761|0.769;30110|대전 동구|bukbang|416|-0.048;30140|대전 중구|bukbang|440|-0.093;30170|대전 서구|bukbang|891|-0.045;30200|대전 유성구|bukbang|664|-0.016;30230|대전 대덕구|bukbang|337|-0.021;31110|울산 중구|donghae|429|-0.208;31140|울산 남구|donghae|628|-0.223;31170|울산 동구|donghae|301|-0.025;31200|울산 북구|donghae|415|0.011;31710|울산 울주군|donghae|424|-0.194;36110|세종 세종시|bukbang|662|0.083;41111|경기 수원시장안구|neoreun|536|0.044;41113|경기 수원시권선구|neoreun|683|0.076;41115|경기 수원시팔달구|neoreun|342|0.002;41117|경기 수원시영통구|neoreun|690|-0.002;41131|경기 성남시수정구|neoreun|459|0.111;41133|경기 성남시중원구|neoreun|402|0.177;41135|경기 성남시분당구|neoreun|996|-0.14;41150|경기 의정부시|neoreun|877|0.093;41171|경기 안양시만안구|neoreun|481|0.052;41173|경기 안양시동안구|neoreun|645|0.009;41190|경기 부천시|neoreun|1601|0.115;41210|경기 광명시|neoreun|604|0.083;41220|경기 평택시|neoreun|1013|0.032;41250|경기 동두천시|neoreun|173|0.031;41271|경기 안산시상록구|neoreun|658|0.146;41273|경기 안산시단원구|neoreun|574|0.126;41281|경기 고양시덕양구|neoreun|945|0.081;41285|경기 고양시일산동구|neoreun|565|0.018;41287|경기 고양시일산서구|neoreun|575|0.045;41290|경기 과천시|neoreun|157|-0.205;41310|경기 구리시|neoreun|379|0.029;41360|경기 남양주시|neoreun|1359|0.078;41370|경기 오산시|neoreun|398|0.131;41390|경기 시흥시|neoreun|950|0.179;41410|경기 군포시|neoreun|546|0.078;41430|경기 의왕시|neoreun|322|0.001;41450|경기 하남시|neoreun|594|-0.003;41461|경기 용인시처인구|neoreun|474|0.029;41463|경기 용인시기흥구|neoreun|840|0.022;41465|경기 용인시수지구|neoreun|729|-0.078;41480|경기 파주시|neoreun|883|0.105;41500|경기 이천시|neoreun|407|-0.032;41550|경기 안성시|neoreun|350|0.015;41570|경기 김포시|neoreun|903|0.054;41590|경기 화성시|neoreun|1602|0.096;41610|경기 광주시|neoreun|692|0.095;41630|경기 양주시|neoreun|429|0.079;41650|경기 포천시|neoreun|286|-0.037;41670|경기 여주시|neoreun|214|-0.123;41800|경기 연천군|neoreun|84|-0.132;41820|경기 가평군|neoreun|121|-0.194;41830|경기 양평군|neoreun|236|-0.149;42110|강원 춘천시|seom|569|-0.079;42130|강원 원주시|seom|686|-0.066;42150|강원 강릉시|seom|435|-0.205;42170|강원 동해시|seom|171|-0.175;42190|강원 태백시|seom|81|-0.179;42210|강원 속초시|seom|155|-0.144;42230|강원 삼척시|seom|130|-0.236;42720|강원 홍천군|seom|136|-0.178;42730|강원 횡성군|seom|95|-0.203;42750|강원 영월군|seom|78|-0.179;42760|강원 평창군|seom|84|-0.187;42770|강원 정선군|seom|73|-0.16;42780|강원 철원군|seom|82|-0.173;42790|강원 화천군|seom|47|-0.175;42800|강원 양구군|seom|42|-0.178;42810|강원 인제군|seom|63|-0.134;42820|강원 고성군|seom|55|-0.209;42830|강원 양양군|seom|58|-0.239;43111|충북 청주시상당구|bukbang|359|-0.044;43112|충북 청주시서원구|bukbang|362|-0.055;43113|충북 청주시흥덕구|bukbang|477|-0.01;43114|충북 청주시청원구|bukbang|344|0.014;43130|충북 충주시|bukbang|416|-0.095;43150|충북 제천시|bukbang|266|-0.129;43720|충북 보은군|bukbang|67|-0.198;43730|충북 옥천군|bukbang|101|-0.137;43740|충북 영동군|bukbang|93|-0.22;43745|충북 증평군|bukbang|67|-0.058;43750|충북 진천군|bukbang|153|0.029;43760|충북 괴산군|bukbang|78|-0.235;43770|충북 음성군|bukbang|170|-0.041;43800|충북 단양군|bukbang|60|-0.262;44131|충남 천안시동남구|bukbang|465|-0.048;44133|충남 천안시서북구|bukbang|704|0.024;44150|충남 공주시|bukbang|204|-0.155;44180|충남 보령시|bukbang|197|-0.177;44200|충남 아산시|bukbang|572|0.017;44210|충남 서산시|bukbang|330|-0.065;44230|충남 논산시|bukbang|220|-0.04;44250|충남 계룡시|bukbang|80|-0.108;44270|충남 당진시|bukbang|304|-0.022;44710|충남 금산군|bukbang|99|-0.141;44760|충남 부여군|bukbang|131|-0.218;44770|충남 서천군|bukbang|105|-0.095;44790|충남 청양군|bukbang|63|-0.277;44800|충남 홍성군|bukbang|185|-0.141;44810|충남 예산군|bukbang|151|-0.338;44825|충남 태안군|bukbang|124|-0.182;45111|전북 전주시완산구|seodeul|664|0.694;45113|전북 전주시덕진구|seodeul|617|0.693;45130|전북 군산시|seodeul|539|0.696;45140|전북 익산시|seodeul|571|0.708;45180|전북 정읍시|seodeul|224|0.767;45190|전북 남원시|seodeul|169|0.757;45210|전북 김제시|seodeul|169|0.759;45710|전북 완주군|seodeul|174|0.738;45720|전북 진안군|seodeul|51|0.727;45730|전북 무주군|seodeul|51|0.607;45740|전북 장수군|seodeul|46|0.749;45750|전북 임실군|seodeul|55|0.767;45770|전북 순창군|seodeul|56|0.789;45790|전북 고창군|seodeul|113|0.786;45800|전북 부안군|seodeul|107|0.759;46110|전남 목포시|seodeul|432|0.802;46130|전남 여수시|seodeul|579|0.778;46150|전남 순천시|seodeul|570|0.76;46170|전남 나주시|seodeul|230|0.771;46230|전남 광양시|seodeul|296|0.696;46710|전남 담양군|seodeul|94|0.816;46720|전남 곡성군|seodeul|58|0.777;46730|전남 구례군|seodeul|55|0.767;46770|전남 고흥군|seodeul|140|0.79;46780|전남 보성군|seodeul|83|0.796;46790|전남 화순군|seodeul|126|0.814;46800|전남 장흥군|seodeul|78|0.821;46810|전남 강진군|seodeul|72|0.767;46820|전남 해남군|seodeul|140|0.814;46830|전남 영암군|seodeul|103|0.79;46840|전남 무안군|seodeul|162|0.792;46860|전남 함평군|seodeul|64|0.839;46870|전남 영광군|seodeul|102|0.79;46880|전남 장성군|seodeul|87|0.784;46890|전남 완도군|seodeul|102|0.836;46900|전남 진도군|seodeul|63|0.797;46910|전남 신안군|seodeul|73|0.821;47111|경북 포항시남구|namnyeok|454|-0.478;47113|경북 포항시북구|namnyeok|540|-0.5;47130|경북 경주시|namnyeok|525|-0.496;47150|경북 김천시|namnyeok|287|-0.531;47170|경북 안동시|namnyeok|322|-0.414;47190|경북 구미시|namnyeok|766|-0.449;47210|경북 영주시|namnyeok|216|-0.488;47230|경북 영천시|namnyeok|207|-0.594;47250|경북 상주시|namnyeok|205|-0.603;47280|경북 문경시|namnyeok|146|-0.61;47290|경북 경산시|namnyeok|523|-0.534;47720|경북 군위군|namnyeok|51|-0.733;47730|경북 의성군|namnyeok|114|-0.679;47750|경북 청송군|namnyeok|55|-0.604;47760|경북 영양군|namnyeok|36|-0.533;47770|경북 영덕군|namnyeok|77|-0.672;47820|경북 청도군|namnyeok|88|-0.642;47830|경북 고령군|namnyeok|64|-0.653;47840|경북 성주군|namnyeok|92|-0.635;47850|경북 칠곡군|namnyeok|210|-0.491;47900|경북 예천군|namnyeok|114|-0.534;47920|경북 봉화군|namnyeok|66|-0.547;47930|경북 울진군|namnyeok|99|-0.592;47940|경북 울릉군|namnyeok|17|-0.521;48121|경남 창원시의창구|donghae|417|-0.235;48123|경남 창원시성산구|donghae|502|-0.16;48125|경남 창원시마산합포구|donghae|362|-0.361;48127|경남 창원시마산회원구|donghae|370|-0.315;48129|경남 창원시진해구|donghae|353|-0.189;48170|경남 진주시|donghae|693|-0.318;48220|경남 통영시|donghae|242|-0.324;48240|경남 사천시|donghae|213|-0.329;48250|경남 김해시|donghae|993|-0.03;48270|경남 밀양시|donghae|210|-0.354;48310|경남 거제시|donghae|435|-0.056;48330|경남 양산시|donghae|666|-0.123;48720|경남 의령군|donghae|54|-0.417;48730|경남 함안군|donghae|121|-0.329;48740|경남 창녕군|donghae|120|-0.466;48820|경남 고성군|donghae|100|-0.388;48840|경남 남해군|donghae|90|-0.307;48850|경남 하동군|donghae|91|-0.275;48860|경남 산청군|donghae|70|-0.424;48870|경남 함양군|donghae|79|-0.347;48880|경남 거창군|donghae|124|-0.408;48890|경남 합천군|donghae|89|-0.557;50110|제주 제주시|seom|905|0.133;50130|제주 서귀포시|seom|330|0.047'};
   // 지역 정당은 본거지에서만 후보를 내고, 닫힌 지역(북아일랜드)에는 그 지역 정당만 나온다.
   const LOCAL={uk:{parties:{snp:['seodeul'],plaid:['bukbang'],ind:['seom']},regions:{seom:['ind']}}};
   for(const c of Object.values(COUNTRIES)){
     c.regions=c.regions.map(([id,name,seats,eco,soc,tag])=>({id,name,seats,eco,soc,tag}));
     c.parties=c.parties.map(([id,name,district,pr,eco,soc,colorIdx,home,fixed])=>({id,name,district,pr,eco,soc,colorIdx,home:home||null,fixed:!!fixed,seats:district+pr}));
+  }
+  // 시군구를 지역별로 묶고, 지역 안에서의 상대 성향(d)과 지역 지역구 의석 중 몫(sw)을 미리 구한다.
+  for(const[k,str]of Object.entries(UNIT_DATA)){
+    const us=str.split(';').map(x=>{const[id,name,region,w,m]=x.split('|');return{id,name,region,w:+w,m:+m}});
+    const C=COUNTRIES[k];
+    for(const r of C.regions){
+      const mine=us.filter(u=>u.region===r.id),tw=mine.reduce((a,u)=>a+u.w,0),avg=mine.reduce((a,u)=>a+u.w*u.m,0)/tw;
+      for(const u of mine){u.sw=u.w/tw;u.d=Math.round((u.m-avg)*1000)/1000;u.seats=Math.round(r.seats*u.sw*100)/100}
+    }
+    C.units=us;
   }
   // 정당별 이념 소개와 상징색. 같은 계열 색을 쓰는 당은 구분되도록 명도를 달리했다.
   const PARTY_LOOK={
@@ -87,11 +100,11 @@ const E=(function(){
   // 지출 규모. 돈을 많이 쓸수록 효과는 늘지만 비용만큼 늘지는 않는다.
   const LEVELS=[{name:'풀뿌리',cost:.1,effect:.3},{name:'소규모',cost:.25,effect:.5},{name:'보통',cost:1,effect:1},{name:'대규모',cost:3,effect:1.7},{name:'총력',cost:8,effect:2.8}];
   const toReg=rs=>Object.fromEntries(rs.map(r=>[r.id,r]));
-  let REGIONS=HAERAM,REG=toReg(HAERAM);
+  let REGIONS=HAERAM,REG=toReg(HAERAM),UNITS=null;
   // 지금 판의 나라에 맞춰 지역과 의석 규모를 고른다. 페이지에 판은 하나뿐이다.
   function useMap(g){
     const C=g&&g.country?COUNTRIES[g.country]:null;
-    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);
+    REGIONS=C?C.regions:HAERAM;REG=toReg(REGIONS);UNITS=C&&C.units||null;
     TOTAL=C?C.total:400;DISTRICT=C?C.district:280;PR=C?C.pr:120;
     U=C?C.money.u:1;UNIT=C?C.money.unit:'억';MEMBER_NAME=C?C.money.members:'당원';
   }
@@ -714,6 +727,11 @@ const E=(function(){
     for(const k in w)w[k]/=sum;
     return w;
   }
+  // 시군구 판세: 지역 판세에서 시작해, 그 시군구가 지역 평균보다 진보·보수 쪽으로 기운 만큼(d) 정당 몫을 기울인다.
+  // 기울기 축은 진보(분배·개방)↔보수(시장·전통) 대각선. UNIT_B 는 2022년 대선 강남구(서울 평균 대비 득표 비 약 0.5배)에 맞추고 조금 키웠다.
+  const UNIT_B=1.8,lean=p=>p.eco*.74+p.soc*.67;
+  function tilt(g,s,u){const o={};let t=0;for(const k in s){o[k]=s[k]*Math.exp(UNIT_B*u.d*lean(party(g,k)));t+=o[k]}for(const k in o)o[k]/=t;return o}
+  function unitShares(g,u,regShares){return tilt(g,regShares||regionShares(g,REG[u.region]),u)}
   function nationalShares(g,list){
     // 정당 투표: 지역구보다 표가 고르게 갈리고 군소정당에 소신 투표가 몰린다.
     const out=Object.fromEntries(g.parties.map(p=>[p.id,0]));
@@ -734,10 +752,21 @@ const E=(function(){
   }
   function electionSeats(g){
     const district=Object.fromEntries(g.parties.map(p=>[p.id,0]));
-    const regions=[];
+    const regions=[],units={};
     const holders=g.parties.filter(p=>p.hold);
     for(const reg of REGIONS){
-      const s=regionShares(g,reg);const w={};for(const k in s)if(!party(g,k).hold)w[k]=Math.pow(s[k],1.8);
+      const s=regionShares(g,reg);let w={};for(const k in s)if(!party(g,k).hold)w[k]=Math.pow(s[k],1.8);
+      // 시군구가 있는 나라: 시군구마다 같은 식으로 나눈 몫을 유권자 비중대로 더한다. 1위 당은 시군구별로 남긴다.
+      const us=UNITS&&UNITS.filter(u=>u.region===reg.id);
+      if(us&&us.length){
+        w={};
+        for(const u of us){
+          const su=unitShares(g,u,s);let t=0;const x={};
+          for(const k in su)if(!party(g,k).hold){x[k]=Math.pow(su[k],1.8);t+=x[k]}
+          for(const k in x)w[k]=(w[k]||0)+u.sw*x[k]/t;
+          units[u.id]=Object.keys(su).sort((a,b)=>su[b]-su[a])[0];
+        }
+      }
       const kept=holders.reduce((n,p)=>n+(p.hold[reg.id]||0),0);
       const a=allocate(w,reg.seats-kept);for(const p of holders)a[p.id]=p.hold[reg.id]||0;for(const k in a)district[k]+=a[k];
       const winner=Object.keys(s).sort((x,y)=>s[y]-s[x])[0];
@@ -747,7 +776,7 @@ const E=(function(){
     const vote=nationalShares(g),list=nationalShares(g,true);const pass={};
     for(const k in list)pass[k]=!party(g,k).hold&&(list[k]>=(g.prTh||PR_THRESHOLD)||district[k]>=5)?list[k]:0;
     const prKept=holders.reduce((n,p)=>n+(p.holdPr||0),0);const pr=allocate(pass,PR-prKept);for(const p of holders)pr[p.id]=p.holdPr||0;
-    return{district,pr,vote,regions};
+    return{district,pr,vote,regions,units:UNITS?units:null};
   }
   function setSeats(p,district,pr){p.district=district;p.pr=pr;p.seats=district+pr}
   function moveDistrict(from,to,n){n=Math.min(from.district,n);setSeats(from,from.district-n,from.pr);setSeats(to,to.district+n,to.pr);return n}
@@ -1995,7 +2024,9 @@ const E=(function(){
         g.parties.forEach(p=>setSeats(p,mix[p.id],p.pr));
         for(const x of res.regions){const w=party(g,x.winner);w.funds+=2*U;w.reg[x.id]+=1.5}
       }
-      election={kind:general?'general':dissolve?'dissolve':'mid',regions:res.regions,prev,vote:Object.fromEntries(Object.entries(res.vote).map(([k,v])=>[k,r1(v*100)]))};
+      // 시군구별 1위는 총선 때만 남긴다 (지도의 '지난 총선' 보기)
+      if(res.units&&(general||dissolve))g.lastUnits={round:g.round,w:res.units};
+      election={kind:general?'general':dissolve?'dissolve':'mid',regions:res.regions,...(res.units?{units:res.units}:{}),prev,vote:Object.fromEntries(Object.entries(res.vote).map(([k,v])=>[k,r1(v*100)]))};
     }
     if(fell&&g.system!=='westminster')g.pmElection=true;
     if(!isFinal&&g.system==='westminster'&&!g.pmParty){
@@ -2195,6 +2226,6 @@ const E=(function(){
     g.deadline=g.timer?now+g.timer*1000:0;
     return g;
   }
-  return{EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
+  return{unitShares,get UNITS(){return UNITS},EMBLEMS,EMB_DEF,embOf,headOf,canMartial,ratifyKind,refPoll,statePoll,CLAUSE_MOOD,canLeap,LEAP_GAP,NATION,NKEYS,DIRS,NOMINATE,openPledges,pledgeDue,shiftTo,canRace,wingPos,wingOf,RACE_GAP,AP,NCOLORS,get TOTAL(){return TOTAL},get DISTRICT(){return DISTRICT},get PR(){return PR},get REGIONS(){return REGIONS},get REG(){return REG},COUNTRIES,useMap,PR_THRESHOLD,KINDS,IDEOLOGIES,ACTIONS,GOV,TOPICS,BILLS,defaultBill,dealView,applyDeals,pactLead,hasPres,rulesOf,fedCap,LEAVE_OPTS,cleanAmend,amendText,amendView,amendTally,AMEND_FIELDS,scoreRows,continueGame,PTS,BAL,CLAUSES,superLine,superBloc,govAvail,regimeOf,cleanTrade,tradeView,relOf,SCENARIOS,scenarioState,GOALS,GOAL_ROUNDS,goalOf,PERSONAS,personaOf,EVENTS2,RESP,reactOpts,eventTop,sway,MAX_ALLIES,MAX_FED,allies,isAlly,fedOf,fedById,fedSeats,dealKind,normAllies,isGeneralRound,isMidRound,nextGeneral,nextMid,fit,regionShares,nationalShares,electionSeats,fundGain,newGame,resolveRound,billAlign,party,pmOf,govSlots,inGov,canDissolve,LEVELS,actionCost,govCost,get U(){return U},get UNIT(){return UNIT},get MEMBER_NAME(){return MEMBER_NAME},botMove,sanitize,rng};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=E;

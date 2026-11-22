@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """번역표(TSV: 한국어\t日本語\tEnglish)를 ND.add / ND.pat 호출로 된 JS로 바꾼다.
 {0},{1}… 자리가 있는 줄은 정규식 패턴이 되고, 나머지는 그대로 찾는 사전이 된다.
-사용: i18n-build.py 번역표.tsv [덧붙일.js] > 출력.js"""
+사용: i18n-build.py 번역표.tsv [번역표2.tsv ...] [덧붙일.js] > 출력.js"""
 import sys, re, json
+tsvs = [a for a in sys.argv[1:] if a.endswith('.tsv')]
+extras = [a for a in sys.argv[1:] if a.endswith('.js')]
 rows = []
-for line in open(sys.argv[1], encoding='utf-8'):
+for f in tsvs:
+  for line in open(f, encoding='utf-8'):
     line = line.rstrip('\n')
     if not line or line.startswith('#'): continue
     k, ja, en = (line.split('\t') + ['', ''])[:3]
@@ -31,10 +34,10 @@ for k, ja, en in rows:
     else:
         static[k] = [ja, en]
 pats.sort(key=lambda x: -x[0])
-out = ['/* 자동 생성: tools/i18n-build.py ' + sys.argv[1].split('/')[-1] + ' — 직접 고치지 말고 번역표를 고친 뒤 다시 만든다 */',
+out = ['/* 자동 생성: tools/i18n-build.py ' + ' '.join(f.split('/')[-1] for f in tsvs) + ' — 직접 고치지 말고 번역표를 고친 뒤 다시 만든다 */',
        'ND.add(' + json.dumps(static, ensure_ascii=False, indent=0) + ');',
        'ND.pat([']
 out.append(',\n'.join('[/^%s$/,%s,%s]' % (rx, json.dumps(ja, ensure_ascii=False), json.dumps(en, ensure_ascii=False)) for _, rx, ja, en in pats))
 out.append(']);')
-if len(sys.argv) > 2: out.append(open(sys.argv[2], encoding='utf-8').read())
+for f in extras: out.append(open(f, encoding='utf-8').read())
 print('\n'.join(out))

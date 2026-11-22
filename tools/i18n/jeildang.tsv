@@ -1643,3 +1643,22 @@ NHS 대기 명단 최장	NHS待機リストが過去最長	NHS waiting lists hit
 산	山	Mountain
 물결	波	Wave
 잎사귀	葉	Leaf
+# 2026-11 지도 (실제 국가 모양, 시군구)
+지도	地図	Map
+지도를 불러오는 중…	地図を読み込んでいます…	Loading map…
+시군구를 누르면 판세를 봅니다. 지역 이름을 누르면 그 지역을 크게 봅니다.	市区郡をタップすると情勢を表示します。地域名をタップするとその地域を拡大します。	Tap a district to see its race. Tap a region name to zoom in.
+{0} · 지역구 약 {1}석 몫	{0} · 選挙区 約{1}議席分	{0} · about {1} district seats
+지역 평균보다 진보 쪽	地域平均より革新寄り	More progressive than the region
+지역 평균보다 보수 쪽	地域平均より保守寄り	More conservative than the region
+지역 평균과 비슷	地域平均と同程度	About average for the region
+(2022년 대선 기준)	(2022年大統領選基準)	(based on the 2022 presidential election)
+지난 총선 1위 {0}	前回総選挙1位 {0}	Won last election: {0}
+총선 예상	総選挙予想	Forecast
+지난 총선	前回総選挙	Last election
+전국	全国	Nationwide
+지도 보기	地図の表示	Map view
+{0} 지도	{0}の地図	Map of {0}
+색은 시군구별 1위 정당, 진할수록 1·2위 차이가 큽니다.	色は市区郡ごとの1位政党で、濃いほど1位と2位の差が大きいことを示します。	Color shows the leading party in each district; darker means a wider lead.
+색은 지난 총선의 시군구별 1위 정당입니다.	色は前回総選挙の市区郡ごとの1位政党です。	Color shows which party won each district at the last election.
+시군구 성향은 2022년 대선 개표 결과에서 가져왔습니다.	市区郡の傾向は2022年大統領選の開票結果に基づきます。	District leanings come from the 2022 presidential election results.
+경계 출처: 통계청 SGIS(공공누리 제1유형), admdongkor(CC BY 4.0)	境界データ: 韓国統計庁 SGIS(公共ヌリ第1類型)、admdongkor(CC BY 4.0)	Boundaries: Statistics Korea SGIS (KOGL Type 1), admdongkor (CC BY 4.0)

@@ -105,7 +105,10 @@ window.fetch=async function(input,init){const url=typeof input==="string"?input:
    return new Response(blob,{status:200,headers:{"Content-Type":m[1]==="wasm"?"application/wasm":"application/octet-stream","Content-Length":String(blob.size)}});}}catch(e){console.warn("gz load failed",e)}}
  return of(input,init);};})();
 </script>
-<style>html,body{background:#1b120c}</style>
+<style>html,body{background:#1b120c}
+#rotate-hint{display:none;position:fixed;inset:0;z-index:99;background:#1b120c;color:#f3e7d0;font:600 18px/1.6 system-ui,sans-serif;text-align:center;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+@media (orientation:portrait) and (pointer:coarse){#rotate-hint{display:flex}}</style>
+<script>document.addEventListener("DOMContentLoaded",function(){var d=document.createElement("div");d.id="rotate-hint";d.innerHTML="휴대폰을 가로로 돌려 주세요<br><span style='font-weight:400;font-size:15px;opacity:.75'>길드 프로젝트는 가로 화면 게임이에요</span>";document.body.appendChild(d);});</script>
 	</head>
 	<body>
 		<canvas id="canvas">
@@ -124,7 +127,7 @@ window.fetch=async function(input,init){const url=typeof input==="string"?input:
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":3858256,"index.wasm":39513091},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":3859392,"index.wasm":39513091},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

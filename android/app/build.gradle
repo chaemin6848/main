@@ -55,10 +55,10 @@ android {
     namespace "com.nihongodic.jeildang"
     defaultConfig {
         applicationId "com.nihongodic.jeildang"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 36
         versionCode 1
-        versionName ""
+        versionName "1.0.0"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name

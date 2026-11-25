@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.nihongodic.jeildang",
+      "sha256_cert_fingerprints": [
+        "E6:6B:E8:B3:C5:62:0D:DE:27:DE:EF:73:89:FE:6B:90:40:92:9B:FE:52:18:BC:B2:05:D2:61:D2:C7:92:FE:5A"
+      ]
+    }
+  }
+]

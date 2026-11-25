@@ -13,7 +13,13 @@ Google의 Bubblewrap으로 만든 프로젝트이고, 게임 코드는 앱에 �
 - JDK 17, Node.js
 - Bubblewrap CLI: `npm i -g @bubblewrap/cli` (처음 실행할 때 Android SDK를 받을지 묻는다. 받게 둔다)
 
-## 1. 업로드 키 만들기 (한 번만)
+## 지금 상태 (2026-11-25)
+
+- 버전 1.0.0(versionCode 1) AAB와 시험용 APK를 만들어 운영자에게 전달했다. 업로드 키(`jeildang-upload.keystore`, 별칭 `upload`)와 비밀번호도 함께 전달했다. **저장소에는 없다.** 다음 빌드부터는 이 키로 서명해야 한다.
+- 업로드 키 SHA-256 지문: `E6:6B:E8:B3:C5:62:0D:DE:27:DE:EF:73:89:FE:6B:90:40:92:9B:FE:52:18:BC:B2:05:D2:61:D2:C7:92:FE:5A` (이미 `public/.well-known/assetlinks.json`에 들어 있다. Play 앱 서명 키 지문은 첫 업로드 뒤 더한다)
+- 최소 안드로이드 7.0(API 24). TWA 라이브러리(androidbrowserhelper 2.7.4)가 24 이상을 요구한다.
+
+## 1. 업로드 키 만들기 (한 번만 — 이미 만들었으면 건너뛴다)
 
 ```bash
 cd android

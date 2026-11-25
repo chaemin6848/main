@@ -6,6 +6,9 @@
 <title>제1당 | 정당 운영 멀티 전략 게임</title>
 <meta name="description" content="정당을 세워 정권을 잡고, 법안을 내고, 정부를 운영하며 총선 의석을 겨루는 무료 멀티 전략 게임. 한국·일본·미국·영국·프랑스 실제 의석으로도 할 수 있습니다. 방 코드만 나누면 친구와 바로 할 수 있습니다.">
 <link rel="canonical" href="https://nihongodic.com/jeildang/">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#121a33">
+<link rel="apple-touch-icon" href="app/icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23cdb9ff'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%231c211d'%3E票%3C/text%3E%3C/svg%3E">
 <meta property="og:title" content="제1당 | 정당 운영 멀티 전략 게임">
 <meta property="og:description" content="정당을 세워 정권을 잡고 총선 의석을 겨루는 무료 멀티 전략 게임. 한국·일본·미국·영국·프랑스 실제 의석으로도 할 수 있고, 친구와 몰래 연대했다가 총선 직전에 등을 돌려도 됩니다.">
@@ -296,6 +299,11 @@ html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
 
 <script src="units.js"></script>
 <script src="engine.js"></script>
+<script>
+// 오프라인 캐시 (앱·홈 화면 추가용). https 또는 localhost 에서만. 데스크톱판(app://)은 쓰지 않는다
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))
+  addEventListener('load',()=>navigator.serviceWorker.register('/jeildang/sw.js',{scope:'/jeildang/'}).catch(()=>{}));
+</script>
 <script>
 if(typeof document!=='undefined'){
 

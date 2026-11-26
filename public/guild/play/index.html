@@ -95,19 +95,17 @@ body {
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 <script>
-// 모바일 소리 풀기: 첫 터치(그리고 다시 돌아올 때마다) 소리 엔진을 깨운다.
-// · 브라우저는 터치 순간에만 소리를 켜 주는데, 게임 엔진은 터치를 나중에 처리해서 소리가 잠긴 채로 남는다
-// · 아이폰은 무음 스위치가 켜져 있으면 웹 소리를 막는다 → 재생용 소리로 바꾸고, 조용한 소리를 반복해 둔다
-(function(){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var ctxs=[],silent=null;
+// 모바일 소리 풀기: 터치할 때마다 잠긴 소리 엔진을 깨운다 (브라우저는 터치 순간에만 소리를 켜 준다)
+// 아이폰 무음 스위치를 따른다(무음이면 소리 없음). 음악 앱·잠금 화면 재생기에는 나타나지 않는다
+// 소리 엔진이 깨어날 때마다 window.__gpUnlock을 하나씩 올린다 → 게임이 보고 배경음을 다시 튼다 (그 전에 시작한 곡은 조용히 남기 때문)
+(function(){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var ctxs=[];
+try{if(navigator.audioSession)navigator.audioSession.type="ambient"}catch(e){}
 function W(o){var c=o===undefined?new AC():new AC(o);ctxs.push(c);window.__gpAudio=ctxs;return c}W.prototype=AC.prototype;
 try{Object.setPrototypeOf(W,AC)}catch(e){}window.AudioContext=W;if(window.webkitAudioContext)window.webkitAudioContext=W;
-function unlock(){try{if(navigator.audioSession&&navigator.audioSession.type!=="playback")navigator.audioSession.type="playback"}catch(e){}
- for(var i=0;i<ctxs.length;i++){var c=ctxs[i];if(c.state!=="running"&&c.state!=="closed"){try{c.resume()}catch(e){}
-  try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}}
- if(!silent){silent=new Audio("data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==");silent.loop=true;silent.volume=0.01;silent.setAttribute("playsinline","")}
- if(silent.paused){var p=silent.play();if(p&&p.catch)p.catch(function(){})}}
-["touchstart","touchend","pointerdown","pointerup","mousedown","keydown","click"].forEach(function(e){document.addEventListener(e,unlock,{capture:true,passive:true})});
-document.addEventListener("visibilitychange",function(){if(document.hidden){if(silent)silent.pause()}});})();
+function woke(){window.__gpUnlock=(window.__gpUnlock||0)+1}
+function unlock(){for(var i=0;i<ctxs.length;i++){var c=ctxs[i];if(c.state!=="running"&&c.state!=="closed"){try{var r=c.resume();if(r&&r.then)r.then(woke);else woke()}catch(e){}
+  try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}}}
+["touchstart","touchend","pointerdown","pointerup","mousedown","keydown","click"].forEach(function(e){document.addEventListener(e,unlock,{capture:true,passive:true})});})();
 </script>
 <script>
 // 압축 파일(.gz)을 받아 브라우저에서 풀어 쓴다 — 엔진 38MB → 약 10MB 다운로드
@@ -142,7 +140,7 @@ window.fetch=async function(input,init){const url=typeof input==="string"?input:
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4357692,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4374780,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

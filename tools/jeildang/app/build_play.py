@@ -7,7 +7,7 @@
   - <base href="/jeildang/"> 로 상대 주소(엔진·번역·지도·사진)를 웹 화면과 같은 파일로
   - 검색 제외, 앱용 manifest(play/manifest.json, 시작 주소 /jeildang/play/?source=app)
   - 공통 메뉴는 앱 모드(nav.js data-app): 사이트 메뉴 없이 언어·로그인만 → 체험판 제한도 걸리지 않는다
-  - 브라우저로 직접 열면 웹 체험판으로 보낸다(앱에서 왔을 때만 연다)
+  - 브라우저로 열면 웹 체험판으로 보낸다(앱이 띄웠을 때만, document.referrer 가 android-app:// 일 때 연다)
 사용: python3 tools/jeildang/app/build_play.py [--check]
 """
 import json, os, sys
@@ -19,8 +19,10 @@ MAN_SRC = os.path.join(ROOT, 'public/jeildang/manifest.json')
 MAN_OUT = os.path.join(ROOT, 'public/jeildang/play/manifest.json')
 
 GUARD = '''<script>
-/* 앱 화면은 앱(TWA, ?source=app 로 시작)에서만 연다. 브라우저로 직접 들어오면 웹 체험판으로 */
-(function(){var ok=false;try{if(/[?&]source=app(&|$)/.test(location.search)||document.referrer.indexOf('android-app://')===0)sessionStorage.setItem('jd-app','1');ok=!!sessionStorage.getItem('jd-app')}catch(e){}
+/* 앱 화면은 안드로이드 앱(TWA)에서만 연다. 크롬은 앱이 띄운 첫 페이지의 document.referrer 를 android-app://<패키지> 로 준다.
+   주소(?source=app)는 누구나 붙일 수 있으니 믿지 않는다. 같은 탭에서 다시 불러와도(언어 바꾸기) 되게 sessionStorage 에 기억한다.
+   웹판(/jeildang/)이 앱에서 열린 걸 알아채고 넘겨 줄 때도 같은 표시를 남긴다. 아니면 웹판으로 보낸다 */
+(function(){var ok=false;try{if(document.referrer.indexOf('android-app://com.nihongodic.jeildang')===0)sessionStorage.setItem('jd-app','1');ok=sessionStorage.getItem('jd-app')==='1'}catch(e){}
 if(!ok)location.replace('/jeildang/')})();
 </script>'''
 

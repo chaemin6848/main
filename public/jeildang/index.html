@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <!-- app-redirect -->
-<script>/* 앱(TWA)으로 열리면 앱 화면으로. 앱 1.0.9 이하는 이 주소(?source=app)로 시작한다 */
-if(/[?&]source=app(&|$)/.test(location.search)||document.referrer.indexOf('android-app://')===0)location.replace('/jeildang/play/?source=app');</script>
+<script>/* 안드로이드 앱(TWA)이 이 주소를 열면(앱 1.0.9 이하) 앱 화면으로 넘긴다. 앱인지는 referrer 로만 본다(play/ 의 확인과 같음) */
+try{if(document.referrer.indexOf('android-app://com.nihongodic.jeildang')===0){sessionStorage.setItem('jd-app','1');location.replace('/jeildang/play/')}}catch(e){}</script>
 <!-- /app-redirect -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>제1당 | 정당 운영 멀티 전략 게임</title>

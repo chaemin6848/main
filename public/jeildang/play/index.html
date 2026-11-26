@@ -6,8 +6,10 @@
 <base href="/jeildang/">
 <meta name="robots" content="noindex">
 <script>
-/* 앱 화면은 앱(TWA, ?source=app 로 시작)에서만 연다. 브라우저로 직접 들어오면 웹 체험판으로 */
-(function(){var ok=false;try{if(/[?&]source=app(&|$)/.test(location.search)||document.referrer.indexOf('android-app://')===0)sessionStorage.setItem('jd-app','1');ok=!!sessionStorage.getItem('jd-app')}catch(e){}
+/* 앱 화면은 안드로이드 앱(TWA)에서만 연다. 크롬은 앱이 띄운 첫 페이지의 document.referrer 를 android-app://<패키지> 로 준다.
+   주소(?source=app)는 누구나 붙일 수 있으니 믿지 않는다. 같은 탭에서 다시 불러와도(언어 바꾸기) 되게 sessionStorage 에 기억한다.
+   웹판(/jeildang/)이 앱에서 열린 걸 알아채고 넘겨 줄 때도 같은 표시를 남긴다. 아니면 웹판으로 보낸다 */
+(function(){var ok=false;try{if(document.referrer.indexOf('android-app://com.nihongodic.jeildang')===0)sessionStorage.setItem('jd-app','1');ok=sessionStorage.getItem('jd-app')==='1'}catch(e){}
 if(!ok)location.replace('/jeildang/')})();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">

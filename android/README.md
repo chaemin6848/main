@@ -4,7 +4,7 @@
 Google의 Bubblewrap으로 만든 프로젝트이고, 게임 코드는 앱에 들어 있지 않다. 사이트에 배포하면 앱도 바로 바뀐다.
 
 - 패키지 이름: `com.nihongodic.jeildang`
-- 시작 주소: `/jeildang/play/?source=app` (앱 전용 전체판 화면. 웹 `/jeildang/`은 체험판이다. 1.0.9 이하 앱이 웹 주소로 열면 앱 화면으로 넘어간다)
+- 시작 주소: `/jeildang/play/?source=app` (앱 전용 전체판 화면. 웹 `/jeildang/`은 체험판이다). 앱 화면은 `document.referrer`가 `android-app://com.nihongodic.jeildang`일 때만 열리고, 브라우저로 열면 웹판으로 넘어간다. 크롬 외 브라우저(웹뷰 대체 실행)는 referrer를 안 줄 수 있으니 새 기기에서 꼭 시험한다
 - 오프라인: 한 번 연 뒤에는 인터넷 없이도 혼자 하기가 된다(`public/jeildang/sw.js`). 멀티플레이·로그인은 인터넷이 필요하다.
 - Google 로그인: 크롬 안에서 돌아서 사이트와 똑같이 된다.
 

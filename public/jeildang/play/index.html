@@ -315,7 +315,8 @@ html.trial [data-a=country]:not([data-v=""])::after,html.trial [data-a=scenario]
 <script src="engine.js"></script>
 <script>
 // 오프라인 캐시 (앱·홈 화면 추가용). https 또는 localhost 에서만. 데스크톱판(app://)은 쓰지 않는다
-if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))
+// 안드로이드 앱(window.JDAndroid)은 파일이 앱 안에 있으니 쓰지 않는다
+if('serviceWorker' in navigator&&!window.JDAndroid&&(location.protocol==='https:'||location.hostname==='localhost'))
   addEventListener('load',()=>navigator.serviceWorker.register('/jeildang/sw.js',{scope:'/jeildang/'}).catch(()=>{}));
 </script>
 <script>
@@ -333,6 +334,8 @@ const TRIAL=!DESKTOP&&!document.documentElement.classList.contains('nd-app')&&(T
 if(TRIAL)document.documentElement.classList.add('trial');
 const trialEnded=g=>TRIAL&&!!g&&g.round>E.nextGeneral({...g,round:1});
 const playBtn=()=>PLAY_LIVE?`<a class="btn" href="${PLAY_URL}" target="_blank" rel="noopener" style="text-decoration:none">Google Play에서 받기</a>`:`<span class="btn ghost" aria-disabled="true" style="cursor:default;opacity:.75">Google Play 출시 예정</span>`;
+// 안드로이드 앱 광고(AdMob 하단 배너)는 게임 화면에서만 보인다. 앱이 열어 준 window.JDAndroid 에 알린다
+function adSync(){try{if(window.JDAndroid)JDAndroid.showBanner(S.screen==='game'&&!!S.game)}catch(e){}}
 function appModal(end){
   $('#modal').innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="app-t">
     <h2 id="app-t">${end?'체험판은 여기까지입니다':'앱 전용입니다'}</h2>
@@ -664,6 +667,7 @@ function renderHome(){
   renderRooms();
   renderResume();
   syncBackdrop();
+  adSync();
 }
 function systemRule(){
   const c=S.game&&S.game.country||(!S.game&&S.profile.country)||'';
@@ -872,7 +876,7 @@ function onGame(g){
 
 /* ---------- 대기실 ---------- */
 function mountLobby(){
-  S.screen='lobby';syncBackdrop();
+  S.screen='lobby';syncBackdrop();adSync();
   $('#app').classList.remove('wide');
   const code=S.code,solo=S.mode==='solo';
   const inRoom=!!S.members[S.me]||isHost();
@@ -1000,7 +1004,7 @@ function syncDraftFromMoves(){
   S.draft.votes={...(m.votes||{})};S.draft.pm=m.pm||'';S.draft.actions=(m.actions||[]).map(a=>({...a}));S.draft.gov=(m.gov||[]).map(a=>({...a}));S.draft.bill=Number.isInteger(m.bill)?m.bill:null;S.draft.react=m.react||null;S.draft.nominate=m.nominate||null;S.draft.refSide=m.refSide||null;S.draft.submitted=true;
   if(S.screen==='game')renderDecide();
 }
-function renderGameAll(){renderTop();renderHouse();renderDecide();renderRematch()}
+function renderGameAll(){renderTop();renderHouse();renderDecide();renderRematch();adSync()}
 function renderRematch(){
   const box=$('#rematch');if(!box)return;
   const offers=Object.entries(S.chat).filter(([u,c])=>c&&c.rematch&&/^[A-Z0-9]{4}$/.test(c.rematch));

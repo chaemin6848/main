@@ -6,8 +6,8 @@
 apply plugin: 'com.android.application'
 
 // ── 운영자가 채우는 값 ────────────────────────────────────────────
-// AdMob 앱 ID 와 배너 광고 단위 ID. 아래는 Google 이 공개한 '시험용' ID 다. 실제 ID 로 바꾸기 전에는 수익이 나지 않는다.
-def ADMOB_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
+// AdMob 앱 ID(실제 값)와 배너 광고 단위 ID. 배너가 Google 공개 '시험용' ID 인 동안은 시험 광고만 나오고 수익이 없다.
+def ADMOB_APP_ID = 'ca-app-pub-5925323367833464~6629718334'
 def ADMOB_BANNER_ID = 'ca-app-pub-3940256099942544/9214589741'
 // Firebase 콘솔 → Authentication → 로그인 방법 → Google → 웹 SDK 구성의 '웹 클라이언트 ID'. 비어 있으면 앱에서는 이메일 로그인만 보인다
 def GOOGLE_WEB_CLIENT_ID = ''

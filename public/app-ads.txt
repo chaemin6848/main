@@ -1,0 +1,2 @@
+# AdMob(제1당 안드로이드 앱) 판매자 확인. AdSense 와 같은 게시자 ID
+google.com, pub-5925323367833464, DIRECT, f08c47fec0942fa0

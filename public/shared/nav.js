@@ -10,18 +10,11 @@
      ND.fallback("en", fn)                               // 그래도 없으면 fn(원문) (낱말 단위 바꿈 등)
      ND.t("원문")                                        // JS에서 직접 (canvas, alert 등 DOM 밖 글자)
    화면이 바뀌면 MutationObserver가 새로 들어온 글자도 바꾼다. 언어를 고르면 저장하고 새로고침한다.
-   앱 전용: data-app 을 붙인 페이지(제1당)를 앱(안드로이드 TWA, ?source=app)이나 홈 화면 앱으로 열면
-     사이트 메뉴·후원 없이 오른쪽 위에 언어·로그인 버튼만 띄운다. <html class="nd-app"> 가 붙는다. */
+   앱 전용: data-app 을 붙인 페이지(제1당 앱 화면 /jeildang/play/)는 사이트 메뉴·후원 없이
+     오른쪽 위에 언어·로그인 버튼만 띄운다. <html class="nd-app"> 가 붙는다. */
 (function () {
   var me = document.currentScript;
-  var APP = !!(me && me.hasAttribute("data-app")) && (function () {
-    try {
-      if (/[?&]source=app(&|$)/.test(location.search)) sessionStorage.setItem("nd-app", "1");
-      if (sessionStorage.getItem("nd-app")) return true;
-    } catch (e) {}
-    return (document.referrer || "").indexOf("android-app://") === 0 ||
-      !!(window.matchMedia && matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches);
-  })();
+  var APP = !!(me && me.hasAttribute("data-app"));
   if (APP) document.documentElement.classList.add("nd-app");
   var SUPPORTED = ["ko", "ja", "en"];
   var langs = ((me && me.getAttribute("data-langs")) || "ko,ja,en").split(",").map(function (s) { return s.trim(); })

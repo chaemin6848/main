@@ -4,10 +4,10 @@
 // - 글꼴(Google Fonts): 캐시 먼저
 // - 그 밖(Firebase 로그인·멀티 서버, 분석)은 건드리지 않는다
 // 파일 구성이 크게 바뀌면 VERSION 을 올린다 (예전 캐시는 지운다)
-const VERSION = 'jd-v2';
+const VERSION = 'jd-v3';
 const CORE = [
-  '/jeildang/', '/jeildang/engine.js', '/jeildang/units.js', '/jeildang/i18n.js', '/jeildang/firebase-config.js',
-  '/jeildang/manifest.json', '/jeildang/app/icon-192.png', '/jeildang/app/icon-512.png',
+  '/jeildang/', '/jeildang/play/', '/jeildang/engine.js', '/jeildang/units.js', '/jeildang/i18n.js', '/jeildang/firebase-config.js',
+  '/jeildang/manifest.json', '/jeildang/play/manifest.json', '/jeildang/app/icon-192.png', '/jeildang/app/icon-512.png',
   '/jeildang/img/default.jpg', '/jeildang/img/default-wide.jpg', '/shared/nav.js',
 ];
 

@@ -18,6 +18,8 @@ jobs:
           node-version: "22"
       - name: Internal links
         run: python3 tools/check/links.py
+      - name: Jeildang app page is up to date
+        run: python3 tools/jeildang/app/build_play.py --check
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.48.2

@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<!-- app-redirect -->
+<script>/* 앱(TWA)으로 열리면 앱 화면으로. 앱 1.0.9 이하는 이 주소(?source=app)로 시작한다 */
+if(/[?&]source=app(&|$)/.test(location.search)||document.referrer.indexOf('android-app://')===0)location.replace('/jeildang/play/?source=app');</script>
+<!-- /app-redirect -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>제1당 | 정당 운영 멀티 전략 게임</title>
 <meta name="description" content="정당을 세워 정권을 잡고, 법안을 내고, 정부를 운영하며 총선 의석을 겨루는 무료 멀티 전략 게임. 한국·일본·미국·영국·프랑스 실제 의석으로도 할 수 있습니다. 방 코드만 나누면 친구와 바로 할 수 있습니다.">
@@ -294,7 +298,7 @@ html.trial [data-a=country]:not([data-v=""])::after,html.trial [data-a=scenario]
 </style>
 </head>
 <body>
-<script src="/shared/nav.js" data-app></script>
+<script src="/shared/nav.js"></script>
 <script src="i18n.js"></script>
 <div id="backdrop" aria-hidden="true"></div>
 <div class="wrap" id="app"></div>

@@ -3,7 +3,7 @@
   "short_name": "제1당",
   "description": "정당을 세워 정권을 잡고, 법안을 내고, 총선 의석을 겨루는 전략 게임. 혼자 하기와 친구 멀티플레이.",
   "id": "/jeildang/",
-  "start_url": "/jeildang/?source=app",
+  "start_url": "/jeildang/",
   "scope": "/jeildang/",
   "display": "standalone",
   "orientation": "any",

@@ -17,6 +17,7 @@ Cloudflare Workers(정적 자산)로 배포되는 사이트. `main`에 올라가
 - `public/_redirects`: 예전 주소와 끝 `/` 붙이기. 주소를 옮기면 반드시 여기에 301을 남긴다
 - `firestore.rules`: Firestore 보안 규칙. 저장소에서 고친 뒤 Firebase 콘솔에 붙여 넣어 게시해야 적용된다
 - `desktop/`: 제1당 스팀용 데스크톱판(Electron)
+- `android/`: 제1당 Play 스토어용 안드로이드 앱(TWA, 사이트를 크롬 전체 화면으로 띄움). 빌드·등록 방법은 `android/README.md`. 오프라인 캐시는 `public/jeildang/sw.js`
 - `public/judge/`, `public/yukyung/`: 개인용 페이지(검색 제외). 메뉴·사이트맵에 넣지 않는다
 
 ## 공통 파일은 여러 작업이 함께 고친다

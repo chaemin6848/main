@@ -12,7 +12,7 @@
   "navigationDividerColorDark": "#121A33",
   "backgroundColor": "#121A33",
   "enableNotifications": false,
-  "startUrl": "/jeildang/?source=app",
+  "startUrl": "/jeildang/play/?source=app",
   "iconUrl": "https://nihongodic.com/jeildang/app/icon-512.png",
   "maskableIconUrl": "https://nihongodic.com/jeildang/app/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
@@ -20,10 +20,10 @@
     "path": "./jeildang-upload.keystore",
     "alias": "upload"
   },
-  "appVersionCode": 10,
+  "appVersionCode": 11,
   "shortcuts": [],
   "generatorApp": "bubblewrap-core",
-  "webManifestUrl": "https://nihongodic.com/jeildang/manifest.json",
+  "webManifestUrl": "https://nihongodic.com/jeildang/play/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -39,6 +39,6 @@
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "displayOverride": [],
-  "appVersionName": "1.0.9",
-  "appVersion": "1.0.9"
+  "appVersionName": "1.0.10",
+  "appVersion": "1.0.10"
 }

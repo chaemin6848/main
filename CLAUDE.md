@@ -9,6 +9,7 @@ Cloudflare Workers(정적 자산)로 배포되는 사이트. `main`에 올라가
 - `public/<도구>/`: 각 도구 (japanese, korean, en/*, japanworld, alarm, politics, jeildang, pokemon)
 - `public/kaiwa/`: 취미·회화 과외 신청서(같은 `tutoringRequests`에 `track: "hobby"`로 저장)
 - `public/tutoring/`: 과외 신청서(Firestore `tutoringRequests`에 저장). `admin.html`은 나가타초 노트 관리자 계정으로 신청서 확인·상태 변경
+- `public/jeildang/`: 제1당 웹 체험판. `public/jeildang/play/`는 안드로이드 앱이 여는 전체판으로 **생성물**(`tools/jeildang/app/build_play.py`). `jeildang/index.html`을 고치면 다시 돌린다
 - `public/japanese/jlpt/`: **생성물**. `tools/jlpt/build.py`가 만든다. 직접 고치지 말 것
 - `public/shared/nav.js`: 모든 페이지 위쪽 공통 메뉴 + 한/일/영 번역 엔진 + 로그인 버튼
 - `public/shared/i18n-home.js`: 메인과 묶음 페이지 번역(키는 한국어 원문)
@@ -47,6 +48,7 @@ node tools/check/smoke.js        # 모든 페이지를 360px로 열어 JS 오류
 python3 tools/jlpt/build.py                  # vocabulary.js를 고친 뒤: JLPT 정적 페이지 + sitemap
 node tools/og/build.js <글꼴 폴더>            # 공유 이미지. 글꼴은 npm @fontsource/noto-sans-kr·jp를 풀어 둔 폴더
 python3 tools/i18n-build.py <번역표.tsv>      # 번역표 → ND.add JS
+python3 tools/jeildang/app/build_play.py      # 제1당 index.html 을 고친 뒤: 앱 화면(jeildang/play/)
 ```
 
 ## 정기적으로 갱신해야 하는 내용

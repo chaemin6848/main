@@ -28,6 +28,8 @@ for dp, _, fs in os.walk(ROOT):
         path = os.path.join(dp, fn); rel = '/' + os.path.relpath(path, ROOT).replace(os.sep, '/')
         base = rel.rsplit('/', 1)[0] + '/'
         src = open(path, encoding='utf-8').read()
+        mb = re.search(r'<base href="(/[^"]*/)"', src)  # <base> 가 있으면 상대 주소는 그 기준
+        if mb: base = mb.group(1)
         src = re.sub(r'<script\b[^>]*>(?!\s*</script>).*?</script>', '', src, flags=re.S)  # 인라인 스크립트 속 문자열은 빼고 본다
         for m in re.finditer(r'\b(?:href|src)="([^"]+)"', src):
             u = html.unescape(m.group(1))

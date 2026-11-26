@@ -223,6 +223,8 @@ svg text{fill:var(--ink2);font-family:var(--sans)}
 body.tut-on{padding-bottom:240px}
 .snd .btn[aria-pressed="false"]{opacity:.65}
 html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
+html.trial .online-only{display:none!important}
+html.trial [data-a=country]:not([data-v=""])::after,html.trial [data-a=scenario][data-c]:not([data-c=""])::after{content:"🔒";margin-left:4px;font-size:.8em}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .scen{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
 .scen-result.ok{border-color:var(--ink);background:var(--mine)}
@@ -312,6 +314,20 @@ if(typeof document!=='undefined'){
 // 데스크톱판(스팀용 Electron)인지: preload가 window.steamBridge를 열어 준다. 사이트 공통 메뉴와 온라인 멀티는 숨긴다.
 const DESKTOP=!!(window.steamBridge&&window.steamBridge.desktop);
 if(DESKTOP)document.documentElement.classList.add('desktop');
+// 웹 체험판: 사이트(브라우저)에서는 가상 해람 공화국으로 혼자, 첫 총선 결과까지. 앱(nav.js data-app → html.nd-app)과 데스크톱판은 전부 된다.
+// Play 스토어 정식 출시 뒤 TRIAL_ON 을 true 로 바꾼다. 꺼져 있어도 주소에 ?trial=1 을 붙이면 미리 볼 수 있다
+const TRIAL_ON=false;
+const PLAY_URL='https://play.google.com/store/apps/details?id=com.nihongodic.jeildang';
+const TRIAL=!DESKTOP&&!document.documentElement.classList.contains('nd-app')&&(TRIAL_ON||/[?&]trial=1(&|$)/.test(location.search));
+if(TRIAL)document.documentElement.classList.add('trial');
+const trialEnded=g=>TRIAL&&!!g&&g.round>E.nextGeneral({...g,round:1});
+const playBtn=()=>`<a class="btn" href="${PLAY_URL}" target="_blank" rel="noopener" style="text-decoration:none">Google Play에서 받기</a>`;
+function appModal(end){
+  $('#modal').innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="app-t">
+    <h2 id="app-t">${end?'체험판은 여기까지입니다':'앱 전용입니다'}</h2>
+    <p>웹 체험판은 가상 해람 공화국에서 첫 총선까지입니다. 남은 분기, 실제 5개국 지도, 친구와 멀티플레이는 앱에서 할 수 있습니다.</p>
+    <div class="row">${playBtn()}<button class="btn ghost" data-a="close-modal">닫기</button></div></div></div>`;
+}
 const langSel=()=>!DESKTOP||!window.ND?'':`<label class="desk-lang" style="display:inline-grid;width:auto"><span class="sr">Language</span><select data-lang aria-label="Language">${[['ko','한국어'],['ja','日本語'],['en','English']].map(([k,n])=>`<option value="${k}" ${ND.lang===k?'selected':''}>${n}</option>`).join('')}</select></label>`;
 document.addEventListener('change',e=>{const t=e.target;if(t.matches&&t.matches('[data-lang]')&&window.ND)ND.setLang(t.value)});
 const COLORS=['#1F6FB2','#C93A2B','#16875A','#B98500','#7A4FC0','#0B8A8F','#C4477F','#7D6238'];
@@ -595,6 +611,7 @@ previewParties.label=()=>{const C=E.COUNTRIES[S.profile.country||''];return C?`$
 previewParties.total=()=>{const C=E.COUNTRIES[S.profile.country||''];return C?C.total:400};
 function renderHome(){
   S.screen='home';
+  if(TRIAL&&S.profile.country){S.profile.country='';S.profile.pick=''}
   $('#app').classList.remove('wide');
   $('#app').innerHTML=`
   ${HOME_LINK}
@@ -606,6 +623,7 @@ function renderHome(){
     </div>
     <figure style="margin:0">${hemicycle(previewParties(),previewParties.label(),previewParties.total())}</figure>
   </header>
+  ${TRIAL?`<section class="panel" style="margin-bottom:16px"><h2>웹 체험판</h2><p>가상 해람 공화국에서 AI 정당과 첫 총선까지 해 볼 수 있습니다. 실제 5개국 지도, 친구와 멀티플레이, 끝까지 이어 하기는 앱에서 됩니다.</p><div class="row">${playBtn()}</div></section>`:''}
   <section class="panel" id="resume" style="margin-bottom:16px" hidden></section>
   <div class="home-grid">
     <section class="panel">
@@ -1677,7 +1695,7 @@ function renderWaiting(){
   const canForce=isHost()&&me&&done.length<humans.length&&d&&d.submitted;
   const miss=me?draftMissing():'';
   box.innerHTML=`${me?`<div class="submit" style="border:0;padding:0"><div class="small muted">${miss||(d.submitted?(d.dirty?'바꾼 내용이 아직 제출되지 않았습니다.':'제출했습니다. 모두 낼 때까지 고칠 수 있습니다.'):'준비되면 기표하세요.')}</div>
-      <div class="row">${d.submitted&&!d.dirty?`${stamp('big-stamp','font-size:32px')}`:''}<button class="btn" data-a="submit" ${miss?'disabled':''}>${d.submitted?'다시 기표':'기표하고 제출'}</button></div></div>`:''}
+      <div class="row">${d.submitted&&!d.dirty?`${stamp('big-stamp','font-size:32px')}`:''}${trialEnded(g)?`<button class="btn" data-a="trial-end">앱에서 이어 하기</button>`:`<button class="btn" data-a="submit" ${miss?'disabled':''}>${d.submitted?'다시 기표':'기표하고 제출'}</button>`}</div></div>`:''}
     <div class="row small"><span class="muted">제출 ${done.length} / ${humans.length}</span>${humans.map(p=>`<span class="pill" title="${esc(p.name)}">${chip(p)} ${done.includes(p)?'완료':'작성 중'}</span>`).join('')}</div>
     ${canForce?'<button class="btn ghost" data-a="force">아직 안 낸 정당은 AI로 처리하고 넘기기</button>':''}`;
 }
@@ -1885,10 +1903,11 @@ function achHtml(){
 
 /* ---------- 시나리오 ---------- */
 function scenariosHtml(){
-  return`<details><summary>시나리오 ${E.SCENARIOS.length}개</summary><div class="stack" style="gap:8px;margin-top:10px">${E.SCENARIOS.map(sc=>`<div class="scen"><div style="min-width:0"><b>${esc(sc.title)}</b> <span class="small muted">${sc.country?esc(E.COUNTRIES[sc.country].name):'가상 해람 공화국'} · ${sc.rounds}분기</span><span class="small muted" style="display:block">${esc(sc.desc)}</span></div><button class="btn ghost sm" data-a="scenario" data-v="${sc.id}">시작</button></div>`).join('')}</div></details>`;
+  return`<details><summary>시나리오 ${E.SCENARIOS.length}개</summary><div class="stack" style="gap:8px;margin-top:10px">${E.SCENARIOS.map(sc=>`<div class="scen"><div style="min-width:0"><b>${esc(sc.title)}</b> <span class="small muted">${sc.country?esc(E.COUNTRIES[sc.country].name):'가상 해람 공화국'} · ${sc.rounds}분기</span><span class="small muted" style="display:block">${esc(sc.desc)}</span></div><button class="btn ghost sm" data-a="scenario" data-v="${sc.id}" data-c="${sc.country||''}">시작</button></div>`).join('')}</div></details>`;
 }
 function startScenario(id){
   const sc=E.SCENARIOS.find(x=>x.id===id);if(!sc)return;
+  if(TRIAL&&sc.country){appModal();return}
   const P=S.profile;P.country=sc.country||'';P.cname='';P.cideo='';
   if(sc.country)P.pick=sc.pick;else{P.kind=sc.kind||'major';if(!P.name.trim())P.name='돌풍당'}
   S.autoStart=true;
@@ -1962,6 +1981,7 @@ new MutationObserver(()=>{if(tutPaint.q)return;tutPaint.q=requestAnimationFrame(
 
 /* ---------- 결정 제출과 분기 처리 ---------- */
 async function submitMove(){
+  if(trialEnded(S.game)){appModal(true);return}
   const d=S.draft;if(!d||draftMissing())return;
   const body={round:S.game.round,votes:d.votes,pm:d.pm||null,actions:d.actions,gov:d.gov,bill:Number.isInteger(d.bill)?d.bill:null,react:d.react||null,nominate:d.nominate||null,refSide:d.refSide||null,at:Date.now()};
   d.submitted=true;d.dirty=false;d.touched=true;
@@ -2080,16 +2100,17 @@ document.addEventListener('click',async ev=>{
     case'snd':{const k=v==='bgm'?'bgm':'fx';SND[k]=!SND[k];lsSet(k==='bgm'?'jd-bgm':'jd-sfx',SND[k]);
       document.querySelectorAll('.snd').forEach(x=>x.outerHTML=soundCtl());if(k==='bgm')syncMusic();else sfx('click');break}
     case'tutorial':startTutorial();break;
+    case'trial-end':appModal(true);break;
     case'scenario':startScenario(v);break;
     case'tut-next':tutGo(S.tut.i+1);break;
     case'tut-prev':tutGo(Math.max(0,S.tut.i-1));break;
     case'tut-end':S.tut=null;tutSave();tutPaint();break;
     case'skip-count':if(playCount.finish)playCount.finish();break;
     case'ideo':S.profile.ideology=v;document.querySelectorAll('[data-a=ideo]').forEach(x=>x.setAttribute('aria-pressed',x===b));paintEmbPicks();pushProfile();break;
-    case'country':S.profile.country=v;saveProfile();renderHome();break;
+    case'country':if(TRIAL&&v){appModal();break}S.profile.country=v;saveProfile();renderHome();break;
     case'pick':if(S.profile.pick!==v){S.profile.cname='';S.profile.cideo=''}S.profile.pick=v;document.querySelectorAll('[data-a=pick]').forEach(x=>x.setAttribute('aria-pressed',x===b));{const o=$('#party-opts');if(o)o.innerHTML=partyOptsHtml(roomCountry())}pushProfile();break;
     case'rematch':createRoom(S.mode,{...S.game.settings});break;
-    case'continue':continueTerm();break;
+    case'continue':if(TRIAL){appModal(true);break}continueTerm();break;
     case'join-rematch':enterRoom(v,S.mode);break;
     case'kind':S.profile.kind=v;document.querySelectorAll('[data-a=kind]').forEach(x=>x.setAttribute('aria-pressed',x===b));pushProfile();break;
     case'color':S.profile.colorIdx=+v;document.querySelectorAll('.swatch').forEach(x=>x.setAttribute('aria-pressed',x===b));paintEmbPicks();pushProfile();break;
@@ -2325,7 +2346,7 @@ async function boot(){
     const s=await S.local.doc('games/'+last.code).get();
     if(s.exists&&s.data().status!=='over'){S.mode='solo';S.store=S.local;S.me='me';S.code=last.code;subscribeRoom()}
   }
-  if(DESKTOP){S.onlineState='off';return}
+  if(DESKTOP||TRIAL){S.onlineState='off';return}
   let on=null;try{on=await connectOnline()}catch(e){}
   if(on&&on.watch){try{await watchAccount()}catch(e){S.onlineState='off';if(S.screen==='home')renderRooms()}return}
   if(!on){S.onlineState='off';if(S.screen==='home')renderRooms();return}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>계정 삭제 | nihongodic</title>
+<meta name="description" content="nihongodic 계정(사이트와 제1당 앱 공통)과 서버에 저장된 기록을 직접 삭제하는 방법입니다.">
+<link rel="canonical" href="https://nihongodic.com/account/delete/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c211d'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff'%3E日%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap">
+<style>
+/* 계정 삭제 안내 (Google Play '계정 삭제 URL'). 마이페이지와 같은 팔레트 */
+:root{--ink:#1c211d;--muted:#6c736b;--paper:#f8f7f2;--card:#ffffff;--line:#dcdcd3;--red:#c0392b;--sans:"Noto Sans KR","Noto Sans JP",system-ui,-apple-system,sans-serif}
+@media (prefers-color-scheme:dark){:root{--ink:#ecefe7;--muted:#9aa197;--paper:#151814;--card:#1d211c;--line:#343a32;--red:#ff8a7e;color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.7}
+.shell{max-width:720px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+h1{margin:6px 0 0;font-size:clamp(26px,6vw,36px);font-weight:900;letter-spacing:-.03em}
+h2{margin:0;font-size:17px;font-weight:900}
+.lead{margin:0;color:var(--muted);font-size:14.5px}
+.card{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:18px;display:grid;gap:10px;min-width:0}
+.card p,.card ul,.card ol{margin:0;font-size:14.5px}
+.card ul,.card ol{padding-left:1.3em}
+.btn{justify-self:start;font:inherit;font-size:15px;font-weight:800;padding:10px 18px;border-radius:8px;border:1.5px solid var(--red);background:var(--red);color:#fff;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+a{color:inherit}
+</style>
+</head>
+<body>
+<script src="/shared/nav.js" data-langs="ko,ja,en"></script>
+<main class="shell">
+  <header>
+    <h1>계정 삭제</h1>
+    <p class="lead">nihongodic 계정은 사이트의 모든 도구와 제1당 안드로이드 앱에서 함께 씁니다. 언제든 직접 삭제할 수 있습니다.</p>
+  </header>
+
+  <section class="card">
+    <h2>바로 삭제하기</h2>
+    <ol>
+      <li>아래 버튼을 누르거나 화면 오른쪽 위 사람 아이콘을 누릅니다. 로그인하지 않았다면 먼저 로그인합니다.</li>
+      <li>계정 상자에서 '계정 삭제'를 누릅니다.</li>
+      <li>이메일 계정은 비밀번호를, Google 계정은 Google 로그인을 한 번 더 확인하면 삭제됩니다.</li>
+    </ol>
+    <button type="button" class="btn" id="go">계정 삭제 시작</button>
+    <p class="small">제1당 앱에서는 첫 화면 오른쪽 위 사람 아이콘 → '계정 삭제'로 같은 방법으로 지울 수 있습니다.</p>
+  </section>
+
+  <section class="card">
+    <h2>지워지는 것</h2>
+    <ul>
+      <li>로그인 계정(이메일·이름·연결된 Google 계정 정보)</li>
+      <li>서버에 동기화한 학습 기록, 포켓몬 도감 기록</li>
+      <li>나가타초 노트 회원 정보</li>
+      <li>제1당 멀티플레이 참가·행동·대화 기록과 내가 만든 방</li>
+    </ul>
+    <p>삭제는 바로 처리되며 되돌릴 수 없습니다. 휴대폰이나 브라우저 안에만 저장된 기록(혼자 하기 진행 상황 등)은 서버에 없으므로, 앱을 지우거나 브라우저의 사이트 데이터를 지우면 함께 사라집니다.</p>
+    <p>법령에 따라 보관해야 하는 정보가 있으면 그 기간 동안만 분리해 보관한 뒤 지웁니다.</p>
+  </section>
+
+  <section class="card">
+    <h2>로그인할 수 없을 때</h2>
+    <p>비밀번호를 잊었거나 로그인할 수 없으면 <a href="/privacy">개인정보처리방침</a>의 '이용자의 권리'에 있는 이메일로 가입한 이메일 주소를 적어 삭제를 요청해 주세요. 본인 확인 후 지웁니다.</p>
+  </section>
+</main>
+<script>
+ND.add({
+  "계정 삭제 | nihongodic": ["アカウント削除 | nihongodic", "Delete your account | nihongodic"],
+  "계정 삭제": ["アカウント削除", "Delete your account"],
+  "nihongodic 계정은 사이트의 모든 도구와 제1당 안드로이드 앱에서 함께 씁니다. 언제든 직접 삭제할 수 있습니다.": ["nihongodicのアカウントはサイトのすべてのツールと第一党Androidアプリで共通です。いつでもご自身で削除できます。", "Your nihongodic account is shared by every tool on the site and the First Party Android app. You can delete it yourself at any time."],
+  "바로 삭제하기": ["すぐに削除する", "Delete it now"],
+  "아래 버튼을 누르거나 화면 오른쪽 위 사람 아이콘을 누릅니다. 로그인하지 않았다면 먼저 로그인합니다.": ["下のボタンか、画面右上の人のアイコンを押します。ログインしていなければ先にログインします。", "Press the button below or the person icon at the top right. Sign in first if you aren't signed in."],
+  "계정 상자에서 '계정 삭제'를 누릅니다.": ["アカウント欄で「アカウント削除」を押します。", "In the account box, press “Delete account”."],
+  "이메일 계정은 비밀번호를, Google 계정은 Google 로그인을 한 번 더 확인하면 삭제됩니다.": ["メールアカウントはパスワード、GoogleアカウントはGoogleログインでもう一度確認すると削除されます。", "Confirm with your password (email accounts) or by signing in with Google once more (Google accounts), and the account is deleted."],
+  "계정 삭제 시작": ["アカウント削除を始める", "Start account deletion"],
+  "제1당 앱에서는 첫 화면 오른쪽 위 사람 아이콘 → '계정 삭제'로 같은 방법으로 지울 수 있습니다.": ["第一党アプリでは、最初の画面右上の人のアイコン →「アカウント削除」から同じように削除できます。", "In the First Party app, tap the person icon at the top right of the first screen → “Delete account”."],
+  "지워지는 것": ["削除されるもの", "What gets deleted"],
+  "로그인 계정(이메일·이름·연결된 Google 계정 정보)": ["ログインアカウント（メールアドレス・名前・連携したGoogleアカウント情報）", "Your sign-in account (email, name, linked Google account details)"],
+  "서버에 동기화한 학습 기록, 포켓몬 도감 기록": ["サーバーに同期した学習記録、ポケモン図鑑の記録", "Study progress and Pokédex saves synced to our server"],
+  "나가타초 노트 회원 정보": ["永田町ノートの会員情報", "Nagatacho Note membership details"],
+  "제1당 멀티플레이 참가·행동·대화 기록과 내가 만든 방": ["第一党マルチプレイの参加・行動・チャット記録と自分が作ったルーム", "First Party multiplayer participation, moves and chat, and rooms you created"],
+  "삭제는 바로 처리되며 되돌릴 수 없습니다. 휴대폰이나 브라우저 안에만 저장된 기록(혼자 하기 진행 상황 등)은 서버에 없으므로, 앱을 지우거나 브라우저의 사이트 데이터를 지우면 함께 사라집니다.": ["削除はすぐに行われ、元に戻せません。スマートフォンやブラウザの中だけに保存された記録（一人プレイの進行状況など）はサーバーにないため、アプリを削除するかブラウザのサイトデータを消すと一緒に消えます。", "Deletion happens immediately and can't be undone. Progress kept only on your phone or browser (such as solo games) isn't on our server; it disappears when you uninstall the app or clear the site's data in your browser."],
+  "법령에 따라 보관해야 하는 정보가 있으면 그 기간 동안만 분리해 보관한 뒤 지웁니다.": ["法令で保管が義務付けられた情報がある場合は、その期間だけ分けて保管した後に削除します。", "If the law requires us to keep any information, we store it separately for that period only and then delete it."],
+  "로그인할 수 없을 때": ["ログインできないとき", "If you can't sign in"],
+  "비밀번호를 잊었거나 로그인할 수 없으면": ["パスワードを忘れたりログインできない場合は、", "If you forgot your password or can't sign in, email us at the address in the “Your rights” section of the"],
+  "개인정보처리방침": ["プライバシーポリシー", "privacy policy"],
+  "의 '이용자의 권리'에 있는 이메일로 가입한 이메일 주소를 적어 삭제를 요청해 주세요. 본인 확인 후 지웁니다.": ["の「利用者の権利」にあるメールアドレスへ、登録したメールアドレスを書いて削除をご依頼ください。本人確認のうえ削除します。", " with the email you registered, and we'll delete the account after verifying it's you."]
+});
+document.getElementById('go').addEventListener('click', function () { if (window.ND && ND.openDelete) ND.openDelete(); });
+</script>
+</body>
+</html>

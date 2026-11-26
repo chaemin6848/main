@@ -273,7 +273,16 @@
     me: { ko: "내 계정", ja: "アカウント", en: "Account" },
     out: { ko: "로그아웃", ja: "ログアウト", en: "Log out" },
     wait: { ko: "로그인 준비 중…", ja: "ログインの準備中…", en: "Getting sign-in ready…" },
-    my: { ko: "마이페이지 · 이용 현황", ja: "マイページ・利用状況", en: "My page · your progress" }
+    my: { ko: "마이페이지 · 이용 현황", ja: "マイページ・利用状況", en: "My page · your progress" },
+    del: { ko: "계정 삭제", ja: "アカウント削除", en: "Delete account" },
+    delWarn: { ko: "계정과 서버에 저장된 기록(기록 동기화, 도감, 나가타초 노트 회원 정보, 제1당 멀티 참가 기록)이 모두 지워지며 되돌릴 수 없습니다.",
+      ja: "アカウントとサーバーに保存された記録（記録の同期、図鑑、永田町ノートの会員情報、第一党のマルチ参加記録）がすべて削除され、元に戻せません。",
+      en: "Your account and everything stored on our server (synced progress, Pokédex saves, Nagatacho Note membership, First Party multiplayer records) will be deleted. This can't be undone." },
+    delPw: { ko: "확인을 위해 비밀번호를 입력하세요", ja: "確認のためパスワードを入力してください", en: "Enter your password to confirm" },
+    delGoogle: { ko: "확인을 위해 Google 로그인 창이 한 번 더 뜹니다.", ja: "確認のためGoogleログイン画面がもう一度表示されます。", en: "You'll be asked to sign in with Google once more to confirm." },
+    delGo: { ko: "삭제", ja: "削除", en: "Delete" },
+    delNo: { ko: "취소", ja: "キャンセル", en: "Cancel" },
+    delDone: { ko: "계정을 삭제했습니다.", ja: "アカウントを削除しました。", en: "Your account has been deleted." }
   };
 
   ND.toolShown = function (path) { for (var i = 0; i < TOOLS.length; i++) if (path.indexOf(TOOLS[i].path) === 0) return toolOk(TOOLS[i]); return true; };
@@ -344,6 +353,15 @@
     ".acct-pop .me span{color:var(--muted);overflow-wrap:anywhere}" +
     ".acct-pop .out{margin-top:8px;justify-self:start;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);cursor:pointer}" +
     ".acct-pop .out:hover{border-color:var(--ink)}" +
+    ".acct-pop .del{justify-self:start;margin-top:2px;font:inherit;font-size:12px;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}" +
+    ".acct-pop .delbox{display:grid;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}" +
+    ".acct-pop .delbox p{margin:0;font-size:12px;color:var(--ink)}.acct-pop .delbox .row{display:flex;gap:8px}" +
+    ".acct-pop .delbox input{font:inherit;font-size:16px;padding:7px 9px;border:1.5px solid var(--line);border-radius:8px;background:none;color:var(--ink);min-width:0}" +
+    ".acct-pop .delbox .go{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:8px;border:1.5px solid #c0392b;background:#c0392b;color:#fff;cursor:pointer}" +
+    ".acct-pop .delbox .go:disabled{opacity:.6;cursor:progress}" +
+    ".acct-pop .delbox .no{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:8px;border:1.5px solid var(--line);background:none;color:var(--ink);cursor:pointer}" +
+    ".acct-pop .delbox .msg{color:#c0392b}.acct-pop .delbox .msg:empty{display:none}" +
+    ".acct-pop .done{margin:0;font-size:13px;color:#2f8a4e}" +
     ".acct-pop .wait{color:var(--muted)}" +
     ".acct-pop .me .sync{margin-top:6px;font-size:12px;color:var(--muted)}.acct-pop .me .sync.bad{color:#c0392b}" +
     ".acct-pop .hint{margin:0 0 6px;font-size:12px;color:var(--muted)}" +
@@ -393,7 +411,11 @@
     (APP ? "" : '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
     '<div class="tools">' + links + "</div>") + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
-    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + ' →</a><a class="coffee-pop" href="' + COFFEE_URL + '" target="_blank" rel="noopener">☕ ' + COFFEE_LABEL[lang] + "</a></div></div>" +
+    '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button>' +
+      '<button type="button" class="del">' + ACC.del[lang] + '</button>' +
+      '<div class="delbox" hidden><p>' + ACC.delWarn[lang] + '</p><p class="how"></p><input type="password" autocomplete="current-password" hidden><p class="msg" role="alert"></p>' +
+      '<div class="row"><button type="button" class="go">' + ACC.delGo[lang] + '</button><button type="button" class="no">' + ACC.delNo[lang] + '</button></div></div></div>' +
+      '<p class="done" hidden>' + ACC.delDone[lang] + '</p><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + ' →</a><a class="coffee-pop" href="' + COFFEE_URL + '" target="_blank" rel="noopener">☕ ' + COFFEE_LABEL[lang] + "</a></div></div>" +
     (APP ? "" : '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>') +
@@ -466,6 +488,34 @@
   // 다른 도구(제1당 멀티 등)가 로그인 상자를 열 때 쓴다. 클릭 이벤트가 문서까지 올라가 바로 닫히지 않게 다음 틱에 연다
   ND.openLogin = function () { setTimeout(function () { try { host.scrollIntoView({ block: "start", behavior: "smooth" }); } catch (e) {} if (pop.hidden) openBox(); }, 0); };
   pop.querySelector(".out").addEventListener("click", function () { withAccount(function (A) { A.signOut(); }); });
+  /* 계정 삭제 (Play 정책: 앱 안에서도 직접 삭제). 본인 확인 → 기록·계정 삭제 (/shared/account.js deleteAccount) */
+  var delBox = pop.querySelector(".delbox"), delPw = delBox.querySelector("input"), delMsg = delBox.querySelector(".msg"),
+    delGo = delBox.querySelector(".go"), delHow = delBox.querySelector(".how"), delDone = pop.querySelector(".done");
+  function showDel(on) {
+    delBox.hidden = !on; delMsg.textContent = ""; delPw.value = "";
+    if (!on) return;
+    withAccount(function (A) {
+      var pw = A.accountNeedsPassword();
+      delPw.hidden = !pw; delPw.placeholder = ACC.delPw[lang];
+      delHow.textContent = pw ? "" : ACC.delGoogle[lang]; delHow.hidden = pw;
+      if (pw) delPw.focus();
+      place();
+    });
+  }
+  pop.querySelector(".del").addEventListener("click", function () { showDel(delBox.hidden); });
+  delBox.querySelector(".no").addEventListener("click", function () { showDel(false); });
+  delGo.addEventListener("click", function () {
+    delGo.disabled = true; delMsg.textContent = "";
+    withAccount(function (A) {
+      A.deleteAccount(delPw.value).then(function () {
+        showDel(false);
+        // 로그아웃 알림(paint)이 상자를 닫은 뒤에 완료 문구를 띄운다
+        setTimeout(function () { delDone.hidden = false; openBox(); setTimeout(function () { delDone.hidden = true; }, 8000); }, 600);
+      }, function (e) { delMsg.textContent = A.errorText(e, lang) || ""; }).then(function () { delGo.disabled = false; });
+    });
+  });
+  // 계정 삭제 안내 페이지(/account/delete/)가 계정 상자를 삭제 확인 상태로 연다. 로그인 전이면 로그인 상자
+  ND.openDelete = function () { setTimeout(function () { if (pop.hidden) openBox(); if (me) showDel(true); }, 0); };
   document.addEventListener("click", function (ev) { if (!pop.hidden && ev.composedPath().indexOf(host) < 0) setOpen(false); });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !pop.hidden) { setOpen(false); accBtn.focus(); } });
   // 페이지가 다 뜬 뒤에 로그인 상태를 확인한다 (첫 화면 속도에 영향 없게)

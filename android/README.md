@@ -58,5 +58,6 @@ apksigner sign --ks jeildang-upload.keystore --ks-key-alias upload --out jeildan
 
 ## 지금 상태 (2026-11-26)
 
-- 1.1.0(versionCode 12): 앱 안에 게임을 넣은 첫 버전. AdMob 시험용 ID, Google 로그인 꺼짐(이메일만)
+- 1.1.0(versionCode 12): 앱 안에 게임을 넣은 첫 버전(AdMob 시험용 ID)
+- 1.1.1(versionCode 13): 실제 AdMob 앱 ID·배너 단위. Google 로그인은 아직 꺼짐(이메일만)
 - 웹(`/jeildang/`)은 체험판, 1.0.x(TWA)용 앱 화면 `/jeildang/play/`는 업데이트하지 않은 테스터를 위해 당분간 둔다

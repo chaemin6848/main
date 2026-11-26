@@ -43,6 +43,19 @@ export async function signIn() {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   const cur = auth.currentUser;
+  // 제1당 안드로이드 앱: 앱 안 화면에서는 Google 로그인 창이 막히므로 앱이 받은 Google 토큰으로 로그인한다
+  if (window.JDAndroid) {
+    const token = await new Promise((res, rej) => {
+      window.__jdGoogle = (t, err) => t ? res(t) : rej(Object.assign(new Error(err || "cancel"), { code: /cancel/i.test(err || "") ? "auth/popup-closed-by-user" : "auth/internal-error" }));
+      window.JDAndroid.googleSignIn();
+    });
+    const cred = GoogleAuthProvider.credential(token);
+    if (cur && cur.isAnonymous) {
+      try { return await linkWithCredential(cur, cred); }
+      catch (e) { if (e.code === "auth/credential-already-in-use") return await signInWithCredential(auth, cred); throw e; }
+    }
+    return await signInWithCredential(auth, cred);
+  }
   try {
     if (cur && cur.isAnonymous) {
       // 제1당 익명 계정은 Google 계정으로 '승격'해서 uid(참가한 방)를 그대로 유지한다
@@ -163,6 +176,8 @@ export function loginForm(lang, { onDone } = {}) {
   const box = el("div", "nd-login");
   const g = el("button", "nd-google", L("google")); g.type = "button";
   const or = el("p", "nd-or", L("or"));
+  // 안드로이드 앱에 Google 로그인 설정(웹 클라이언트 ID)이 없으면 이메일 로그인만 보인다
+  if (window.JDAndroid && !(window.JDAndroid.hasGoogle && window.JDAndroid.hasGoogle())) { g.hidden = true; or.hidden = true; }
   const form = el("form", "nd-form"); form.noValidate = true;
   const field = (label, type, ac) => { const l = el("label", "nd-field"); const s = el("span", null, label); const i = el("input"); i.type = type; i.autocomplete = ac; if (type !== "text") i.required = true; l.append(s, i); return [l, i, s]; };
   const [nameL, nameI] = field(L("name"), "text", "nickname"); nameI.maxLength = 30;

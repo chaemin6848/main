@@ -1,213 +1,62 @@
-/*
- * Copyright 2019 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 제1당 안드로이드 앱
+// - 게임 파일(public/jeildang, public/shared, privacy.html)을 빌드할 때 앱 안(assets/site)에 복사해 넣는다. 사이트에 배포해도 앱은 바뀌지 않는다.
+//   게임을 고치면 versionCode 를 올려 다시 빌드·업로드한다.
+// - 광고는 AdMob 하단 배너(게임 화면에서만). 동의 창은 Google UMP
+// - Google 로그인은 Credential Manager 로 받은 토큰을 페이지의 Firebase 에 넘긴다(GOOGLE_WEB_CLIENT_ID 가 있을 때만)
+apply plugin: 'com.android.application'
 
-import groovy.xml.MarkupBuilder
+// ── 운영자가 채우는 값 ────────────────────────────────────────────
+// AdMob 앱 ID 와 배너 광고 단위 ID. 아래는 Google 이 공개한 '시험용' ID 다. 실제 ID 로 바꾸기 전에는 수익이 나지 않는다.
+def ADMOB_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
+def ADMOB_BANNER_ID = 'ca-app-pub-3940256099942544/9214589741'
+// Firebase 콘솔 → Authentication → 로그인 방법 → Google → 웹 SDK 구성의 '웹 클라이언트 ID'. 비어 있으면 앱에서는 이메일 로그인만 보인다
+def GOOGLE_WEB_CLIENT_ID = ''
+// ────────────────────────────────────────────────────────────
 
-plugins {
-    id 'com.android.application'
+def siteDir = layout.buildDirectory.dir('siteAssets')
+def copySite = tasks.register('copySite', Sync) {
+    from(rootProject.file('../public')) {
+        include 'jeildang/**', 'shared/**', 'privacy.html'
+        exclude 'jeildang/play/**', 'jeildang/naver*', 'jeildang/sw.js', 'shared/og/**'
+    }
+    into siteDir.map { it.dir('site') }
 }
 
-def twaManifest = [
-    applicationId: 'com.nihongodic.jeildang',
-    hostName: 'nihongodic.com', // The domain being opened in the TWA.
-    launchUrl: '/jeildang/play/?source=app', // The start path for the TWA. Must be relative to the domain.
-    name: '제1당 — 정당 운영 전략 게임', // The application name.
-    launcherName: '제1당', // The name shown on the Android Launcher.
-    themeColor: '#121A33', // The color used for the status bar.
-    themeColorDark: '#121A33', // The color used for the dark status bar.
-    navigationColor: '#121A33', // The color used for the navigation bar.
-    navigationColorDark: '#121A33', // The color used for the dark navbar.
-    navigationDividerColor: '#121A33', // The navbar divider color.
-    navigationDividerColorDark: '#121A33', // The dark navbar divider color.
-    backgroundColor: '#121A33', // The color used for the splash screen background.
-    enableNotifications: false, // Set to true to enable notification delegation.
-    // Every shortcut must include the following fields:
-    // - name: String that will show up in the shortcut.
-    // - short_name: Shorter string used if |name| is too long.
-    // - url: Absolute path of the URL to launch the app with (e.g '/create').
-    // - icon: Name of the resource in the drawable folder to use as an icon.
-    shortcuts: [],
-    // The duration of fade out animation in milliseconds to be played when removing splash screen.
-    splashScreenFadeOutDuration: 300,
-    generatorApp: 'bubblewrap-core', // Application that generated the Android Project
-    // The fallback strategy for when Trusted Web Activity is not available. Possible values are
-    // 'customtabs' and 'webview'.
-    fallbackType: 'customtabs',
-    enableSiteSettingsShortcut: 'false',
-    orientation: 'default',
-]
-
 android {
-    compileSdkVersion 36
-    namespace "com.nihongodic.jeildang"
+    namespace 'com.nihongodic.jeildang'
+    compileSdk 36
     defaultConfig {
-        applicationId "com.nihongodic.jeildang"
-        minSdkVersion 24
-        targetSdkVersion 36
-        versionCode 11
-        versionName "1.0.10"
-
-        // The name for the application
-        resValue "string", "appName", twaManifest.name
-
-        // The name for the application on the Android Launcher
-        resValue "string", "launcherName", twaManifest.launcherName
-
-        // The URL that will be used when launching the TWA from the Android Launcher
-        def launchUrl = "https://" + twaManifest.hostName + twaManifest.launchUrl
-        resValue "string", "launchUrl", launchUrl
-
-        
-
-        
-            // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
-            // is used by Chrome OS and Meta Quest to open the Web version of the PWA instead of
-            // the TWA, as it will probably give a better user experience for non-mobile devices.
-            resValue "string", "webManifestUrl", 'https://nihongodic.com/jeildang/play/manifest.json'
-        
-
-        
-            // This is used by Meta Quest.
-            resValue "string", "fullScopeUrl", 'https://nihongodic.com/jeildang/'
-        
-
-        
-
-        // The hostname is used when building the intent-filter, so the TWA is able to
-        // handle Intents to open host url of the application.
-        resValue "string", "hostName", twaManifest.hostName
-
-        // This attribute sets the status bar color for the TWA. It can be either set here or in
-        // `res/values/colors.xml`. Setting in both places is an error and the app will not
-        // compile. If not set, the status bar color defaults to #FFFFFF - white.
-        resValue "color", "colorPrimary", twaManifest.themeColor
-
-        // This attribute sets the dark status bar color for the TWA. It can be either set here or in
-        // `res/values/colors.xml`. Setting in both places is an error and the app will not
-        // compile. If not set, the status bar color defaults to #000000 - white.
-        resValue "color", "colorPrimaryDark", twaManifest.themeColorDark
-
-        // This attribute sets the navigation bar color for the TWA. It can be either set here or
-        // in `res/values/colors.xml`. Setting in both places is an error and the app will not
-        // compile. If not set, the navigation bar color defaults to #FFFFFF - white.
-        resValue "color", "navigationColor", twaManifest.navigationColor
-
-        // This attribute sets the dark navigation bar color for the TWA. It can be either set here
-        // or in `res/values/colors.xml`. Setting in both places is an error and the app will not
-        // compile. If not set, the navigation bar color defaults to #000000 - black.
-        resValue "color", "navigationColorDark", twaManifest.navigationColorDark
-
-        // This attribute sets the navbar divider color for the TWA. It can be either 
-        // set here or in `res/values/colors.xml`. Setting in both places is an error and the app 
-        // will not compile. If not set, the divider color defaults to #00000000 - transparent.
-        resValue "color", "navigationDividerColor", twaManifest.navigationDividerColor
-
-        // This attribute sets the dark navbar divider color for the TWA. It can be either 
-        // set here or in `res/values/colors.xml`. Setting in both places is an error and the 
-        //app will not compile. If not set, the divider color defaults to #000000 - black.
-        resValue "color", "navigationDividerColorDark", twaManifest.navigationDividerColorDark
-
-        // Sets the color for the background used for the splash screen when launching the
-        // Trusted Web Activity.
-        resValue "color", "backgroundColor", twaManifest.backgroundColor
-
-        // Defines a provider authority for the Splash Screen
-        resValue "string", "providerAuthority", twaManifest.applicationId + '.fileprovider'
-
-        // The enableNotification resource is used to enable or disable the
-        // TrustedWebActivityService, by changing the android:enabled and android:exported
-        // attributes
-        resValue "bool", "enableNotification", twaManifest.enableNotifications.toString()
-
-        twaManifest.shortcuts.eachWithIndex { shortcut, index ->
-            resValue "string", "shortcut_name_$index", "$shortcut.name"
-            resValue "string", "shortcut_short_name_$index", "$shortcut.short_name"
-        }
-
-        // The splashScreenFadeOutDuration resource is used to set the duration of fade out animation in milliseconds
-        // to be played when removing splash screen. The default is 0 (no animation).
-        resValue "integer", "splashScreenFadeOutDuration", twaManifest.splashScreenFadeOutDuration.toString()
-
-        resValue "string", "generatorApp", twaManifest.generatorApp
-
-        resValue "string", "fallbackType", twaManifest.fallbackType
-
-        resValue "bool", "enableSiteSettingsShortcut", twaManifest.enableSiteSettingsShortcut
-        resValue "string", "orientation", twaManifest.orientation
-
-        
+        applicationId 'com.nihongodic.jeildang'
+        minSdk 24
+        targetSdk 36
+        versionCode 12
+        versionName '1.1.0'
+        manifestPlaceholders = [admobAppId: ADMOB_APP_ID]
+        buildConfigField 'String', 'ADMOB_BANNER_ID', "\"${ADMOB_BANNER_ID}\""
+        buildConfigField 'String', 'GOOGLE_WEB_CLIENT_ID', "\"${GOOGLE_WEB_CLIENT_ID}\""
     }
+    buildFeatures { buildConfig true }
+    sourceSets { main { assets.srcDirs += siteDir } }
     buildTypes {
         release {
-            minifyEnabled false   // TWA 는 코드가 거의 없어 줄일 필요가 없다. 켜면 기본 보존 규칙이 없어 실행 중 오류가 날 수 있다
+            // 코드 축소는 쓰지 않는다 (WebView 의 @JavascriptInterface 가 지워지면 게임이 앱 기능을 못 부른다)
+            minifyEnabled false
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    lintOptions {
-        checkReleaseBuilds false
-    }
+    lint { checkReleaseBuilds false }
 }
 
-task generateShorcutsFile {
-    assert twaManifest.shortcuts.size() < 5, "You can have at most 4 shortcuts."
-    twaManifest.shortcuts.eachWithIndex { s, i ->
-        assert s.name != null, 'Missing `name` in shortcut #' + i
-        assert s.short_name != null, 'Missing `short_name` in shortcut #' + i
-        assert s.url != null, 'Missing `icon` in shortcut #' + i
-        assert s.icon != null, 'Missing `url` in shortcut #' + i
-    }
-
-    def shortcutsFile = new File("$projectDir/src/main/res/xml", "shortcuts.xml")
-
-    def xmlWriter = new StringWriter()
-    def xmlMarkup = new MarkupBuilder(new IndentPrinter(xmlWriter, "    ", true))
-
-    xmlMarkup
-        .'shortcuts'('xmlns:android': 'http://schemas.android.com/apk/res/android') {
-            twaManifest.shortcuts.eachWithIndex { s, i ->
-                'shortcut'(
-                        'android:shortcutId': 'shortcut' + i,
-                        'android:enabled': 'true',
-                        'android:icon': '@drawable/' + s.icon,
-                        'android:shortcutShortLabel': '@string/shortcut_short_name_' + i,
-                        'android:shortcutLongLabel': '@string/shortcut_name_' + i) {
-                    'intent'(
-                            'android:action': 'android.intent.action.MAIN',
-                            'android:targetPackage': twaManifest.applicationId,
-                            'android:targetClass': twaManifest.applicationId + '.LauncherActivity',
-                            'android:data': s.url)
-                    'categories'('android:name': 'android.intent.category.LAUNCHER')
-                }
-            }
-        }
-    shortcutsFile.text = xmlWriter.toString() + '\n'
-}
-
-preBuild.dependsOn(generateShorcutsFile)
-
-repositories {
-    
-}
+preBuild.dependsOn copySite
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    
-        implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.8.0'
-    
+    implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
+    implementation 'androidx.credentials:credentials:1.3.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.3.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 }

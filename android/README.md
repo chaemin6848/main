@@ -17,7 +17,9 @@ Google의 Bubblewrap으로 만든 프로젝트이고, 게임 코드는 앱에 �
 
 - 버전 1.0.0(versionCode 1) AAB와 시험용 APK를 만들어 운영자에게 전달했다. 업로드 키(`jeildang-upload.keystore`, 별칭 `upload`)와 비밀번호도 함께 전달했다. **저장소에는 없다.** 다음 빌드부터는 이 키로 서명해야 한다.
 - 업로드 키 SHA-256 지문: `E6:6B:E8:B3:C5:62:0D:DE:27:DE:EF:73:89:FE:6B:90:40:92:9B:FE:52:18:BC:B2:05:D2:61:D2:C7:92:FE:5A` (이미 `public/.well-known/assetlinks.json`에 들어 있다. Play 앱 서명 키 지문은 첫 업로드 뒤 더한다)
-- 최소 안드로이드 7.0(API 24). TWA 라이브러리(androidbrowserhelper 2.7.4)가 24 이상을 요구한다.
+- 최소 안드로이드 7.0(API 24). TWA 라이브러리(androidbrowserhelper)가 24 이상을 요구한다.
+- **androidbrowserhelper 는 2.8.0 이상을 쓴다.** 2.7.x 는 Chrome 152 이상에서 시작 화면 이미지를 넘길 때 거부당해(앱이 그 파일 권한을 안 가짐) 앱이 켜지자마자 꺼진다. Bubblewrap 으로 프로젝트를 다시 만들면 2.7.x 가 들어가니 `app/build.gradle`에서 꼭 올린다.
+- Bubblewrap 템플릿이 고쳐 줘야 하는 것(다시 만들면 되돌아온다): 안드로이드 8.0 화면 방향 지정(`LauncherActivity.java`), 보존 규칙 없는 코드 축소(`minifyEnabled`), 빈 `versionName`.
 
 ## 1. 업로드 키 만들기 (한 번만 — 이미 만들었으면 건너뛴다)
 

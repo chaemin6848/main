@@ -20,7 +20,7 @@
     "path": "./jeildang-upload.keystore",
     "alias": "upload"
   },
-  "appVersionCode": 4,
+  "appVersionCode": 5,
   "shortcuts": [],
   "generatorApp": "bubblewrap-core",
   "webManifestUrl": "https://nihongodic.com/jeildang/manifest.json",
@@ -39,6 +39,6 @@
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "displayOverride": [],
-  "appVersionName": "1.0.3",
-  "appVersion": "1.0.3"
+  "appVersionName": "1.0.4",
+  "appVersion": "1.0.4"
 }

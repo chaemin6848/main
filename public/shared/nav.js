@@ -9,9 +9,20 @@
      ND.terms()                                          // 당·지역 이름 같은 짧은 낱말을 문장 속에서도 바꾼다
      ND.fallback("en", fn)                               // 그래도 없으면 fn(원문) (낱말 단위 바꿈 등)
      ND.t("원문")                                        // JS에서 직접 (canvas, alert 등 DOM 밖 글자)
-   화면이 바뀌면 MutationObserver가 새로 들어온 글자도 바꾼다. 언어를 고르면 저장하고 새로고침한다. */
+   화면이 바뀌면 MutationObserver가 새로 들어온 글자도 바꾼다. 언어를 고르면 저장하고 새로고침한다.
+   앱 전용: data-app 을 붙인 페이지(제1당)를 앱(안드로이드 TWA, ?source=app)이나 홈 화면 앱으로 열면
+     사이트 메뉴·후원 없이 오른쪽 위에 언어·로그인 버튼만 띄운다. <html class="nd-app"> 가 붙는다. */
 (function () {
   var me = document.currentScript;
+  var APP = !!(me && me.hasAttribute("data-app")) && (function () {
+    try {
+      if (/[?&]source=app(&|$)/.test(location.search)) sessionStorage.setItem("nd-app", "1");
+      if (sessionStorage.getItem("nd-app")) return true;
+    } catch (e) {}
+    return (document.referrer || "").indexOf("android-app://") === 0 ||
+      !!(window.matchMedia && matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches);
+  })();
+  if (APP) document.documentElement.classList.add("nd-app");
   var SUPPORTED = ["ko", "ja", "en"];
   var langs = ((me && me.getAttribute("data-langs")) || "ko,ja,en").split(",").map(function (s) { return s.trim(); })
     .filter(function (l) { return SUPPORTED.indexOf(l) >= 0; });
@@ -276,6 +287,7 @@
   var here = location.pathname;
   var host = document.createElement("div");
   host.id = "nihongodic-nav";
+  if (APP) host.className = "app";
   var root = host.attachShadow({ mode: "open" });
 
   var inGroup = function (g) {
@@ -378,15 +390,20 @@
     "nav .lang,nav .acct>button.in,nav .acct>button.me{width:28px;min-width:28px;height:28px}" +
     "}" +
     "@media print{nav{display:none}}" +
+    // 앱: 메뉴 줄 없이 오른쪽 위에 버튼만 (페이지 위에 겹쳐 띄운다)
+    ":host(.app){position:absolute;top:0;right:0;padding-top:env(safe-area-inset-top,0px)}" +
+    ":host(.app) nav{background:none;border:0;padding-top:8px;align-items:flex-start}" +
+    ":host(.app) .lang,:host(.app) .acct>button.in{background:var(--paper);box-shadow:0 1px 4px rgba(0,0,0,.18)}" +
+    ":host(.app) .acct-pop .coffee-pop{display:none!important}" +
     "</style>" +
     '<nav aria-label="' + NAV_LABEL[lang] + '">' +
-    '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
-    '<div class="tools">' + links + "</div>" + picker +
+    (APP ? "" : '<a class="home" href="/"><i aria-hidden="true">日</i><b>nihongodic</b></a>' +
+    '<div class="tools">' + links + "</div>") + picker +
     '<div class="acct"><button type="button" class="in" aria-haspopup="true" aria-expanded="false" title="' + ACC.google[lang] + '" aria-label="' + ACC.google[lang] + '"><span class="t">' + ACC.login[lang] + "</span>" + PERSON + "</button>" +
     '<div class="acct-pop wide" role="dialog" aria-label="' + ACC.me[lang] + '" hidden><div class="me" hidden><b></b><span></span><span class="sync" hidden></span><button type="button" class="out">' + ACC.out[lang] + '</button></div><p class="hint" hidden></p><div class="in"><span class="wait">' + ACC.wait[lang] + '</span></div><a class="mylink" href="/mypage/">' + ACC.my[lang] + ' →</a><a class="coffee-pop" href="' + COFFEE_URL + '" target="_blank" rel="noopener">☕ ' + COFFEE_LABEL[lang] + "</a></div></div>" +
-    '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
+    (APP ? "" : '<a class="coffee" href="' + COFFEE_URL + '" target="_blank" rel="noopener" aria-label="' + COFFEE_LABEL[lang] + '" title="' + COFFEE_LABEL[lang] + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>' +
+    '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.2 1 1.2 1 2.4M12 3c0 1.2 1 1.2 1 2.4"/></svg></a>') +
     "</nav>";
 
   if (me && me.parentNode) me.parentNode.insertBefore(host, me);

@@ -228,8 +228,6 @@ body.tut-on{padding-bottom:240px}
 .snd .btn[aria-pressed="false"]{opacity:.65}
 html.desktop #nihongodic-nav,html.desktop .online-only{display:none!important}
 html.trial .online-only{display:none!important}
-#ad-box{position:relative;z-index:1;padding-block:8px 32px;display:grid;gap:4px;min-height:60px}#ad-box[hidden]{display:none}
-#app.wide+#ad-box{max-width:none}
 html.trial [data-a=country]:not([data-v=""])::after,html.trial [data-a=scenario][data-c]:not([data-c=""])::after{content:"🔒";margin-left:4px;font-size:.8em}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .scen{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
@@ -304,7 +302,6 @@ html.trial [data-a=country]:not([data-v=""])::after,html.trial [data-a=scenario]
 <script src="i18n.js"></script>
 <div id="backdrop" aria-hidden="true"></div>
 <div class="wrap" id="app"></div>
-<div class="wrap" id="ad-box" hidden></div>
 <div id="modal"></div>
 <div id="toast" class="toast" hidden></div>
 
@@ -330,20 +327,6 @@ const TRIAL=!DESKTOP&&!document.documentElement.classList.contains('nd-app')&&(T
 if(TRIAL)document.documentElement.classList.add('trial');
 const trialEnded=g=>TRIAL&&!!g&&g.round>E.nextGeneral({...g,round:1});
 const playBtn=()=>PLAY_LIVE?`<a class="btn" href="${PLAY_URL}" target="_blank" rel="noopener" style="text-decoration:none">Google Play에서 받기</a>`:`<span class="btn ghost" aria-disabled="true" style="cursor:default;opacity:.75">Google Play 출시 예정</span>`;
-// 광고: 앱 화면(/jeildang/play/, html.nd-app)에서만. 게임 화면 맨 아래(#ad-box, 게임 칸 밖)에 배너 하나를 두고 분기가 바뀔 때만 새로 받는다.
-// 웹 체험판·데스크톱판에는 넣지 않는다. AD_SLOT 은 AdSense 콘솔 → 광고 → 광고 단위별 → 디스플레이 광고 단위의 data-ad-slot 숫자. 비어 있으면 광고 없음
-const AD_CLIENT='ca-pub-5925323367833464',AD_SLOT='';
-const ADS=!!AD_SLOT&&!DESKTOP&&document.documentElement.classList.contains('nd-app');
-function adSync(){
-  const box=document.getElementById('ad-box');if(!box)return;
-  const g=S.game,on=ADS&&S.screen==='game'&&!!g;
-  box.hidden=!on;if(!on)return;
-  const key=S.code+':'+g.round;if(box.dataset.key===key)return;
-  box.dataset.key=key;
-  if(!adSync.loaded){adSync.loaded=true;const sc=document.createElement('script');sc.async=true;sc.crossOrigin='anonymous';sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+AD_CLIENT;document.head.appendChild(sc)}
-  box.innerHTML=`<span class="small muted">광고</span><ins class="adsbygoogle" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}" data-ad-format="horizontal" data-full-width-responsive="true"></ins>`;
-  try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}
-}
 function appModal(end){
   $('#modal').innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="app-t">
     <h2 id="app-t">${end?'체험판은 여기까지입니다':'앱 전용입니다'}</h2>
@@ -675,7 +658,6 @@ function renderHome(){
   renderRooms();
   renderResume();
   syncBackdrop();
-  adSync();
 }
 function systemRule(){
   const c=S.game&&S.game.country||(!S.game&&S.profile.country)||'';
@@ -884,7 +866,7 @@ function onGame(g){
 
 /* ---------- 대기실 ---------- */
 function mountLobby(){
-  S.screen='lobby';syncBackdrop();adSync();
+  S.screen='lobby';syncBackdrop();
   $('#app').classList.remove('wide');
   const code=S.code,solo=S.mode==='solo';
   const inRoom=!!S.members[S.me]||isHost();
@@ -1012,7 +994,7 @@ function syncDraftFromMoves(){
   S.draft.votes={...(m.votes||{})};S.draft.pm=m.pm||'';S.draft.actions=(m.actions||[]).map(a=>({...a}));S.draft.gov=(m.gov||[]).map(a=>({...a}));S.draft.bill=Number.isInteger(m.bill)?m.bill:null;S.draft.react=m.react||null;S.draft.nominate=m.nominate||null;S.draft.refSide=m.refSide||null;S.draft.submitted=true;
   if(S.screen==='game')renderDecide();
 }
-function renderGameAll(){renderTop();renderHouse();renderDecide();renderRematch();adSync()}
+function renderGameAll(){renderTop();renderHouse();renderDecide();renderRematch()}
 function renderRematch(){
   const box=$('#rematch');if(!box)return;
   const offers=Object.entries(S.chat).filter(([u,c])=>c&&c.rematch&&/^[A-Z0-9]{4}$/.test(c.rematch));

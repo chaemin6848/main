@@ -5192,6 +5192,14 @@ ND.add({
 "閉じる",
 "Close"
 ],
+"체험판": [
+"体験版",
+"Trial"
+],
+"Google Play 출시 예정": [
+"Google Playで近日公開",
+"Coming soon to Google Play"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

@@ -319,13 +319,14 @@ if(typeof document!=='undefined'){
 const DESKTOP=!!(window.steamBridge&&window.steamBridge.desktop);
 if(DESKTOP)document.documentElement.classList.add('desktop');
 // 웹 체험판: 사이트(브라우저)에서는 가상 해람 공화국으로 혼자, 첫 총선 결과까지. 앱(nav.js data-app → html.nd-app)과 데스크톱판은 전부 된다.
-// Play 스토어 정식 출시 뒤 TRIAL_ON 을 true 로 바꾼다. 꺼져 있어도 주소에 ?trial=1 을 붙이면 미리 볼 수 있다
-const TRIAL_ON=false;
+// TRIAL_ON 을 false 로 하면 웹판도 전부 된다. Play 스토어 정식 출시 뒤 PLAY_LIVE 를 true 로 바꾸면 'Google Play에서 받기' 링크가 열린다(그 전에는 '출시 예정')
+const TRIAL_ON=true;
+const PLAY_LIVE=false;
 const PLAY_URL='https://play.google.com/store/apps/details?id=com.nihongodic.jeildang';
 const TRIAL=!DESKTOP&&!document.documentElement.classList.contains('nd-app')&&(TRIAL_ON||/[?&]trial=1(&|$)/.test(location.search));
 if(TRIAL)document.documentElement.classList.add('trial');
 const trialEnded=g=>TRIAL&&!!g&&g.round>E.nextGeneral({...g,round:1});
-const playBtn=()=>`<a class="btn" href="${PLAY_URL}" target="_blank" rel="noopener" style="text-decoration:none">Google Play에서 받기</a>`;
+const playBtn=()=>PLAY_LIVE?`<a class="btn" href="${PLAY_URL}" target="_blank" rel="noopener" style="text-decoration:none">Google Play에서 받기</a>`:`<span class="btn ghost" aria-disabled="true" style="cursor:default;opacity:.75">Google Play 출시 예정</span>`;
 function appModal(end){
   $('#modal').innerHTML=`<div class="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="app-t">
     <h2 id="app-t">${end?'체험판은 여기까지입니다':'앱 전용입니다'}</h2>
@@ -621,7 +622,7 @@ function renderHome(){
   ${HOME_LINK}
   <header class="hero">
     <div>
-      <h1 class="mark">제1당</h1>
+      <h1 class="mark">제1당</h1>${TRIAL?'<p style="margin:0 0 8px"><span class="pill" style="font-size:.9rem;font-weight:800;padding:3px 12px">웹 체험판</span></p>':''}
       <p class="lede">정당을 세워 정권을 잡고, 법안을 내고, 정부를 운영하며 총선 의석을 겨루는 멀티 전략 게임입니다. 친구와 몰래 연대하고, 총선 직전에 등을 돌려도 됩니다.</p>
       <div class="row" style="margin-top:12px"><button class="btn" data-a="tutorial">튜토리얼로 배우기</button>${soundCtl()}${langSel()}</div>
     </div>
@@ -1003,7 +1004,7 @@ function renderTop(){
   const g=S.game,me=myParty();const left=E.nextGeneral(g)-g.round;
   const pm=E.pmOf(g);
   const label=g.status==='over'?'총선 종료':E.isGeneralRound(g)?(g.round===g.maxRounds?'이번 분기 말 마지막 총선':'이번 분기 말 총선'):E.isMidRound(g)?(g.system==='presidential'||g.system==='semi'?'이번 분기 말 대통령 선거·재보궐':'이번 분기 말 재보궐·지방선거'):`총선까지 ${left}분기`;
-  $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span><span class="pill real-pill" title="${esc(E.COUNTRIES[g.country].asOf)} 기준 실제 의석에서 시작합니다. 이후 전개는 모두 게임 속 가상입니다.">출발 의석만 실제 기준</span>`:''}${scenarioPill(g,me)}${g.regime?`<span class="pill hot" title="저항이 100%가 되면 시민 혁명이 일어납니다.">비상 체제 · ${esc(E.party(g,g.regime.p).name)} · 저항 ${Math.min(100,g.regime.resist)}%</span>`:pm&&E.superBloc(g,pm)?`<span class="pill" title="재적 3분의 2(${E.superLine()}석). 헌법 개정안을 낼 수 있습니다.">개헌선 확보: ${esc(pm.name)}</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
+  $('#topbar').innerHTML=`<div class="row"><div class="logo">제1당</div>${TRIAL?'<span class="pill">체험판</span>':''}${g.status==='over'?'':`<span class="pill">${g.round} / ${g.maxRounds}분기</span>`}${g.country?`<span class="pill">${esc(E.COUNTRIES[g.country].name)} 모드</span><span class="pill real-pill" title="${esc(E.COUNTRIES[g.country].asOf)} 기준 실제 의석에서 시작합니다. 이후 전개는 모두 게임 속 가상입니다.">출발 의석만 실제 기준</span>`:''}${scenarioPill(g,me)}${g.regime?`<span class="pill hot" title="저항이 100%가 되면 시민 혁명이 일어납니다.">비상 체제 · ${esc(E.party(g,g.regime.p).name)} · 저항 ${Math.min(100,g.regime.resist)}%</span>`:pm&&E.superBloc(g,pm)?`<span class="pill" title="재적 3분의 2(${E.superLine()}석). 헌법 개정안을 낼 수 있습니다.">개헌선 확보: ${esc(pm.name)}</span>`:''}<span class="pill">${label}</span>${g.status==='playing'?`<span class="pill">${g.system==='presidential'&&pm?esc(pm.name)+' 정부':g.system==='semi'&&g.presParty?`대통령 ${esc(E.party(g,g.presParty).name)} · ${pm?'총리 '+esc(pm.name):'총리 공석'}`:pm?esc(pm.name)+' 내각':'총리 공석'}</span>`:''}<span class="pill hot" id="timer" hidden></span></div>
     <div class="row">${S.mode==='solo'?'':`<span class="pill">방 ${esc(S.code)}</span>`}${me?'':'<span class="pill">관전 중</span>'}${soundCtl()}<button class="btn ghost" data-a="exit">나가기</button></div>`;
   const stat=(k,v,d)=>`<div><span class="k">${k}</span><span class="v">${v}</span>${d!=null&&d!==0?` <span class="small muted">${fmtD(d)}</span>`:''}</div>`;
   $('#mybar').innerHTML=me?`<div class="mybar${E.goalOf(g,me)?' goal':''}"><div class="who">${badge(me,46)}<div style="min-width:0"><strong style="font-weight:700;overflow-wrap:anywhere">${esc(me.name)}</strong><span class="small muted" style="display:block;overflow-wrap:anywhere">${roleLabel(g,me)?roleLabel(g,me)+' · ':''}${E.KINDS[me.kind].name} · ${esc(partyIdea(me))} ${E.PR?` · 지역구 ${me.district} · 비례 ${me.pr}`:''}${E.fedOf(g,me)?` · 연맹: ${esc(E.fedOf(g,me).name)}${E.fedOf(g,me).head===me.id?' (대표)':''}`:''}</span></div></div>

@@ -5200,6 +5200,10 @@ ND.add({
 "Google Playで近日公開",
 "Coming soon to Google Play"
 ],
+"광고": [
+"広告",
+"Ad"
+],
 "단독 내각": [
 "単独内閣",
 "Single-party cabinet"

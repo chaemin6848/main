@@ -150,8 +150,9 @@ details>summary{cursor:pointer;font-weight:900;letter-spacing:-.02em}
 /* 게임 화면 */
 .topbar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding-bottom:12px}
 .topbar .logo{font-size:1.5rem;font-weight:900;letter-spacing:-.03em}
-/* 앱(nav.js data-app): 오른쪽 위에 언어·로그인 버튼이 떠 있으니 머리말 오른쪽을 비운다 */
-@media (max-width:1240px){html.nd-app .topbar{padding-right:76px}}
+/* 앱(nav.js data-app): 오른쪽 위에 언어·로그인 버튼이 떠 있으니 머리말 오른쪽을 비운다 (넓은 화면은 글자 버튼, 휴대폰은 아이콘 버튼) */
+html.nd-app .topbar{padding-right:250px}
+@media (max-width:440px){html.nd-app .topbar{padding-right:76px}}
 .pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:.78rem;color:var(--ink2);white-space:nowrap}
 .pill.hot{border-color:var(--stamp);color:var(--stamp);font-weight:700}
 .mybar{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(70px,1fr));gap:1px;background:var(--line);border:1.5px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 var(--accent);overflow:hidden;margin-bottom:14px}

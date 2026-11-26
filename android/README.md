@@ -20,6 +20,8 @@ Google의 Bubblewrap으로 만든 프로젝트이고, 게임 코드는 앱에 �
 - 최소 안드로이드 7.0(API 24). TWA 라이브러리(androidbrowserhelper)가 24 이상을 요구한다.
 - **androidbrowserhelper 는 2.8.0 이상을 쓴다.** 2.7.x 는 Chrome 152 이상에서 시작 화면 이미지를 넘길 때 거부당해(앱이 그 파일 권한을 안 가짐) 앱이 켜지자마자 꺼진다. Bubblewrap 으로 프로젝트를 다시 만들면 2.7.x 가 들어가니 `app/build.gradle`에서 꼭 올린다.
 - Bubblewrap 템플릿이 고쳐 줘야 하는 것(다시 만들면 되돌아온다): 안드로이드 8.0 화면 방향 지정(`LauncherActivity.java`), 보존 규칙 없는 코드 축소(`minifyEnabled`), 빈 `versionName`.
+- **`AndroidManifest.xml`에 `ManageDataLauncherActivity`가 꼭 있어야 한다.** 라이브러리가 켤 때마다 이 화면을 켜고 끄는데, Bubblewrap 은 사이트 설정 바로가기(`enableSiteSettingsShortcut`)를 끄면 이 화면을 빼 버린다. 없으면 모든 기기에서 앱이 켜지자마자 꺼진다(1.0.0~1.0.8 이 그랬다).
+- 1.0.8부터 앱이 꺼지면 오류 내용을 저장했다가 다음 실행 때 창으로 보여 준다(`Application.java`, `LauncherActivity.java`).
 
 ## 1. 업로드 키 만들기 (한 번만 — 이미 만들었으면 건너뛴다)
 

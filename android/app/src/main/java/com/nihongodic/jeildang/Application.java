@@ -18,12 +18,37 @@ package com.nihongodic.jeildang;
 
 
 public class Application extends android.app.Application {
+    /** 앱이 꺼질 때 오류 내용을 저장할 파일. 다음 실행 때 LauncherActivity 가 화면에 보여 준다. */
+    static final String CRASH_FILE = "crash.txt";
 
-  
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        final Thread.UncaughtExceptionHandler prev = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
+            try {
+                java.io.StringWriter sw = new java.io.StringWriter();
+                java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                pw.println("앱 " + versionOf(getPackageName()) + " / Chrome " + versionOf("com.android.chrome")
+                        + " / Android " + android.os.Build.VERSION.RELEASE + " (API " + android.os.Build.VERSION.SDK_INT + ")"
+                        + " / " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+                pw.println("스레드: " + thread.getName());
+                error.printStackTrace(pw);
+                pw.flush();
+                java.io.FileOutputStream out = new java.io.FileOutputStream(new java.io.File(getFilesDir(), CRASH_FILE));
+                out.write(sw.toString().getBytes("UTF-8"));
+                out.close();
+            } catch (Throwable ignored) {
+            }
+            if (prev != null) prev.uncaughtException(thread, error);
+        });
+    }
 
-  @Override
-  public void onCreate() {
-      super.onCreate();
-      
-  }
+    private String versionOf(String pkg) {
+        try {
+            return getPackageManager().getPackageInfo(pkg, 0).versionName;
+        } catch (Throwable e) {
+            return "?";
+        }
+    }
 }

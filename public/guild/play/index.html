@@ -97,11 +97,13 @@ body {
 <script>
 // 모바일 소리 풀기: 터치할 때마다 잠긴 소리 엔진을 깨운다 (브라우저는 터치 순간에만 소리를 켜 준다)
 // 아이폰 무음 스위치를 따른다(무음이면 소리 없음). 음악 앱·잠금 화면 재생기에는 나타나지 않는다
+// 소리 엔진이 깨어날 때마다 window.__gpUnlock을 하나씩 올린다 → 게임이 보고 배경음을 다시 튼다 (그 전에 시작한 곡은 조용히 남기 때문)
 (function(){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;var ctxs=[];
 try{if(navigator.audioSession)navigator.audioSession.type="ambient"}catch(e){}
 function W(o){var c=o===undefined?new AC():new AC(o);ctxs.push(c);window.__gpAudio=ctxs;return c}W.prototype=AC.prototype;
 try{Object.setPrototypeOf(W,AC)}catch(e){}window.AudioContext=W;if(window.webkitAudioContext)window.webkitAudioContext=W;
-function unlock(){for(var i=0;i<ctxs.length;i++){var c=ctxs[i];if(c.state!=="running"&&c.state!=="closed"){try{c.resume()}catch(e){}
+function woke(){window.__gpUnlock=(window.__gpUnlock||0)+1}
+function unlock(){for(var i=0;i<ctxs.length;i++){var c=ctxs[i];if(c.state!=="running"&&c.state!=="closed"){try{var r=c.resume();if(r&&r.then)r.then(woke);else woke()}catch(e){}
   try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}}}
 ["touchstart","touchend","pointerdown","pointerup","mousedown","keydown","click"].forEach(function(e){document.addEventListener(e,unlock,{capture:true,passive:true})});})();
 </script>
@@ -138,7 +140,7 @@ window.fetch=async function(input,init){const url=typeof input==="string"?input:
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4371876,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4363684,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

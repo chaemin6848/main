@@ -4,13 +4,14 @@
 //   이메일(아이디) 로그인: signInEmail(email, pw), signUpEmail(email, pw, name), resetPassword(email)
 //   마이페이지: linkGoogle() 로그인한 계정에 Google 로그인 추가, updateName(name)
 //   로그인 상자: loginForm(lang, { onDone }) → Google 버튼 + 이메일 로그인·회원가입·비밀번호 찾기 (클래스 nd-*, 스타일은 각 페이지가)
+//   계정 삭제: deleteAccount(pw) — 본인 확인(이메일 계정은 비밀번호, Google 계정은 Google 로그인) 뒤 저장된 기록과 계정을 지운다
 //   u 는 { uid, name, email, photo, providers } 또는 null (providers: ["google.com", "password"] 중 연결된 것) (제1당의 익명 로그인은 '로그인 안 함'으로 본다)
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, onIdTokenChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   linkWithPopup, signInWithCredential, signOut as fbSignOut,
   EmailAuthProvider, linkWithCredential, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  sendPasswordResetEmail, updateProfile,
+  sendPasswordResetEmail, updateProfile, reauthenticateWithCredential, reauthenticateWithPopup, deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -39,17 +40,19 @@ export function onUser(cb) {
 const notify = () => { const v = pick(auth.currentUser); listeners.forEach(cb => cb(v)); };
 export const currentUser = () => pick(auth.currentUser);
 
+// 제1당 안드로이드 앱이 Credential Manager 로 받아 주는 Google ID 토큰
+const appGoogleToken = () => new Promise((res, rej) => {
+  window.__jdGoogle = (t, err) => t ? res(t) : rej(Object.assign(new Error(err || "cancel"), { code: /cancel/i.test(err || "") ? "auth/popup-closed-by-user" : "auth/internal-error" }));
+  window.JDAndroid.googleSignIn();
+});
+
 export async function signIn() {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   const cur = auth.currentUser;
   // 제1당 안드로이드 앱: 앱 안 화면에서는 Google 로그인 창이 막히므로 앱이 받은 Google 토큰으로 로그인한다
   if (window.JDAndroid) {
-    const token = await new Promise((res, rej) => {
-      window.__jdGoogle = (t, err) => t ? res(t) : rej(Object.assign(new Error(err || "cancel"), { code: /cancel/i.test(err || "") ? "auth/popup-closed-by-user" : "auth/internal-error" }));
-      window.JDAndroid.googleSignIn();
-    });
-    const cred = GoogleAuthProvider.credential(token);
+    const cred = GoogleAuthProvider.credential(await appGoogleToken());
     if (cur && cur.isAnonymous) {
       try { return await linkWithCredential(cur, cred); }
       catch (e) { if (e.code === "auth/credential-already-in-use") return await signInWithCredential(auth, cred); throw e; }
@@ -116,6 +119,43 @@ export async function updateName(name) {
   const dn = String(name || "").trim().slice(0, 30);
   if (!dn) return;
   await updateProfile(cur, { displayName: dn });
+  notify();
+}
+
+/* ---------- 계정 삭제 (웹·안드로이드 앱 어디서나 본인이 직접) ----------
+   지우는 것: 로그인 계정, 기록 동기화(userData), 도감(dexSaves), 나가타초 노트 회원 정보(users),
+   제1당 최근 방(최대 50개)의 내 참가·행동·대화 기록과 내가 만든 방.
+   기기(브라우저·앱)에 저장된 기록은 지우지 않는다(로그인과 무관하게 그 기기에만 있음) */
+export const accountNeedsPassword = () => !!auth.currentUser && (auth.currentUser.providerData || []).some(p => p.providerId === "password");
+export async function deleteAccount(pw) {
+  const cur = auth.currentUser;
+  if (!cur || cur.isAnonymous) throw notSignedIn();
+  const prov = (cur.providerData || []).map(p => p.providerId);
+  // 1. 본인 확인 (Firebase 는 최근에 로그인한 계정만 지울 수 있다)
+  if (prov.includes("password")) {
+    if (!pw) throw Object.assign(new Error("missing password"), { code: "auth/missing-password" });
+    await reauthenticateWithCredential(cur, EmailAuthProvider.credential(cur.email, pw));
+  } else if (prov.includes("google.com")) {
+    if (window.JDAndroid) await reauthenticateWithCredential(cur, GoogleAuthProvider.credential(await appGoogleToken()));
+    else { const g = new GoogleAuthProvider(); g.setCustomParameters({ prompt: "select_account" }); await reauthenticateWithPopup(cur, g); }
+  }
+  // 2. 저장된 기록 (규칙상 못 지우는 것은 넘어가고 계정 삭제는 계속한다)
+  const uid = cur.uid;
+  try {
+    const fs = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const db = fs.getFirestore(app);
+    const del = p => fs.deleteDoc(fs.doc(db, p)).catch(() => {});
+    await Promise.all([del(`userData/${uid}`), del(`dexSaves/${uid}`), del(`users/${uid}`)]);
+    const rooms = await fs.getDocs(fs.query(fs.collection(db, "jeilGames"), fs.orderBy("createdAt", "desc"), fs.limit(50))).catch(() => null);
+    for (const r of rooms ? rooms.docs : []) {
+      const base = `jeilGames/${r.id}`;
+      await Promise.all([del(`${base}/chat/${uid}`), del(`${base}/moves/${uid}`)]);
+      await del(`${base}/members/${uid}`);
+      if ((r.data() || {}).hostId === uid) await del(base);
+    }
+  } catch (e) {}
+  // 3. 계정
+  await deleteUser(cur);
   notify();
 }
 
@@ -229,5 +269,5 @@ export function loginForm(lang, { onDone } = {}) {
 
 // nav.js 가 기다리는 신호 (모듈이 늦게 떠도 상관없게 ND 에 걸어 두고 알린다)
 window.ND = window.ND || {};
-window.ND.account = { onUser, currentUser, signIn, signOut, errorText, signInEmail, signUpEmail, resetPassword, loginForm, linkGoogle, updateName };
+window.ND.account = { onUser, currentUser, signIn, signOut, errorText, signInEmail, signUpEmail, resetPassword, loginForm, linkGoogle, updateName, deleteAccount, accountNeedsPassword };
 document.dispatchEvent(new CustomEvent("nd:account-ready"));

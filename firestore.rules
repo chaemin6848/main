@@ -56,7 +56,8 @@ service cloud.firestore {
       allow update: if isAdmin() && !isMe(uid)
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role'])
         && request.resource.data.role in ['pending', 'member', 'editor', 'admin', 'blocked'];
-      allow delete: if isAdmin() && !isMe(uid);
+      // 본인은 계정 삭제(/account/delete/, shared/account.js deleteAccount) 때 자기 문서를 지울 수 있다
+      allow delete: if (isAdmin() && !isMe(uid)) || isMe(uid);
     }
 
     match /news/{id} {

@@ -29,8 +29,8 @@ android {
         applicationId 'com.nihongodic.jeildang'
         minSdk 24
         targetSdk 36
-        versionCode 13
-        versionName '1.1.1'
+        versionCode 14
+        versionName '1.1.2'
         manifestPlaceholders = [admobAppId: ADMOB_APP_ID]
         buildConfigField 'String', 'ADMOB_BANNER_ID', "\"${ADMOB_BANNER_ID}\""
         buildConfigField 'String', 'GOOGLE_WEB_CLIENT_ID', "\"${GOOGLE_WEB_CLIENT_ID}\""
